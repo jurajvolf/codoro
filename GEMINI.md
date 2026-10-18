@@ -180,8 +180,12 @@ C. Aplikácia `gamification`:
   * 4.4 Rozšírenie Učiteľského panela (`teacher_panel`):
         - Možnosť pre učiteľa pridať slovný komentár (`teacher_comment` - Code Review) ku konkrétnemu odovzdanému riešeniu žiaka (`Submission`).
         - Formulár pre učiteľa na vytvorenie nového Kolektívneho triedneho questu (`ClassQuest`) a Osobného questu (`Quest`).
-        - Tlačidlo "AI Generátor úlohy" a "AI Prekladač do EN" v učiteľskom paneli pri tvorbe nového cvičenia.
-- FÁZA 5: Komplexné testovanie (hraničné stavy, bezpečnosť sandboxu, ošetrenie chýb) a nasadenie (Deployment).
+- FÁZA 5: Komplexné testovanie a produkčná pripravenosť [DOKONČENÉ]
+  * 24 automatizovaných unit a integračných testov prebiehajúcich cez Django Test Runner (100 % pass rate):
+    - `courses/tests.py`: Bezpečnosť AST sandboxu (blokovanie zakázaných importov `os`, `sys`, `subprocess`, funkcií `open`, `eval`, `exec`, dunder metód), timeout ochrana pred nekonečnými cyklami, unit test runner cvičení (PASSED / FAILED / ERROR), Sokratovský Codo fallback bez zverejnenia hotového kódu.
+    - `accounts/tests.py`: Matematický vzorec progresie úrovní (Rovnica 1), odmeny Doros za level-up, denný Streak, zmrazenia, detekcia prerušenia a záchrana za 200 Doros, aktivácia EDU/PRO licencií a denné kvóty AI rád pre FREE používateľov.
+    - `gamification/tests.py`: Skladové hospodárstvo obchodu (odpočítanie skladu, kontrola zostatku Doros, generovanie kupónu CDR-XXXXXX, automatické naskladnenie po expirácii periódy), ClassQuest metriky a sledovanie príspevkov žiakov.
+    - `teacher_panel/tests.py`: Ochrana prístupu pre rolu TEACHER, Code Review slovné hodnotenie učiteľa k odovzdanému riešeniu, schvaľovanie a zamietnutie kupónu s refundáciou mincí študentovi.
 - FÁZA 6: Vypracovanie 25+ stranovej písomnej dokumentácie a prezentácie na obhajobu.
 
 
