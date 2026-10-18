@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
+    'courses',
+    'gamification',
+    'teacher_panel',
 ]
 
 MIDDLEWARE = [
@@ -102,13 +106,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# Nastavenie vlastného používateľského modelu
+AUTH_USER_MODEL = 'accounts.User'
 
-TIME_ZONE = 'UTC'
-
+# Nastavenie predvoleného jazyka a slovenského časového pásma (pre Coin Dropy a Questy)
+LANGUAGE_CODE = 'sk'
+TIME_ZONE = 'Europe/Bratislava'
 USE_I18N = True
-
 USE_TZ = True
+
+# Presmerovania po prihlásení a odhlásení
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
 
 
 # Static files (CSS, JavaScript, Images)
