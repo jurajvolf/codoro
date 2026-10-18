@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<style>
+    .avatar-option-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        border: 2px solid var(--border-hairline);
+        background: var(--bg-subtle);
+        font-size: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .avatar-option-btn:hover {
+        transform: scale(1.08);
+        border-color: var(--ro-indigo);
+    }
+    .avatar-option-btn.selected {
+        border-color: var(--ro-indigo);
+        background: var(--ro-indigo-soft);
+        box-shadow: var(--shadow-indigo);
+    }
+    .badge-card {
+        padding: 1.25rem;
+        border-radius: var(--radius-md);
+        background: var(--bg-subtle);
+        border: 1px solid var(--border-hairline);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .badge-card:hover {
+        transform: translateY(-2px);
+    }
+    .badge-card.is-unlocked {
+        border-color: var(--ro-indigo-border);
+        background: linear-gradient(180deg, var(--ro-indigo-soft) 0%, var(--bg-surface) 100%);
+        box-shadow: var(--shadow-xs);
+    }
+    .badge-card.is-locked {
+        opacity: 0.65;
+        filter: grayscale(0.5);
+    }
+</style>
+
+<div class="animate-in" style="max-width: 1140px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+
+    <!-- 1. Hero profilová karta s avatarom a certifikátom -->
+    <section class="card-surface" style="padding: 2rem; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div style="position: relative;">
+                <div style="width: 76px; height: 76px; border-radius: 20px; background: var(--bg-subtle); border: 3px solid var(--ro-indigo-border); display: flex; align-items: center; justify-content: center; font-size: 2.75rem; box-shadow: var(--shadow-sm);">
+                    {{ user.avatar_emoji }}
+                </div>
+                <span style="position: absolute; bottom: -6px; right: -6px; width: 26px; height: 26px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald-text); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; border: 2px solid var(--bg-surface);">
+                    ✓
+                </span>
+            </div>
+
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                    <h1 style="font-family: var(--font-display); font-size: 1.65rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                        {{ user.get_full_name|default:user.username }}
+                    </h1>
+                    <span class="metric-badge metric-tier">{{ user.subscription_tier }}</span>
+                    {% if user.is_teacher %}
+                    <span class="metric-badge" style="background: var(--ro-indigo-soft); color: var(--ro-indigo);">👨‍🏫 {% if lang == 'en' %}Teacher{% else %}Učiteľ{% endif %}</span>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.35rem; font-size: 0.88rem; color: var(--text-muted); flex-wrap: wrap;">
+                    <span>@{{ user.username }}</span>
+                    {% if user.school_class %}
+                    <span>🏫 {{ user.school_class.name }} ({{ user.school_class.join_code }})</span>
+                    {% endif %}
+                    <span>📅 {% if lang == 'en' %}Member since{% else %}Člen od{% endif %}: {{ user.date_joined|date:"d.m.Y" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="{% url 'certificate' %}" target="_blank" class="btn btn-primary" style="padding: 0.75rem 1.35rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem;">
+                📜 {% if lang == 'en' %}Course Certificate{% else %}Zobraziť Certifikát{% endif %}
+            </a>
+            <a href="{% url 'shop' %}" class="btn btn-secondary" style="padding: 0.75rem 1.25rem; font-weight: 700;">
+                🪙 {{ user.doros }} Doros
+            </a>
+        </div>
+    </section>
+
+    <!-- 2. Štatistiky študenta -->
+    <section>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                📊 {% if lang == 'en' %}Learning & Performance Stats{% else %}Kariérne štatistiky a progres{% endif %}
+            </h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">
+                Level {{ user.level }} · {{ user.xp }} XP total
+            </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem;">
+            <div class="card-surface" style="padding: 1.25rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    {% if lang == 'en' %}Solved Tasks{% else %}Vyriešené úlohy{% endif %}
+                </span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--text-primary);">
+                    ✅ {{ stats.solved_count }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_exercises }}</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+                    {% if lang == 'en' %}Unique coding exercises solved{% else %}Rôzne úspešne zvládnuté úlohy{% endif %}
+                </div>
+            </div>
+
+            <div class="card-surface" style="padding: 1.25rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    {% if lang == 'en' %}First-Try Accuracy{% else %}Riešenie na 1. pokus{% endif %}
+                </span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--ro-indigo);">
+                    🎯 {{ stats.first_try_count }}
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+                    {{ stats.success_rate }}% {% if lang == 'en' %}overall test pass rate{% else %}celková úspešnosť pokusov{% endif %}
+                </div>
+            </div>
+
+            <div class="card-surface" style="padding: 1.25rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    {% if lang == 'en' %}Completed Lessons{% else %}Dokončené lekcie{% endif %}
+                </span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--emerald-text);">
+                    📚 {{ stats.lessons_completed }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_lessons }}</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+                    {{ stats.quizzes_passed }} {% if lang == 'en' %}lesson quizzes passed{% else %}úspešných kvízov{% endif %}
+                </div>
+            </div>
+
+            <div class="card-surface" style="padding: 1.25rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    {% if lang == 'en' %}Learning Streak{% else %}Séria učenia (Streak){% endif %}
+                </span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--flame-text);">
+                    🔥 {{ user.current_streak }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{% if lang == 'en' %}days{% else %}dní{% endif %}</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+                    {% if lang == 'en' %}Record streak:{% else %}Osobný rekord:{% endif %} {{ user.longest_streak }} {% if lang == 'en' %}days{% else %}dní{% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Vitrína odznakov (Badge Showcase) -->
+    <section class="card-surface" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+                <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    🎖️ {% if lang == 'en' %}Badge Showcase{% else %}Vitrína odznakov a ocenení{% endif %}
+                </h2>
+                <span style="font-size: 0.86rem; color: var(--text-muted);">
+                    {% if lang == 'en' %}Earn badges by coding, keeping daily streaks, and helping your class.{% else %}Získavaj odznaky programovaním, udržiavaním sérií a tímovou spoluprácou.{% endif %}
+                </span>
+            </div>
+            <span class="metric-badge" style="background: var(--ro-indigo-soft); color: var(--ro-indigo); font-weight: 700;">
+                {{ earned_count }} / {{ total_badges_count }} {% if lang == 'en' %}unlocked{% else %}odomknutých{% endif %}
+            </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+            {% for b in badge_list %}
+            <article class="badge-card {% if b.is_earned %}is-unlocked{% else %}is-locked{% endif %}">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-size: 2rem;">{{ b.badge.icon_name }}</span>
+                        {% if b.is_earned %}
+                        <span class="badge-emerald" style="font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px;">
+                            ✓ {% if lang == 'en' %}Unlocked{% else %}Získané{% endif %}
+                        </span>
+                        {% else %}
+                        <span class="badge-neutral" style="font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px;">
+                            🔒 {% if lang == 'en' %}Locked{% else %}Zamknuté{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <strong style="font-family: var(--font-display); font-size: 1.05rem; color: var(--text-primary); display: block; margin-bottom: 0.25rem;">
+                        {% if lang == 'en' %}{{ b.badge.name_en }}{% else %}{{ b.badge.name_sk }}{% endif %}
+                    </strong>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                        {% if lang == 'en' %}{{ b.badge.description_en }}{% else %}{{ b.badge.description_sk }}{% endif %}
+                    </p>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted);">
+                    <span style="color: var(--gold-text); font-weight: 700;">
+                        +{{ b.badge.bonus_doros }} Doros
+                    </span>
+                    <span>
+                        {% if b.is_earned and b.earned_at %}
+                            {{ b.earned_at|date:"d.m.Y" }}
+                        {% else %}
+                            {% if lang == 'en' %}In progress{% else %}Nesplnené{% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- 4. Nastavenia profilu (Avatar, Heslo a Osobné údaje) -->
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start;">
+
+        <!-- Výber avatara a farby -->
+        <section class="card-surface" style="padding: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; color: var(--text-primary);">
+                🎨 {% if lang == 'en' %}Avatar & Character Customization{% else %}Výber avatara a maskota{% endif %}
+            </h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                {% if lang == 'en' %}Pick your in-game identity and badge color visible on the class leaderboard.{% else %}Vyber si postavičku a farebný motív, ktorý sa zobrazuje v rebríčku triedy.{% endif %}
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_avatar">
+
+                <label class="form-label">{% if lang == 'en' %}Select Emoji Avatar{% else %}Vyber si avatara{% endif %}</label>
+                <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+                    {% for code, emoji in avatar_choices %}
+                    <label style="cursor: pointer;">
+                        <input type="radio" name="avatar" value="{{ code }}" {% if user.avatar == code %}checked{% endif %} style="display: none;" onchange="this.form.querySelectorAll('.avatar-option-btn').forEach(b => b.classList.remove('selected')); this.nextElementSibling.classList.add('selected');">
+                        <span class="avatar-option-btn {% if user.avatar == code %}selected{% endif %}">
+                            {{ emoji }}
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <label class="form-label">{% if lang == 'en' %}Color Accent{% else %}Farba motívu{% endif %}</label>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    {% for code, hex in avatar_colors %}
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--bg-subtle);">
+                        <input type="radio" name="avatar_color" value="{{ code }}" {% if user.avatar_color == code %}checked{% endif %}>
+                        <span style="width: 14px; height: 14px; border-radius: 50%; background: {{ hex }}; display: inline-block;"></span>
+                        <span style="font-size: 0.82rem; font-weight: 600;">{{ code|title }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                    💾 {% if lang == 'en' %}Save Avatar{% else %}Uložiť avatara{% endif %}
+                </button>
+            </form>
+        </section>
+
+        <!-- Zmena hesla -->
+        <section class="card-surface" style="padding: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; color: var(--text-primary);">
+                🔒 {% if lang == 'en' %}Change Password{% else %}Zmena hesla{% endif %}
+            </h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                {% if lang == 'en' %}Keep your account secure with a strong password.{% else %}Zabezpeč si svoj účet novým silným heslom.{% endif %}
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_password">
+
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label">{% if lang == 'en' %}Current password{% else %}Aktuálne heslo{% endif %}</label>
+                    <input type="password" name="old_password" class="form-control" required>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label">{% if lang == 'en' %}New password (min. 6 chars){% else %}Nové heslo (min. 6 znakov){% endif %}</label>
+                    <input type="password" name="new_password" class="form-control" required>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label class="form-label">{% if lang == 'en' %}Confirm new password{% else %}Zopakuj nové heslo{% endif %}</label>
+                    <input type="password" name="confirm_password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-secondary" style="font-weight: 700;">
+                    🔑 {% if lang == 'en' %}Update Password{% else %}Zmeniť heslo{% endif %}
+                </button>
+            </form>
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

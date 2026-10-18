@@ -8,8 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>codoro — {% if lang == 'en' %}Interactive Python Platform{% else %}Interaktívna výučba Pythonu{% endif %}
     </title>
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234636F5'/%3E%3Crect x='14' y='18' width='36' height='28' rx='12' fill='%230F172A'/%3E%3Cpath d='M21 33c2-4 6-4 8 0M35 33c2-4 6-4 8 0' stroke='%235CE1E6' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="{% static 'img/codoro-logo-without-letters-transparent.png' %}">
     <!-- Okamžité načítanie uloženej témy pred vykreslením stránky (bez prebliknutia) -->
     <script>
         (function () {
@@ -197,10 +196,15 @@
         }
 
         .brand-logo {
-            height: 36px;
+            height: 38px;
             width: auto;
-            border-radius: 8px;
             object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(70, 54, 245, 0.2));
+            transition: transform 0.2s var(--ease-out);
+        }
+
+        .brand:hover .brand-logo {
+            transform: scale(1.06);
         }
 
         .brand-text {
@@ -668,7 +672,7 @@
     <header class="navbar">
         <div class="navbar-container">
             <a href="{% url 'dashboard' %}" class="brand">
-                <img src="{% static 'img/codoro-logo.jpg' %}" alt="Codoro" class="brand-logo"
+                <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="brand-logo"
                     onerror="this.style.display='none'; document.getElementById('codo-nav-svg').style.display='block';">
                 <svg id="codo-nav-svg" style="display:none; width:36px; height:36px;" viewBox="0 0 64 64" fill="none">
                     <path d="M12 46C12 24 22 10 34 8C44 10 54 24 54 46C54 52 46 56 33 56C20 56 12 52 12 46Z"
@@ -703,6 +707,12 @@
                             {% if lang == 'en' %}Rewards Shop{% else %}Obchod s odmenami{% endif %}
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'profile' %}"
+                            class="nav-item-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                            {% if lang == 'en' %}Profile & Badges{% else %}Môj profil & Odznaky{% endif %}
+                        </a>
+                    </li>
                     {% if user.is_teacher %}
                     <li>
                         <a href="{% url 'teacher_dashboard' %}"
@@ -724,6 +734,11 @@
                         ⚡ Lvl {{ user.level }} · {{ user.xp }} XP
                     </span>
                     <span class="metric-badge metric-tier">{{ user.subscription_tier }}</span>
+
+                    <a href="{% url 'profile' %}" title="{% if lang == 'en' %}My Profile & Badges{% else %}Môj profil a odznaky{% endif %}"
+                        style="width: 34px; height: 34px; border-radius: 9px; background: var(--bg-subtle); border: 2px solid var(--ro-indigo-border); display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; text-decoration: none;">
+                        {{ user.avatar_emoji }}
+                    </a>
 
                     <div class="lang-segmented">
                         <a href="{% url 'switch_language' 'sk' %}" class="{% if lang == 'sk' %}active{% endif %}">SK</a>

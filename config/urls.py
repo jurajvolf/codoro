@@ -15,6 +15,8 @@ urlpatterns = [
     path('lang/<str:lang_code>/', acc_views.switch_language, name='switch_language'),
     path('streak/repair/', acc_views.repair_streak, name='repair_streak'),
     path('license/activate/', acc_views.activate_license, name='activate_license'),
+    path('profile/', acc_views.profile_view, name='profile'),
+    path('certificate/', acc_views.certificate_view, name='certificate'),
 
     # Študentský Dashboard, Lekcie a Editor kódu
     path('', course_views.dashboard, name='dashboard'),
@@ -34,4 +36,9 @@ urlpatterns = [
     path('teacher/reward/create/', teacher_views.create_reward_item, name='create_reward_item'),
     path('teacher/coindrop/create/', teacher_views.create_coin_drop, name='create_coin_drop'),
     path('teacher/exercise/create/', teacher_views.create_exercise, name='create_exercise'),
+    path('teacher/submission/<int:submission_id>/comment/', teacher_views.comment_submission, name='comment_submission'),
+    path('teacher/quest/create/', teacher_views.create_quest, name='create_quest'),
+    path('teacher/classquest/create/', teacher_views.create_class_quest, name='create_class_quest'),
+    path('teacher/exercise/ai-generate/', teacher_views.ai_generate_exercise, name='ai_generate_exercise'),
+    path('teacher/exercise/ai-translate/', teacher_views.ai_translate_exercise, name='ai_translate_exercise'),
 ]

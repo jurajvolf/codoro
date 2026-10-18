@@ -3,13 +3,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
+from django.http import JsonResponse
 from django.utils import timezone
 
 from accounts.models import User, SchoolClass
 from courses.models import Lesson, Exercise, TestCase, Submission
 from gamification.models import (
-    RewardItem, RewardPurchase, DorosTransaction, ClassQuest, CoinDrop
+    RewardItem, RewardPurchase, DorosTransaction, ClassQuest, CoinDrop, Quest
 )
+from courses.services import generate_exercise_with_ai, translate_to_english
 
 
 def teacher_required(view_func):
@@ -27,10 +29,12 @@ def teacher_dashboard(request):
     students = User.objects.filter(role=User.Role.STUDENT).select_related('school_class').order_by('-xp')
     pending_coupons = RewardPurchase.objects.filter(status=RewardPurchase.Status.PENDING).select_related('student', 'reward')
     rewards = RewardItem.objects.all()
-    recent_submissions = Submission.objects.select_related('student', 'exercise')[:20]
+    recent_submissions = Submission.objects.select_related('student', 'exercise')[:25]
     lessons = Lesson.objects.select_related('module').all()
     classes = SchoolClass.objects.all()
     active_drops = CoinDrop.objects.order_by('-available_from')[:5]
+    all_quests = Quest.objects.all().order_by('period', '-id')
+    class_quests = ClassQuest.objects.select_related('school_class').order_by('-deadline')[:10]
 
     return render(request, 'teacher_panel/dashboard.html', {
         'students': students,
@@ -40,6 +44,8 @@ def teacher_dashboard(request):
         'lessons': lessons,
         'classes': classes,
         'active_drops': active_drops,
+        'all_quests': all_quests,
+        'class_quests': class_quests,
     })
 
 
@@ -212,3 +218,94 @@ def create_exercise(request):
             )
         messages.success(request, f"Cvičenie '{title_sk}' bolo pridané do lekcie {lesson.title_sk}.")
     return redirect('teacher_dashboard')
+
+
+@teacher_required
+def comment_submission(request, submission_id):
+    """Učiteľ pridá alebo aktualizuje Code Review komentár k študentskému riešeniu."""
+    if request.method == 'POST':
+        sub = get_object_or_404(Submission, id=submission_id)
+        comment = request.POST.get('teacher_comment', '').strip()
+        sub.teacher_comment = comment
+        sub.save(update_fields=['teacher_comment'])
+        messages.success(request, f"Komentár pre študenta {sub.student.username} bol uložený.")
+    return redirect('teacher_dashboard')
+
+
+@teacher_required
+def create_quest(request):
+    """Učiteľ vytvorí novú osobnú alebo triednu výzvu (Quest)."""
+    if request.method == 'POST':
+        title_sk = request.POST.get('title_sk', '').strip()
+        title_en = request.POST.get('title_en', '').strip() or title_sk
+        metric_type = request.POST.get('metric_type', Quest.MetricType.SOLVE_EXERCISES)
+        target_value = int(request.POST.get('target_value', 3))
+        reward_doros = int(request.POST.get('reward_doros', 50))
+        reward_xp = int(request.POST.get('reward_xp', 40))
+        period = request.POST.get('period', Quest.Period.TEACHER)
+
+        Quest.objects.create(
+            title_sk=title_sk,
+            title_en=title_en,
+            metric_type=metric_type,
+            target_value=target_value,
+            reward_doros=reward_doros,
+            reward_xp=reward_xp,
+            period=period,
+            created_by=request.user,
+            is_active=True,
+        )
+        messages.success(request, f"Výzva '{title_sk}' bola pridaná študentom.")
+    return redirect('teacher_dashboard')
+
+
+@teacher_required
+def create_class_quest(request):
+    """Učiteľ vytvorí novú kolektívnu výzvu pre triedu."""
+    if request.method == 'POST':
+        class_id = request.POST.get('school_class_id')
+        school_class = get_object_or_404(SchoolClass, id=class_id)
+        title_sk = request.POST.get('title_sk', '').strip()
+        title_en = request.POST.get('title_en', '').strip() or title_sk
+        target = int(request.POST.get('target_exercises_count', 20))
+        reward = int(request.POST.get('reward_doros_per_student', 60))
+        min_contrib = int(request.POST.get('min_contribution_required', 1))
+        days = int(request.POST.get('days_duration', 7))
+        policy = request.POST.get('reward_policy', ClassQuest.RewardPolicy.ALL_STUDENTS)
+
+        deadline = timezone.now() + timedelta(days=days)
+        ClassQuest.objects.create(
+            school_class=school_class,
+            title_sk=title_sk,
+            title_en=title_en,
+            target_exercises_count=target,
+            reward_doros_per_student=reward,
+            min_contribution_required=min_contrib,
+            reward_policy=policy,
+            deadline=deadline,
+        )
+        messages.success(request, f"Kolektívna výzva pre triedu {school_class.name} na cieľ {target} úloh bola spustená.")
+    return redirect('teacher_dashboard')
+
+
+@teacher_required
+def ai_generate_exercise(request):
+    """API endpoint: Gemini AI vygeneruje kompletné cvičenie podľa zadanej témy."""
+    topic = request.GET.get('topic', 'Podmienky if-else')
+    difficulty = request.GET.get('difficulty', 'EASY')
+    data = generate_exercise_with_ai(topic, difficulty)
+    return JsonResponse(data)
+
+
+@teacher_required
+def ai_translate_exercise(request):
+    """API endpoint: Preloží zadanie cvičenia zo slovenčiny do angličtiny."""
+    title_sk = request.GET.get('title_sk', '')
+    instructions_sk = request.GET.get('instructions_sk', '')
+    hint_sk = request.GET.get('hint_sk', '')
+    data = translate_to_english({
+        'title_en': title_sk,
+        'instructions_en': instructions_sk,
+        'hint_en': hint_sk,
+    })
+    return JsonResponse(data)

@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
+from django.utils import timezone
+import hashlib
 from .models import User, SchoolClass, SubscriptionLicense
-from gamification.models import DorosTransaction
+from gamification.models import DorosTransaction, Badge, StudentBadge
+from gamification.services import get_student_stats, award_badges, ensure_badges_exist
 
 
 def get_active_lang(request):
@@ -180,3 +183,108 @@ def activate_license(request):
         )
         messages.success(request, msg)
     return redirect('shop')
+
+
+@login_required
+def profile_view(request):
+    """Podstránka Môj Profil, nastavenia avatara, zmena hesla a vitrína odznakov."""
+    user = request.user
+    lang = user.preferred_language
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'update_avatar':
+            avatar = request.POST.get('avatar')
+            avatar_color = request.POST.get('avatar_color')
+            valid_avatars = dict(User.AVATAR_CHOICES)
+            valid_colors = dict(User.AVATAR_COLORS)
+
+            if avatar in valid_avatars and avatar_color in valid_colors:
+                user.avatar = avatar
+                user.avatar_color = avatar_color
+                user.save(update_fields=['avatar', 'avatar_color'])
+                msg = "Avatar updated successfully!" if lang == 'en' else "Avatar bol úspešne zmenený!"
+                messages.success(request, msg)
+
+        elif action == 'update_info':
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            preferred_language = request.POST.get('preferred_language', 'sk')
+            if preferred_language in ['sk', 'en']:
+                user.preferred_language = preferred_language
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save(update_fields=['first_name', 'last_name', 'preferred_language'])
+            msg = "Profile information updated!" if lang == 'en' else "Informácie profilu boli aktualizované!"
+            messages.success(request, msg)
+
+        elif action == 'change_password':
+            old_pass = request.POST.get('old_password', '')
+            new_pass = request.POST.get('new_password', '')
+            confirm_pass = request.POST.get('confirm_password', '')
+
+            if not user.check_password(old_pass):
+                err = "Current password is not correct." if lang == 'en' else "Pôvodné heslo nie je správne."
+                messages.error(request, err)
+            elif len(new_pass) < 6:
+                err = "New password must be at least 6 characters long." if lang == 'en' else "Nové heslo musí mať aspoň 6 znakov."
+                messages.error(request, err)
+            elif new_pass != confirm_pass:
+                err = "New passwords do not match." if lang == 'en' else "Nové heslá sa nezhodujú."
+                messages.error(request, err)
+            else:
+                user.set_password(new_pass)
+                user.save()
+                update_session_auth_hash(request, user)
+                msg = "Password changed successfully!" if lang == 'en' else "Heslo bolo úspešne zmenené!"
+                messages.success(request, msg)
+
+        return redirect('profile')
+
+    # Skontrolujeme a udelíme prípadné nové odznaky
+    award_badges(user)
+    ensure_badges_exist()
+
+    stats = get_student_stats(user)
+    all_badges = Badge.objects.all().order_by('order')
+    student_badges = {sb.badge_id: sb for sb in StudentBadge.objects.filter(student=user).select_related('badge')}
+
+    # Zostavíme zoznam odznakov so stavom získania
+    badge_list = []
+    for b in all_badges:
+        sb = student_badges.get(b.id)
+        badge_list.append({
+            'badge': b,
+            'is_earned': sb is not None,
+            'earned_at': sb.earned_at if sb else None,
+        })
+
+    return render(request, 'accounts/profile.html', {
+        'stats': stats,
+        'badge_list': badge_list,
+        'earned_count': len(student_badges),
+        'total_badges_count': all_badges.count(),
+        'avatar_choices': User.AVATAR_CHOICES,
+        'avatar_colors': User.AVATAR_COLORS,
+    })
+
+
+@login_required
+def certificate_view(request):
+    """Oficiálny digitálny a tlačiteľný certifikát o absolvovaní kurzu Pythonu."""
+    user = request.user
+    stats = get_student_stats(user)
+    today = timezone.localdate()
+
+    # Unikátny overovací kód certifikátu odvodený od ID a dátumu
+    hash_seed = f"codoro-cert-{user.id}-{user.username}-{user.level}"
+    cert_hash = hashlib.sha256(hash_seed.encode('utf-8')).hexdigest()[:10].upper()
+    cert_code = f"CDR-CERT-{user.id:04d}-{cert_hash}"
+
+    return render(request, 'accounts/certificate.html', {
+        'user': user,
+        'stats': stats,
+        'today': today,
+        'cert_code': cert_code,
+    })

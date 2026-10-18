@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<style>
+    @media print {
+        body {
+            background: #FFFFFF !important;
+            color: #000000 !important;
+        }
+        .navbar, .footer, .no-print, .toast-stack {
+            display: none !important;
+        }
+        .cert-container {
+            border: 8px solid #0F172A !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            page-break-inside: avoid;
+        }
+    }
+    .cert-frame {
+        max-width: 860px;
+        margin: 2rem auto;
+        padding: 3.5rem 4rem;
+        background: #FFFFFF;
+        color: #0F172A;
+        border-radius: 16px;
+        border: 10px double #4636F5;
+        box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+    }
+    html[data-theme="dark"] .cert-frame {
+        background: #0B1120;
+        color: #F8FAFC;
+        border-color: #6366F1;
+    }
+    .cert-seal {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+        border: 3px dashed #FEF3C7;
+    }
+</style>
+
+<div class="animate-in no-print" style="max-width: 860px; margin: 1rem auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+    <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">
+        ← {% if lang == 'en' %}Back to Profile{% else %}Späť na môj profil{% endif %}
+    </a>
+    <button onclick="window.print()" class="btn btn-primary" style="font-weight: 700;">
+        🖨️ {% if lang == 'en' %}Print / Save as PDF{% else %}Vytlačiť / Uložiť ako PDF{% endif %}
+    </button>
+</div>
+
+<div class="cert-frame cert-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-hairline); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro Logo"
+                style="height: 64px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(70, 54, 245, 0.3));">
+            <div>
+                <span style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; color: #4636F5;">
+                    codoro
+                </span>
+                <span style="display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">
+                    Python Learning Ecosystem · Nižná
+                </span>
+            </div>
+        </div>
+
+        <div class="cert-seal">
+            <span>OFFICIAL</span>
+            <span style="font-size: 1.15rem; line-height: 1;">★</span>
+            <span>VERIFIED</span>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin: 2rem 0;">
+        <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #4636F5;">
+            {% if lang == 'en' %}CERTIFICATE OF ACHIEVEMENT{% else %}CERTIFIKÁT O ABSOLVOVANÍ{% endif %}
+        </span>
+        <h1 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; margin: 0.75rem 0 0.5rem; letter-spacing: -0.02em;">
+            {% if lang == 'en' %}Python Foundations & Algorithmic Thinking{% else %}Základy programovania a algoritmizácie v Pythone{% endif %}
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); max-width: 580px; margin: 0 auto;">
+            {% if lang == 'en' %}
+            This certificate officially verifies that the student has demonstrated practical algorithmic skills, solved programming challenges, and passed automated unit tests on the Codoro educational platform.
+            {% else %}
+            Tento certifikát potvrdzuje, že žiak úspešne preukázal praktické zručnosti v programovaní, riešil algoritmické úlohy a absolvoval automatické unit testy na vzdelávacej platforme Codoro.
+            {% endif %}
+        </p>
+    </div>
+
+    <div style="text-align: center; margin: 2.25rem 0; padding: 1.5rem; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border-strong);">
+        <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
+            {% if lang == 'en' %}Awarded to student{% else %}Udelené študentovi / študentke{% endif %}
+        </span>
+        <span style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: #4636F5; letter-spacing: -0.02em; display: block;">
+            {{ user.get_full_name|default:user.username }}
+        </span>
+        <span style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.35rem; display: block;">
+            {% if user.school_class %}
+            Študijná trieda: <strong>{{ user.school_class.name }}</strong> · Spojená škola Nižná
+            {% else %}
+            Študent vzdelávacieho kurzu Codoro Python
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- Metriky úspešnosti -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; text-align: center;">
+        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Exercises{% else %}Úlohy{% endif %}</span>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem;">{{ stats.solved_count }} ✅</strong>
+        </div>
+        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Level</span>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: #4636F5;">Level {{ user.level }}</strong>
+        </div>
+        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">XP Total</span>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem;">{{ user.xp }} XP</strong>
+        </div>
+        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Accuracy{% else %}Úspešnosť{% endif %}</span>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--emerald-text);">{{ stats.success_rate }}%</strong>
+        </div>
+    </div>
+
+    <!-- Podpisy a overovací kód -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1.5rem; border-top: 2px solid var(--border-hairline); gap: 2rem; flex-wrap: wrap;">
+        <div>
+            <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                VERIFICATION CODE:
+            </div>
+            <code style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #4636F5; letter-spacing: 0.05em;">
+                {{ cert_code }}
+            </code>
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.35rem;">
+                Dátum vystavenia: {{ today|date:"d.m.Y" }} · Nižná
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 3rem; text-align: center;">
+            <div>
+                <div style="width: 140px; border-bottom: 1px solid var(--border-strong); margin-bottom: 0.4rem; height: 32px; display: flex; align-items: flex-end; justify-content: center; font-style: italic; font-family: cursive; color: #4636F5;">
+                    M. Brišová
+                </div>
+                <span style="font-size: 0.74rem; font-weight: 600; color: var(--text-muted); display: block;">
+                    Mgr. Markéta Brišová
+                </span>
+                <span style="font-size: 0.68rem; color: var(--text-muted);">
+                    Konzultant výučby
+                </span>
+            </div>
+
+            <div>
+                <div style="width: 140px; border-bottom: 1px solid var(--border-strong); margin-bottom: 0.4rem; height: 32px; display: flex; align-items: flex-end; justify-content: center; font-style: italic; font-family: cursive; color: #4636F5;">
+                    J. Volf
+                </div>
+                <span style="font-size: 0.74rem; font-weight: 600; color: var(--text-muted); display: block;">
+                    Juraj Volf
+                </span>
+                <span style="font-size: 0.68rem; color: var(--text-muted);">
+                    Autor platformy Codoro
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 {% with lang=user.preferred_language|default:'sk' %}
 
@@ -12,17 +13,17 @@
         </h1>
     </div>
 
-    <!-- Prepínač sekcií (Tabs), aby rozhranie bolo čisté a prehľadné -->
+    <!-- Prepínač sekcií (Tabs) -->
     <div style="display: flex; gap: 0.4rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); flex-wrap: wrap;">
         <button type="button" class="btn btn-sm tab-btn btn-primary" onclick="switchTab('tab-students', this)">
             👥 {% if lang == 'en' %}Students & Coupons{% else %}Študenti a kupóny{% endif %}
             {% if pending_coupons %}<span style="background:#FFF; color:var(--ro-indigo); padding:0 6px; border-radius:99px; font-size:0.72rem;">{{ pending_coupons.count }}</span>{% endif %}
         </button>
         <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-economy', this)">
-            🎁 {% if lang == 'en' %}Shop Stock & Drops{% else %}Obchod a Coin Dropy{% endif %}
+            🎁 {% if lang == 'en' %}Shop, Drops & Quests{% else %}Obchod, Dropy a Výzvy{% endif %}
         </button>
         <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-content', this)">
-            💻 {% if lang == 'en' %}Exercises & Submissions{% else %}Cvičenia a riešenia{% endif %}
+            💻 {% if lang == 'en' %}Exercises & Code Reviews{% else %}Cvičenia a riešenia{% endif %}
         </button>
     </div>
 </div>
@@ -58,15 +59,22 @@
                         <td>{% if lang == 'en' %}{{ p.reward.title_en }}{% else %}{{ p.reward.title_sk }}{% endif %}</td>
                         <td style="font-family: var(--font-mono);">{{ p.cost_paid }} Doros</td>
                         <td>
-                            <form method="post" action="{% url 'process_coupon' p.id %}" style="display: flex; gap: 0.5rem;">
-                                {% csrf_token %}
-                                <button type="submit" name="decision" value="approve" class="btn btn-primary btn-sm">
-                                    ✓ {% if lang == 'en' %}Approve & Redeem{% else %}Schváliť uplatnenie{% endif %}
-                                </button>
-                                <button type="submit" name="decision" value="refund" class="btn btn-secondary btn-sm">
-                                    ✕ {% if lang == 'en' %}Reject & Refund{% else %}Zamietnuť a vrátiť Doros{% endif %}
-                                </button>
-                            </form>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <form method="post" action="{% url 'process_coupon' p.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="redeem">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        ✓ {% if lang == 'en' %}Accept on class{% else %}Uplatniť na hodine{% endif %}
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'process_coupon' p.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="refund">
+                                    <button type="submit" class="btn btn-secondary btn-sm">
+                                        ✕ {% if lang == 'en' %}Reject & Refund{% else %}Zamietnuť a vrátiť Doros{% endif %}
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -74,78 +82,97 @@
             </table>
         </div>
         {% else %}
-        <div style="padding: 1.5rem; color: var(--codo-muted); font-size: 0.9rem;">
-            {% if lang == 'en' %}No pending coupons waiting for approval right now.{% else %}Momentálne nečakajú na schválenie žiadne študentské kupóny.{% endif %}
+        <div style="padding: 2rem; text-align: center; color: var(--codo-muted);">
+            {% if lang == 'en' %}No pending coupons awaiting redemption.{% else %}Žiadne kupóny nečakajú na schválenie.{% endif %}
         </div>
         {% endif %}
     </section>
 
-    <!-- Tabuľka študentov -->
+    <!-- Zoznam študentov a God Mode úpravy peňaženky -->
     <section class="card-surface" style="overflow: hidden;">
         <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline);">
             <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">
-                🎓 {% if lang == 'en' %}Student Roster & Manual Economy Controls{% else %}Prehľad študentov a správa ich konta (Doros, Streak, Licencia){% endif %}
+                👥 {% if lang == 'en' %}Classroom Roster & Economy Management{% else %}Zoznam študentov a správa herných účtov{% endif %}
             </h2>
         </div>
+
         <div style="overflow-x: auto;">
             <table class="clean-table">
                 <thead>
                     <tr>
                         <th>{% if lang == 'en' %}Student{% else %}Študent{% endif %}</th>
-                        <th>{% if lang == 'en' %}Level & XP{% else %}Úroveň a XP{% endif %}</th>
-                        <th>Doros</th>
-                        <th>Streak</th>
-                        <th>{% if lang == 'en' %}Tier{% else %}Licencia{% endif %}</th>
-                        <th>{% if lang == 'en' %}Add / Deduct Doros{% else %}Pridať / Odobrať Doros{% endif %}</th>
-                        <th>{% if lang == 'en' %}Set Streak{% else %}Upraviť Streak{% endif %}</th>
+                        <th>{% if lang == 'en' %}Class{% else %}Trieda{% endif %}</th>
+                        <th>Tier</th>
+                        <th>XP & Level</th>
+                        <th>{% if lang == 'en' %}Doros Balance{% else %}Doros zostatok{% endif %}</th>
+                        <th>{% if lang == 'en' %}Streak{% else %}Séria{% endif %}</th>
+                        <th>{% if lang == 'en' %}Quick Adjustments (God Mode){% else %}Rýchle akcie učiteľa{% endif %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for s in students %}
                     <tr>
                         <td>
-                            <strong>{{ s.username }}</strong>
-                            <div style="font-size: 0.78rem; color: var(--codo-muted);">{{ s.get_full_name }}</div>
+                            <strong style="color: var(--text-primary);">{{ s.username }}</strong>
+                            <div style="font-size: 0.78rem; color: var(--codo-muted);">{{ s.get_full_name|default:s.email }}</div>
                         </td>
+                        <td>
+                            {% if s.school_class %}
+                            <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;">{{ s.school_class.name }}</span>
+                            {% else %}
+                            <span style="color: var(--codo-muted);">-</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="metric-badge metric-tier">{{ s.subscription_tier }}</span></td>
                         <td style="font-family: var(--font-mono);">Lvl {{ s.level }} ({{ s.xp }} XP)</td>
-                        <td><span class="metric-badge metric-doros">{{ s.doros }}</span></td>
-                        <td><span class="metric-badge metric-streak">🔥 {{ s.current_streak }}</span></td>
+                        <td><strong style="color: var(--gold-text); font-family: var(--font-mono);">🪙 {{ s.doros }}</strong></td>
+                        <td><span style="color: var(--flame-text); font-family: var(--font-mono); font-weight: 700;">🔥 {{ s.current_streak }}d</span></td>
                         <td>
-                            <form method="post" action="{% url 'manage_student_economy' s.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="toggle_edu">
-                                <button type="submit" class="btn btn-secondary btn-sm">{{ s.subscription_tier }}</button>
-                            </form>
+                            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="adjust_doros">
+                                    <input type="hidden" name="amount" value="50">
+                                    <input type="hidden" name="reason" value="Bonus od učiteľa za aktivitu na hodine">
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="+50 Doros">+50 🪙</button>
+                                </form>
+                                <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="adjust_doros">
+                                    <input type="hidden" name="amount" value="-50">
+                                    <input type="hidden" name="reason" value="Zrážka od učiteľa za porušenie pravidiel">
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="-50 Doros">-50 🪙</button>
+                                </form>
+                                <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="add_streak">
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="+1 Streak">+1 🔥</button>
+                                </form>
+                                <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="toggle_tier">
+                                    <button type="submit" class="btn btn-secondary btn-sm">Toggle EDU</button>
+                                </form>
+                            </div>
                         </td>
-                        <td>
-                            <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: flex; gap: 0.4rem;">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="adjust_doros">
-                                <input type="number" name="amount" class="form-control" style="width: 85px; padding: 0.35rem 0.5rem;" placeholder="+50 / -20" required>
-                                <input type="text" name="reason" class="form-control" style="width: 145px; padding: 0.35rem 0.5rem;" placeholder="{% if lang == 'en' %}Reason...{% else %}Dôvod...{% endif %}" required>
-                                <button type="submit" class="btn btn-primary btn-sm">{% if lang == 'en' %}Apply{% else %}Uložiť{% endif %}</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: flex; gap: 0.4rem;">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="set_streak">
-                                <input type="number" name="streak_value" class="form-control" style="width: 65px; padding: 0.35rem 0.5rem;" value="{{ s.current_streak }}" required>
-                                <button type="submit" class="btn btn-secondary btn-sm">{% if lang == 'en' %}Set{% else %}Nastaviť{% endif %}</button>
-                            </form>
-                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="color: var(--codo-muted);">{% if lang == 'en' %}No registered students found.{% else %}V systéme nie sú zatiaľ registrovaní žiadni študenti.{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </section>
+
 </div>
 
-<!-- ZÁLOŽKA 2: Tvorba odmien so skladom a spúšťanie časovaných Coin Dropov -->
+<!-- ZÁLOŽKA 2: Obchod so skladom, Coin Dropy a Tvorba výziev -->
 <div id="tab-economy" class="teacher-tab animate-in" style="display: none;">
-    <div class="layout-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; align-items: start; margin-bottom: 2rem;">
 
+        <!-- Formulár na vytvorenie odmeny so skladom -->
         <section class="card-surface" style="padding: 1.75rem;">
             <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
                 🛍️ {% if lang == 'en' %}Create Stock-Managed Reward{% else %}Pridať odmenu do obchodu so skladom{% endif %}
@@ -161,7 +188,7 @@
                 {% csrf_token %}
                 <div style="margin-bottom: 0.9rem;">
                     <label class="form-label">{% if lang == 'en' %}Reward Title{% else %}Názov odmeny{% endif %}</label>
-                    <input type="text" name="title_sk" class="form-control" placeholder="{% if lang == 'en' %}e.g. Skip 1 Quiz{% else %}napr. Odpustenie malej písomky{% endif %}" required>
+                    <input type="text" name="title_sk" class="form-control" placeholder="{% if lang == 'en' %}e.g. Skip 1 Homework{% else %}napr. Odpustenie domácej úlohy{% endif %}" required>
                 </div>
                 <div style="margin-bottom: 0.9rem;">
                     <label class="form-label">{% if lang == 'en' %}Redemption Rules{% else %}Podmienky uplatnenia{% endif %}</label>
@@ -198,6 +225,7 @@
             </form>
         </section>
 
+        <!-- Formulár na spustenie Coin Dropu -->
         <section class="card-surface" style="padding: 1.75rem;">
             <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
                 🎁 {% if lang == 'en' %}Launch Live Coin Drop{% else %}Spustiť časovaný Coin Drop{% endif %}
@@ -242,16 +270,139 @@
         </section>
 
     </div>
+
+    <!-- Tvorba kolektívnych výziev triedy a osobných questov -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; align-items: start;">
+
+        <!-- Kolektívna výzva triedy -->
+        <section class="card-surface" style="padding: 1.75rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
+                🤝 {% if lang == 'en' %}Create Collective Class Quest{% else %}Nová kolektívna výzva triedy{% endif %}
+            </h2>
+            <p style="font-size: 0.86rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+                {% if lang == 'en' %}Set a shared goal for the entire school class to achieve together.{% else %}Zadaj spoločný cieľ vyriešených úloh pre celú triedu s odmenou pre každého prispievateľa.{% endif %}
+            </p>
+            <form method="post" action="{% url 'create_class_quest' %}">
+                {% csrf_token %}
+                <div style="margin-bottom: 0.9rem;">
+                    <label class="form-label">{% if lang == 'en' %}School Class{% else %}Vyber triedu{% endif %}</label>
+                    <select name="school_class_id" class="form-select" required>
+                        {% for c in classes %}
+                        <option value="{{ c.id }}">{{ c.name }} ({{ c.join_code }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="margin-bottom: 0.9rem;">
+                    <label class="form-label">{% if lang == 'en' %}Quest Title{% else %}Názov triednej výzvy{% endif %}</label>
+                    <input type="text" name="title_sk" class="form-control" placeholder="napr. Týždeň čistého kódu" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.9rem;">
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Target Tasks Count{% else %}Cieľ vyriešených úloh{% endif %}</label>
+                        <input type="number" name="target_exercises_count" class="form-control" value="30" required>
+                    </div>
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Reward Doros / Student{% else %}Odmena Doros na žiaka{% endif %}</label>
+                        <input type="number" name="reward_doros_per_student" class="form-control" value="80" required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Min Tasks to Qualify{% else %}Min. úloh na nárok{% endif %}</label>
+                        <input type="number" name="min_contribution_required" class="form-control" value="2" required>
+                    </div>
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Duration (Days){% else %}Trvanie (v dňoch){% endif %}</label>
+                        <input type="number" name="days_duration" class="form-control" value="7" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    {% if lang == 'en' %}Launch Class Quest{% else %}Spustiť kolektívnu výzvu{% endif %}
+                </button>
+            </form>
+        </section>
+
+        <!-- Osobná výzva (Quest) -->
+        <section class="card-surface" style="padding: 1.75rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
+                🎯 {% if lang == 'en' %}Create Personal Quest{% else %}Nová osobná výzva (Quest){% endif %}
+            </h2>
+            <p style="font-size: 0.86rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+                {% if lang == 'en' %}Add an individual milestone challenge for all students.{% else %}Pridaj výzvu zameranú na riešenie úloh, XP alebo presnosť na 1. pokus.{% endif %}
+            </p>
+            <form method="post" action="{% url 'create_quest' %}">
+                {% csrf_token %}
+                <div style="margin-bottom: 0.9rem;">
+                    <label class="form-label">{% if lang == 'en' %}Quest Title{% else %}Názov výzvy{% endif %}</label>
+                    <input type="text" name="title_sk" class="form-control" placeholder="napr. Majster cyklov" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.9rem;">
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Metric Type{% else %}Metrika splnenia{% endif %}</label>
+                        <select name="metric_type" class="form-select">
+                            <option value="SOLVE_EXERCISES">Vyriešenie úloh</option>
+                            <option value="FIRST_TRY_SOLVES">Riešenie na 1. pokus</option>
+                            <option value="EARN_XP">Získanie XP</option>
+                            <option value="COMPLETE_LESSONS">Dokončenie lekcií</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Target Value{% else %}Cieľová hodnota{% endif %}</label>
+                        <input type="number" name="target_value" class="form-control" value="5" required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label class="form-label">Doros odmena</label>
+                        <input type="number" name="reward_doros" class="form-control" value="50" required>
+                    </div>
+                    <div>
+                        <label class="form-label">XP odmena</label>
+                        <input type="number" name="reward_xp" class="form-control" value="40" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-secondary" style="width: 100%;">
+                    {% if lang == 'en' %}Add Quest to Students{% else %}Pridať výzvu študentom{% endif %}
+                </button>
+            </form>
+        </section>
+
+    </div>
 </div>
 
 <!-- ZÁLOŽKA 3: Tvorba Python cvičení a história odovzdaných riešení -->
 <div id="tab-content" class="teacher-tab animate-in" style="display: none;">
     <div class="layout-2col" style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 1.75rem; align-items: start;">
 
+        <!-- Tvorba cvičení s AI asistentom -->
         <section class="card-surface" style="padding: 1.75rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">
-                ➕ {% if lang == 'en' %}Add Python Exercise & Unit Test{% else %}Pridať Python cvičenie s testom{% endif %}
-            </h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 0;">
+                    ➕ {% if lang == 'en' %}Add Python Exercise & Unit Test{% else %}Pridať Python cvičenie s testom{% endif %}
+                </h2>
+            </div>
+
+            <!-- AI Asistent Toolbar -->
+            <div style="background: var(--visor-cyan-bg); border: 1px solid var(--visor-cyan-border); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" style="width: 26px; height: 26px; object-fit: contain;">
+                        <strong style="font-size: 0.84rem; color: var(--visor-cyan);">AI Asistent tvorby úloh (Gemini)</strong>
+                    </div>
+                    <span id="aiStatusMsg" style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);"></span>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <input type="text" id="aiTopicInput" class="form-control" style="font-size: 0.82rem; flex: 1; min-width: 140px; padding: 0.35rem 0.6rem;"
+                           placeholder="Zadaj tému (napr. Cyklus for a párne čísla)">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="generateAiExercise()" style="font-size: 0.78rem; font-weight: 700;">
+                        ✨ Generovať
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="translateAiExercise()" style="font-size: 0.78rem;">
+                        🌐 Preložiť EN
+                    </button>
+                </div>
+            </div>
+
             <form method="post" action="{% url 'create_exercise' %}">
                 {% csrf_token %}
                 <div style="margin-bottom: 0.85rem;">
@@ -264,19 +415,19 @@
                 </div>
                 <div style="margin-bottom: 0.85rem;">
                     <label class="form-label">{% if lang == 'en' %}Exercise Title{% else %}Názov cvičenia{% endif %}</label>
-                    <input type="text" name="title_sk" class="form-control" placeholder="{% if lang == 'en' %}e.g. Square of a Number{% else %}napr. Druhá mocnina čísla{% endif %}" required>
+                    <input type="text" id="ex_title_sk" name="title_sk" class="form-control" placeholder="{% if lang == 'en' %}e.g. Square of a Number{% else %}napr. Druhá mocnina čísla{% endif %}" required>
                 </div>
                 <div style="margin-bottom: 0.85rem;">
-                    <label class="form-label">{% if lang == 'en' %}Instructions for Students{% else %}Text zadania pre študenta{% endif %}</label>
-                    <textarea name="instructions_sk" class="form-control" rows="2" required></textarea>
+                    <label class="form-label">{% if lang == 'en' %}Instructions for Students (Markdown supported){% else %}Text zadania pre študenta (Markdown){% endif %}</label>
+                    <textarea id="ex_instructions_sk" name="instructions_sk" class="form-control" rows="3" required></textarea>
                 </div>
                 <div style="margin-bottom: 0.85rem;">
-                    <label class="form-label">{% if lang == 'en' %}Starter Code{% else %}Štartovací kód v editore{% endif %}</label>
-                    <input type="text" name="starter_code" class="form-control" style="font-family: var(--font-mono);" value="def mocnina(x): pass">
+                    <label class="form-label">{% if lang == 'en' %}Starter Code in Editor{% else %}Štartovací kód v editore{% endif %}</label>
+                    <textarea id="ex_starter_code" name="starter_code" class="form-control" rows="2" style="font-family: var(--font-mono); font-size: 0.84rem;">def mocnina(x):&#10;    pass</textarea>
                 </div>
                 <div style="margin-bottom: 1.25rem;">
                     <label class="form-label">{% if lang == 'en' %}Automated Assert Test{% else %}Automatický Assert test{% endif %}</label>
-                    <input type="text" name="test_code" class="form-control" style="font-family: var(--font-mono);" placeholder="assert mocnina(4) == 16" required>
+                    <input type="text" id="ex_test_code" name="test_code" class="form-control" style="font-family: var(--font-mono);" placeholder="assert mocnina(4) == 16" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                     {% if lang == 'en' %}Save Exercise{% else %}Uložiť cvičenie{% endif %}
@@ -284,10 +435,11 @@
             </form>
         </section>
 
+        <!-- Zoznam odovzdaných kódov s Code Review -->
         <section class="card-surface" style="overflow: hidden;">
             <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline);">
-                <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">
-                    📝 {% if lang == 'en' %}Recent Student Code Submissions{% else %}Posledné odovzdané kódy študentov{% endif %}
+                <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                    📝 {% if lang == 'en' %}Recent Student Submissions & Code Review{% else %}Posledné odovzdané riešenia a Code Review{% endif %}
                 </h2>
             </div>
             <div style="overflow-x: auto;">
@@ -297,26 +449,46 @@
                             <th>{% if lang == 'en' %}Time{% else %}Čas{% endif %}</th>
                             <th>{% if lang == 'en' %}Student{% else %}Študent{% endif %}</th>
                             <th>{% if lang == 'en' %}Exercise{% else %}Úloha{% endif %}</th>
-                            <th>{% if lang == 'en' %}Submitted Code{% else %}Odovzdaný kód{% endif %}</th>
-                            <th>{% if lang == 'en' %}Status{% else %}Výsledok{% endif %}</th>
+                            <th>{% if lang == 'en' %}Code{% else %}Kód{% endif %}</th>
+                            <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th>{% if lang == 'en' %}Teacher Review{% else %}Spätná väzba (Review){% endif %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for sub in recent_submissions %}
                         <tr>
-                            <td style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--codo-muted);">{{ sub.created_at|date:"d.m. H:i" }}</td>
-                            <td style="font-weight: 600;">{{ sub.student.username }}</td>
-                            <td>{% if lang == 'en' %}{{ sub.exercise.title_en }}{% else %}{{ sub.exercise.title_sk }}{% endif %}</td>
-                            <td><code style="font-family: var(--font-mono); font-size: 0.8rem; background: var(--bg-subtle); padding: 0.2rem 0.5rem; border-radius: 6px;">{{ sub.submitted_code|truncatechars:60 }}</code></td>
+                            <td style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--codo-muted); white-space: nowrap;">
+                                {{ sub.created_at|date:"d.m. H:i" }}
+                            </td>
+                            <td style="font-weight: 600; white-space: nowrap;">{{ sub.student.username }}</td>
+                            <td style="max-width: 120px;">
+                                {% if lang == 'en' %}{{ sub.exercise.title_en }}{% else %}{{ sub.exercise.title_sk }}{% endif %}
+                            </td>
                             <td>
-                                <span class="{% if sub.status == 'PASSED' %}badge-emerald{% else %}badge-flame{% endif %}" style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px;">
+                                <code style="font-family: var(--font-mono); font-size: 0.78rem; background: var(--bg-subtle); padding: 0.2rem 0.45rem; border-radius: 6px; display: block; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ sub.submitted_code }}
+                                </code>
+                            </td>
+                            <td>
+                                <span class="{% if sub.status == 'PASSED' %}badge-emerald{% else %}badge-flame{% endif %}" style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 6px;">
                                     {{ sub.status }}
                                 </span>
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'comment_submission' sub.id %}" style="display: flex; gap: 0.35rem; align-items: center;">
+                                    {% csrf_token %}
+                                    <input type="text" name="teacher_comment" value="{{ sub.teacher_comment|default:'' }}"
+                                           placeholder="{% if lang == 'en' %}Review note...{% else %}Komentár...{% endif %}"
+                                           class="form-control" style="font-size: 0.76rem; padding: 0.25rem 0.5rem; min-width: 140px;">
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Uložiť komentár">
+                                        💬
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" style="color: var(--codo-muted);">{% if lang == 'en' %}No submissions recorded yet.{% else %}Zatiaľ neboli odovzdané žiadne riešenia.{% endif %}</td>
+                            <td colspan="6" style="color: var(--codo-muted);">{% if lang == 'en' %}No submissions recorded yet.{% else %}Zatiaľ neboli odovzdané žiadne riešenia.{% endif %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -337,6 +509,54 @@ function switchTab(tabId, btn) {
     });
     btn.classList.remove('btn-secondary');
     btn.classList.add('btn-primary');
+}
+
+function generateAiExercise() {
+    var topic = document.getElementById('aiTopicInput').value.trim() || 'Podmienky if-else';
+    var status = document.getElementById('aiStatusMsg');
+    status.textContent = '⏳ Generujem cvičenie...';
+
+    fetch('/teacher/exercise/ai-generate/?topic=' + encodeURIComponent(topic))
+        .then(r => r.json())
+        .then(data => {
+            if (data.title_sk) {
+                document.getElementById('ex_title_sk').value = data.title_sk;
+            }
+            if (data.instructions_sk) {
+                document.getElementById('ex_instructions_sk').value = data.instructions_sk;
+            }
+            if (data.starter_code) {
+                document.getElementById('ex_starter_code').value = data.starter_code;
+            }
+            if (data.tests && data.tests.length > 0) {
+                document.getElementById('ex_test_code').value = data.tests[0];
+            }
+            status.textContent = '✅ Hotovo (' + (data.source || 'AI') + ')';
+        })
+        .catch(err => {
+            status.textContent = '❌ Chyba spojenia';
+        });
+}
+
+function translateAiExercise() {
+    var title = document.getElementById('ex_title_sk').value.trim();
+    var inst = document.getElementById('ex_instructions_sk').value.trim();
+    var status = document.getElementById('aiStatusMsg');
+
+    if (!title && !inst) {
+        alert('Najskôr zadaj názov a zadanie v slovenčine.');
+        return;
+    }
+    status.textContent = '⏳ Prekladám do EN...';
+
+    fetch('/teacher/exercise/ai-translate/?title_sk=' + encodeURIComponent(title) + '&instructions_sk=' + encodeURIComponent(inst))
+        .then(r => r.json())
+        .then(data => {
+            status.textContent = '✅ Preložené (' + (data.source || 'AI') + ')';
+        })
+        .catch(err => {
+            status.textContent = '❌ Chyba prekladu';
+        });
 }
 </script>
 {% endwith %}
