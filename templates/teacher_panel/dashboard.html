@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-0"><i class="bi bi-sliders text-warning me-2"></i>Učiteľské administrátorské rozhranie</h3>
+        <p class="text-secondary small mb-0">Správa študentov, hernej ekonomiky, skladových zásob, Coin Dropov a obsahu lekcií</p>
+    </div>
+    <span class="badge bg-warning text-dark fs-6 px-3 py-2">Učiteľ: {{ user.get_full_name|default:user.username }}</span>
+</div>
+
+<!-- 1. Schvaľovanie študentských kupónov z obchodu -->
+<div class="card card-codoro p-4 mb-4 border-warning">
+    <h5 class="fw-bold mb-3"><i class="bi bi-ticket-detailed-fill text-warning me-2"></i>Čakajúce kupóny od študentov na schválenie</h5>
+    {% if pending_coupons %}
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Kód kupónu</th>
+                    <th>Študent</th>
+                    <th>Odmena</th>
+                    <th>Zaplatené</th>
+                    <th>Akcia učiteľa</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pending_coupons %}
+                <tr>
+                    <td><code class="text-warning fw-bold">{{ p.coupon_code }}</code></td>
+                    <td>{{ p.student.username }} ({{ p.student.get_full_name }})</td>
+                    <td>{{ p.reward.title_sk }}</td>
+                    <td>{{ p.cost_paid }} Doros</td>
+                    <td>
+                        <form method="post" action="{% url 'process_coupon' p.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" name="decision" value="approve" class="btn btn-sm btn-success fw-bold">
+                                <i class="bi bi-check-lg"></i> Uplatniť na hodine
+                            </button>
+                            <button type="submit" name="decision" value="refund" class="btn btn-sm btn-outline-danger ms-1">
+                                Zamietnuť (Vrátiť Doros)
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-secondary small mb-0">Momentálne nie sú žiadne nevybavené kupóny.</p>
+    {% endif %}
+</div>
+
+<!-- 2. Správa študentov a ekonomiky (God Mode) -->
+<div class="card card-codoro p-4 mb-4">
+    <h5 class="fw-bold mb-3"><i class="bi bi-people-fill text-info me-2"></i>Správa študentov, mincí Doros a Streaku</h5>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Študent</th>
+                    <th>Trieda</th>
+                    <th>Level & XP</th>
+                    <th>Zostatok Doros</th>
+                    <th>Streak</th>
+                    <th>Licencia</th>
+                    <th>Pridať / Odobrať Doros</th>
+                    <th>Nastaviť Streak</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td class="fw-bold">{{ s.username }} <div class="small text-secondary">{{ s.get_full_name }}</div></td>
+                    <td>{{ s.school_class.name|default:"-" }}</td>
+                    <td>Lvl {{ s.level }} ({{ s.xp }} XP)</td>
+                    <td><span class="badge badge-doros">{{ s.doros }} Doros</span></td>
+                    <td><span class="badge badge-streak"><i class="bi bi-fire"></i> {{ s.current_streak }}</span></td>
+                    <td>
+                        <form method="post" action="{% url 'manage_student_economy' s.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_edu">
+                            <button type="submit" class="btn btn-sm {% if s.subscription_tier == 'FREE' %}btn-outline-secondary{% else %}btn-success{% endif %}">
+                                {{ s.subscription_tier }} (Prepnúť)
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'manage_student_economy' s.id %}" class="d-flex gap-1">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="adjust_doros">
+                            <input type="number" name="amount" class="form-control form-control-sm" style="width: 80px;" placeholder="+100 / -50" required>
+                            <input type="text" name="reason" class="form-control form-control-sm" style="width: 130px;" placeholder="Dôvod..." required>
+                            <button type="submit" class="btn btn-sm btn-warning fw-bold">Uložiť</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'manage_student_economy' s.id %}" class="d-flex gap-1">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="set_streak">
+                            <input type="number" name="streak_value" class="form-control form-control-sm" style="width: 65px;" value="{{ s.current_streak }}" required>
+                            <button type="submit" class="btn btn-sm btn-outline-info">Opraviť</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 3. Tvorba odmien so skladom, Coin Dropov a Cvičení -->
+<div class="row g-4 mb-4">
+    <!-- Pridanie odmeny do obchodu -->
+    <div class="col-md-4">
+        <div class="card card-codoro p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-bag-plus-fill text-warning me-2"></i>Pridať odmenu do obchodu</h5>
+            <form method="post" action="{% url 'create_reward_item' %}">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label small">Názov odmeny (SK)</label>
+                    <input type="text" name="title_sk" class="form-control form-control-sm" placeholder="napr. Odpustenie písomky" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Popis podmienok</label>
+                    <textarea name="description_sk" class="form-control form-control-sm" rows="2" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        <label class="form-label small">Cena (Doros)</label>
+                        <input type="number" name="cost_doros" class="form-control form-control-sm" value="300" required>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <label class="form-label small">Sklad pre triedu (ks)</label>
+                        <input type="number" name="max_stock" class="form-control form-control-sm" value="2" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7 mb-3">
+                        <label class="form-label small">Interval obnovenia</label>
+                        <select name="restock_period" class="form-select form-select-sm">
+                            <option value="DAILY">Denne (každý deň)</option>
+                            <option value="WEEKLY" selected>Týždenne</option>
+                            <option value="MONTHLY">Mesačne</option>
+                            <option value="MANUAL">Manuálne</option>
+                        </select>
+                    </div>
+                    <div class="col-5 mb-3">
+                        <label class="form-label small">Limit na žiaka</label>
+                        <input type="number" name="limit_per_student" class="form-control form-control-sm" value="1" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-codoro btn-sm w-100">Vytvoriť odmenu so skladom</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Spustenie časovaného Coin Dropu -->
+    <div class="col-md-4">
+        <div class="card card-codoro p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-box-seam-fill text-danger me-2"></i>Spustiť časovaný Coin Drop</h5>
+            <form method="post" action="{% url 'create_coin_drop' %}">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label small">Názov eventu</label>
+                    <input type="text" name="title_sk" class="form-control form-control-sm" value="Popoludňajší Bonus Drop o 16:00!" required>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        <label class="form-label small">Trvanie (minúty)</label>
+                        <input type="number" name="duration_minutes" class="form-control form-control-sm" value="60" required>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <label class="form-label small">Max. počet žiakov</label>
+                        <input type="number" name="max_claims" class="form-control form-control-sm" value="5" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label small">Min. Doros</label>
+                        <input type="number" name="min_doros" class="form-control form-control-sm" value="40" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Max. Doros</label>
+                        <input type="number" name="max_doros" class="form-control form-control-sm" value="120" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-danger btn-sm w-100 fw-bold">Spustiť Coin Drop teraz</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pridanie nového Python cvičenia -->
+    <div class="col-md-4">
+        <div class="card card-codoro p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark-code-fill text-success me-2"></i>Pridať Python cvičenie</h5>
+            <form method="post" action="{% url 'create_exercise' %}">
+                {% csrf_token %}
+                <div class="mb-2">
+                    <label class="form-label small">Vyber lekciu</label>
+                    <select name="lesson_id" class="form-select form-select-sm">
+                        {% for l in lessons %}
+                        <option value="{{ l.id }}">{{ l.title_sk }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Názov úlohy</label>
+                    <input type="text" name="title_sk" class="form-control form-control-sm" placeholder="napr. Druhá mocnina čísla" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Zadanie pre študenta</label>
+                    <textarea name="instructions_sk" class="form-control form-control-sm" rows="2" required></textarea>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Štartovací kód</label>
+                    <input type="text" name="starter_code" class="form-control form-control-sm" value="def mocnina(x):&#10;    pass">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small">Automatický Assert test</label>
+                    <input type="text" name="test_code" class="form-control form-control-sm" placeholder="assert mocnina(4) == 16" required>
+                </div>
+                <button type="submit" class="btn btn-codoro btn-sm w-100">Pridať cvičenie s testom</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Posledné odovzdané kódy študentov -->
+<div class="card card-codoro p-4">
+    <h5 class="fw-bold mb-3"><i class="bi bi-terminal text-info me-2"></i>Posledné odovzdané riešenia študentov</h5>
+    <div class="table-responsive">
+        <table class="table table-dark table-sm align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Čas</th>
+                    <th>Študent</th>
+                    <th>Cvičenie</th>
+                    <th>Výsledok</th>
+                    <th>Odovzdaný Python kód</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in recent_submissions %}
+                <tr>
+                    <td class="small text-secondary">{{ sub.created_at|date:"d.m. H:i" }}</td>
+                    <td class="fw-semibold">{{ sub.student.username }}</td>
+                    <td>{{ sub.exercise.title_sk }}</td>
+                    <td>
+                        <span class="badge {% if sub.status == 'PASSED' %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ sub.status }}
+                        </span>
+                    </td>
+                    <td><code class="text-info small">{{ sub.submitted_code|truncatechars:80 }}</code></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-secondary">Zatiaľ neboli odovzdané žiadne riešenia.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card card-codoro p-4 shadow-lg">
+            <h3 class="fw-bold mb-1">Registrácia študenta do Codoro</h3>
+            <p class="text-secondary small mb-4">Získaj okamžite 100 Doros na štart a pripoj sa k svojej triede.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Krstné meno</label>
+                        <input type="text" name="first_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Priezvisko</label>
+                        <input type="text" name="last_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Používateľské meno (login)</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">E-mailová adresa</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Kód školskej triedy (voliteľné)</label>
+                        <input type="text" name="join_code" class="form-control" value="IVC-2027" placeholder="napr. IVC-2027">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Preferovaný jazyk</label>
+                        <select name="preferred_language" class="form-select">
+                            <option value="sk">🇸🇰 Slovenčina</option>
+                            <option value="en">🇬🇧 English</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Heslo</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-codoro btn-lg w-100">Vytvoriť účet (+100 Doros)</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

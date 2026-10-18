@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card card-codoro p-4 shadow-lg">
+            <div class="text-center mb-4">
+                <i class="bi bi-braces-asterisk text-success display-4"></i>
+                <h2 class="fw-bold mt-2">Codoro Platform</h2>
+                <p class="text-secondary">Interaktívna výučba jazyka Python s gamifikáciou</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Používateľské meno</label>
+                    <input type="text" name="username" id="loginUsername" class="form-control form-control-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Heslo</label>
+                    <input type="password" name="password" id="loginPassword" class="form-control form-control-lg" required>
+                </div>
+                <button type="submit" class="btn btn-codoro btn-lg w-100 mb-3">Prihlásiť sa</button>
+            </form>
+
+            <div class="text-center mt-2">
+                <span class="text-secondary">Nemáš ešte účet?</span>
+                <a href="{% url 'register' %}" class="text-info fw-semibold text-decoration-none ms-1">Zaregistruj sa (+100 Doros)</a>
+            </div>
+
+            <hr class="my-4 border-secondary">
+            <div class="small text-secondary text-center mb-2">Rýchle prihlásenie pre testovanie a obhajobu:</div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-info w-50" onclick="fillDemo('student', 'heslo123')">
+                    <i class="bi bi-person-fill"></i> Demo Študent
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning w-50" onclick="fillDemo('ucitel', 'heslo123')">
+                    <i class="bi bi-mortarboard-fill"></i> Demo Učiteľ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillDemo(user, pass) {
+    document.getElementById('loginUsername').value = user;
+    document.getElementById('loginPassword').value = pass;
+}
+</script>
+{% endblock %}

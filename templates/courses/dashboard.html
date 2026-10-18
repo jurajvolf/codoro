@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- 1. Záchrana vyhasnutého Streaku -->
+{% if user.lost_streak_value > 0 %}
+<div class="alert alert-warning d-flex justify-content-between align-items-center p-3 mb-4 rounded-4 border-warning">
+    <div>
+        <h5 class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+            {% if user.preferred_language == 'en' %}
+                Your {{ user.lost_streak_value }}-day Streak has expired!
+            {% else %}
+                Tvoj {{ user.lost_streak_value }}-dňový Streak vyhasol!
+            {% endif %}
+        </h5>
+        <span class="small">
+            {% if user.preferred_language == 'en' %}
+                You can still repair your lost streak for 200 Doros before the timer runs out.
+            {% else %}
+                Máš ešte 24 hodín na jeho okamžitú záchranu za 200 Doros, aby si neprišiel o svoju sériu.
+            {% endif %}
+        </span>
+    </div>
+    <form method="post" action="{% url 'repair_streak' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning fw-bold px-4">
+            <i class="bi bi-wrench-adjustable me-1"></i>
+            {% if user.preferred_language == 'en' %}Repair Streak (200 Doros){% else %}Opraviť Streak (200 Doros){% endif %}
+        </button>
+    </form>
+</div>
+{% endif %}
+
+<!-- 2. Aktívny časovaný Coin Drop od učiteľa -->
+{% if active_drop %}
+<div class="drop-banner p-4 mb-4 d-flex justify-content-between align-items-center text-white shadow">
+    <div>
+        <span class="badge bg-warning text-dark fw-bold mb-1">LIVE EVENT</span>
+        <h4 class="fw-bold mb-1">🎁 {% if user.preferred_language == 'en' %}{{ active_drop.title_en }}{% else %}{{ active_drop.title_sk }}{% endif %}</h4>
+        <p class="mb-0 small opacity-75">
+            {% if user.preferred_language == 'en' %}
+                Random drop between {{ active_drop.min_doros }} – {{ active_drop.max_doros }} Doros! Limited claims remaining.
+            {% else %}
+                Náhodná odmena {{ active_drop.min_doros }} až {{ active_drop.max_doros }} Doros za aktivitu! Počet kusov je limitovaný.
+            {% endif %}
+        </p>
+    </div>
+    <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-light btn-lg fw-bold text-dark px-4 shadow">
+            <i class="bi bi-gift-fill text-danger me-1"></i>
+            {% if user.preferred_language == 'en' %}Claim Drop!{% else %}Získať odmenu!{% endif %}
+        </button>
+    </form>
+</div>
+{% endif %}
+
+<!-- 3. Kolektívny triedny Quest -->
+{% if class_quest %}
+<div class="card card-codoro p-4 mb-4 border-info">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <span class="badge bg-info text-dark fw-bold me-2">KOLEKTÍVNY TRIEDNY QUEST</span>
+            <strong class="fs-5">{% if user.preferred_language == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}</strong>
+        </div>
+        <span class="badge badge-doros fs-6">+{{ class_quest.reward_doros_per_student }} Doros / študent</span>
+    </div>
+    <p class="text-secondary small mb-2">
+        Pravidlo odmeny: <strong>{{ class_quest.get_reward_policy_display }}</strong>
+        (min. príspevok žiaka: {{ class_quest.min_contribution_required }} úloh).
+    </p>
+    <div class="progress mb-2" style="height: 22px; background-color: #0f172a;">
+        {% widthratio class_quest.current_exercises_count class_quest.target_exercises_count 100 as pct %}
+        <div class="progress-bar bg-info text-dark fw-bold" style="width: {{ pct }}%;">
+            {{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }} úloh ({{ pct }} %)
+        </div>
+    </div>
+    {% if top_contributors %}
+    <div class="small text-secondary mt-1">
+        <i class="bi bi-people-fill text-info me-1"></i> Top prispievatelia triedy:
+        {% for c in top_contributors %}
+            <span class="badge bg-dark border border-secondary ms-1">{{ c.student.username }}: {{ c.amount_contributed }}×</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <!-- Ľavý stĺpec: Moduly a Lekcie Pythonu -->
+    <div class="col-lg-8">
+        <h4 class="fw-bold mb-3">
+            <i class="bi bi-journal-code text-success me-2"></i>
+            {% if user.preferred_language == 'en' %}Python Learning Path{% else %}Vzdelávacie moduly jazyka Python{% endif %}
+        </h4>
+
+        {% for module in modules %}
+        <div class="card card-codoro p-4 mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        <i class="bi {{ module.icon_name }} text-success me-2"></i>
+                        {{ module.order }}. {% if user.preferred_language == 'en' %}{{ module.title_en }}{% else %}{{ module.title_sk }}{% endif %}
+                    </h5>
+                    <p class="text-secondary small mb-0">
+                        {% if user.preferred_language == 'en' %}{{ module.description_en }}{% else %}{{ module.description_sk }}{% endif %}
+                    </p>
+                </div>
+                {% if module.is_pro_only %}
+                    <span class="badge bg-warning text-dark fw-bold"><i class="bi bi-star-fill me-1"></i>PRO / EDU</span>
+                {% else %}
+                    <span class="badge bg-success">FREE</span>
+                {% endif %}
+            </div>
+
+            <div class="list-group list-group-flush mt-3">
+                {% for lesson in module.lessons.all %}
+                <a href="{% url 'lesson_detail' lesson.id %}" class="list-group-item list-group-item-action bg-transparent text-light border-secondary d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        {% if lesson.id in completed_lesson_ids %}
+                            <i class="bi bi-check-circle-fill text-success me-2 fs-5"></i>
+                        {% else %}
+                            <i class="bi bi-play-circle text-info me-2 fs-5"></i>
+                        {% endif %}
+                        <span class="fw-semibold">{{ module.order }}.{{ lesson.order }} {% if user.preferred_language == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}</span>
+                        <span class="badge bg-dark border border-secondary ms-2">{{ lesson.exercises.count }} cvičení</span>
+                    </div>
+                    <span class="btn btn-sm btn-outline-success">
+                        {% if user.preferred_language == 'en' %}Start Lesson{% else %}Otvoriť lekciu{% endif %} <i class="bi bi-arrow-right"></i>
+                    </span>
+                </a>
+                {% empty %}
+                <div class="text-secondary small fst-italic mt-2">
+                    {% if user.preferred_language == 'en' %}
+                        Locked or awaiting teacher content. Activate EDU license in the Shop!
+                    {% else %}
+                        Tento modul vyžaduje PRO/EDU licenciu alebo doplnenie lekcií učiteľom.
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pravý stĺpec: Osobné Questy (Daily/Weekly/Monthly) a Rebríček -->
+    <div class="col-lg-4">
+        <div class="card card-codoro p-4 mb-4">
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-trophy-fill text-warning me-2"></i>
+                {% if user.preferred_language == 'en' %}Personal Quests{% else %}Osobné výzvy (Quests){% endif %}
+            </h5>
+
+            {% for item in quest_items %}
+            <div class="p-3 mb-3 rounded-3" style="background-color: #0f172a; border: 1px solid #334155;">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-primary small">{{ item.quest.get_period_display }}</span>
+                    <span class="text-warning fw-bold small">+{{ item.quest.reward_doros }} Doros | +{{ item.quest.reward_xp }} XP</span>
+                </div>
+                <div class="fw-semibold small mb-2">
+                    {% if user.preferred_language == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-secondary">Progres: {{ item.current_value }} / {{ item.quest.target_value }}</span>
+                    {% if item.is_completed and not item.is_claimed %}
+                        <form method="post" action="{% url 'claim_quest_reward' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-warning fw-bold">Prevziať odmenu</button>
+                        </form>
+                    {% elif item.is_claimed %}
+                        <span class="badge bg-success"><i class="bi bi-check2-all"></i> Vyzdvihnuté</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Rebríček triedy -->
+        <div class="card card-codoro p-4">
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-bar-chart-fill text-info me-2"></i>
+                {% if user.preferred_language == 'en' %}Class Leaderboard{% else %}Rebríček študentov{% endif %}
+            </h5>
+            <ul class="list-group list-group-flush">
+                {% for s in leaderboard %}
+                <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center px-0">
+                    <div>
+                        <span class="badge bg-secondary me-2">#{{ forloop.counter }}</span>
+                        <strong class="{% if s.id == user.id %}text-info{% endif %}">{{ s.username }}</strong>
+                        <small class="text-secondary ms-1">(Lvl {{ s.level }})</small>
+                    </div>
+                    <span class="badge badge-xp">{{ s.xp }} XP</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

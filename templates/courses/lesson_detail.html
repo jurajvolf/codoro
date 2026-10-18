@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> {% if user.preferred_language == 'en' %}Back to Dashboard{% else %}Späť na prehľad{% endif %}
+    </a>
+    <span class="text-secondary small">{{ lesson.module.title_sk }}</span>
+</div>
+
+<div class="row g-4">
+    <!-- Ľavý stĺpec: Teória, Kvíz a Zadanie úlohy -->
+    <div class="col-lg-5">
+        <div class="card card-codoro p-4 mb-4">
+            <h4 class="fw-bold text-info mb-3">
+                {% if user.preferred_language == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
+            </h4>
+            <div class="lh-lg" style="white-space: pre-line;">
+                {% if user.preferred_language == 'en' %}{{ lesson.content_en }}{% else %}{{ lesson.content_sk }}{% endif %}
+            </div>
+        </div>
+
+        <!-- Rýchly teoretický kvíz -->
+        {% if quiz_questions %}
+        <div class="card card-codoro p-4 mb-4 border-primary">
+            <h5 class="fw-bold mb-3"><i class="bi bi-patch-question-fill text-primary me-2"></i>Overenie teórie (+20 XP)</h5>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="submit_quiz">
+                {% for q in quiz_questions %}
+                <div class="mb-3">
+                    <p class="fw-semibold mb-2">{% if user.preferred_language == 'en' %}{{ q.question_en }}{% else %}{{ q.question_sk }}{% endif %}</p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="quiz_{{ q.id }}" value="A" required>
+                        <label class="form-check-label"><code>{{ q.option_a_sk }}</code></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="quiz_{{ q.id }}" value="B">
+                        <label class="form-check-label"><code>{{ q.option_b_sk }}</code></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="quiz_{{ q.id }}" value="C">
+                        <label class="form-check-label"><code>{{ q.option_c_sk }}</code></label>
+                    </div>
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-sm btn-primary fw-bold">Skontrolovať kvíz</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pravý stĺpec: Zadanie cvičenia, Editor kódu, Testy a AI Tútor Codo -->
+    <div class="col-lg-7">
+        {% if current_exercise %}
+        <div class="card card-codoro p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">
+                    <i class="bi bi-code-square text-success me-2"></i>
+                    {% if user.preferred_language == 'en' %}{{ current_exercise.title_en }}{% else %}{{ current_exercise.title_sk }}{% endif %}
+                </h5>
+                <div>
+                    <span class="badge badge-xp">+{{ current_exercise.xp_reward }} XP</span>
+                    <span class="badge badge-doros">+{{ current_exercise.doros_reward }} Doros</span>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-3 mb-3" style="background-color: #0f172a; border-left: 4px solid #10b981;">
+                {% if user.preferred_language == 'en' %}{{ current_exercise.instructions_en }}{% else %}{{ current_exercise.instructions_sk }}{% endif %}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="run_code">
+                <div class="mb-3">
+                    <textarea id="pythonEditor" name="submitted_code">{% if latest_submission %}{{ latest_submission.submitted_code }}{% else %}{{ current_exercise.starter_code }}{% endif %}</textarea>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-codoro btn-lg px-4">
+                        <i class="bi bi-play-fill me-1"></i>
+                        {% if user.preferred_language == 'en' %}Run & Check Solution{% else %}Spustiť a skontrolovať riešenie{% endif %}
+                    </button>
+
+                    {% if current_exercise.hint_sk %}
+                    <button class="btn btn-outline-warning btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#hintBox">
+                        <i class="bi bi-lightbulb"></i> Zobraziť nápovedu
+                    </button>
+                    {% endif %}
+                </div>
+            </form>
+
+            <div class="collapse mt-3" id="hintBox">
+                <div class="alert alert-warning mb-0 small">
+                    <strong>💡 Nápoveda:</strong> {% if user.preferred_language == 'en' %}{{ current_exercise.hint_en }}{% else %}{{ current_exercise.hint_sk }}{% endif %}
+                </div>
+            </div>
+
+            <!-- Výsledky automatických testov a AI Tútor Codo -->
+            {% if latest_submission %}
+            <hr class="border-secondary my-4">
+            <h6 class="fw-bold mb-2">Výsledok automatizovaných testov:</h6>
+            <pre class="p-3 rounded-3 mb-3 text-light" style="background-color: #020617; border: 1px solid #334155;">{{ latest_submission.output_log }}</pre>
+
+            {% if latest_submission.ai_tutor_feedback %}
+            <div class="p-3 rounded-3 border border-info" style="background-color: rgba(14, 165, 233, 0.1);">
+                <div class="fw-bold text-info mb-1">
+                    <i class="bi bi-robot me-1"></i> Sokratovský AI Tútor Codo (nápoveda bez prezradenia riešenia):
+                </div>
+                <p class="mb-0 small">{{ latest_submission.ai_tutor_feedback }}</p>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("pythonEditor"), {
+        mode: "python",
+        theme: "dracula",
+        lineNumbers: true,
+        indentUnit: 4,
+        matchBrackets: true
+    });
+</script>
+{% endblock %}

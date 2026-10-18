@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <!-- Ľavá časť: Učiteľský obchod so zásobami a aktivácia EDU licencie -->
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0"><i class="bi bi-shop text-warning me-2"></i>Školský obchod s odmenami (Marketplace)</h4>
+            <span class="badge badge-doros fs-6">Tvoj zostatok: {{ user.doros }} Doros</span>
+        </div>
+
+        <div class="row g-3 mb-4">
+            {% for r in rewards %}
+            <div class="col-md-6">
+                <div class="card card-codoro p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-info text-dark">Obnova: {{ r.get_restock_period_display }}</span>
+                            <span class="badge {% if r.current_stock > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                                Sklad: {{ r.current_stock }} / {{ r.max_stock }} ks
+                            </span>
+                        </div>
+                        <h5 class="fw-bold mt-2">
+                            <i class="bi {{ r.icon_name }} text-warning me-1"></i>
+                            {% if user.preferred_language == 'en' %}{{ r.title_en }}{% else %}{{ r.title_sk }}{% endif %}
+                        </h5>
+                        <p class="text-secondary small">
+                            {% if user.preferred_language == 'en' %}{{ r.description_en }}{% else %}{{ r.description_sk }}{% endif %}
+                        </p>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary">
+                        <span class="fw-bold text-warning fs-5"><i class="bi bi-coin"></i> {{ r.cost_doros }} Doros</span>
+                        <form method="post" action="{% url 'buy_reward' r.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-codoro btn-sm px-3" {% if r.current_stock == 0 or user.doros < r.cost_doros %}disabled{% endif %}>
+                                {% if r.current_stock == 0 %}Vypredané{% else %}Kúpiť odmenu{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Aktivácia školskej EDU / PRO licencie -->
+        <div class="card card-codoro p-4 border-warning">
+            <h5 class="fw-bold text-warning mb-1"><i class="bi bi-key-fill me-2"></i>Aktivácia Codoro PRO / Školskej EDU licencie</h5>
+            <p class="text-secondary small mb-3">
+                Odomkni pokročilé moduly (OOP) a neobmedzeného AI tútora Codo. (Pre ukážku zadaj kód triedy: <code>EDU-2027-IVC</code>).
+            </p>
+            <form method="post" action="{% url 'activate_license' %}" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="text" name="license_code" class="form-control" placeholder="Zadaj licenčný kľúč (napr. EDU-2027-IVC)" required>
+                <button type="submit" class="btn btn-warning fw-bold px-4">Aktivovať</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pravá časť: Moje zakúpené kupóny a História peňaženky -->
+    <div class="col-lg-4">
+        <div class="card card-codoro p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-ticket-perforated-fill text-info me-2"></i>Moje zakúpené kupóny</h5>
+            {% for c in my_coupons %}
+            <div class="p-3 mb-2 rounded-3" style="background-color: #0f172a; border: 1px solid #334155;">
+                <div class="d-flex justify-content-between">
+                    <code class="fw-bold text-warning fs-6">{{ c.coupon_code }}</code>
+                    <span class="badge {% if c.status == 'PENDING' %}bg-warning text-dark{% elif c.status == 'REDEEMED' %}bg-success{% else %}bg-secondary{% endif %}">
+                        {{ c.get_status_display }}
+                    </span>
+                </div>
+                <div class="small fw-semibold mt-1">{{ c.reward.title_sk }}</div>
+                <div class="text-secondary" style="font-size: 12px;">Zakúpené: {{ c.purchased_at|date:"d.m.Y H:i" }}</div>
+            </div>
+            {% empty %}
+            <p class="text-secondary small mb-0">Zatiaľ si si nekúpil žiadny kupón.</p>
+            {% endfor %}
+        </div>
+
+        <div class="card card-codoro p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-wallet2 text-success me-2"></i>História peňaženky (Audit Log)</h5>
+            <ul class="list-group list-group-flush small">
+                {% for t in transactions %}
+                <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between px-0">
+                    <span>{% if user.preferred_language == 'en' %}{{ t.reason_en }}{% else %}{{ t.reason_sk }}{% endif %}</span>
+                    <strong class="{% if t.amount > 0 %}text-success{% else %}text-danger{% endif %}">
+                        {% if t.amount > 0 %}+{% endif %}{{ t.amount }}
+                    </strong>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
