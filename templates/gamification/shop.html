@@ -1,20 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-{% with lang=user.preferred_language|default:'sk' %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
 
 <div class="layout-2col" style="display: grid; grid-template-columns: 1.75fr 1fr; gap: 2rem; align-items: start;">
 
     <!-- Ľavá časť: Ponuka odmien so skladom + Aktivácia PRO/EDU licencie -->
     <div class="animate-in">
-        <div style="margin-bottom: 1.5rem;">
-            <h1 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">
+        <div style="margin-bottom: 1.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; color: var(--gold-text); background: var(--gold-bg); padding: 0.2rem 0.55rem; border-radius: 6px; text-transform: uppercase;">
+                    🪙 {% if lang == 'en' %}CLASSROOM ECONOMY{% else %}ŠKOLSKÝ TRH ODBERU{% endif %}
+                </span>
+            </div>
+            <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); margin: 0 0 0.35rem;">
                 {% if lang == 'en' %}Classroom Rewards Marketplace{% else %}Školský obchod s odmenami{% endif %}
             </h1>
-            <p style="color: var(--codo-slate); font-size: 0.94rem;">
+            <p style="color: var(--text-secondary); font-size: 0.94rem; margin: 0; line-height: 1.5;">
                 {% if lang == 'en' %}
                     Exchange your earned Doros for real classroom perks. Stock is limited per class and automatically restocks on schedule.
                 {% else %}
-                    Vymeň nazbierané mince Doros za reálne školské výhody. Zásoby pre triedu sú obmedzené a automaticky sa obnovujú podľa intervalu.
+                    Vymeň svoje poctivo nazbierané mince Doros za skutočné školské výhody. Skladové zásoby sú obmedzené a automaticky sa dopĺňajú.
                 {% endif %}
             </p>
         </div>
@@ -24,7 +29,7 @@
             <article class="card-surface card-interactive" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--codo-muted); background: var(--bg-subtle); padding: 0.2rem 0.55rem; border-radius: 6px;">
+                        <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.2rem 0.55rem; border-radius: 6px;">
                             ↻ {{ r.restock_period }}
                         </span>
                         <span class="{% if r.current_stock > 0 %}badge-emerald{% else %}badge-flame{% endif %}" style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;">
@@ -32,16 +37,16 @@
                         </span>
                     </div>
 
-                    <h2 style="font-family: var(--font-display); font-size: 1.18rem; font-weight: 700; margin-bottom: 0.4rem;">
+                    <h2 style="font-family: var(--font-display); font-size: 1.18rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
                         {% if lang == 'en' %}{{ r.title_en }}{% else %}{{ r.title_sk }}{% endif %}
                     </h2>
-                    <p style="font-size: 0.88rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
                         {% if lang == 'en' %}{{ r.description_en }}{% else %}{{ r.description_sk }}{% endif %}
                     </p>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border-hairline);">
-                    <span style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: var(--gold-text);">
+                    <span style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 800; color: var(--gold-text);">
                         🪙 {{ r.cost_doros }} Doros
                     </span>
                     <form method="post" action="{% url 'buy_reward' r.id %}">
@@ -56,15 +61,19 @@
                     </form>
                 </div>
             </article>
+            {% empty %}
+            <div class="card-surface" style="padding: 2rem; grid-column: span 2; text-align: center; color: var(--text-muted);">
+                {% if lang == 'en' %}No reward items in the shop yet.{% else %}V obchode zatiaľ nie sú žiadne odmeny.{% endif %}
+            </div>
             {% endfor %}
         </div>
 
         <!-- Aktivácia školskej EDU / PRO licencie -->
-        <section class="card-surface" style="padding: 1.65rem; background: linear-gradient(135deg, var(--ro-indigo-soft) 0%, #FFFFFF 100%); border-color: var(--ro-indigo-border);">
-            <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem;">
+        <section class="card-surface" style="padding: 1.65rem; background: linear-gradient(135deg, var(--ro-indigo-soft) 0%, var(--bg-surface) 100%); border-color: var(--ro-indigo-border);">
+            <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">
                 🔑 {% if lang == 'en' %}Activate Codoro PRO / School EDU License{% else %}Aktivácia Codoro PRO / Školskej EDU licencie{% endif %}
             </h2>
-            <p style="font-size: 0.88rem; color: var(--codo-slate); margin-bottom: 1rem;">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
                 {% if lang == 'en' %}
                     Enter your school license key to unlock advanced OOP modules and unlimited AI tutor hints (Demo key: <code style="font-family: var(--font-mono); font-weight: 700; color: var(--ro-indigo);">EDU-2027-IVC</code>).
                 {% else %}
@@ -74,7 +83,7 @@
             <form method="post" action="{% url 'activate_license' %}" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                 {% csrf_token %}
                 <input type="text" name="license_code" class="form-control" style="flex: 1; min-width: 220px; font-family: var(--font-mono); font-weight: 600;" placeholder="EDU-2027-IVC" required>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
                     {% if lang == 'en' %}Activate License{% else %}Aktivovať licenciu{% endif %}
                 </button>
             </form>
@@ -85,7 +94,7 @@
     <aside class="animate-in delay-1" style="display: flex; flex-direction: column; gap: 1.5rem;">
 
         <section class="card-surface" style="padding: 1.5rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.18rem; font-weight: 700; margin-bottom: 1rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.18rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem;">
                 🎟️ {% if lang == 'en' %}My Purchased Coupons{% else %}Moje zakúpené kupóny{% endif %}
             </h2>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
@@ -99,15 +108,15 @@
                             {{ c.status }}
                         </span>
                     </div>
-                    <div style="font-weight: 600; font-size: 0.9rem;">
+                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">
                         {% if lang == 'en' %}{{ c.reward.title_en }}{% else %}{{ c.reward.title_sk }}{% endif %}
                     </div>
-                    <div style="font-size: 0.76rem; color: var(--codo-muted); margin-top: 0.15rem;">
+                    <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.15rem;">
                         {{ c.purchased_at|date:"d.m.Y H:i" }}
                     </div>
                 </div>
                 {% empty %}
-                <p style="font-size: 0.88rem; color: var(--codo-muted);">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
                     {% if lang == 'en' %}You haven't purchased any reward coupons yet.{% else %}Zatiaľ nemáš žiadne zakúpené kupóny.{% endif %}
                 </p>
                 {% endfor %}
@@ -115,19 +124,23 @@
         </section>
 
         <section class="card-surface" style="padding: 1.5rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.18rem; font-weight: 700; margin-bottom: 0.85rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.18rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.85rem;">
                 💳 {% if lang == 'en' %}Wallet Activity Ledger{% else %}História pohybov v peňaženke{% endif %}
             </h2>
             <div>
                 {% for t in transactions %}
                 <div class="dash-row" style="padding: 0.6rem 0; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; font-size: 0.85rem; border-bottom: 1px solid var(--border-hairline);">
-                    <span style="color: var(--codo-slate);">
+                    <span style="color: var(--text-secondary);">
                         {% if lang == 'en' %}{{ t.reason_en }}{% else %}{{ t.reason_sk }}{% endif %}
                     </span>
                     <strong class="{% if t.amount > 0 %}tx-pos{% else %}tx-neg{% endif %}" style="font-family: var(--font-mono); white-space: nowrap;">
                         {% if t.amount > 0 %}+{% endif %}{{ t.amount }}
                     </strong>
                 </div>
+                {% empty %}
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                    {% if lang == 'en' %}No transactions recorded yet.{% else %}Zatiaľ žiadne záznamy v peňaženke.{% endif %}
+                </p>
                 {% endfor %}
             </div>
         </section>
@@ -135,5 +148,4 @@
     </aside>
 
 </div>
-{% endwith %}
 {% endblock %}
