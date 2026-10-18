@@ -19,6 +19,7 @@ urlpatterns = [
     # Študentský Dashboard, Lekcie a Editor kódu
     path('', course_views.dashboard, name='dashboard'),
     path('lesson/<int:lesson_id>/', course_views.lesson_detail, name='lesson_detail'),
+    path('exercise/<int:exercise_id>/unlock-hint/', course_views.unlock_hint, name='unlock_hint'),
 
     # Obchod so zásobami, Questy a Coin Dropy
     path('shop/', game_views.shop_view, name='shop'),

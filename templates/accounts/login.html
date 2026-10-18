@@ -1,50 +1,111 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <div class="card card-codoro p-4 shadow-lg">
-            <div class="text-center mb-4">
-                <i class="bi bi-braces-asterisk text-success display-4"></i>
-                <h2 class="fw-bold mt-2">Codoro Platform</h2>
-                <p class="text-secondary">Interaktívna výučba jazyka Python s gamifikáciou</p>
+{% firstof ui_lang 'sk' as lang %}
+<div class="layout-auth animate-in"
+    style="max-width: 1040px; margin: 2rem auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center;">
+
+    <div>
+        <div style="display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: var(--ro-indigo-soft); color: var(--ro-indigo); font-weight: 700; font-size: 0.8rem; margin-bottom: 1.25rem;">
+            <span>✨ Codoro Classroom Ecosystem</span>
+        </div>
+
+        <h1 style="font-family: var(--font-display); font-size: 2.6rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.1rem; color: var(--text-primary);">
+            {% if lang == 'en' %}
+            Master Python with your class and AI tutor Codo.
+            {% else %}
+            Ovládni Python so svojou triedou a AI tútorom Codo.
+            {% endif %}
+        </h1>
+
+        <p style="font-size: 1.02rem; color: var(--text-secondary); margin-bottom: 2rem; max-width: 52ch;">
+            {% if lang == 'en' %}
+            Write and test real Python code directly in your browser, complete collective class quests, and exchange earned Doros for classroom rewards managed by your teacher.
+            {% else %}
+            Píš a testuj reálny Python kód priamo v prehliadači, plň spoločné triedne výzvy a vymieňaj získané mince Doros za školské odmeny od svojho učiteľa.
+            {% endif %}
+        </p>
+
+        <div class="card-surface" style="padding: 1.25rem 1.5rem; max-width: 480px; background: var(--bg-subtle);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border-hairline);">
+                <div style="display: flex; gap: 6px;">
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444;"></span>
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #F59E0B;"></span>
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
+                </div>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ro-indigo); font-weight: 600;">codo_tutor.py</span>
+            </div>
+            <pre style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-primary); line-height: 1.6; overflow-x: auto; margin: 0;"><code>def vypocitaj_odmenu(ulohy, bonus):
+    return ulohy * 20 + bonus
+
+# ✅ 3/3 unit tests passed (+50 XP, +30 Doros)</code></pre>
+        </div>
+    </div>
+
+    <div class="card-surface" style="padding: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.75rem;">
+            <img src="{% static 'img/codoro-logo.jpg' %}" alt="Codoro"
+                style="height: 48px; width: auto; border-radius: 10px;" onerror="this.style.display='none';">
+            <div>
+                <h2 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                    {% if lang == 'en' %}Sign in to your account{% else %}Prihlásenie do účtu{% endif %}
+                </h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.2rem 0 0;">
+                    {% if lang == 'en' %}Enter your credentials to continue{% else %}Zadaj svoje prihlasovacie údaje{% endif %}
+                </p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin-bottom: 1.15rem;">
+                <label class="form-label" for="loginUsername">
+                    {% if lang == 'en' %}Username{% else %}Používateľské meno{% endif %}
+                </label>
+                <input type="text" name="username" id="loginUsername" class="form-control" required>
             </div>
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label">Používateľské meno</label>
-                    <input type="text" name="username" id="loginUsername" class="form-control form-control-lg" required>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label">Heslo</label>
-                    <input type="password" name="password" id="loginPassword" class="form-control form-control-lg" required>
-                </div>
-                <button type="submit" class="btn btn-codoro btn-lg w-100 mb-3">Prihlásiť sa</button>
-            </form>
-
-            <div class="text-center mt-2">
-                <span class="text-secondary">Nemáš ešte účet?</span>
-                <a href="{% url 'register' %}" class="text-info fw-semibold text-decoration-none ms-1">Zaregistruj sa (+100 Doros)</a>
+            <div style="margin-bottom: 1.5rem;">
+                <label class="form-label" for="loginPassword">
+                    {% if lang == 'en' %}Password{% else %}Heslo{% endif %}
+                </label>
+                <input type="password" name="password" id="loginPassword" class="form-control" required>
             </div>
 
-            <hr class="my-4 border-secondary">
-            <div class="small text-secondary text-center mb-2">Rýchle prihlásenie pre testovanie a obhajobu:</div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-outline-info w-50" onclick="fillDemo('student', 'heslo123')">
-                    <i class="bi bi-person-fill"></i> Demo Študent
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.78rem; font-weight: 700;">
+                {% if lang == 'en' %}Sign in to Codoro{% else %}Prihlásiť sa do Codoro{% endif %}
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.35rem; font-size: 0.88rem; color: var(--text-secondary);">
+            {% if lang == 'en' %}
+            New to Codoro? <a href="{% url 'register' %}" style="color: var(--ro-indigo); font-weight: 600;">Create a student account (+100 Doros)</a>
+            {% else %}
+            Nemáš ešte účet? <a href="{% url 'register' %}" style="color: var(--ro-indigo); font-weight: 600;">Vytvor si študentský účet (+100 Doros)</a>
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-hairline);">
+            <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.65rem; text-align: center;">
+                {% if lang == 'en' %}Quick demo access (for presentation):{% else %}Rýchly prístup pre ukážku na obhajobe:{% endif %}
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('student', 'heslo123')">
+                    🎓 {% if lang == 'en' %}Demo Student{% else %}Demo Študent{% endif %}
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-warning w-50" onclick="fillDemo('ucitel', 'heslo123')">
-                    <i class="bi bi-mortarboard-fill"></i> Demo Učiteľ
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('ucitel', 'heslo123')">
+                    👩‍🏫 {% if lang == 'en' %}Demo Teacher{% else %}Demo Učiteľ{% endif %}
                 </button>
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
-function fillDemo(user, pass) {
-    document.getElementById('loginUsername').value = user;
-    document.getElementById('loginPassword').value = pass;
-}
+    function fillDemo(user, pass) {
+        document.getElementById('loginUsername').value = user;
+        document.getElementById('loginPassword').value = pass;
+    }
 </script>
 {% endblock %}

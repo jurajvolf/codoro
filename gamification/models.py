@@ -135,6 +135,25 @@ class Quest(models.Model):
     reward_doros = models.PositiveIntegerField(default=50, verbose_name="Odmena v Doros")
     reward_xp = models.PositiveIntegerField(default=30, verbose_name="Odmena v XP")
     is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_quests',
+        verbose_name="Vytvoril učiteľ"
+    )
+
+    def current_period_start(self, today=None):
+        """Vráti dátum začiatku aktuálneho obdobia questu (deň / pondelok / 1. deň mesiaca)."""
+        today = today or timezone.localdate()
+        if self.period == self.QuestPeriod.DAILY:
+            return today
+        if self.period == self.QuestPeriod.WEEKLY:
+            return today - timedelta(days=today.weekday())
+        if self.period == self.QuestPeriod.MONTHLY:
+            return today.replace(day=1)
+        return None  # TEACHER quest sa neresetuje
 
     def __str__(self):
         return f"[{self.get_period_display()}] {self.title_sk} (+{self.reward_doros} Doros)"
@@ -147,7 +166,31 @@ class StudentQuestProgress(models.Model):
     current_value = models.PositiveIntegerField(default=0)
     is_completed = models.BooleanField(default=False)
     is_claimed = models.BooleanField(default=False)
+    period_start = models.DateField(null=True, blank=True, verbose_name="Začiatok obdobia (pre automatický reset)")
     updated_at = models.DateTimeField(auto_now=True)
+
+    def ensure_current_period(self):
+        """Ak začalo nové obdobie (nový deň / týždeň / mesiac), vynuluje progres questu."""
+        start = self.quest.current_period_start()
+        if start is None:
+            return False
+        if self.period_start is None:
+            self.period_start = start
+            self.save(update_fields=['period_start'])
+            return False
+        if self.period_start < start:
+            self.period_start = start
+            self.current_value = 0
+            self.is_completed = False
+            self.is_claimed = False
+            self.save()
+            return True
+        return False
+
+    def progress_pct(self):
+        if not self.quest.target_value:
+            return 100
+        return min(100, int(self.current_value * 100 / self.quest.target_value))
 
     def __str__(self):
         return f"{self.student.username} - {self.quest.title_sk} ({self.current_value}/{self.quest.target_value})"
@@ -179,6 +222,14 @@ class ClassQuest(models.Model):
     deadline = models.DateTimeField(verbose_name="Čas ukončenia výzvy")
     is_completed = models.BooleanField(default=False)
     rewards_distributed = models.BooleanField(default=False)
+
+    def is_expired(self):
+        return not self.is_completed and timezone.now() > self.deadline
+
+    def progress_pct(self):
+        if not self.target_exercises_count:
+            return 100
+        return min(100, int(self.current_exercises_count * 100 / self.target_exercises_count))
 
     def __str__(self):
         return f"Triedny Quest ({self.school_class.name}): {self.title_sk} [{self.current_exercises_count}/{self.target_exercises_count}]"
@@ -240,6 +291,10 @@ class Badge(models.Model):
     description_en = models.CharField(max_length=255)
     icon_name = models.CharField(max_length=50, default="bi-award-fill")
     bonus_doros = models.PositiveIntegerField(default=50)
+    order = models.PositiveIntegerField(default=1, verbose_name="Poradie zobrazenia")
+
+    class Meta:
+        ordering = ['order', 'id']
 
     def __str__(self):
         return self.name_sk

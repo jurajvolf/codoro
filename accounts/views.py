@@ -7,26 +7,39 @@ from .models import User, SchoolClass, SubscriptionLicense
 from gamification.models import DorosTransaction
 
 
+def get_active_lang(request):
+    if request.user.is_authenticated:
+        return request.user.preferred_language
+    return request.session.get('ui_lang', 'sk')
+
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
 
+    lang = get_active_lang(request)
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
         if user:
+            if 'ui_lang' in request.session:
+                user.preferred_language = request.session['ui_lang']
+                user.save(update_fields=['preferred_language'])
             login(request, user)
             return redirect('dashboard')
-        messages.error(request, "Nesprávne prihlasovacie meno alebo heslo.")
 
-    return render(request, 'accounts/login.html')
+        err = "Invalid username or password." if lang == 'en' else "Nesprávne používateľské meno alebo heslo."
+        messages.error(request, err)
+
+    return render(request, 'accounts/login.html', {'ui_lang': lang})
 
 
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
 
+    lang = get_active_lang(request)
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').strip()
@@ -34,17 +47,23 @@ def register_view(request):
         last_name = request.POST.get('last_name', '').strip()
         password = request.POST.get('password', '')
         join_code = request.POST.get('join_code', '').strip().upper()
-        lang = request.POST.get('preferred_language', 'sk')
+        pref_lang = request.POST.get('preferred_language', lang)
 
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Používateľské meno sa už používa.")
-            return render(request, 'accounts/register.html')
+            err = "This username is already taken." if pref_lang == 'en' else "Toto používateľské meno sa už používa."
+            messages.error(request, err)
+            return render(request, 'accounts/register.html', {'ui_lang': lang})
 
         school_class = None
         if join_code:
             school_class = SchoolClass.objects.filter(join_code=join_code).first()
             if not school_class:
-                messages.warning(request, "Zadaný kód triedy neexistuje. Účet bol vytvorený bez priradenej triedy.")
+                warn = (
+                    "Class code not found. Account created without a class."
+                    if pref_lang == 'en'
+                    else "Zadaný kód triedy neexistuje. Účet bol vytvorený bez priradenej triedy."
+                )
+                messages.warning(request, warn)
 
         user = User.objects.create_user(
             username=username,
@@ -54,49 +73,65 @@ def register_view(request):
             password=password,
             role=User.Role.STUDENT,
             school_class=school_class,
-            preferred_language=lang,
+            preferred_language=pref_lang,
             doros=100
         )
         DorosTransaction.objects.create(
             student=user,
             amount=100,
             reason_sk="Uvítací bonus za registráciu do Codoro",
-            reason_en="Welcome bonus for registering on Codoro"
+            reason_en="Welcome bonus for joining Codoro"
         )
+        request.session['ui_lang'] = pref_lang
         login(request, user)
-        messages.success(request, "Vitaj v Codoro! Získal si štartovacích 100 Doros.")
+        msg = (
+            "Welcome to Codoro! You received 100 starter Doros."
+            if pref_lang == 'en'
+            else "Vitaj v Codoro! Získal si štartovacích 100 Doros."
+        )
+        messages.success(request, msg)
         return redirect('dashboard')
 
-    return render(request, 'accounts/register.html')
+    return render(request, 'accounts/register.html', {'ui_lang': lang})
 
 
 @login_required
 def logout_view(request):
+    lang = request.user.preferred_language
     logout(request)
+    request.session['ui_lang'] = lang
     return redirect('login')
 
 
-@login_required
 def switch_language(request, lang_code):
+    """Prepne jazyk rozhrania pre prihláseného aj neprihláseného používateľa."""
     if lang_code in ['sk', 'en']:
-        request.user.preferred_language = lang_code
-        request.user.save(update_fields=['preferred_language'])
+        request.session['ui_lang'] = lang_code
+        if request.user.is_authenticated:
+            request.user.preferred_language = lang_code
+            request.user.save(update_fields=['preferred_language'])
     return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
 
 @login_required
 @transaction.atomic
 def repair_streak(request):
-    """Umožní študentovi opraviť vyhasnutý Streak za 200 Doros."""
     user = request.user
+    lang = user.preferred_language
     repair_cost = 200
 
     if user.lost_streak_value <= 0:
-        messages.info(request, "Nemáš žiadny vyhasnutý Streak na opravu.")
+        msg = "You have no expired streak to restore." if lang == 'en' else "Nemáš žiadnu prerušenú sériu na obnovenie."
+        messages.info(request, msg)
         return redirect('dashboard')
 
     if user.doros < repair_cost:
-        messages.error(request, f"Na opravu Streaku potrebuješ {repair_cost} Doros.")
+        msg = (
+            f"You need {repair_cost} Doros to restore your streak."
+            if lang == 'en'
+            else f"Na obnovenie série potrebuješ {repair_cost} Doros."
+        )
+        messages.error(request, msg)
         return redirect('dashboard')
 
     user.doros -= repair_cost
@@ -108,23 +143,29 @@ def repair_streak(request):
     DorosTransaction.objects.create(
         student=user,
         amount=-repair_cost,
-        reason_sk=f"Záchrana {user.current_streak}-dňového Streaku",
-        reason_en=f"Repaired {user.current_streak}-day Streak"
+        reason_sk=f"Obnovenie {user.current_streak}-dňovej série (Streak)",
+        reason_en=f"Restored {user.current_streak}-day Streak"
     )
-    messages.success(request, f"🔥 Tvoj {user.current_streak}-dňový Streak bol úspešne obnovený!")
+    msg = (
+        f"Your {user.current_streak}-day streak has been restored!"
+        if lang == 'en'
+        else f"Tvoja {user.current_streak}-dňová séria bola úspešne obnovená!"
+    )
+    messages.success(request, msg)
     return redirect('dashboard')
 
 
 @login_required
 @transaction.atomic
 def activate_license(request):
-    """Aktivácia školského licenčného kľúča (napr. EDU-2027-IVC) alebo simulovaný prechod na PRO."""
     if request.method == 'POST':
+        lang = request.user.preferred_language
         code = request.POST.get('license_code', '').strip().upper()
         lic = SubscriptionLicense.objects.select_for_update().filter(code=code, is_active=True).first()
 
         if not lic or lic.current_uses >= lic.max_uses:
-            messages.error(request, "Neplatný alebo vyčerpaný licenčný kľúč.")
+            err = "Invalid or exhausted license key." if lang == 'en' else "Neplatný alebo vyčerpaný licenčný kľúč."
+            messages.error(request, err)
             return redirect('shop')
 
         request.user.subscription_tier = lic.tier
@@ -132,5 +173,10 @@ def activate_license(request):
         lic.current_uses += 1
         lic.save(update_fields=['current_uses'])
 
-        messages.success(request, f"🎉 Licencia {code} bola aktivovaná! Máš plný prístup k PRO/EDU obsahu a neobmedzenému AI tútorovi Codo.")
+        msg = (
+            f"License {code} activated! You now have full access to PRO/EDU modules and unlimited AI tutor Codo."
+            if lang == 'en'
+            else f"Licencia {code} bola aktivovaná! Máš plný prístup k PRO/EDU obsahu a neobmedzenému AI tútorovi Codo."
+        )
+        messages.success(request, msg)
     return redirect('shop')

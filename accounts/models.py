@@ -1,6 +1,8 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from datetime import timedelta
 import math
 
 
@@ -37,6 +39,28 @@ class User(AbstractUser):
         PRO = 'PRO', 'Codoro PRO'
         EDU = 'EDU', 'Školská EDU licencia'
 
+    # Prednastavené avatary (bez nutnosti nahrávania obrázkov a knižnice Pillow)
+    AVATAR_CHOICES = [
+        ('codo', '🤖'),
+        ('snake', '🐍'),
+        ('fox', '🦊'),
+        ('owl', '🦉'),
+        ('panda', '🐼'),
+        ('cat', '🐱'),
+        ('rocket', '🚀'),
+        ('ninja', '🥷'),
+        ('wizard', '🧙'),
+        ('alien', '👾'),
+    ]
+    AVATAR_COLORS = [
+        ('indigo', '#4636F5'),
+        ('cyan', '#0891B2'),
+        ('emerald', '#059669'),
+        ('amber', '#D97706'),
+        ('rose', '#E11D48'),
+        ('violet', '#7C3AED'),
+    ]
+
     # 1. Rola, trieda a lokalizácia
     role = models.CharField(
         max_length=10,
@@ -58,6 +82,8 @@ class User(AbstractUser):
         default=Language.SK,
         verbose_name="Jazyk rozhrania"
     )
+    avatar = models.CharField(max_length=20, choices=AVATAR_CHOICES, default='codo', verbose_name="Avatar")
+    avatar_color = models.CharField(max_length=20, choices=AVATAR_COLORS, default='indigo', verbose_name="Farba avatara")
 
     # 2. Predplatné a limity AI tútora Codo
     subscription_tier = models.CharField(
@@ -95,6 +121,20 @@ class User(AbstractUser):
         """Vráti celkový počet XP potrebných na dosiahnutie ďalšej úrovne."""
         return int(100 * (self.level ** 1.5))
 
+    def xp_for_current_level(self):
+        """Vráti počet XP, od ktorého začína aktuálna úroveň (100 * (Level - 1)^1.5)."""
+        return int(100 * ((self.level - 1) ** 1.5))
+
+    def level_progress_pct(self):
+        """Percentuálny postup v rámci aktuálnej úrovne (pre progress bar v profile a na dashboarde)."""
+        start, end = self.xp_for_current_level(), self.xp_for_next_level()
+        if end <= start:
+            return 100
+        return max(0, min(100, int((self.xp - start) * 100 / (end - start))))
+
+    def xp_to_next_level(self):
+        return max(0, self.xp_for_next_level() - self.xp)
+
     def add_xp_and_check_level_up(self, amount):
         """Pridá XP a ak študent postúpi na nový level, automaticky mu pripíše bonusové Doros."""
         self.xp += amount
@@ -110,6 +150,98 @@ class User(AbstractUser):
 
         self.save()
         return reward_doros
+
+    # ------------------------------------------------------------------
+    # Denný Streak: registrácia aktivity, detekcia prerušenia a záchrana
+    # ------------------------------------------------------------------
+    def register_activity(self):
+        """
+        Zaznamená dnešnú aktivitu (vyriešená úloha) a predĺži sériu.
+        Neukladá objekt - uloženie zabezpečí volajúci kód. Vráti True, ak sa séria zmenila.
+        """
+        today = timezone.localdate()
+        if self.last_activity_date == today:
+            return False
+        if self.last_activity_date == today - timedelta(days=1):
+            self.current_streak += 1
+        else:
+            self.current_streak = 1
+        self.last_activity_date = today
+        self.longest_streak = max(self.longest_streak, self.current_streak)
+        return True
+
+    def refresh_streak_state(self):
+        """
+        Skontroluje, či študent nevynechal deň. Ak má v inventári zmrazenia (streak_freezes),
+        spotrebujú sa na vynechané dni. Inak sa séria presunie do `lost_streak_value`
+        a študent ju môže do 24 hodín zachrániť za Doros. Vráti True, ak došlo k zmene.
+        """
+        now = timezone.now()
+        today = timezone.localdate()
+        changed = False
+
+        window = timedelta(hours=getattr(settings, 'STREAK_REPAIR_WINDOW_HOURS', 24))
+        if self.lost_streak_value and self.streak_lost_at and now > self.streak_lost_at + window:
+            self.lost_streak_value = 0
+            self.streak_lost_at = None
+            changed = True
+
+        if self.current_streak > 0 and self.last_activity_date and self.last_activity_date < today - timedelta(days=1):
+            missed_days = (today - self.last_activity_date).days - 1
+            if self.streak_freezes >= missed_days:
+                self.streak_freezes -= missed_days
+                self.last_activity_date = today - timedelta(days=1)
+            else:
+                self.lost_streak_value = self.current_streak
+                self.streak_lost_at = now
+                self.current_streak = 0
+            changed = True
+
+        if changed:
+            self.save(update_fields=[
+                'current_streak', 'lost_streak_value', 'streak_lost_at',
+                'streak_freezes', 'last_activity_date'
+            ])
+        return changed
+
+    def streak_repair_deadline(self):
+        if not self.streak_lost_at:
+            return None
+        return self.streak_lost_at + timedelta(hours=getattr(settings, 'STREAK_REPAIR_WINDOW_HOURS', 24))
+
+    # ------------------------------------------------------------------
+    # Freemium limit AI tútora Codo
+    # ------------------------------------------------------------------
+    def ai_hints_remaining(self):
+        """Počet zostávajúcich AI rád na dnes. None = neobmedzene (PRO / EDU / učiteľ)."""
+        if self.has_pro_access():
+            return None
+        limit = getattr(settings, 'FREE_DAILY_AI_HINTS', 5)
+        used = self.daily_ai_hints_used if self.last_ai_hint_date == timezone.localdate() else 0
+        return max(0, limit - used)
+
+    def consume_ai_hint(self):
+        """Spotrebuje 1 AI radu. Vráti False, ak FREE účet už vyčerpal denný limit."""
+        if self.has_pro_access():
+            return True
+        today = timezone.localdate()
+        if self.last_ai_hint_date != today:
+            self.daily_ai_hints_used = 0
+            self.last_ai_hint_date = today
+        if self.daily_ai_hints_used >= getattr(settings, 'FREE_DAILY_AI_HINTS', 5):
+            return False
+        self.daily_ai_hints_used += 1
+        self.save(update_fields=['daily_ai_hints_used', 'last_ai_hint_date'])
+        return True
+
+    def avatar_emoji(self):
+        return dict(self.AVATAR_CHOICES).get(self.avatar, '🤖')
+
+    def avatar_hex(self):
+        return dict(self.AVATAR_COLORS).get(self.avatar_color, '#4636F5')
+
+    def display_name(self):
+        return self.get_full_name() or self.username
 
     def is_teacher(self):
         return self.role == self.Role.TEACHER or self.is_superuser

@@ -1,50 +1,72 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-md-6">
-        <div class="card card-codoro p-4 shadow-lg">
-            <h3 class="fw-bold mb-1">Registrácia študenta do Codoro</h3>
-            <p class="text-secondary small mb-4">Získaj okamžite 100 Doros na štart a pripoj sa k svojej triede.</p>
+{% firstof ui_lang 'sk' as lang %}
+<div class="animate-in" style="max-width: 580px; margin: 1.5rem auto;">
+    <div class="card-surface" style="padding: 2.5rem;">
+        <h1 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.35rem;">
+            {% if lang == 'en' %}Create your student account{% else %}Vytvorenie študentského účtu{% endif %}
+        </h1>
+        <p style="color: var(--codo-slate); font-size: 0.92rem; margin-bottom: 1.75rem;">
+            {% if lang == 'en' %}
+                Start with a 100 Doros welcome bonus and connect to your school class using a join code.
+            {% else %}
+                Získaj na štart uvítací bonus 100 Doros a pripoj sa k svojej triede pomocou kódu od učiteľa.
+            {% endif %}
+        </p>
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Krstné meno</label>
-                        <input type="text" name="first_name" class="form-control" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Priezvisko</label>
-                        <input type="text" name="last_name" class="form-control" required>
-                    </div>
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}First name{% else %}Krstné meno{% endif %}</label>
+                    <input type="text" name="first_name" class="form-control" required>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Používateľské meno (login)</label>
-                    <input type="text" name="username" class="form-control" required>
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Last name{% else %}Priezvisko{% endif %}</label>
+                    <input type="text" name="last_name" class="form-control" required>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">E-mailová adresa</label>
-                    <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">{% if lang == 'en' %}Username{% else %}Používateľské meno (login){% endif %}</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">{% if lang == 'en' %}Email address{% else %}E-mailová adresa{% endif %}</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Class join code (optional){% else %}Kód triedy (voliteľné){% endif %}</label>
+                    <input type="text" name="join_code" class="form-control" value="IVC-2027" style="font-family: var(--font-mono); font-weight: 600;">
                 </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Kód školskej triedy (voliteľné)</label>
-                        <input type="text" name="join_code" class="form-control" value="IVC-2027" placeholder="napr. IVC-2027">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Preferovaný jazyk</label>
-                        <select name="preferred_language" class="form-select">
-                            <option value="sk">🇸🇰 Slovenčina</option>
-                            <option value="en">🇬🇧 English</option>
-                        </select>
-                    </div>
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Interface language{% else %}Jazyk rozhrania{% endif %}</label>
+                    <select name="preferred_language" class="form-select">
+                        <option value="sk" {% if lang == 'sk' %}selected{% endif %}>Slovenčina (SK)</option>
+                        <option value="en" {% if lang == 'en' %}selected{% endif %}>English (EN)</option>
+                    </select>
                 </div>
-                <div class="mb-4">
-                    <label class="form-label">Heslo</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-codoro btn-lg w-100">Vytvoriť účet (+100 Doros)</button>
-            </form>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label class="form-label">{% if lang == 'en' %}Password{% else %}Heslo{% endif %}</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.78rem;">
+                {% if lang == 'en' %}Create account & claim 100 Doros{% else %}Zaregistrovať sa a získať 100 Doros{% endif %}
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--codo-slate);">
+            {% if lang == 'en' %}
+                Already have an account? <a href="{% url 'login' %}" style="color: var(--ro-indigo); font-weight: 600;">Sign in</a>
+            {% else %}
+                Už máš vytvorený účet? <a href="{% url 'login' %}" style="color: var(--ro-indigo); font-weight: 600;">Prihlás sa</a>
+            {% endif %}
         </div>
     </div>
 </div>

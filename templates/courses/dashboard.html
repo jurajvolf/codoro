@@ -1,198 +1,532 @@
 {% extends 'base.html' %}
 {% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-<!-- 1. Záchrana vyhasnutého Streaku -->
+<style>
+    .lesson-row {
+        padding: 0.75rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border-hairline);
+    }
+    .lesson-row:last-child {
+        border-bottom: none;
+    }
+    .lesson-badge-completed {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--emerald-bg);
+        color: var(--emerald-text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+    .lesson-badge-order {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--bg-subtle);
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+    .leaderboard-row {
+        padding: 0.65rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-hairline);
+    }
+    .leaderboard-row:last-child {
+        border-bottom: none;
+    }
+    .rank-badge {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        background: var(--bg-subtle);
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+    .rank-badge-1 {
+        background: var(--gold-bg);
+        color: var(--gold-text);
+    }
+    .leaderboard-name {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+    }
+    .leaderboard-name.is-self {
+        color: var(--ro-indigo);
+        font-weight: 800;
+    }
+</style>
+
+<!-- 1. Záchrana prerušenej série (Streak Repair Banner) -->
 {% if user.lost_streak_value > 0 %}
-<div class="alert alert-warning d-flex justify-content-between align-items-center p-3 mb-4 rounded-4 border-warning">
-    <div>
-        <h5 class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-            {% if user.preferred_language == 'en' %}
-                Your {{ user.lost_streak_value }}-day Streak has expired!
-            {% else %}
-                Tvoj {{ user.lost_streak_value }}-dňový Streak vyhasol!
-            {% endif %}
-        </h5>
-        <span class="small">
-            {% if user.preferred_language == 'en' %}
-                You can still repair your lost streak for 200 Doros before the timer runs out.
-            {% else %}
-                Máš ešte 24 hodín na jeho okamžitú záchranu za 200 Doros, aby si neprišiel o svoju sériu.
-            {% endif %}
-        </span>
+<section class="card-surface animate-in"
+    style="background: var(--flame-bg); border-color: var(--flame-border); padding: 1.25rem 1.75rem; margin-bottom: 1.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="font-size: 2rem;">🔥</span>
+        <div>
+            <strong style="font-family: var(--font-display); font-size: 1.08rem; color: var(--flame-text); display: block;">
+                {% if lang == 'en' %}
+                Your {{ user.lost_streak_value }}-day learning streak was interrupted!
+                {% else %}
+                Tvoja {{ user.lost_streak_value }}-dňová séria učenia bola prerušená!
+                {% endif %}
+            </strong>
+            <span style="font-size: 0.88rem; color: var(--text-secondary);">
+                {% if lang == 'en' %}
+                Restore your streak within 24 hours for 200 Doros and keep your momentum going.
+                {% else %}
+                Zachráň si svoju sériu do 24 hodín za 200 Doros a pokračuj bez straty pokroku.
+                {% endif %}
+            </span>
+        </div>
     </div>
     <form method="post" action="{% url 'repair_streak' %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-warning fw-bold px-4">
-            <i class="bi bi-wrench-adjustable me-1"></i>
-            {% if user.preferred_language == 'en' %}Repair Streak (200 Doros){% else %}Opraviť Streak (200 Doros){% endif %}
+        <button type="submit" class="btn btn-sm" style="background: var(--flame-text); color: #FFFFFF; font-weight: 700;">
+            {% if lang == 'en' %}Restore Streak (200 Doros){% else %}Obnoviť sériu (200 Doros){% endif %}
         </button>
     </form>
-</div>
+</section>
 {% endif %}
 
 <!-- 2. Aktívny časovaný Coin Drop od učiteľa -->
 {% if active_drop %}
-<div class="drop-banner p-4 mb-4 d-flex justify-content-between align-items-center text-white shadow">
-    <div>
-        <span class="badge bg-warning text-dark fw-bold mb-1">LIVE EVENT</span>
-        <h4 class="fw-bold mb-1">🎁 {% if user.preferred_language == 'en' %}{{ active_drop.title_en }}{% else %}{{ active_drop.title_sk }}{% endif %}</h4>
-        <p class="mb-0 small opacity-75">
-            {% if user.preferred_language == 'en' %}
-                Random drop between {{ active_drop.min_doros }} – {{ active_drop.max_doros }} Doros! Limited claims remaining.
-            {% else %}
-                Náhodná odmena {{ active_drop.min_doros }} až {{ active_drop.max_doros }} Doros za aktivitu! Počet kusov je limitovaný.
-            {% endif %}
-        </p>
+<section class="card-surface animate-in"
+    style="padding: 1.35rem 1.75rem; margin-bottom: 1.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; background: var(--ro-indigo-soft); border: 2px solid var(--ro-indigo-border); box-shadow: var(--shadow-indigo);">
+    <div style="display: flex; align-items: center; gap: 1.15rem;">
+        <span style="font-size: 2.2rem;">🎁</span>
+        <div>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem;">
+                ● {% if lang == 'en' %}LIVE CLASSROOM DROP{% else %}AKTÍVNY BONUSOVÝ DROP OD UČITEĽA{% endif %}
+            </span>
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                {% if lang == 'en' %}{{ active_drop.title_en }}{% else %}{{ active_drop.title_sk }}{% endif %}
+            </h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0.2rem 0 0;">
+                {% if lang == 'en' %}
+                Instant mystery reward between {{ active_drop.min_doros }} and {{ active_drop.max_doros }} Doros! Limited claims for your class.
+                {% else %}
+                Získaj náhodnú odmenu {{ active_drop.min_doros }} až {{ active_drop.max_doros }} Doros! Počet vyzdvihnutí v triede je limitovaný.
+                {% endif %}
+            </p>
+        </div>
     </div>
     <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-light btn-lg fw-bold text-dark px-4 shadow">
-            <i class="bi bi-gift-fill text-danger me-1"></i>
-            {% if user.preferred_language == 'en' %}Claim Drop!{% else %}Získať odmenu!{% endif %}
+        <button type="submit" class="btn btn-primary" style="padding: 0.7rem 1.4rem; font-weight: 700;">
+            ⚡ {% if lang == 'en' %}Claim Reward Drop{% else %}Vyzdvihnúť Coin Drop{% endif %}
         </button>
     </form>
-</div>
+</section>
 {% endif %}
 
-<!-- 3. Kolektívny triedny Quest -->
-{% if class_quest %}
-<div class="card card-codoro p-4 mb-4 border-info">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <span class="badge bg-info text-dark fw-bold me-2">KOLEKTÍVNY TRIEDNY QUEST</span>
-            <strong class="fs-5">{% if user.preferred_language == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}</strong>
-        </div>
-        <span class="badge badge-doros fs-6">+{{ class_quest.reward_doros_per_student }} Doros / študent</span>
-    </div>
-    <p class="text-secondary small mb-2">
-        Pravidlo odmeny: <strong>{{ class_quest.get_reward_policy_display }}</strong>
-        (min. príspevok žiaka: {{ class_quest.min_contribution_required }} úloh).
-    </p>
-    <div class="progress mb-2" style="height: 22px; background-color: #0f172a;">
-        {% widthratio class_quest.current_exercises_count class_quest.target_exercises_count 100 as pct %}
-        <div class="progress-bar bg-info text-dark fw-bold" style="width: {{ pct }}%;">
-            {{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }} úloh ({{ pct }} %)
-        </div>
-    </div>
-    {% if top_contributors %}
-    <div class="small text-secondary mt-1">
-        <i class="bi bi-people-fill text-info me-1"></i> Top prispievatelia triedy:
-        {% for c in top_contributors %}
-            <span class="badge bg-dark border border-secondary ms-1">{{ c.student.username }}: {{ c.amount_contributed }}×</span>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-<div class="row g-4">
-    <!-- Ľavý stĺpec: Moduly a Lekcie Pythonu -->
-    <div class="col-lg-8">
-        <h4 class="fw-bold mb-3">
-            <i class="bi bi-journal-code text-success me-2"></i>
-            {% if user.preferred_language == 'en' %}Python Learning Path{% else %}Vzdelávacie moduly jazyka Python{% endif %}
-        </h4>
-
-        {% for module in modules %}
-        <div class="card card-codoro p-4 mb-3">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                    <h5 class="fw-bold mb-1">
-                        <i class="bi {{ module.icon_name }} text-success me-2"></i>
-                        {{ module.order }}. {% if user.preferred_language == 'en' %}{{ module.title_en }}{% else %}{{ module.title_sk }}{% endif %}
-                    </h5>
-                    <p class="text-secondary small mb-0">
-                        {% if user.preferred_language == 'en' %}{{ module.description_en }}{% else %}{{ module.description_sk }}{% endif %}
-                    </p>
+<!-- 3. Študentský Hero & Rýchly prehľad metrík -->
+<section class="card-surface animate-in" style="padding: 1.6rem 1.75rem; margin-bottom: 1.75rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 52px; height: 52px; border-radius: 14px; background: var(--bg-subtle); border: 2px solid var(--ro-indigo-border); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: var(--shadow-xs);">
+                {{ user.avatar_emoji }}
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <h1 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                        {% if lang == 'en' %}Welcome back,{% else %}Vitaj späť,{% endif %} {{ user.first_name|default:user.username }}!
+                    </h1>
+                    <span class="metric-badge metric-tier">{{ user.subscription_tier }}</span>
+                    {% if user.school_class %}
+                    <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; color: var(--text-muted); background: var(--bg-subtle); padding: 0.2rem 0.55rem; border-radius: 6px;">
+                        🏫 {{ user.school_class.name }}
+                    </span>
+                    {% endif %}
                 </div>
-                {% if module.is_pro_only %}
-                    <span class="badge bg-warning text-dark fw-bold"><i class="bi bi-star-fill me-1"></i>PRO / EDU</span>
+                <div style="font-size: 0.86rem; color: var(--text-muted); margin-top: 0.2rem;">
+                    {% if lang == 'en' %}
+                    Level {{ user.level }} Programmer · {{ user.xp }} XP total ({{ user.xp_to_next_level }} XP to Level {{ user.level|add:1 }})
+                    {% else %}
+                    Programátor úrovne {{ user.level }} · Celkovo {{ user.xp }} XP (chýba {{ user.xp_to_next_level }} XP do Levelu {{ user.level|add:1 }})
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Rýchle ukazovatele (Mini stats grid) -->
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <div style="padding: 0.55rem 0.85rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); min-width: 110px;">
+                <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
+                    {% if lang == 'en' %}Exercises{% else %}Vyriešené{% endif %}
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">
+                    ✅ {{ solved_count }}
+                </div>
+            </div>
+
+            <div style="padding: 0.55rem 0.85rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); min-width: 110px;">
+                <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
+                    {% if lang == 'en' %}Streak{% else %}Séria{% endif %}
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: var(--flame-text);">
+                    🔥 {{ user.current_streak }} {% if lang == 'en' %}days{% else %}dní{% endif %}
+                </div>
+            </div>
+
+            <div style="padding: 0.55rem 0.85rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); min-width: 110px;">
+                <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
+                    Doros
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: var(--gold-text);">
+                    🪙 {{ user.doros }}
+                </div>
+            </div>
+
+            <div style="padding: 0.55rem 0.85rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); min-width: 120px;">
+                <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
+                    {% if lang == 'en' %}AI Tutor Hints{% else %}Rady AI Tútora{% endif %}
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: var(--visor-cyan);">
+                    {% if ai_hints_remaining is None %}
+                        ✨ {% if lang == 'en' %}Unlimited{% else %}Bez limitu{% endif %}
+                    {% else %}
+                        🤖 {{ ai_hints_remaining }}/5
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress bar do ďalšej úrovne -->
+    <div style="margin-top: 1.15rem; padding-top: 0.9rem; border-top: 1px solid var(--border-hairline);">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 0.35rem;">
+            <span>Level {{ user.level }}</span>
+            <span>{{ user.level_progress_pct }}% ({% if lang == 'en' %}Level{% else %}Úroveň{% endif %} {{ user.level|add:1 }})</span>
+        </div>
+        <div class="progress-track" style="height: 8px;">
+            <div class="progress-fill" data-progress="{{ user.level_progress_pct }}"></div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Rýchly odkaz na pokračovanie v učení (Next lesson CTA) -->
+{% if next_lesson %}
+<section class="card-surface animate-in delay-1"
+    style="padding: 1.15rem 1.6rem; margin-bottom: 1.75rem; background: linear-gradient(90deg, var(--ro-indigo-soft) 0%, var(--bg-surface) 100%); border-left: 4px solid var(--ro-indigo); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <span style="font-size: 1.5rem;">📖</span>
+        <div>
+            <span style="font-size: 0.74rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.04em;">
+                {% if lang == 'en' %}CONTINUE WHERE YOU LEFT OFF{% else %}POKRAČOVAŤ V UČENÍ{% endif %}
+            </span>
+            <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary);">
+                {% if lang == 'en' %}{{ next_lesson.module.title_en }} · {{ next_lesson.title_en }}{% else %}{{ next_lesson.module.title_sk }} · {{ next_lesson.title_sk }}{% endif %}
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary btn-sm" style="padding: 0.55rem 1.15rem; font-weight: 700;">
+        {% if lang == 'en' %}Resume Lesson →{% else %}Spustiť lekciu →{% endif %}
+    </a>
+</section>
+{% endif %}
+
+<!-- 5. Hlavné dvojstĺpcové rozloženie -->
+<div class="layout-2col" style="display: grid; grid-template-columns: 1.75fr 1fr; gap: 2rem; align-items: start;">
+
+    <!-- Ľavý stĺpec: Kolektívny triedny Quest + Vzdelávacie moduly Pythonu -->
+    <div class="animate-in delay-1">
+
+        <!-- Kolektívna výzva triedy -->
+        {% if class_quest %}
+        <div class="card-surface" style="padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--ro-indigo);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                <div>
+                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.04em;">
+                        {% if lang == 'en' %}COLLECTIVE CLASS QUEST{% else %}KOLEKTÍVNA VÝZVA TRIEDY{% endif %}
+                    </span>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-top: 0.15rem; color: var(--text-primary);">
+                        {% if lang == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}
+                    </h2>
+                </div>
+                <span class="metric-badge metric-doros">
+                    +{{ class_quest.reward_doros_per_student }} Doros / {% if lang == 'en' %}student{% else %}žiak{% endif %}
+                </span>
+            </div>
+
+            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
+                {% if lang == 'en' %}
+                Reward policy: Minimum {{ class_quest.min_contribution_required }} solved exercise(s) required per student to qualify.
                 {% else %}
-                    <span class="badge bg-success">FREE</span>
+                Pravidlo odmeny: Pre nárok na odmenu musí každý žiak prispieť aspoň {{ class_quest.min_contribution_required }} vyriešenou úlohou.
+                {% endif %}
+            </p>
+
+            <div class="progress-track" style="height: 12px; margin-bottom: 0.65rem;">
+                <div class="progress-fill" data-progress="{{ class_quest.progress_pct }}"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-muted);">
+                <span>
+                    {% if lang == 'en' %}
+                    Class progress: {{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }} tasks ({{ class_quest.progress_pct }}%)
+                    {% else %}
+                    Progres triedy: {{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }} úloh ({{ class_quest.progress_pct }} %)
+                    {% endif %}
+                </span>
+                {% if top_contributors %}
+                <span>
+                    {% if lang == 'en' %}Top contributors:{% else %}Najaktívnejší:{% endif %}
+                    {% for c in top_contributors %}
+                        <strong style="color: var(--text-primary);">{{ c.student.username }}</strong> ({{ c.amount_contributed }}×){% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
                 {% endif %}
             </div>
-
-            <div class="list-group list-group-flush mt-3">
-                {% for lesson in module.lessons.all %}
-                <a href="{% url 'lesson_detail' lesson.id %}" class="list-group-item list-group-item-action bg-transparent text-light border-secondary d-flex justify-content-between align-items-center py-3">
-                    <div>
-                        {% if lesson.id in completed_lesson_ids %}
-                            <i class="bi bi-check-circle-fill text-success me-2 fs-5"></i>
-                        {% else %}
-                            <i class="bi bi-play-circle text-info me-2 fs-5"></i>
-                        {% endif %}
-                        <span class="fw-semibold">{{ module.order }}.{{ lesson.order }} {% if user.preferred_language == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}</span>
-                        <span class="badge bg-dark border border-secondary ms-2">{{ lesson.exercises.count }} cvičení</span>
-                    </div>
-                    <span class="btn btn-sm btn-outline-success">
-                        {% if user.preferred_language == 'en' %}Start Lesson{% else %}Otvoriť lekciu{% endif %} <i class="bi bi-arrow-right"></i>
-                    </span>
-                </a>
-                {% empty %}
-                <div class="text-secondary small fst-italic mt-2">
-                    {% if user.preferred_language == 'en' %}
-                        Locked or awaiting teacher content. Activate EDU license in the Shop!
-                    {% else %}
-                        Tento modul vyžaduje PRO/EDU licenciu alebo doplnenie lekcií učiteľom.
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
         </div>
-        {% endfor %}
-    </div>
+        {% endif %}
 
-    <!-- Pravý stĺpec: Osobné Questy (Daily/Weekly/Monthly) a Rebríček -->
-    <div class="col-lg-4">
-        <div class="card card-codoro p-4 mb-4">
-            <h5 class="fw-bold mb-3">
-                <i class="bi bi-trophy-fill text-warning me-2"></i>
-                {% if user.preferred_language == 'en' %}Personal Quests{% else %}Osobné výzvy (Quests){% endif %}
-            </h5>
+        <!-- Hlavička modulov -->
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.15rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                {% if lang == 'en' %}Python Curriculum{% else %}Vzdelávacie moduly Pythonu{% endif %}
+            </h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">
+                {% if lang == 'en' %}Interactive lessons & automated unit tests{% else %}Interaktívne lekcie a automatické testy{% endif %}
+            </span>
+        </div>
 
-            {% for item in quest_items %}
-            <div class="p-3 mb-3 rounded-3" style="background-color: #0f172a; border: 1px solid #334155;">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="badge bg-primary small">{{ item.quest.get_period_display }}</span>
-                    <span class="text-warning fw-bold small">+{{ item.quest.reward_doros }} Doros | +{{ item.quest.reward_xp }} XP</span>
+        <!-- Zoznam modulov cez module_cards -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {% for card in module_cards %}
+            <article class="card-surface card-interactive" style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.85rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 240px;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                            <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.2rem 0.55rem; border-radius: 6px;">
+                                {% if lang == 'en' %}Module{% else %}Modul{% endif %} 0{{ card.module.order }}
+                            </span>
+                            {% if card.module.is_pro_only %}
+                            <span class="metric-badge metric-tier">PRO / EDU</span>
+                            {% endif %}
+                            <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
+                                {{ card.done }}/{{ card.total }} {% if lang == 'en' %}completed{% else %}dokončených{% endif %}
+                            </span>
+                        </div>
+                        <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.25rem;">
+                            {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
+                        </h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">
+                            {% if lang == 'en' %}{{ card.module.description_en }}{% else %}{{ card.module.description_sk }}{% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Mini progress bar modulu -->
+                    <div style="min-width: 120px; text-align: right;">
+                        <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--ro-indigo);">
+                            {{ card.pct }}%
+                        </span>
+                        <div class="progress-track" style="height: 6px; width: 120px; margin-top: 0.3rem;">
+                            <div class="progress-fill" data-progress="{{ card.pct }}"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="fw-semibold small mb-2">
-                    {% if user.preferred_language == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="small text-secondary">Progres: {{ item.current_value }} / {{ item.quest.target_value }}</span>
-                    {% if item.is_completed and not item.is_claimed %}
-                        <form method="post" action="{% url 'claim_quest_reward' item.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-warning fw-bold">Prevziať odmenu</button>
-                        </form>
-                    {% elif item.is_claimed %}
-                        <span class="badge bg-success"><i class="bi bi-check2-all"></i> Vyzdvihnuté</span>
+
+                <!-- Zoznam lekcií modulu -->
+                <div style="border-top: 1px solid var(--border-hairline); margin-top: 1rem; padding-top: 0.5rem;">
+                    {% if card.locked %}
+                        <div style="padding: 1rem; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border-strong); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+                            <div>
+                                <strong style="font-size: 0.92rem; color: var(--text-primary); display: block;">
+                                    🔒 {% if lang == 'en' %}Advanced PRO/EDU Module{% else %}Pokročilý PRO/EDU modul{% endif %}
+                                </strong>
+                                <span style="font-size: 0.84rem; color: var(--text-muted);">
+                                    {% if lang == 'en' %}
+                                    Unlock object-oriented programming with your school license or Codoro PRO.
+                                    {% else %}
+                                    Odomkni objektovo-orientované programovanie pomocou školskej licencie v Obchode.
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <a href="{% url 'shop' %}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+                                🔑 {% if lang == 'en' %}Unlock in Shop{% else %}Odomknúť v Obchode{% endif %}
+                            </a>
+                        </div>
+                    {% else %}
+                        {% for lesson in card.lessons %}
+                        <div class="lesson-row">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                {% if lesson.id in completed_lesson_ids %}
+                                <span class="lesson-badge-completed">✓</span>
+                                {% else %}
+                                <span class="lesson-badge-order">{{ lesson.order }}</span>
+                                {% endif %}
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-primary);">
+                                        {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
+                                    </div>
+                                    <div style="font-size: 0.78rem; color: var(--text-muted);">
+                                        {{ lesson.exercises.count }} {% if lang == 'en' %}coding exercise(s){% else %}praktické cvičenia{% endif %} · +{{ lesson.xp_reward }} XP
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-primary btn-sm">
+                                {% if lang == 'en' %}Open Lesson{% else %}Spustiť lekciu{% endif %}
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div style="padding: 0.75rem 0; font-size: 0.88rem; color: var(--text-muted);">
+                            {% if lang == 'en' %}No lessons available in this module yet.{% else %}Tento modul zatiaľ neobsahuje žiadne lekcie.{% endif %}
+                        </div>
+                        {% endfor %}
                     {% endif %}
                 </div>
+            </article>
+            {% empty %}
+            <div class="card-surface" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                {% if lang == 'en' %}No modules configured yet. Run the seed script to populate curriculum.{% else %}Zatiaľ nie sú vytvorené žiadne moduly. Spusti seed_codoro.py.{% endif %}
             </div>
             {% endfor %}
         </div>
-
-        <!-- Rebríček triedy -->
-        <div class="card card-codoro p-4">
-            <h5 class="fw-bold mb-3">
-                <i class="bi bi-bar-chart-fill text-info me-2"></i>
-                {% if user.preferred_language == 'en' %}Class Leaderboard{% else %}Rebríček študentov{% endif %}
-            </h5>
-            <ul class="list-group list-group-flush">
-                {% for s in leaderboard %}
-                <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center px-0">
-                    <div>
-                        <span class="badge bg-secondary me-2">#{{ forloop.counter }}</span>
-                        <strong class="{% if s.id == user.id %}text-info{% endif %}">{{ s.username }}</strong>
-                        <small class="text-secondary ms-1">(Lvl {{ s.level }})</small>
-                    </div>
-                    <span class="badge badge-xp">{{ s.xp }} XP</span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
     </div>
+
+    <!-- Pravý stĺpec: Osobné Questy a Rebríček -->
+    <aside class="animate-in delay-2" style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+        <!-- Osobné Questy -->
+        <section class="card-surface" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+                    🎯 {% if lang == 'en' %}Personal Quests{% else %}Osobné výzvy (Quests){% endif %}
+                </h2>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                    {{ quest_items|length }} {% if lang == 'en' %}active{% else %}aktívnych{% endif %}
+                </span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for item in quest_items %}
+                <div style="padding: 1rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase;">
+                            {{ item.quest.get_period_display|default:item.quest.period }}
+                        </span>
+                        <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; color: var(--gold-text);">
+                            +{{ item.quest.reward_doros }} Doros · +{{ item.quest.reward_xp }} XP
+                        </span>
+                    </div>
+
+                    <div style="font-weight: 600; font-size: 0.92rem; margin-bottom: 0.6rem; color: var(--text-primary);">
+                        {% if lang == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
+                    </div>
+
+                    <div class="progress-track" style="height: 7px; margin-bottom: 0.55rem; background: var(--bg-surface);">
+                        <div class="progress-fill" data-progress="{{ item.progress_pct }}"></div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+                            {{ item.current_value }} / {{ item.quest.target_value }}
+                        </span>
+                        {% if item.is_completed and not item.is_claimed %}
+                        <form method="post" action="{% url 'claim_quest_reward' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.35rem 0.75rem; font-size: 0.78rem; font-weight: 700;">
+                                🏆 {% if lang == 'en' %}Claim Reward{% else %}Prevziať odmenu{% endif %}
+                            </button>
+                        </form>
+                        {% elif item.is_claimed %}
+                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--emerald-text);">
+                            ✓ {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                    {% if lang == 'en' %}No active quests at the moment.{% else %}Momentálne nemáš žiadne aktívne výzvy.{% endif %}
+                </p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Rebríček študentov -->
+        <section class="card-surface" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+                    🏆 {% if lang == 'en' %}Leaderboard{% else %}Rebríček študentov{% endif %}
+                </h2>
+                {% if user.school_class %}
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; color: var(--ro-indigo);">
+                    {{ user.school_class.name }}
+                </span>
+                {% endif %}
+            </div>
+
+            <div>
+                {% for s in leaderboard %}
+                <div class="leaderboard-row">
+                    <div style="display: flex; align-items: center; gap: 0.65rem;">
+                        <span class="rank-badge rank-badge-{{ forloop.counter }}">
+                            {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}{{ forloop.counter }}{% endif %}
+                        </span>
+                        <div>
+                            <strong class="leaderboard-name {% if s.id == user.id %}is-self{% endif %}">
+                                {{ s.username }} {% if s.id == user.id %}({% if lang == 'en' %}You{% else %}Ty{% endif %}){% endif %}
+                            </strong>
+                            <div style="font-size: 0.76rem; color: var(--text-muted);">
+                                Lvl {{ s.level }}{% if s.badge_count %} · 🎖️ {{ s.badge_count }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <span style="font-family: var(--font-mono); font-size: 0.84rem; font-weight: 700; color: var(--text-primary);">
+                        {{ s.xp }} XP
+                    </span>
+                </div>
+                {% empty %}
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                    {% if lang == 'en' %}No students in leaderboard yet.{% else %}Rebríček je zatiaľ prázdny.{% endif %}
+                </p>
+                {% endfor %}
+            </div>
+        </section>
+
+    </aside>
+
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        function updateProgress() {
+            var fills = document.querySelectorAll('.progress-fill[data-progress]');
+            for (var i = 0; i < fills.length; i++) {
+                var p = parseFloat(fills[i].getAttribute('data-progress')) || 0;
+                fills[i].style.width = Math.min(100, Math.max(0, p)) + '%';
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateProgress);
+        } else {
+            updateProgress();
+        }
+    })();
+</script>
 {% endblock %}

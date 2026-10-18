@@ -159,7 +159,24 @@ class LessonProgress(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lesson_progress')
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     is_completed = models.BooleanField(default=False)
+    quiz_passed = models.BooleanField(default=False, verbose_name="Kvíz úspešne vyplnený (XP pripísané)")
     completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('student', 'lesson')
+
+
+class HintUnlock(models.Model):
+    """Záznam o odomknutej (zaplatenej) nápovede - študent platí za nápovedu k úlohe iba raz."""
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='hint_unlocks')
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='hint_unlocks')
+    cost_paid = models.PositiveIntegerField(default=0, verbose_name="Zaplatená cena v Doros")
+    unlocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'exercise')
+        verbose_name = "Odomknutá nápoveda"
+        verbose_name_plural = "Odomknuté nápovedy"
+
+    def __str__(self):
+        return f"{self.student.username} - nápoveda k {self.exercise.title_sk} ({self.cost_paid} Doros)"
