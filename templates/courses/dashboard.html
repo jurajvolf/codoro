@@ -5,57 +5,65 @@
 
 <style>
     /* ==========================================================================
-       Bespoke Dashboard Design System (Warm, Human, Game-Crafted)
+       Skill Tree & Game Roadmap Design System (Duolingo / Brilliant / Linear)
        ========================================================================== */
 
-    /* 1. Hero Welcome Card (Living Student Lounge) */
-    .hero-welcome-card {
-        padding: 1.85rem 2rem;
-        margin-bottom: 2rem;
+    /* 1. Header Living Welcome Banner */
+    .dashboard-header-canvas {
+        margin-bottom: 2.25rem;
         position: relative;
-        overflow: hidden;
-        background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-subtle) 100%);
-        border: 1px solid var(--border-hairline);
+    }
+
+    .welcome-banner {
+        padding: 1.75rem 2rem;
         border-radius: var(--radius-lg);
+        background: linear-gradient(135deg, rgba(70, 54, 245, 0.06) 0%, var(--bg-surface) 60%, rgba(8, 145, 178, 0.05) 100%);
+        border: 1px solid var(--border-hairline);
         box-shadow: var(--shadow-sm);
-    }
-
-    html[data-theme="dark"] .hero-welcome-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(17, 24, 39, 0.9) 100%);
-        border-color: rgba(99, 102, 241, 0.25);
-        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-    }
-
-    .hero-welcome-grid {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 2rem;
-        align-items: center;
-    }
-
-    @media (max-width: 900px) {
-        .hero-welcome-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-    }
-
-    .mascot-hero-wrap {
         display: flex;
         align-items: center;
-        gap: 1.35rem;
+        justify-content: space-between;
+        gap: 2rem;
+        flex-wrap: wrap;
+        position: relative;
+        overflow: hidden;
     }
 
-    .mascot-hero-img {
-        width: 82px;
-        height: 82px;
-        object-fit: contain;
-        filter: drop-shadow(0 8px 16px rgba(70, 54, 245, 0.35));
-        animation: codoBreathe 3s ease-in-out infinite;
+    html[data-theme="dark"] .welcome-banner {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(17, 24, 39, 0.95) 60%, rgba(92, 225, 230, 0.08) 100%);
+        border-color: rgba(99, 102, 241, 0.25);
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .welcome-lead {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+    }
+
+    .codo-avatar-bubble {
+        width: 76px;
+        height: 76px;
+        border-radius: 22px;
+        background: var(--bg-surface);
+        border: 2px solid var(--ro-indigo-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         flex-shrink: 0;
+        box-shadow: var(--shadow-sm);
+        position: relative;
     }
 
-    .hero-greeting-title {
+    .codo-avatar-img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 12px rgba(70, 54, 245, 0.3));
+        animation: codoBreathe 3.5s ease-in-out infinite;
+    }
+
+    .welcome-title {
         font-family: var(--font-display);
         font-size: 1.65rem;
         font-weight: 800;
@@ -65,219 +73,397 @@
         margin-bottom: 0.35rem;
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.65rem;
         flex-wrap: wrap;
     }
 
-    .hero-greeting-sub {
+    .welcome-sub {
         font-size: 0.94rem;
         color: var(--text-secondary);
         line-height: 1.5;
-        max-width: 580px;
+        max-width: 600px;
     }
 
-    /* 2. HUD Game Deck (Tactile Game Metric Badges) */
-    .hud-deck {
+    /* 2. Quick Stat Badges Deck */
+    .quick-stats-deck {
         display: flex;
-        gap: 0.85rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
     }
 
-    .hud-tile {
+    .quick-stat-card {
         padding: 0.75rem 1.15rem;
         border-radius: var(--radius-md);
         background: var(--bg-surface);
         border: 1px solid var(--border-hairline);
-        min-width: 120px;
-        transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease, border-color 0.2s ease;
+        box-shadow: var(--shadow-xs);
+        min-width: 125px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        box-shadow: var(--shadow-xs);
+        transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
-    .hud-tile:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
+    .quick-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
     }
 
-    .hud-tile-streak:hover {
-        border-color: var(--flame-border);
-        box-shadow: 0 6px 18px -2px rgba(244, 63, 94, 0.25);
-    }
-
-    .hud-tile-doros:hover {
-        border-color: var(--gold-border);
-        box-shadow: 0 6px 18px -2px rgba(245, 158, 11, 0.25);
-    }
-
-    .hud-tile-ai:hover {
-        border-color: var(--ro-indigo-border);
-        box-shadow: 0 6px 18px -2px rgba(99, 102, 241, 0.25);
-    }
-
-    .hud-tile-label {
-        font-size: 0.72rem;
-        font-weight: 700;
+    .quick-stat-label {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: var(--text-muted);
-        margin-bottom: 0.15rem;
+        margin-bottom: 0.2rem;
     }
 
-    .hud-tile-value {
+    .quick-stat-val {
         font-family: var(--font-mono);
         font-size: 1.25rem;
         font-weight: 800;
         line-height: 1.2;
     }
 
-    .hud-tile-sub {
-        font-size: 0.74rem;
-        color: var(--text-muted);
-        margin-top: 0.2rem;
-    }
-
-    /* 3. Featured Mission Spotlight Card (Next Lesson) */
-    .mission-spotlight-card {
+    /* 3. Featured Spotlight Mission Card */
+    .spotlight-mission-card {
+        margin-top: 1.5rem;
         padding: 1.35rem 1.75rem;
-        margin-bottom: 2rem;
         border-radius: var(--radius-lg);
-        background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, var(--bg-surface) 60%);
+        background: linear-gradient(135deg, rgba(70, 54, 245, 0.1) 0%, var(--bg-surface) 60%);
         border: 1.5px solid var(--ro-indigo-border);
-        box-shadow: 0 8px 24px -4px rgba(70, 54, 245, 0.12);
+        box-shadow: 0 8px 24px -4px rgba(70, 54, 245, 0.15);
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 1.5rem;
         flex-wrap: wrap;
         position: relative;
-        overflow: hidden;
     }
 
-    html[data-theme="dark"] .mission-spotlight-card {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(17, 24, 39, 0.95) 70%);
-        border-color: rgba(99, 102, 241, 0.4);
-        box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.2);
+    html[data-theme="dark"] .spotlight-mission-card {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(17, 24, 39, 0.95) 70%);
+        border-color: rgba(99, 102, 241, 0.45);
+        box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.25);
     }
 
-    .mission-badge-chip {
+    .spotlight-chip {
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
         font-family: var(--font-mono);
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 800;
         color: var(--ro-indigo);
         background: var(--ro-indigo-soft);
         padding: 0.2rem 0.6rem;
         border-radius: 999px;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.35rem;
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
 
-    .mission-title {
+    .spotlight-title {
         font-family: var(--font-display);
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: var(--text-primary);
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.3rem;
     }
 
-    .mission-meta-list {
+    .spotlight-meta {
         display: flex;
         align-items: center;
         gap: 0.85rem;
-        flex-wrap: wrap;
-        font-size: 0.84rem;
+        font-size: 0.85rem;
         color: var(--text-muted);
+        flex-wrap: wrap;
     }
 
-    /* 4. Lesson Item Tile */
-    .lesson-tile {
-        padding: 0.9rem 1.1rem;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border-hairline);
+    /* 4. Two-Column Game Dashboard Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 2.25rem;
+        align-items: start;
+    }
+
+    @media (max-width: 1200px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr 310px;
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+
+    /* 5. VISUAL SKILL TREE (Interactive Game Roadmap) */
+    .skill-tree-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .unit-card {
+        border-radius: var(--radius-lg);
         background: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .unit-card:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Unit Chapter Ribbon */
+    .unit-banner {
+        padding: 1.4rem 1.75rem;
+        background: linear-gradient(135deg, var(--bg-subtle) 0%, var(--bg-surface) 100%);
+        border-bottom: 1px solid var(--border-hairline);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    html[data-theme="dark"] .unit-banner {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(17, 24, 39, 0.9) 100%);
+    }
+
+    .unit-number-pill {
+        font-family: var(--font-mono);
+        font-size: 0.74rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ro-indigo);
+        background: var(--ro-indigo-soft);
+        padding: 0.2rem 0.55rem;
+        border-radius: 6px;
+    }
+
+    .unit-title {
+        font-family: var(--font-display);
+        font-size: 1.22rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0.25rem 0 0.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .unit-desc {
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+        margin: 0;
+        max-width: 550px;
+    }
+
+    .unit-progress-badge {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    /* The Connected Skill Tree Track Line & Nodes */
+    .tree-path-container {
+        padding: 1.5rem 1.75rem 1.75rem;
+        position: relative;
+    }
+
+    /* Spine vertical connecting line */
+    .tree-path-container::before {
+        content: '';
+        position: absolute;
+        top: 2.25rem;
+        bottom: 2.25rem;
+        left: 2.75rem;
+        width: 3px;
+        background: var(--border-hairline);
+        z-index: 1;
+        border-radius: 999px;
+    }
+
+    html[data-theme="dark"] .tree-path-container::before {
+        background: var(--border-strong);
+    }
+
+    .tree-node-row {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+        padding: 0.85rem 1rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 0.75rem;
         transition: all 0.2s var(--ease-out);
         text-decoration: none;
         color: inherit;
-        margin-bottom: 0.65rem;
+        background: var(--bg-surface);
+        border: 1px solid transparent;
     }
 
-    .lesson-tile:last-child {
+    .tree-node-row:last-child {
         margin-bottom: 0;
     }
 
-    .lesson-tile:hover {
-        transform: translateX(4px);
-        border-color: var(--ro-indigo-border);
-        box-shadow: var(--shadow-sm);
+    .tree-node-row:hover {
         background: var(--bg-subtle);
+        transform: translateX(4px);
+        border-color: var(--border-hairline);
     }
 
-    .lesson-tile-completed {
-        border-left: 3px solid var(--emerald-text);
+    .tree-node-left {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        min-width: 0;
     }
 
-    .lesson-tile-status-icon {
-        width: 32px;
-        height: 32px;
+    /* Node circular icon badge */
+    .tree-node-badge {
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9rem;
+        font-size: 1.05rem;
         font-weight: 800;
         flex-shrink: 0;
+        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: var(--shadow-xs);
     }
 
-    .lesson-status-done {
+    .tree-node-row:hover .tree-node-badge {
+        transform: scale(1.1);
+    }
+
+    /* Dokončená lekcia (Emerald) */
+    .tree-node-badge.is-completed {
         background: var(--emerald-bg);
         color: var(--emerald-text);
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+        border: 2px solid var(--emerald-border);
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
     }
 
-    .lesson-status-pending {
-        background: var(--ro-indigo-soft);
-        color: var(--ro-indigo);
+    /* Aktívna lekcia na rade (Pulsing Indigo Beacon) */
+    .tree-node-badge.is-active {
+        background: linear-gradient(135deg, var(--ro-indigo) 0%, #6366F1 100%);
+        color: #FFFFFF;
+        border: 2px solid #FFFFFF;
+        box-shadow: 0 0 16px rgba(99, 102, 241, 0.6);
+        animation: pulseBeacon 2.2s infinite ease-in-out;
+    }
+
+    /* Čakajúca lekcia (Pending) */
+    .tree-node-badge.is-pending {
+        background: var(--bg-subtle);
+        color: var(--text-muted);
+        border: 2px solid var(--border-hairline);
         font-family: var(--font-mono);
-        font-size: 0.82rem;
+        font-size: 0.9rem;
     }
 
-    /* 5. Codo Mascot Daily Tip Card */
-    .codo-tip-card {
-        padding: 1.35rem;
+    .tree-node-meta {
+        min-width: 0;
+    }
+
+    .tree-node-title {
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .tree-node-sub {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-top: 0.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+    }
+
+    /* Zamknutý PRO modul */
+    .unit-locked-box {
+        padding: 1.5rem;
+        margin: 1rem 1.75rem 1.75rem;
+        border-radius: var(--radius-md);
+        background: var(--bg-subtle);
+        border: 1.5px dashed var(--border-strong);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    /* 6. Pravý stĺpec: Social & Classroom Dynamic Rail */
+    .dashboard-rail {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+        position: sticky;
+        top: 2rem;
+    }
+
+    /* Codo Companion Speech Card */
+    .codo-companion-card {
+        padding: 1.45rem;
         border-radius: var(--radius-lg);
         background: linear-gradient(135deg, rgba(8, 145, 178, 0.08) 0%, var(--bg-surface) 100%);
         border: 1px solid var(--visor-cyan-border);
+        box-shadow: var(--shadow-sm);
         position: relative;
-        box-shadow: var(--shadow-xs);
     }
 
-    html[data-theme="dark"] .codo-tip-card {
-        background: linear-gradient(135deg, rgba(92, 225, 230, 0.08) 0%, rgba(17, 24, 39, 0.9) 100%);
+    html[data-theme="dark"] .codo-companion-card {
+        background: linear-gradient(135deg, rgba(92, 225, 230, 0.09) 0%, rgba(17, 24, 39, 0.95) 100%);
     }
 
-    .codo-speech-bubble {
-        position: relative;
+    .codo-bubble-header {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .codo-speech-box {
         background: var(--bg-surface);
         border: 1px solid var(--border-hairline);
         border-radius: var(--radius-md);
-        padding: 0.85rem 1rem;
+        padding: 0.9rem 1.05rem;
         font-size: 0.88rem;
         color: var(--text-secondary);
-        line-height: 1.5;
-        margin-top: 0.75rem;
+        line-height: 1.55;
         box-shadow: var(--shadow-xs);
+        position: relative;
     }
 
-    .codo-speech-bubble code {
+    .codo-speech-box code {
         font-family: var(--font-mono);
         font-size: 0.86em;
         background: var(--ro-indigo-soft);
@@ -287,40 +473,38 @@
         font-weight: 600;
     }
 
-    /* 6. Class Quest Raid Card */
-    .class-quest-card {
-        padding: 1.45rem 1.65rem;
-        margin-bottom: 2rem;
+    /* Classroom Team Challenge Card */
+    .raid-challenge-card {
+        padding: 1.45rem;
         border-radius: var(--radius-lg);
         background: var(--bg-surface);
         border: 1px solid var(--border-hairline);
         border-left: 4px solid var(--ro-indigo);
         box-shadow: var(--shadow-sm);
-        position: relative;
     }
 
-    /* 7. Leaderboard Podium Styles */
-    .leaderboard-item {
-        padding: 0.65rem 0.75rem;
+    /* Leaderboard Podium */
+    .leaderboard-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 0.65rem 0.75rem;
         border-radius: var(--radius-sm);
+        margin-bottom: 0.3rem;
         transition: background-color 0.15s ease, transform 0.15s ease;
-        margin-bottom: 0.35rem;
     }
 
-    .leaderboard-item:hover {
+    .leaderboard-row:hover {
         background-color: var(--bg-subtle);
         transform: translateX(2px);
     }
 
-    .leaderboard-item.is-me {
+    .leaderboard-row.is-current-user {
         background: var(--ro-indigo-soft);
         border: 1px solid var(--ro-indigo-border);
     }
 
-    .podium-rank {
+    .podium-rank-chip {
         width: 28px;
         height: 28px;
         border-radius: 8px;
@@ -335,24 +519,18 @@
         flex-shrink: 0;
     }
 
-    .podium-1 {
+    .podium-gold {
         background: var(--gold-bg);
         color: var(--gold-text);
         box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
     }
-
-    .podium-2 {
-        background: rgba(148, 163, 184, 0.2);
-        color: var(--text-primary);
-    }
-
-    .podium-3 {
-        background: rgba(180, 83, 9, 0.15);
-        color: #B45309;
-    }
 </style>
 
-<!-- 1. Záchrana prerušenej série (Streak Rescue) -->
+<!-- ========================================================================
+     1. NOTIFIKÁCIE & ŠPECIÁLNE EVENTY (Streak Repair & Live Coin Drop)
+     ======================================================================== -->
+
+<!-- Záchrana prerušenej série (Streak Rescue) -->
 {% if user.lost_streak_value > 0 %}
 <section class="card-surface animate-in"
     style="background: linear-gradient(135deg, var(--flame-bg) 0%, var(--bg-surface) 100%); border: 1.5px solid var(--flame-border); padding: 1.25rem 1.75rem; margin-bottom: 1.85rem; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 6px 20px -2px rgba(244, 63, 94, 0.2);">
@@ -384,16 +562,15 @@
 </section>
 {% endif %}
 
-<!-- 2. Aktívny časovaný Coin Drop od učiteľa -->
+<!-- Aktívny bleskový Coin Drop od učiteľa -->
 {% if active_drop %}
-<section class="card-surface live-drop-card animate-in"
-    style="padding: 1.35rem 1.75rem; margin-bottom: 1.85rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
+<section class="card-surface animate-in"
+    style="padding: 1.35rem 1.75rem; margin-bottom: 1.85rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; border: 1.5px solid var(--ro-indigo-border); background: linear-gradient(135deg, var(--ro-indigo-soft) 0%, var(--bg-surface) 100%);">
     <div style="display: flex; align-items: center; gap: 1.15rem; position: relative; z-index: 1;">
         <span style="font-size: 2.3rem; filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));">🎁</span>
         <div>
             <span style="display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem;">
-                <span class="live-beacon"></span>
-                {% if lang == 'en' %}LIVE CLASSROOM DROP{% else %}BLESKOVÝ BONUSOVÝ DROP OD UČITEĽA{% endif %}
+                ⚡ {% if lang == 'en' %}LIVE CLASSROOM DROP{% else %}BLESKOVÝ BONUSOVÝ DROP OD UČITEĽA{% endif %}
             </span>
             <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
                 {% if lang == 'en' %}{{ active_drop.title_en }}{% else %}{{ active_drop.title_sk }}{% endif %}
@@ -407,7 +584,7 @@
             </p>
         </div>
     </div>
-    <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}" style="position: relative; z-index: 1;">
+    <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-primary" style="padding: 0.7rem 1.4rem; font-weight: 700;">
             ⚡ {% if lang == 'en' %}Claim Reward Drop{% else %}Vyzdvihnúť Coin Drop{% endif %}
@@ -416,372 +593,384 @@
 </section>
 {% endif %}
 
-<!-- 3. Študentský Welcome Hub & Herný HUD (Personalizovaný, Živý, Ľudský) -->
-<section class="hero-welcome-card animate-in">
-    <div class="hero-welcome-grid">
+<!-- ========================================================================
+     2. LIVING STUDENT WELCOME CANVAS & SPOTLIGHT MISSION
+     ======================================================================== -->
+<section class="dashboard-header-canvas animate-in">
+    <div class="welcome-banner">
         <!-- Vľavo: Maskot Codo + Osobný pozdrav -->
-        <div class="mascot-hero-wrap">
-            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="mascot-hero-img"
-                 onerror="this.style.display='none'; document.getElementById('codo-hero-fallback').style.display='inline-flex';">
-            <div id="codo-hero-fallback" style="display:none; width:72px; height:72px; border-radius:18px; background:var(--ro-indigo-soft); border:2px solid var(--ro-indigo-border); align-items:center; justify-content:center; font-size:2.4rem;">
-                🤖
+        <div class="welcome-lead">
+            <div class="codo-avatar-bubble">
+                <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="codo-avatar-img"
+                    onerror="this.style.display='none'; document.getElementById('codo-dash-fallback').style.display='inline-flex';">
+                <div id="codo-dash-fallback" style="display:none; font-size:2.2rem;">🤖</div>
             </div>
 
             <div>
-                <div class="hero-greeting-title">
-                    <span>{% if lang == 'en' %}Hello,{% else %}Ahoj,{% endif %} {{ user.first_name|default:user.username }}!</span>
-                    <span style="font-size: 1.4rem;">👋</span>
-                    <span class="metric-badge metric-tier">{{ user.subscription_tier }}</span>
+                <h1 class="welcome-title">
+                    <span>{% if lang == 'en' %}Welcome back,{% else %}Ahoj,{% endif %} {{ user.first_name|default:user.username }}!</span>
+                    <span>👋</span>
+                    <span class="sidebar-tier-chip">{{ user.subscription_tier }}</span>
                     {% if user.school_class %}
-                    <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 0.2rem 0.55rem; border-radius: 6px;">
+                    <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
                         🏫 {{ user.school_class.name }}
                     </span>
                     {% endif %}
-                </div>
-                <p class="hero-greeting-sub">
+                </h1>
+                <p class="welcome-sub">
                     {% if lang == 'en' %}
-                    You're on a <strong>{{ user.current_streak }}-day streak</strong>! Continue your Python journey today, master new skills and collect rewards.
+                    You're on a <strong>{{ user.current_streak }}-day streak</strong>! Continue your interactive Python learning roadmap below and level up today.
                     {% else %}
-                    Máš rozbehnutú <strong>{{ user.current_streak }}-dňovú sériu</strong>! Pokračuj v dnešnej lekcii, zdokonaľ svoje zručnosti a získaj nové Doros mince.
+                    Máš rozbehnutú <strong>{{ user.current_streak }}-dňovú sériu</strong>! Pokračuj v interaktívnej mape Pythonu a zbieraj nové vedomosti aj Doros mince.
                     {% endif %}
                 </p>
 
-                <!-- Ukazovateľ úrovne (XP Progress) priamo pri pozdrave -->
+                <!-- Mini XP progres k ďalšej úrovni -->
                 <div style="margin-top: 0.85rem; max-width: 480px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 0.35rem;">
                         <span style="font-weight: 700; color: var(--ro-indigo);">⚡ Level {{ user.level }} · {{ user.xp }} XP</span>
                         <span>{{ user.level_progress_pct }}% ({% if lang == 'en' %}Level{% else %}Úroveň{% endif %} {{ user.level|add:1 }})</span>
                     </div>
-                    <div class="progress-track" style="height: 9px;">
+                    <div class="progress-track" style="height: 8px;">
                         <div class="progress-fill" data-progress="{{ user.level_progress_pct }}"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Vpravo: Herný HUD Deck (3 živé dlaždice) -->
-        <div class="hud-deck">
-            <div class="hud-tile hud-tile-streak">
-                <span class="hud-tile-label">{% if lang == 'en' %}Streak{% else %}Séria{% endif %}</span>
-                <span class="hud-tile-value" style="color: var(--flame-text);">
+        <!-- Vpravo: Živé metriky herného decku -->
+        <div class="quick-stats-deck">
+            <div class="quick-stat-card">
+                <span class="quick-stat-label">{% if lang == 'en' %}Streak{% else %}Séria{% endif %}</span>
+                <span class="quick-stat-val" style="color: var(--flame-text);">
                     🔥 {{ user.current_streak }} d
                 </span>
-                <span class="hud-tile-sub">{% if lang == 'en' %}Consecutive days{% else %}Bez prerušenia{% endif %}</span>
             </div>
-
-            <div class="hud-tile hud-tile-doros">
-                <span class="hud-tile-label">{% if lang == 'en' %}Doros Vault{% else %}Pokladnica{% endif %}</span>
-                <span class="hud-tile-value" style="color: var(--gold-text);">
+            <div class="quick-stat-card">
+                <span class="quick-stat-label">{% if lang == 'en' %}Doros{% else %}Pokladnica{% endif %}</span>
+                <span class="quick-stat-val" style="color: var(--gold-text);">
                     🪙 {{ user.doros }}
                 </span>
-                <span class="hud-tile-sub">{% if lang == 'en' %}Spend in shop{% else %}Dostupné v obchode{% endif %}</span>
             </div>
-
-            <div class="hud-tile hud-tile-ai">
-                <span class="hud-tile-label">{% if lang == 'en' %}AI Companion{% else %}AI Tútor Codo{% endif %}</span>
-                <span class="hud-tile-value" style="color: var(--visor-cyan); font-size: 1.05rem;">
+            <div class="quick-stat-card">
+                <span class="quick-stat-label">{% if lang == 'en' %}AI Tutor{% else %}AI Tútor Codo{% endif %}</span>
+                <span class="quick-stat-val" style="color: var(--visor-cyan); font-size: 1.05rem;">
                     {% if ai_hints_remaining is None %}
                         ✨ {% if lang == 'en' %}Unlimited{% else %}Bez limitu{% endif %}
                     {% else %}
                         🤖 {{ ai_hints_remaining }}/5
                     {% endif %}
                 </span>
-                <span class="hud-tile-sub">{% if lang == 'en' %}Always ready{% else %}Pripravený pomôcť{% endif %}</span>
             </div>
         </div>
     </div>
-</section>
 
-<!-- 4. Featured Spotlight: Odporúčaný ďalší krok (Aktuálna misia) -->
-{% if next_lesson %}
-<section class="mission-spotlight-card animate-in delay-1">
-    <div>
-        <span class="mission-badge-chip">
-            ▶ {% if lang == 'en' %}CURRENT MISSION{% else %}AKTUÁLNA MISIA NA DNES{% endif %}
-        </span>
-        <h2 class="mission-title">
-            {% if lang == 'en' %}{{ next_lesson.title_en }}{% else %}{{ next_lesson.title_sk }}{% endif %}
-        </h2>
-        <div class="mission-meta-list">
-            <span>📚 {% if lang == 'en' %}{{ next_lesson.module.title_en }}{% else %}{{ next_lesson.module.title_sk }}{% endif %}</span>
-            <span>·</span>
-            <span>💻 {{ next_lesson.exercises.count }} {% if lang == 'en' %}practical exercise(s){% else %}cvičení{% endif %}</span>
-            <span>·</span>
-            <span style="color: var(--ro-indigo); font-weight: 700;">⚡ +{{ next_lesson.xp_reward }} XP</span>
+    <!-- Spotlight: Odporúčaná ďalšia misia -->
+    {% if next_lesson %}
+    <div class="spotlight-mission-card">
+        <div>
+            <span class="spotlight-chip">
+                ▶ {% if lang == 'en' %}CURRENT ACTIVE MISSION{% else %}AKTUÁLNA MISIA NA DNES{% endif %}
+            </span>
+            <h2 class="spotlight-title">
+                {% if lang == 'en' %}{{ next_lesson.title_en }}{% else %}{{ next_lesson.title_sk }}{% endif %}
+            </h2>
+            <div class="spotlight-meta">
+                <span>📚 {% if lang == 'en' %}{{ next_lesson.module.title_en }}{% else %}{{ next_lesson.module.title_sk }}{% endif %}</span>
+                <span>·</span>
+                <span>💻 {{ next_lesson.exercises.count }} {% if lang == 'en' %}practical exercise(s){% else %}praktických cvičení{% endif %}</span>
+                <span>·</span>
+                <span style="color: var(--ro-indigo); font-weight: 700;">⚡ +{{ next_lesson.xp_reward }} XP</span>
+            </div>
         </div>
+
+        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary" style="padding: 0.75rem 1.6rem; font-weight: 700; font-size: 0.95rem;">
+            {% if lang == 'en' %}Continue Lesson →{% else %}Pokračovať v lekcii →{% endif %}
+        </a>
     </div>
-
-    <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 700; font-size: 0.95rem;">
-        {% if lang == 'en' %}Continue Lesson →{% else %}Pokračovať v lekcii →{% endif %}
-    </a>
+    {% endif %}
 </section>
-{% endif %}
 
-<!-- 5. Hlavné dvojstĺpcové rozloženie -->
-<div class="layout-2col" style="display: grid; grid-template-columns: 1.75fr 1fr; gap: 2rem; align-items: start;">
+<!-- ========================================================================
+     3. HLAVNÝ GRID: VIZUÁLNY SKILL TREE (VĽAVO) + SOCIAL DYNAMICS RAIL (VPRAVO)
+     ======================================================================== -->
+<div class="dashboard-grid">
 
-    <!-- Ľavý stĺpec: Kolektívny triedny Quest + Vzdelávacia mapa Pythonu -->
-    <div class="animate-in delay-1">
+    <!-- ĽAVÝ STĹPEC: VIZUÁLNA MAPA / SKILL TREE -->
+    <div class="skill-tree-section animate-in delay-1">
 
-        <!-- Kolektívna výzva triedy (Tímový quest) -->
-        {% if class_quest %}
-        <div class="class-quest-card">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
-                <div>
-                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em;">
-                        🤝 {% if lang == 'en' %}CLASSROOM TEAM CHALLENGE{% else %}SPOLOČNÁ TRIEDNA VÝZVA{% endif %} · {{ class_quest.school_class.name }}
-                    </span>
-                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; margin-top: 0.15rem; color: var(--text-primary);">
-                        {% if lang == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}
-                    </h2>
-                </div>
-                <span class="metric-badge metric-doros">
-                    +{{ class_quest.reward_doros_per_student }} Doros / {% if lang == 'en' %}student{% else %}žiak{% endif %}
-                </span>
-            </div>
-
-            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
-                {% if lang == 'en' %}
-                Reward condition: Each student must contribute at least {{ class_quest.min_contribution_required }} solved task(s) to qualify.
-                {% else %}
-                Podmienka odmeny: Každý študent musí prispieť aspoň {{ class_quest.min_contribution_required }} vyriešenou úlohou, aby získal podiel z odmeny.
-                {% endif %}
-            </p>
-
-            <div class="progress-track" style="height: 11px; margin-bottom: 0.7rem;">
-                <div class="progress-fill" data-progress="{{ class_quest.progress_pct }}"></div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-muted);">
-                <span>
-                    {% if lang == 'en' %}
-                    Class progress: <strong>{{ class_quest.current_exercises_count }}</strong> / {{ class_quest.target_exercises_count }} tasks ({{ class_quest.progress_pct }}%)
-                    {% else %}
-                    Splnené triedou: <strong>{{ class_quest.current_exercises_count }}</strong> / {{ class_quest.target_exercises_count }} úloh ({{ class_quest.progress_pct }} %)
-                    {% endif %}
-                </span>
-                {% if top_contributors %}
-                <span>
-                    {% if lang == 'en' %}Top contributors:{% else %}Najaktívnejší:{% endif %}
-                    {% for c in top_contributors %}
-                        <strong style="color: var(--text-primary);">{{ c.student.username }}</strong> ({{ c.amount_contributed }}×){% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </span>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Hlavička modulov výučby -->
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
             <div>
-                <h2 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--text-primary); margin: 0; letter-spacing: -0.02em;">
-                    {% if lang == 'en' %}Python Learning Path{% else %}Vzdelávacie moduly Pythonu{% endif %}
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0; letter-spacing: -0.02em;">
+                    {% if lang == 'en' %}Python Learning Roadmap{% else %}Cesta výučby Pythonu (Skill Tree){% endif %}
                 </h2>
-                <p style="font-size: 0.86rem; color: var(--text-muted); margin-top: 0.15rem;">
-                    {% if lang == 'en' %}Interactive lessons with automated test execution and Socratic AI guidance{% else %}Interaktívne lekcie s automatickým vyhodnocovaním a Sokratovským AI tútorom{% endif %}
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem;">
+                    {% if lang == 'en' %}Master Python step-by-step through interactive units, code challenges and automated test validation{% else %}Zvládni Python krok za krokom cez interaktívne kapitoly, praktické výzvy a automatické overenie kódu{% endif %}
                 </p>
             </div>
         </div>
 
-        <!-- Zoznam modulov s vizuálnou identitou -->
-        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-            {% for card in module_cards %}
-            <article class="card-surface card-interactive" style="padding: 1.65rem;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.15rem; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 240px;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
-                            <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.2rem 0.55rem; border-radius: 6px;">
-                                {% if lang == 'en' %}MODULE{% else %}MODUL{% endif %} 0{{ card.module.order }}
-                            </span>
-                            {% if card.module.is_pro_only %}
-                            <span class="metric-badge metric-tier">PRO / EDU</span>
-                            {% endif %}
-                            <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.18rem 0.5rem; border-radius: 6px;">
-                                {{ card.done }}/{{ card.total }} {% if lang == 'en' %}completed{% else %}dokončené{% endif %}
-                            </span>
-                        </div>
-                        <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
-                            {% if card.module.order == 1 %}🐍 {% elif card.module.order == 2 %}⚡ {% elif card.module.order == 3 %}🔁 {% elif card.module.order == 4 %}⚙️ {% elif card.module.order == 5 %}📦 {% elif card.module.order == 6 %}🏛️ {% endif %}
-                            {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
-                        </h3>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
-                            {% if lang == 'en' %}{{ card.module.description_en }}{% else %}{{ card.module.description_sk }}{% endif %}
-                        </p>
-                    </div>
-
-                    <!-- Mini progress bar modulu -->
-                    <div style="min-width: 120px; text-align: right;">
-                        <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 800; color: var(--ro-indigo);">
-                            {{ card.pct }}%
+        <!-- Zoznam Kapitol (Units) s prepájanými uzlami -->
+        {% for card in module_cards %}
+        <article class="unit-card">
+            <!-- Záhlavie kapitoly (Unit Ribbon) -->
+            <div class="unit-banner">
+                <div style="flex: 1; min-width: 220px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                        <span class="unit-number-pill">
+                            {% if lang == 'en' %}UNIT 0{{ card.module.order }}{% else %}KAPITOLA 0{{ card.module.order }}{% endif %}
                         </span>
-                        <div class="progress-track" style="height: 6px; width: 120px; margin-top: 0.35rem;">
-                            <div class="progress-fill" data-progress="{{ card.pct }}"></div>
-                        </div>
+                        {% if card.module.is_pro_only %}
+                        <span class="sidebar-tier-chip" style="background: var(--gold-bg); color: var(--gold-text); border-color: var(--gold-border);">
+                            PRO / EDU
+                        </span>
+                        {% endif %}
+                    </div>
+                    <h3 class="unit-title">
+                        {% if card.module.order == 1 %}🐍 {% elif card.module.order == 2 %}⚡ {% elif card.module.order == 3 %}🔁 {% elif card.module.order == 4 %}⚙️ {% elif card.module.order == 5 %}📦 {% elif card.module.order == 6 %}🏛️ {% endif %}
+                        {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
+                    </h3>
+                    <p class="unit-desc">
+                        {% if lang == 'en' %}{{ card.module.description_en }}{% else %}{{ card.module.description_sk }}{% endif %}
+                    </p>
+                </div>
+
+                <!-- Mini progress bar kapitoly -->
+                <div style="min-width: 140px; text-align: right;">
+                    <div class="unit-progress-badge" style="justify-content: flex-end;">
+                        {% if card.done == card.total and card.total > 0 %}
+                            <span style="color: var(--emerald-text);">✓ {% if lang == 'en' %}Completed{% else %}Dokončené{% endif %} ({{ card.done }}/{{ card.total }})</span>
+                        {% else %}
+                            <span>{{ card.done }}/{{ card.total }} {% if lang == 'en' %}completed{% else %}dokončené{% endif %}</span>
+                        {% endif %}
+                    </div>
+                    <div class="progress-track" style="height: 7px; width: 140px; margin-top: 0.4rem; margin-left: auto;">
+                        <div class="progress-fill" data-progress="{{ card.pct }}"></div>
                     </div>
                 </div>
-
-                <!-- Zoznam lekcií modulu v podobe interaktívnych dlaždíc -->
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    {% if card.locked %}
-                        <div style="padding: 1.15rem; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1.5px dashed var(--border-strong); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.85rem;">
-                            <div>
-                                <strong style="font-size: 0.94rem; color: var(--text-primary); display: block; margin-bottom: 0.2rem;">
-                                    🔒 {% if lang == 'en' %}Advanced PRO/EDU Curriculum{% else %}Pokročilý PRO/EDU modul{% endif %}
-                                </strong>
-                                <span style="font-size: 0.84rem; color: var(--text-muted);">
-                                    {% if lang == 'en' %}
-                                    Unlock object-oriented programming with your school license key or Codoro PRO.
-                                    {% else %}
-                                    Odomkni objektovo-orientované programovanie pomocou školskej licencie v Obchode.
-                                    {% endif %}
-                                </span>
-                            </div>
-                            <a href="{% url 'shop' %}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
-                                🔑 {% if lang == 'en' %}Unlock in Shop{% else %}Odomknúť v Obchode{% endif %}
-                            </a>
-                        </div>
-                    {% else %}
-                        {% for lesson in card.lessons %}
-                        <a href="{% url 'lesson_detail' lesson.id %}" class="lesson-tile {% if lesson.id in completed_lesson_ids %}lesson-tile-completed{% endif %}">
-                            <div style="display: flex; align-items: center; gap: 0.85rem;">
-                                {% if lesson.id in completed_lesson_ids %}
-                                <span class="lesson-tile-status-icon lesson-status-done" title="{% if lang == 'en' %}Completed{% else %}Dokončené{% endif %}">✓</span>
-                                {% else %}
-                                <span class="lesson-tile-status-icon lesson-status-pending">{{ lesson.order }}</span>
-                                {% endif %}
-                                <div>
-                                    <div style="font-weight: 700; font-size: 0.94rem; color: var(--text-primary);">
-                                        {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
-                                    </div>
-                                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem;">
-                                        💻 {{ lesson.exercises.count }} {% if lang == 'en' %}coding exercise(s){% else %}praktických úloh{% endif %} · <span style="color: var(--ro-indigo); font-weight: 600;">+{{ lesson.xp_reward }} XP</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <span class="btn {% if lesson.id in completed_lesson_ids %}btn-secondary{% else %}btn-primary{% endif %} btn-sm" style="padding: 0.35rem 0.85rem; font-size: 0.8rem; font-weight: 700;">
-                                {% if lesson.id in completed_lesson_ids %}
-                                    {% if lang == 'en' %}Review Lesson{% else %}Zopakovať{% endif %}
-                                {% else %}
-                                    {% if lang == 'en' %}Start Lesson →{% else %}Spustiť lekciu →{% endif %}
-                                {% endif %}
-                            </span>
-                        </a>
-                        {% empty %}
-                        <div style="padding: 0.75rem 0; font-size: 0.88rem; color: var(--text-muted);">
-                            {% if lang == 'en' %}No lessons available in this module yet.{% else %}Tento modul zatiaľ neobsahuje žiadne lekcie.{% endif %}
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </article>
-            {% empty %}
-            <div class="card-surface" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
-                {% if lang == 'en' %}No modules configured yet. Run the seed script to populate curriculum.{% else %}Zatiaľ nie sú vytvorené žiadne moduly. Spusti seed_codoro.py.{% endif %}
             </div>
-            {% endfor %}
+
+            <!-- Prepájané uzly lekcií (Skill Tree Track) -->
+            {% if card.locked %}
+            <div class="unit-locked-box">
+                <div>
+                    <strong style="font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem;">
+                        <span>🔒</span> {% if lang == 'en' %}Advanced PRO/EDU Curriculum{% else %}Pokročilý PRO/EDU vzdelávací modul{% endif %}
+                    </strong>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+                        {% if lang == 'en' %}
+                        Unlock object-oriented programming with your school license key or Codoro PRO.
+                        {% else %}
+                        Odomkni objektovo-orientované programovanie pomocou školskej licencie v Obchode.
+                        {% endif %}
+                    </span>
+                </div>
+                <a href="{% url 'shop' %}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+                    🔑 {% if lang == 'en' %}Unlock in Shop{% else %}Odomknúť v Obchode{% endif %}
+                </a>
+            </div>
+            {% else %}
+            <div class="tree-path-container">
+                {% for lesson in card.lessons %}
+                <a href="{% url 'lesson_detail' lesson.id %}" class="tree-node-row">
+                    <div class="tree-node-left">
+                        <!-- Node Badge (Done ✓ / Active ▶ / Pending #) -->
+                        {% if lesson.id in completed_lesson_ids %}
+                            <span class="tree-node-badge is-completed" title="{% if lang == 'en' %}Completed{% else %}Dokončené{% endif %}">
+                                ✓
+                            </span>
+                        {% elif next_lesson and lesson.id == next_lesson.id %}
+                            <span class="tree-node-badge is-active" title="{% if lang == 'en' %}Current Mission{% else %}Aktuálna misia{% endif %}">
+                                ▶
+                            </span>
+                        {% else %}
+                            <span class="tree-node-badge is-pending">
+                                {{ lesson.order }}
+                            </span>
+                        {% endif %}
+
+                        <!-- Lesson info -->
+                        <div class="tree-node-meta">
+                            <div class="tree-node-title">
+                                <span>{% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}</span>
+                                {% if next_lesson and lesson.id == next_lesson.id %}
+                                <span class="spotlight-chip" style="margin: 0; font-size: 0.65rem; padding: 0.1rem 0.45rem;">
+                                    {% if lang == 'en' %}ON DECK{% else %}NA RADE{% endif %}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="tree-node-sub">
+                                <span>💻 {{ lesson.exercises.count }} {% if lang == 'en' %}coding task(s){% else %}cvičení{% endif %}</span>
+                                <span>·</span>
+                                <span style="color: var(--ro-indigo); font-weight: 700;">⚡ +{{ lesson.xp_reward }} XP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call to action button -->
+                    <span class="btn {% if next_lesson and lesson.id == next_lesson.id %}btn-primary{% else %}btn-secondary{% endif %} btn-sm" style="padding: 0.4rem 0.9rem; font-size: 0.82rem; font-weight: 700;">
+                        {% if lesson.id in completed_lesson_ids %}
+                            {% if lang == 'en' %}Review{% else %}Zopakovať{% endif %}
+                        {% elif next_lesson and lesson.id == next_lesson.id %}
+                            {% if lang == 'en' %}Continue →{% else %}Pokračovať →{% endif %}
+                        {% else %}
+                            {% if lang == 'en' %}Start →{% else %}Spustiť →{% endif %}
+                        {% endif %}
+                    </span>
+                </a>
+                {% empty %}
+                <div style="padding: 1rem; font-size: 0.88rem; color: var(--text-muted); text-align: center;">
+                    {% if lang == 'en' %}No lessons available in this module yet.{% else %}Tento modul zatiaľ neobsahuje žiadne lekcie.{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </article>
+        {% empty %}
+        <div class="card-surface" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+            {% if lang == 'en' %}No modules configured yet. Run the seed script to populate curriculum.{% else %}Zatiaľ nie sú vytvorené žiadne moduly. Spusti seed_codoro.py.{% endif %}
         </div>
+        {% endfor %}
     </div>
 
-    <!-- Pravý stĺpec: Codo Tútor Tip + Osobné Questy + Rebríček -->
-    <aside class="animate-in delay-2" style="display: flex; flex-direction: column; gap: 1.75rem;">
+    <!-- PRAVÝ STĹPEC: SOCIAL & COMPANION RAIL (Codo tip, triedny quest, osobné questy, rebríček) -->
+    <aside class="dashboard-rail animate-in delay-2">
 
-        <!-- 1. Codo AI Companion Tip (Ľudský prvok a osobnosť) -->
-        <section class="codo-tip-card">
-            <div style="display: flex; align-items: center; gap: 0.65rem;">
-                <span style="font-size: 1.5rem;">💡</span>
+        <!-- 1. Codo AI Companion Tip (Sokratovský priateľ na učenie) -->
+        <section class="codo-companion-card">
+            <div class="codo-bubble-header">
+                <span style="font-size: 1.6rem;">💡</span>
                 <div>
                     <h3 style="font-family: var(--font-display); font-size: 0.98rem; font-weight: 800; color: var(--text-primary); margin: 0;">
                         {% if lang == 'en' %}Codo's Daily Tip{% else %}Tip dňa od tútora Coda{% endif %}
                     </h3>
-                    <span style="font-size: 0.74rem; font-family: var(--font-mono); color: var(--visor-cyan); font-weight: 700;">
+                    <span style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--visor-cyan); font-weight: 800; letter-spacing: 0.04em;">
                         {% if lang == 'en' %}PYTHON PRO TIP{% else %}PRAKTICKÝ PYTHON TIP{% endif %}
                     </span>
                 </div>
             </div>
 
-            <div class="codo-speech-bubble">
+            <div class="codo-speech-box">
                 {% if lang == 'en' %}
-                "Did you know that in Python you can format strings easily using <code>f"Value: {val}"</code>? It's much cleaner than joining with <code>+</code>!"
+                "Did you know that in Python you can format strings easily using <code>f"Value: {val}"</code>? It's much cleaner and faster than concatenation!"
                 {% else %}
                 "Vedel si, že v Pythone môžeš spájať text s premennými cez moderné f-stringy? Napríklad <code>f"Ahoj {meno}!"</code> je oveľa prehľadnejšie ako pluská!"
                 {% endif %}
             </div>
 
             <div style="margin-top: 0.75rem; text-align: right;">
-                <span style="font-size: 0.78rem; color: var(--text-muted);">
-                    🤖 {% if lang == 'en' %}Always ready inside each exercise{% else %}Dostupný v každom cvičení{% endif %}
+                <span style="font-size: 0.76rem; color: var(--text-muted);">
+                    🤖 {% if lang == 'en' %}Socratic AI hints inside each exercise{% else %}Sokratovské rady priamo v cvičeniach{% endif %}
                 </span>
             </div>
         </section>
 
-        <!-- 2. Osobné Questy (Gamifikované výzvy) -->
-        <section class="card-surface" style="padding: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.15rem;">
-                <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                    🎯 {% if lang == 'en' %}Active Quests{% else %}Osobné výzvy (Questy){% endif %}
-                </h2>
-                <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
+        <!-- 2. Spoločná Triedna Výzva (Kolektívny Raid Quest) -->
+        {% if class_quest %}
+        <section class="raid-challenge-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.65rem;">
+                <div>
+                    <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em;">
+                        🤝 {% if lang == 'en' %}CLASSROOM RAID{% else %}TRIEDNA SPOLUPRÁCA{% endif %}
+                    </span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0.15rem 0 0;">
+                        {% if lang == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}
+                    </h3>
+                </div>
+                <span class="sidebar-stat-pill gold" style="font-size: 0.75rem;">
+                    +{{ class_quest.reward_doros_per_student }} Doros
+                </span>
+            </div>
+
+            <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 0.85rem; line-height: 1.45;">
+                {% if lang == 'en' %}
+                Class goal: Solve <strong>{{ class_quest.target_exercises_count }} tasks</strong> together. Qualify with at least {{ class_quest.min_contribution_required }} task(s)!
+                {% else %}
+                Spoločný cieľ: Vyriešiť <strong>{{ class_quest.target_exercises_count }} úloh</strong>. Prispej aspoň {{ class_quest.min_contribution_required }} úlohou na získanie odmeny!
+                {% endif %}
+            </p>
+
+            <div class="progress-track" style="height: 10px; margin-bottom: 0.6rem;">
+                <div class="progress-fill" data-progress="{{ class_quest.progress_pct }}"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted);">
+                <span>{{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }} ({{ class_quest.progress_pct }}%)</span>
+                {% if top_contributors %}
+                <span>
+                    🏆 {{ top_contributors.0.student.username }} ({{ top_contributors.0.amount_contributed }}×)
+                </span>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- 3. Osobné Questy (Gamifikované výzvy) -->
+        <section class="card-surface" style="padding: 1.4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    🎯 {% if lang == 'en' %}Personal Quests{% else %}Osobné výzvy (Questy){% endif %}
+                </h3>
+                <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
                     {{ quest_items|length }} {% if lang == 'en' %}active{% else %}aktívnych{% endif %}
                 </span>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                 {% for item in quest_items %}
-                <div style="padding: 0.95rem 1.05rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
+                <div style="padding: 0.85rem 0.95rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                        <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
                             {% if item.quest.period == 'DAILY' %}☕ {% elif item.quest.period == 'WEEKLY' %}⚔️ {% elif item.quest.period == 'MONTHLY' %}👑 {% endif %}
                             {{ item.quest.get_period_display|default:item.quest.period }}
                         </span>
-                        <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--gold-text);">
+                        <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--gold-text);">
                             +{{ item.quest.reward_doros }} Doros · +{{ item.quest.reward_xp }} XP
                         </span>
                     </div>
 
-                    <div style="font-weight: 700; font-size: 0.92rem; margin-bottom: 0.55rem; color: var(--text-primary);">
+                    <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 0.5rem; color: var(--text-primary);">
                         {% if lang == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
                     </div>
 
-                    <div class="progress-track" style="height: 7px; margin-bottom: 0.5rem; background: var(--bg-surface);">
+                    <div class="progress-track" style="height: 6px; margin-bottom: 0.45rem; background: var(--bg-surface);">
                         <div class="progress-fill" data-progress="{{ item.progress_pct }}"></div>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+                        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
                             {{ item.current_value }} / {{ item.quest.target_value }}
                         </span>
                         {% if item.is_completed and not item.is_claimed %}
                         <form method="post" action="{% url 'claim_quest_reward' item.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.35rem 0.75rem; font-size: 0.78rem; font-weight: 800; box-shadow: 0 0 12px rgba(99, 102, 241, 0.45);">
-                                🏆 {% if lang == 'en' %}Claim Reward{% else %}Prevziať odmenu{% endif %}
+                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 800; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);">
+                                🏆 {% if lang == 'en' %}Claim{% else %}Prevziať{% endif %}
                             </button>
                         </form>
                         {% elif item.is_claimed %}
-                        <span style="font-size: 0.78rem; font-weight: 800; color: var(--emerald-text);">
+                        <span style="font-size: 0.76rem; font-weight: 800; color: var(--emerald-text);">
                             ✓ {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
                         </span>
                         {% endif %}
                     </div>
                 </div>
                 {% empty %}
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                <p style="font-size: 0.86rem; color: var(--text-muted); margin: 0;">
                     {% if lang == 'en' %}No active quests at the moment.{% else %}Momentálne nemáš žiadne aktívne výzvy.{% endif %}
                 </p>
                 {% endfor %}
             </div>
         </section>
 
-        <!-- 3. Triedny Rebríček (Leaderboard s pódiom) -->
-        <section class="card-surface" style="padding: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.15rem;">
-                <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+        <!-- 4. Triedny Rebríček (Class Leaderboard s pódiom) -->
+        <section class="card-surface" style="padding: 1.4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">
                     🏆 {% if lang == 'en' %}Class Leaderboard{% else %}Triedny rebríček{% endif %}
-                </h2>
+                </h3>
                 {% if user.school_class %}
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.5rem; border-radius: 6px;">
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.5rem; border-radius: 6px;">
                     {{ user.school_class.name }}
                 </span>
                 {% endif %}
@@ -789,39 +978,40 @@
 
             <div>
                 {% for s in leaderboard %}
-                <div class="leaderboard-item {% if s.id == user.id %}is-me{% endif %}">
+                <div class="leaderboard-row {% if s.id == user.id %}is-current-user{% endif %}">
                     <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <span class="podium-rank podium-{{ forloop.counter }}">
+                        <span class="podium-rank-chip {% if forloop.counter == 1 %}podium-gold{% endif %}">
                             {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}{{ forloop.counter }}{% endif %}
                         </span>
                         <div>
-                            <strong style="font-size: 0.92rem; color: var(--text-primary);">
+                            <strong style="font-size: 0.9rem; color: var(--text-primary);">
                                 {{ s.username }} {% if s.id == user.id %}<span style="color: var(--ro-indigo); font-weight: 800;">({% if lang == 'en' %}You{% else %}Ty{% endif %})</span>{% endif %}
                             </strong>
-                            <div style="font-size: 0.76rem; color: var(--text-muted);">
+                            <div style="font-size: 0.74rem; color: var(--text-muted);">
                                 Lvl {{ s.level }}{% if s.badge_count %} · 🎖️ {{ s.badge_count }} {% if lang == 'en' %}badges{% else %}odznakov{% endif %}{% endif %}
                             </div>
                         </div>
                     </div>
-                    <span style="font-family: var(--font-mono); font-size: 0.86rem; font-weight: 800; color: var(--text-primary);">
+                    <span style="font-family: var(--font-mono); font-size: 0.84rem; font-weight: 800; color: var(--text-primary);">
                         {{ s.xp }} XP
                     </span>
                 </div>
                 {% empty %}
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                <p style="font-size: 0.86rem; color: var(--text-muted); margin: 0;">
                     {% if lang == 'en' %}No students in leaderboard yet.{% else %}Rebríček je zatiaľ prázdny.{% endif %}
                 </p>
                 {% endfor %}
             </div>
         </section>
+
     </aside>
 </div>
 
-<!-- Automatické naplnenie a animovanie šírky pre progress bary -->
+<!-- Automatické animovanie progress barov -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.progress-fill').forEach(function (bar) {
-            const pct = bar.getAttribute('data-progress') || 0;
+            var pct = bar.getAttribute('data-progress') || 0;
             setTimeout(function () {
                 bar.style.width = pct + '%';
             }, 80);

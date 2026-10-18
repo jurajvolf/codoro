@@ -252,205 +252,419 @@
             animation-delay: 0.1s;
         }
 
-        /* Horná navigačná lišta — Pevná výška a jednoliaty horizontálny baseline */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: var(--bg-navbar);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid var(--border-hairline);
-            height: 64px;
-            min-height: 64px;
+        /* ==========================================================================
+           Modern App Shell & Sidebar Layout (Linear/Discord Inspired)
+           ========================================================================== */
+
+        /* Základné rozloženie aplikácie */
+        .app-layout {
             display: flex;
-            align-items: center;
-            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
-            transition: background-color 0.25s ease, border-color 0.25s ease;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
         }
 
-        .navbar-container {
-            max-width: 1440px;
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            padding: 0 1.5rem;
+        /* Ľavý fixný sidebar pre prihlásených používateľov */
+        .app-sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-hairline);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.25rem 1rem;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            transition: transform 0.28s var(--ease-out), background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        html[data-theme="dark"] .app-sidebar {
+            background: rgba(17, 24, 39, 0.92);
+            box-shadow: 4px 0 24px -4px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="light"] .app-sidebar {
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 4px 0 20px -2px rgba(15, 23, 42, 0.03);
+        }
+
+        .sidebar-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1.25rem;
-            flex-wrap: nowrap;
+            padding: 0.25rem 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-hairline);
+            margin-bottom: 1rem;
         }
 
-        .brand {
+        .sidebar-brand {
             display: inline-flex;
             align-items: center;
             gap: 0.65rem;
             text-decoration: none;
-            flex-shrink: 0;
         }
 
-        .brand-logo {
-            height: 38px;
+        .sidebar-brand-logo {
+            height: 36px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 2px 6px rgba(70, 54, 245, 0.25));
+            filter: drop-shadow(0 2px 8px rgba(70, 54, 245, 0.3));
             transition: transform 0.25s var(--ease-out);
         }
 
-        .brand:hover .brand-logo {
+        .sidebar-brand:hover .sidebar-brand-logo {
             animation: codoBreathe 2s ease-in-out infinite;
         }
 
-        .brand-text {
+        .sidebar-brand-text {
             font-family: var(--font-display);
-            font-size: 1.45rem;
+            font-size: 1.4rem;
             font-weight: 800;
             letter-spacing: -0.04em;
             color: var(--text-primary);
             line-height: 1;
         }
 
-        .brand-text span {
+        .sidebar-brand-text span {
             color: var(--ro-indigo);
         }
 
-        .nav-collapsible {
+        .sidebar-close-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .sidebar-close-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-subtle);
+        }
+
+        /* Navigačné odkazy */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .sidebar-section-label {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 0.5rem 0.65rem 0.25rem;
+            margin-top: 0.35rem;
+        }
+
+        .sidebar-link {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex: 1;
-            min-width: 0;
-            gap: 0.85rem;
-            flex-wrap: nowrap;
+            gap: 0.75rem;
+            padding: 0.62rem 0.85rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.18s var(--ease-out);
+            border: 1px solid transparent;
+            position: relative;
         }
 
-        .nav-menu {
+        .sidebar-link-content {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            list-style: none;
-            flex-wrap: nowrap;
-            flex-shrink: 0;
-            margin: 0;
-            padding: 0;
+            gap: 0.75rem;
         }
 
-        .nav-item-link {
+        .sidebar-link-icon {
+            font-size: 1.15rem;
+            line-height: 1;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            padding: 0.45rem 0.75rem;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            text-decoration: none;
-            line-height: 1.2;
-            transition: all 0.18s var(--ease-out);
+            justify-content: center;
+            width: 24px;
         }
 
-        .nav-item-link:hover {
+        .sidebar-link:hover {
             color: var(--text-primary);
-            background-color: var(--bg-subtle);
+            background: var(--bg-subtle);
+            transform: translateX(2px);
         }
 
-        .nav-item-link.active {
-            color: var(--ro-indigo);
-            background-color: var(--ro-indigo-soft);
-        }
-
-        .nav-item-teacher {
+        .sidebar-link.active {
             color: var(--ro-indigo);
             background: var(--ro-indigo-soft);
-            border: 1px solid var(--ro-indigo-border);
+            border-color: var(--ro-indigo-border);
+            font-weight: 700;
         }
 
-        .nav-actions {
+        .sidebar-link.active .sidebar-active-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ro-indigo);
+            box-shadow: 0 0 8px var(--ro-indigo);
+        }
+
+        .sidebar-link-teacher {
+            color: var(--ro-indigo);
+            border: 1px dashed var(--ro-indigo-border);
+        }
+
+        /* Herný HUD Box v Sidebare */
+        .sidebar-user-hud {
+            padding: 0.95rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            margin: 0.85rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .sidebar-user-header {
             display: flex;
             align-items: center;
-            gap: 0.42rem;
-            flex-wrap: nowrap;
+            gap: 0.75rem;
+        }
+
+        .sidebar-avatar-wrap {
+            position: relative;
+            text-decoration: none;
             flex-shrink: 0;
         }
 
-        .metric-badge {
-            display: inline-flex;
+        .sidebar-avatar-emoji {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--bg-surface);
+            border: 1.5px solid var(--ro-indigo-border);
+            display: flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.28rem 0.65rem;
-            border-radius: 999px;
+            justify-content: center;
+            font-size: 1.45rem;
+            box-shadow: var(--shadow-xs);
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar-avatar-wrap:hover .sidebar-avatar-emoji {
+            transform: scale(1.08);
+            border-color: var(--ro-indigo);
+        }
+
+        .sidebar-lvl-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: var(--ro-indigo);
+            color: #FFFFFF;
             font-family: var(--font-mono);
-            font-size: 0.78rem;
-            font-weight: 600;
-            border: 1px solid transparent;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 0.1rem 0.35rem;
+            border-radius: 999px;
+            box-shadow: 0 2px 6px rgba(70, 54, 245, 0.4);
+        }
+
+        .sidebar-user-meta {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sidebar-username-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+        }
+
+        .sidebar-username {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-primary);
             white-space: nowrap;
-            line-height: 1.2;
-            flex-shrink: 0;
-            transition: transform 0.18s var(--ease-out), box-shadow 0.18s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .metric-badge:hover {
-            transform: translateY(-1px);
+        .sidebar-tier-chip {
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            font-weight: 800;
+            padding: 0.12rem 0.42rem;
+            border-radius: 6px;
+            background: var(--visor-cyan-bg);
+            color: var(--visor-cyan);
+            border: 1px solid var(--visor-cyan-border);
+            text-transform: uppercase;
         }
 
-        .metric-streak {
+        .sidebar-class-chip {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 0.1rem;
+        }
+
+        .sidebar-xp-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sidebar-xp-label {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .sidebar-stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.45rem;
+        }
+
+        .sidebar-stat-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.45rem;
+            border-radius: 7px;
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-stat-pill.flame {
             background: var(--flame-bg);
             color: var(--flame-text);
             border-color: var(--flame-border);
         }
-        .metric-streak:hover {
-            box-shadow: 0 0 10px rgba(244, 63, 94, 0.25);
-        }
-        .metric-streak:hover span {
-            display: inline-block;
-            animation: flameFlicker 0.8s ease infinite;
-        }
 
-        .metric-doros {
+        .sidebar-stat-pill.gold {
             background: var(--gold-bg);
             color: var(--gold-text);
             border-color: var(--gold-border);
         }
-        .metric-doros:hover {
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+
+        /* Dolný dock so správou témy, jazyka a odhlásením */
+        .sidebar-bottom-dock {
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--border-hairline);
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
         }
 
-        .metric-xp {
-            background: var(--ro-indigo-soft);
-            color: var(--ro-indigo);
-            border-color: var(--ro-indigo-border);
-        }
-        .metric-xp:hover {
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
-        }
-
-        .metric-tier {
-            background: var(--bg-subtle);
-            color: var(--visor-cyan);
-            border-color: var(--border-strong);
-            font-size: 0.74rem;
-        }
-
-        .nav-avatar-badge {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: var(--bg-subtle);
-            border: 1.5px solid var(--ro-indigo-border);
-            display: inline-flex;
+        .sidebar-util-row {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            text-decoration: none;
-            flex-shrink: 0;
-            transition: transform 0.18s var(--ease-out), border-color 0.18s ease;
+            justify-content: space-between;
+            gap: 0.5rem;
         }
 
-        .nav-avatar-badge:hover {
-            transform: scale(1.08);
-            border-color: var(--ro-indigo);
+        .sidebar-logout-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.65rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .sidebar-logout-link:hover {
+            color: var(--flame-text);
+            background: var(--flame-bg);
+        }
+
+        /* Mobilná horná lišta (zobrazená iba pod 1024px) */
+        .mobile-topbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 95;
+            height: 60px;
+            background: var(--bg-navbar);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-hairline);
+            padding: 0 1.25rem;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        }
+
+        .mobile-drawer-toggle {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-sm);
+            padding: 0.45rem 0.75rem;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 98;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .sidebar-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Verejná navigačná lišta pre neprihlásených používateľov (Login / Register) */
+        .public-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-navbar);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-hairline);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
         }
 
         /* Prepínač SK / EN */
@@ -464,11 +678,12 @@
         }
 
         .lang-segmented a {
-            padding: 0.22rem 0.52rem;
+            padding: 0.25rem 0.6rem;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.76rem;
             font-weight: 700;
             color: var(--text-muted);
+            text-decoration: none;
             transition: all 0.15s ease;
         }
 
@@ -483,14 +698,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-hairline);
             background: var(--bg-subtle);
             color: var(--text-primary);
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1rem;
             flex-shrink: 0;
             transition: all 0.15s ease;
         }
@@ -501,31 +716,24 @@
             transform: translateY(-1px);
         }
 
-        .btn-nav-action {
-            padding: 0.35rem 0.75rem;
-            font-size: 0.82rem;
-            white-space: nowrap;
-            flex-shrink: 0;
-            border-radius: var(--radius-sm);
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: var(--bg-subtle);
-            border: 1px solid var(--border-hairline);
-            border-radius: var(--radius-sm);
-            padding: 0.45rem 0.65rem;
-            cursor: pointer;
-            color: var(--text-primary);
-            flex-shrink: 0;
-        }
-
+        /* Hlavný obsahový kontajner s offsetom podľa sidebaru */
         .main-container {
-            max-width: 1400px;
             width: 100%;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
+            padding: 2.25rem 2.5rem 4rem;
             flex: 1;
+            min-height: 100vh;
+        }
+
+        body.has-auth-sidebar .main-container {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            max-width: 1480px;
+        }
+
+        body:not(.has-auth-sidebar) .main-container {
+            margin: 0 auto;
+            max-width: 1200px;
+            padding: 2.5rem 1.5rem 4rem;
         }
 
         /* Zjednotené karty s bohatou hĺbkou a prémiovým glassmorphismom */
@@ -840,145 +1048,234 @@
             border: 1px solid var(--border-strong);
         }
 
-        @media (max-width: 992px) {
+        /* Responzívne správanie pre tablety a mobily */
+        @media (max-width: 1024px) {
+            .app-sidebar {
+                transform: translateX(-100%);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.4);
+            }
+
+            .app-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-close-btn {
+                display: inline-block;
+            }
+
+            .sidebar-backdrop {
+                display: block;
+            }
+
+            .mobile-topbar {
+                display: flex;
+            }
+
+            body.has-auth-sidebar .main-container {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 1.5rem 1.25rem 3.5rem;
+            }
 
             .layout-2col,
             .layout-workbench,
             .layout-auth {
                 grid-template-columns: 1fr !important;
             }
-
-            .mobile-toggle {
-                display: inline-flex;
-            }
-
-            .nav-collapsible {
-                display: none !important;
-                width: 100%;
-                flex-direction: column;
-                align-items: flex-start !important;
-                padding-top: 0.75rem;
-                border-top: 1px solid var(--border-hairline);
-            }
-
-            .nav-collapsible.open {
-                display: flex !important;
-            }
-
-            .navbar-container {
-                flex-wrap: wrap;
-            }
         }
     </style>
 </head>
 
-<body>
-    <header class="navbar">
-        <div class="navbar-container">
-            <a href="{% url 'dashboard' %}" class="brand">
-                <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="brand-logo"
-                    onerror="this.style.display='none'; document.getElementById('codo-nav-svg').style.display='block';">
-                <svg id="codo-nav-svg" style="display:none; width:36px; height:36px;" viewBox="0 0 64 64" fill="none">
-                    <path d="M12 46C12 24 22 10 34 8C44 10 54 24 54 46C54 52 46 56 33 56C20 56 12 52 12 46Z"
-                        fill="#4636F5" />
-                    <path d="M18 39C18 25 25 17 33 17C41 17 48 25 48 39C48 47 42 50 33 50C24 50 18 47 18 39Z"
-                        fill="#F2EFE9" />
-                    <rect x="21" y="22" width="24" height="19" rx="9" fill="#0F172A" />
-                    <path d="M25 32C26.5 29 29.5 29 31 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
-                    <path d="M35 32C36.5 29 39.5 29 41 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
-                </svg>
-                <span class="brand-text">codo<span>ro</span></span>
-            </a>
+<body class="{% if user.is_authenticated %}has-auth-sidebar{% endif %}">
+    {% if user.is_authenticated %}
+    <!-- Mobilná horná lišta (viditeľná iba na obrazovkách < 1024px) -->
+    <header class="mobile-topbar">
+        <a href="{% url 'dashboard' %}" class="sidebar-brand">
+            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="sidebar-brand-logo"
+                onerror="this.style.display='none'; document.getElementById('codo-mob-svg').style.display='block';">
+            <svg id="codo-mob-svg" style="display:none; width:32px; height:32px;" viewBox="0 0 64 64" fill="none">
+                <path d="M12 46C12 24 22 10 34 8C44 10 54 24 54 46C54 52 46 56 33 56C20 56 12 52 12 46Z" fill="#4636F5" />
+                <rect x="21" y="22" width="24" height="19" rx="9" fill="#0F172A" />
+                <path d="M25 32C26.5 29 29.5 29 31 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
+                <path d="M35 32C36.5 29 39.5 29 41 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
+            </svg>
+            <span class="sidebar-brand-text">codo<span>ro</span></span>
+        </a>
 
-            <button class="mobile-toggle" onclick="document.getElementById('navCollapse').classList.toggle('open')"
-                aria-label="Menu">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <span class="sidebar-stat-pill flame" style="padding: 0.25rem 0.55rem; font-size: 0.74rem;">
+                🔥 {{ user.current_streak }}d
+            </span>
+            <span class="sidebar-stat-pill gold" style="padding: 0.25rem 0.55rem; font-size: 0.74rem;">
+                🪙 {{ user.doros }}
+            </span>
+            <button class="mobile-drawer-toggle" onclick="toggleSidebarDrawer()" aria-label="Menu">
                 ☰
             </button>
-
-            <div id="navCollapse" class="nav-collapsible">
-                {% if user.is_authenticated %}
-                <ul class="nav-menu">
-                    <li>
-                        <a href="{% url 'dashboard' %}"
-                            class="nav-item-link {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}active{% endif %}">
-                            {% if lang == 'en' %}Learning Hub{% else %}Výučba{% endif %}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'shop' %}"
-                            class="nav-item-link {% if request.resolver_match.url_name == 'shop' %}active{% endif %}">
-                            {% if lang == 'en' %}Rewards Shop{% else %}Obchod{% endif %}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'profile' %}"
-                            class="nav-item-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-                            {% if lang == 'en' %}Profile & Badges{% else %}Profil & Odznaky{% endif %}
-                        </a>
-                    </li>
-                    {% if user.is_teacher %}
-                    <li>
-                        <a href="{% url 'teacher_dashboard' %}"
-                            class="nav-item-link nav-item-teacher {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
-                            {% if lang == 'en' %}Teacher Studio{% else %}Učiteľ{% endif %}
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-
-                <div class="nav-actions">
-                    <span class="metric-badge metric-streak">
-                        <span>🔥</span> {{ user.current_streak }} d
-                    </span>
-                    <span class="metric-badge metric-doros">
-                        <span>🪙</span> {{ user.doros }} Doros
-                    </span>
-                    <span class="metric-badge metric-xp">
-                        <span>⚡</span> Lvl {{ user.level }} · {{ user.xp }} XP
-                    </span>
-                    <span class="metric-badge metric-tier">{{ user.subscription_tier }}</span>
-
-                    <a href="{% url 'profile' %}" class="nav-avatar-badge" title="{% if lang == 'en' %}My Profile & Badges{% else %}Môj profil a odznaky{% endif %}">
-                        {{ user.avatar_emoji }}
-                    </a>
-
-                    <div class="lang-segmented">
-                        <a href="{% url 'switch_language' 'sk' %}" class="{% if lang == 'sk' %}active{% endif %}">SK</a>
-                        <a href="{% url 'switch_language' 'en' %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
-                    </div>
-
-                    <!-- Prepínač Light / Dark Mode -->
-                    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleCodoroTheme()"
-                        title="{% if lang == 'en' %}Switch Light / Dark theme{% else %}Prepnúť svetlý / tmavý režim{% endif %}">
-                        🌙
-                    </button>
-
-                    <a href="{% url 'logout' %}" class="btn btn-secondary btn-nav-action">
-                        {% if lang == 'en' %}Sign out{% else %}Odhlásiť sa{% endif %}
-                    </a>
-                </div>
-                {% else %}
-                <div></div>
-                <div class="nav-actions">
-                    <div class="lang-segmented">
-                        <a href="{% url 'switch_language' 'sk' %}" class="{% if lang == 'sk' %}active{% endif %}">SK</a>
-                        <a href="{% url 'switch_language' 'en' %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
-                    </div>
-                    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleCodoroTheme()"
-                        title="Light / Dark">
-                        🌙
-                    </button>
-                    <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">
-                        {% if lang == 'en' %}Sign in{% else %}Prihlásenie{% endif %}
-                    </a>
-                    <a href="{% url 'register' %}" class="btn btn-primary btn-sm">
-                        {% if lang == 'en' %}Create account{% else %}Registrácia{% endif %}
-                    </a>
-                </div>
-                {% endif %}
-            </div>
         </div>
     </header>
+
+    <!-- Fixný ľavý Sidebar aplikácie (Desktop: 260px trvalo / Mobil: slide-in drawer) -->
+    <aside class="app-sidebar" id="appSidebar">
+        <!-- Hlavička: Logo Codoro + zatvárací krížik pre mobil -->
+        <div>
+            <div class="sidebar-header">
+                <a href="{% url 'dashboard' %}" class="sidebar-brand">
+                    <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="sidebar-brand-logo"
+                        onerror="this.style.display='none'; document.getElementById('codo-desk-svg').style.display='block';">
+                    <svg id="codo-desk-svg" style="display:none; width:34px; height:34px;" viewBox="0 0 64 64" fill="none">
+                        <path d="M12 46C12 24 22 10 34 8C44 10 54 24 54 46C54 52 46 56 33 56C20 56 12 52 12 46Z" fill="#4636F5" />
+                        <rect x="21" y="22" width="24" height="19" rx="9" fill="#0F172A" />
+                        <path d="M25 32C26.5 29 29.5 29 31 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
+                        <path d="M35 32C36.5 29 39.5 29 41 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
+                    </svg>
+                    <span class="sidebar-brand-text">codo<span>ro</span></span>
+                </a>
+                <button class="sidebar-close-btn" onclick="toggleSidebarDrawer()" aria-label="Close">✕</button>
+            </div>
+
+            <!-- Hlavná navigácia -->
+            <nav class="sidebar-nav">
+                <span class="sidebar-section-label">{% if lang == 'en' %}LEARNING{% else %}VZDELÁVANIE{% endif %}</span>
+                <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}active{% endif %}">
+                    <span class="sidebar-link-content">
+                        <span class="sidebar-link-icon">🧭</span>
+                        <span>{% if lang == 'en' %}Learning Path{% else %}Cesta výučby{% endif %}</span>
+                    </span>
+                    {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}
+                    <span class="sidebar-active-dot"></span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'shop' %}" class="sidebar-link {% if request.resolver_match.url_name == 'shop' %}active{% endif %}">
+                    <span class="sidebar-link-content">
+                        <span class="sidebar-link-icon">🛒</span>
+                        <span>{% if lang == 'en' %}Rewards Shop{% else %}Školský obchod{% endif %}</span>
+                    </span>
+                    {% if request.resolver_match.url_name == 'shop' %}
+                    <span class="sidebar-active-dot"></span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                    <span class="sidebar-link-content">
+                        <span class="sidebar-link-icon">🎖️</span>
+                        <span>{% if lang == 'en' %}Profile & Badges{% else %}Môj profil & odznaky{% endif %}</span>
+                    </span>
+                    {% if request.resolver_match.url_name == 'profile' %}
+                    <span class="sidebar-active-dot"></span>
+                    {% endif %}
+                </a>
+
+                {% if user.is_teacher %}
+                <span class="sidebar-section-label" style="margin-top: 0.85rem;">{% if lang == 'en' %}TEACHING{% else %}ADMINISTRÁCIA{% endif %}</span>
+                <a href="{% url 'teacher_dashboard' %}" class="sidebar-link sidebar-link-teacher {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
+                    <span class="sidebar-link-content">
+                        <span class="sidebar-link-icon">👨‍🏫</span>
+                        <span>{% if lang == 'en' %}Teacher Studio{% else %}Učiteľské štúdio{% endif %}</span>
+                    </span>
+                    {% if request.resolver_match.url_name == 'teacher_dashboard' %}
+                    <span class="sidebar-active-dot"></span>
+                    {% endif %}
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+
+        <!-- Stred / Spodok: Herný HUD Box žiaka -->
+        <div>
+            <div class="sidebar-user-hud">
+                <div class="sidebar-user-header">
+                    <a href="{% url 'profile' %}" class="sidebar-avatar-wrap" title="{% if lang == 'en' %}My Profile{% else %}Môj profil{% endif %}">
+                        <span class="sidebar-avatar-emoji">{{ user.avatar_emoji }}</span>
+                        <span class="sidebar-lvl-badge">L{{ user.level }}</span>
+                    </a>
+                    <div class="sidebar-user-meta">
+                        <div class="sidebar-username-row">
+                            <strong class="sidebar-username">{{ user.first_name|default:user.username }}</strong>
+                            <span class="sidebar-tier-chip">{{ user.subscription_tier }}</span>
+                        </div>
+                        {% if user.school_class %}
+                        <span class="sidebar-class-chip">🏫 {{ user.school_class.name }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="sidebar-xp-block">
+                    <div class="sidebar-xp-label">
+                        <span>⚡ {{ user.xp }} XP</span>
+                        <span>{{ user.level_progress_pct }}%</span>
+                    </div>
+                    <div class="progress-track" style="height: 6px;">
+                        <div class="progress-fill" data-progress="{{ user.level_progress_pct }}"></div>
+                    </div>
+                </div>
+
+                <div class="sidebar-stats-row">
+                    <div class="sidebar-stat-pill flame">
+                        <span>🔥</span>
+                        <strong>{{ user.current_streak }} d</strong>
+                    </div>
+                    <div class="sidebar-stat-pill gold">
+                        <span>🪙</span>
+                        <strong>{{ user.doros }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dolný dock: Jazyk, Téma a Odhlásenie -->
+            <div class="sidebar-bottom-dock">
+                <div class="sidebar-util-row">
+                    <div class="lang-segmented">
+                        <a href="{% url 'switch_language' 'sk' %}" class="{% if lang == 'sk' %}active{% endif %}">SK</a>
+                        <a href="{% url 'switch_language' 'en' %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+                    </div>
+                    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleCodoroTheme()"
+                        title="{% if lang == 'en' %}Switch Light / Dark mode{% else %}Prepnúť svetlý / tmavý režim{% endif %}">
+                        🌙
+                    </button>
+                </div>
+                <a href="{% url 'logout' %}" class="sidebar-logout-link">
+                    <span>🚪</span>
+                    <span>{% if lang == 'en' %}Sign out{% else %}Odhlásiť sa{% endif %}</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay pozadia pre mobilný drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebarDrawer()"></div>
+    {% else %}
+    <!-- Verejná horná navigácia pre neprihlásených používateľov -->
+    <header class="public-navbar">
+        <a href="{% url 'dashboard' %}" class="sidebar-brand">
+            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="sidebar-brand-logo"
+                onerror="this.style.display='none'; document.getElementById('codo-pub-svg').style.display='block';">
+            <svg id="codo-pub-svg" style="display:none; width:34px; height:34px;" viewBox="0 0 64 64" fill="none">
+                <path d="M12 46C12 24 22 10 34 8C44 10 54 24 54 46C54 52 46 56 33 56C20 56 12 52 12 46Z" fill="#4636F5" />
+                <rect x="21" y="22" width="24" height="19" rx="9" fill="#0F172A" />
+                <path d="M25 32C26.5 29 29.5 29 31 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
+                <path d="M35 32C36.5 29 39.5 29 41 32" stroke="#5CE1E6" stroke-width="2.8" stroke-linecap="round" />
+            </svg>
+            <span class="sidebar-brand-text">codo<span>ro</span></span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <div class="lang-segmented">
+                <a href="{% url 'switch_language' 'sk' %}" class="{% if lang == 'sk' %}active{% endif %}">SK</a>
+                <a href="{% url 'switch_language' 'en' %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+            </div>
+            <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleCodoroTheme()"
+                title="Light / Dark">
+                🌙
+            </button>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">
+                {% if lang == 'en' %}Sign in{% else %}Prihlásenie{% endif %}
+            </a>
+            <a href="{% url 'register' %}" class="btn btn-primary btn-sm">
+                {% if lang == 'en' %}Create account{% else %}Registrácia{% endif %}
+            </a>
+        </div>
+    </header>
+    {% endif %}
 
     <main class="main-container">
         {% if messages %}
@@ -1000,16 +1297,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        function toggleSidebarDrawer() {
+            var sidebar = document.getElementById('appSidebar');
+            var backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) sidebar.classList.toggle('open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+
         function syncThemeButtonIcon() {
-            const btn = document.getElementById('themeToggleBtn');
-            if (!btn) return;
-            const current = document.documentElement.getAttribute('data-theme') || 'light';
-            btn.textContent = current === 'dark' ? '☀️' : '🌙';
+            var btns = document.querySelectorAll('.theme-toggle-btn');
+            var current = document.documentElement.getAttribute('data-theme') || 'light';
+            btns.forEach(function (btn) {
+                btn.textContent = current === 'dark' ? '☀️' : '🌙';
+            });
         }
 
         function toggleCodoroTheme() {
-            const root = document.documentElement;
-            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            var root = document.documentElement;
+            var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             root.setAttribute('data-theme', next);
             localStorage.setItem('codoro_theme', next);
             syncThemeButtonIcon();
@@ -1033,7 +1338,7 @@
             // Automatické sformátovanie všetkých Markdown textov (odstráni surové ### a **znaky**)
             if (window.marked) {
                 document.querySelectorAll('.markdown-render').forEach(function (el) {
-                    const raw = el.textContent.trim();
+                    var raw = el.textContent.trim();
                     el.innerHTML = marked.parse(raw);
                 });
             }
