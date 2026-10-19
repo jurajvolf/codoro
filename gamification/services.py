@@ -152,6 +152,12 @@ def get_student_stats(user):
             'is_complete': bool(lesson_ids) and done == len(lesson_ids),
         })
 
+    completed_minutes = sum(
+        Lesson.objects.filter(id__in=completed_lessons).values_list('estimated_minutes', flat=True)
+    )
+    studied_hours = round(completed_minutes / 60, 1)
+    total_curriculum_hours = sum(Module.objects.values_list('estimated_hours', flat=True))
+
     total_attempts = len(submissions)
     return {
         'solved_count': len(solved),
@@ -161,6 +167,8 @@ def get_student_stats(user):
         'first_try_count': first_try,
         'lessons_completed': len(completed_lessons),
         'total_lessons': Lesson.objects.count(),
+        'studied_hours': studied_hours,
+        'total_curriculum_hours': total_curriculum_hours,
         'quizzes_passed': quizzes_passed,
         'module_progress': module_progress,
         'completed_modules': [m for m in module_progress if m['is_complete']],

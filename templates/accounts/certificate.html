@@ -123,7 +123,7 @@
     </div>
 
     <!-- Metriky úspešnosti -->
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; text-align: center;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; margin-bottom: 2.5rem; text-align: center;">
         <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Exercises{% else %}Úlohy{% endif %}</span>
             <strong style="font-family: var(--font-mono); font-size: 1.25rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
@@ -142,6 +142,10 @@
         <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Accuracy{% else %}Úspešnosť{% endif %}</span>
             <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--emerald-text);">{{ stats.success_rate }}%</strong>
+        </div>
+        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Hours{% else %}Hodiny{% endif %}</span>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--gold-text);">{{ stats.studied_hours }} h</strong>
         </div>
     </div>
 

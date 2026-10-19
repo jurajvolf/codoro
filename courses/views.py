@@ -279,6 +279,19 @@ def lesson_detail(request, lesson_id):
             student=user, exercise=current_exercise
         ).exclude(teacher_comment='').first()
 
+    next_exercise = None
+    if current_exercise and exercises:
+        try:
+            curr_idx = [e.id for e in exercises].index(current_exercise.id)
+            if curr_idx + 1 < len(exercises):
+                next_exercise = exercises[curr_idx + 1]
+        except ValueError:
+            pass
+
+    is_current_passed = bool(
+        latest_submission and latest_submission.status == Submission.Status.PASSED
+    ) or (current_exercise and current_exercise.id in solved_ids)
+
     progress = LessonProgress.objects.filter(student=user, lesson=lesson).first()
     all_lessons = list(Lesson.objects.select_related('module').order_by('module__order', 'order'))
     idx = next((i for i, item in enumerate(all_lessons) if item.id == lesson.id), 0)
@@ -289,6 +302,8 @@ def lesson_detail(request, lesson_id):
         'lesson': lesson,
         'exercises': exercises,
         'current_exercise': current_exercise,
+        'next_exercise': next_exercise,
+        'is_current_passed': is_current_passed,
         'latest_submission': latest_submission,
         'reviewed_submission': reviewed_submission,
         'attempts_count': attempts_count,
@@ -333,3 +348,69 @@ def unlock_hint(request, exercise_id):
             )
     messages.info(request, tr(lang, f"Nápoveda odomknutá (-{cost} Doros).", f"Hint unlocked (-{cost} Doros)."))
     return redirect(target)
+
+
+@login_required
+def practice_arena(request):
+    """Tréningová Aréna / Katalóg úloh s filtrovaním podľa náročnosti, modulu a stavu riešenia."""
+    user = request.user
+    lang = user.preferred_language
+
+    difficulty = request.GET.get('difficulty', '').strip().upper()
+    module_id = request.GET.get('module', '').strip()
+    status = request.GET.get('status', '').strip().lower()
+    q = request.GET.get('q', '').strip()
+
+    exercises_qs = Exercise.objects.select_related('lesson', 'lesson__module').all()
+
+    if difficulty in ['EASY', 'MEDIUM', 'HARD']:
+        exercises_qs = exercises_qs.filter(difficulty=difficulty)
+    if module_id and module_id.isdigit():
+        exercises_qs = exercises_qs.filter(lesson__module_id=int(module_id))
+    if q:
+        exercises_qs = exercises_qs.filter(
+            Q(title_sk__icontains=q) |
+            Q(title_en__icontains=q) |
+            Q(instructions_sk__icontains=q) |
+            Q(instructions_en__icontains=q)
+        )
+
+    solved_ids = set(
+        Submission.objects.filter(student=user, status=Submission.Status.PASSED)
+        .values_list('exercise_id', flat=True)
+    )
+
+    exercise_list = list(exercises_qs.order_by('lesson__module__order', 'lesson__order', 'order'))
+    if status == 'solved':
+        exercise_list = [e for e in exercise_list if e.id in solved_ids]
+    elif status == 'unsolved':
+        exercise_list = [e for e in exercise_list if e.id not in solved_ids]
+
+    all_modules = Module.objects.order_by('order')
+    total_exercises = Exercise.objects.count()
+    total_solved = len(solved_ids)
+    easy_count = Exercise.objects.filter(difficulty=Exercise.Difficulty.EASY).count()
+    easy_solved = Exercise.objects.filter(difficulty=Exercise.Difficulty.EASY, id__in=solved_ids).count()
+    medium_count = Exercise.objects.filter(difficulty=Exercise.Difficulty.MEDIUM).count()
+    medium_solved = Exercise.objects.filter(difficulty=Exercise.Difficulty.MEDIUM, id__in=solved_ids).count()
+    hard_count = Exercise.objects.filter(difficulty=Exercise.Difficulty.HARD).count()
+    hard_solved = Exercise.objects.filter(difficulty=Exercise.Difficulty.HARD, id__in=solved_ids).count()
+
+    context = {
+        'exercises': exercise_list,
+        'all_modules': all_modules,
+        'solved_ids': solved_ids,
+        'total_exercises': total_exercises,
+        'total_solved': total_solved,
+        'easy_count': easy_count,
+        'easy_solved': easy_solved,
+        'medium_count': medium_count,
+        'medium_solved': medium_solved,
+        'hard_count': hard_count,
+        'hard_solved': hard_solved,
+        'selected_difficulty': difficulty,
+        'selected_module_id': int(module_id) if module_id.isdigit() else None,
+        'selected_status': status,
+        'search_query': q,
+    }
+    return render(request, 'courses/practice_arena.html', context)

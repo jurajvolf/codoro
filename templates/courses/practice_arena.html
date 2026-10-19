@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<style>
+    .arena-hero {
+        padding: 2rem 2.25rem;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(135deg, rgba(70, 54, 245, 0.12) 0%, var(--bg-surface) 60%, rgba(92, 225, 230, 0.08) 100%);
+        border: 1.5px solid var(--ro-indigo-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.75rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .arena-stat-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 580px;
+    }
+
+    .arena-stat-pill {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        border-radius: var(--radius-md);
+        padding: 0.75rem 1rem;
+        text-align: center;
+        box-shadow: var(--shadow-xs);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .arena-stat-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .arena-stat-num {
+        font-family: var(--font-mono);
+        font-size: 1.35rem;
+        font-weight: 800;
+        display: block;
+        margin-top: 0.15rem;
+    }
+
+    .arena-filters-card {
+        padding: 1.25rem 1.5rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 2rem;
+    }
+
+    .arena-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .arena-card {
+        padding: 1.35rem;
+        border-radius: var(--radius-md);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        border: 1.5px solid var(--border-hairline);
+        background: var(--bg-surface);
+        position: relative;
+    }
+
+    .arena-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--ro-indigo-border);
+    }
+
+    .arena-card.is-solved {
+        border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .arena-card.is-solved::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--emerald-text);
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+    }
+
+    .diff-badge-easy {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .diff-badge-medium {
+        background: rgba(245, 158, 11, 0.15);
+        color: #F59E0B;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .diff-badge-hard {
+        background: rgba(244, 63, 94, 0.18);
+        color: #FB7185;
+        border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+</style>
+
+<div class="animate-in" style="max-width: 1200px; margin: 0 auto;">
+
+    <!-- 1. Hero sekcia Tréningovej Arény -->
+    <section class="arena-hero">
+        <div style="display: flex; align-items: center; gap: 1.25rem; min-width: 280px; flex: 1;">
+            <div style="width: 64px; height: 64px; border-radius: 18px; background: var(--bg-surface); border: 2px solid var(--ro-indigo-border); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(70, 54, 245, 0.25); flex-shrink: 0;">
+                <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo"
+                    style="width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(70, 54, 245, 0.35));">
+            </div>
+            <div>
+                <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    {% if lang == 'en' %}CODORO PRACTICE ARENA{% else %}TRÉNINGOVÁ ARÉNA CODORO{% endif %}
+                </span>
+                <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0.35rem; letter-spacing: -0.02em;">
+                    {% if lang == 'en' %}Python Challenge Catalog{% else %}Katalóg praktických výziev{% endif %}
+                </h1>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0; max-width: 500px;">
+                    {% if lang == 'en' %}
+                    Practice and master coding problems across all 12 modules. Test your logic, fulfill quests, and prepare for school exams.
+                    {% else %}
+                    Precvič si programovanie naprieč všetkými 12 modulmi. Trénuj na písomky, plň denné questy a získavaj Doros!
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Štatistiky riešenia v aréne -->
+        <div class="arena-stat-strip">
+            <div class="arena-stat-pill">
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono);">
+                    {% if lang == 'en' %}Total Cleared{% else %}Celkovo zvládnuté{% endif %}
+                </span>
+                <span class="arena-stat-num" style="color: var(--ro-indigo);">
+                    {{ total_solved }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ total_exercises }}</span>
+                </span>
+            </div>
+
+            <div class="arena-stat-pill">
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: #10B981; font-family: var(--font-mono);">
+                    EASY
+                </span>
+                <span class="arena-stat-num" style="color: #10B981;">
+                    {{ easy_solved }} <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">/ {{ easy_count }}</span>
+                </span>
+            </div>
+
+            <div class="arena-stat-pill">
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: #F59E0B; font-family: var(--font-mono);">
+                    MEDIUM
+                </span>
+                <span class="arena-stat-num" style="color: #F59E0B;">
+                    {{ medium_solved }} <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">/ {{ medium_count }}</span>
+                </span>
+            </div>
+
+            <div class="arena-stat-pill">
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: #FB7185; font-family: var(--font-mono);">
+                    BOSS (HARD)
+                </span>
+                <span class="arena-stat-num" style="color: #FB7185;">
+                    {{ hard_solved }} <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">/ {{ hard_count }}</span>
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Filtračná konzola -->
+    <section class="card-surface arena-filters-card">
+        <form method="get" action="{% url 'practice_arena' %}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+            <!-- Vyhľadávanie textu -->
+            <div style="flex: 1; min-width: 220px;">
+                <label style="display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; font-family: var(--font-mono);">
+                    {% if lang == 'en' %}Search by keyword{% else %}Hľadať v zadaní alebo názve{% endif %}
+                </label>
+                <div style="position: relative;">
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="{% if lang == 'en' %}e.g. list, palindrome, function...{% else %}napr. zoznam, palindrom, funkcia...{% endif %}"
+                        class="form-control" style="padding-left: 2.25rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Výber modulu -->
+            <div style="min-width: 220px;">
+                <label style="display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; font-family: var(--font-mono);">
+                    {% if lang == 'en' %}Curriculum Module{% else %}Vzdelávací modul{% endif %}
+                </label>
+                <select name="module" class="form-control" onchange="this.form.submit()">
+                    <option value="">{% if lang == 'en' %}All 12 Modules{% else %}Všetkých 12 modulov{% endif %}</option>
+                    {% for m in all_modules %}
+                    <option value="{{ m.id }}" {% if selected_module_id == m.id %}selected{% endif %}>
+                        {{ m.order }}. {% if lang == 'en' %}{{ m.title_en }}{% else %}{{ m.title_sk }}{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Výber náročnosti -->
+            <div style="min-width: 150px;">
+                <label style="display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; font-family: var(--font-mono);">
+                    {% if lang == 'en' %}Difficulty{% else %}Obťažnosť{% endif %}
+                </label>
+                <select name="difficulty" class="form-control" onchange="this.form.submit()">
+                    <option value="">{% if lang == 'en' %}All Difficulties{% else %}Všetky obťažnosti{% endif %}</option>
+                    <option value="EASY" {% if selected_difficulty == 'EASY' %}selected{% endif %}>Ľahká (EASY)</option>
+                    <option value="MEDIUM" {% if selected_difficulty == 'MEDIUM' %}selected{% endif %}>Stredná (MEDIUM)</option>
+                    <option value="HARD" {% if selected_difficulty == 'HARD' %}selected{% endif %}>Boss výzva (HARD)</option>
+                </select>
+            </div>
+
+            <!-- Výber stavu -->
+            <div style="min-width: 150px;">
+                <label style="display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; font-family: var(--font-mono);">
+                    {% if lang == 'en' %}Status{% else %}Stav riešenia{% endif %}
+                </label>
+                <select name="status" class="form-control" onchange="this.form.submit()">
+                    <option value="">{% if lang == 'en' %}All Tasks{% else %}Všetky úlohy{% endif %}</option>
+                    <option value="unsolved" {% if selected_status == 'unsolved' %}selected{% endif %}>{% if lang == 'en' %}Unsolved only{% else %}Len nevyriešené{% endif %}</option>
+                    <option value="solved" {% if selected_status == 'solved' %}selected{% endif %}>{% if lang == 'en' %}Solved only{% else %}Len vyriešené{% endif %}</option>
+                </select>
+            </div>
+
+            <!-- Akčné tlačidlá filtra -->
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.65rem 1.15rem; font-weight: 700;">
+                    {% if lang == 'en' %}Filter{% else %}Filtrovať{% endif %}
+                </button>
+                {% if selected_difficulty or selected_module_id or selected_status or search_query %}
+                <a href="{% url 'practice_arena' %}" class="btn btn-secondary" style="padding: 0.65rem 1rem;">
+                    ✕ {% if lang == 'en' %}Reset{% else %}Zrušiť filter{% endif %}
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </section>
+
+    <!-- 3. Zoznam úloh v mriežke -->
+    {% if exercises %}
+    <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">
+            {% if lang == 'en' %}Showing {{ exercises|length }} challenge(s){% else %}Zobrazených {{ exercises|length }} výziev{% endif %}
+        </span>
+    </div>
+
+    <div class="arena-grid">
+        {% for ex in exercises %}
+        <article class="arena-card {% if ex.id in solved_ids %}is-solved{% endif %}">
+            <div>
+                <!-- Horný riadok s modulom a obtiažnosťou -->
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                        M{{ ex.lesson.module.order }}.{{ ex.lesson.order }} · {{ ex.lesson.module.get_programming_language_display }}
+                    </span>
+
+                    <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 999px;"
+                        class="{% if ex.difficulty == 'EASY' %}diff-badge-easy{% elif ex.difficulty == 'MEDIUM' %}diff-badge-medium{% else %}diff-badge-hard{% endif %}">
+                        {{ ex.get_difficulty_display }}
+                    </span>
+                </div>
+
+                <!-- Názov úlohy -->
+                <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem; line-height: 1.35;">
+                    <a href="{% url 'lesson_detail' ex.lesson_id %}?exercise={{ ex.id }}#workbench" style="color: inherit; text-decoration: none;">
+                        {% if lang == 'en' %}{{ ex.title_en }}{% else %}{{ ex.title_sk }}{% endif %}
+                    </a>
+                </h2>
+
+                <!-- Krátky úryvok zadania -->
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 1rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {% if lang == 'en' %}{{ ex.instructions_en }}{% else %}{{ ex.instructions_sk }}{% endif %}
+                </p>
+            </div>
+
+            <div>
+                <!-- Odmeny a stav vyriešenia -->
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-hairline); padding-top: 0.85rem; margin-top: 0.5rem;">
+                    <div style="display: flex; gap: 0.4rem;">
+                        <span class="metric-badge metric-xp">+{{ ex.xp_reward }} XP</span>
+                        <span class="metric-badge metric-doros">+{{ ex.doros_reward }} D</span>
+                    </div>
+
+                    {% if ex.id in solved_ids %}
+                    <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; color: var(--emerald-text);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        {% if lang == 'en' %}SOLVED{% else %}SPLNENÉ{% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- Akčné tlačidlo vstupu do úlohy -->
+                <div style="margin-top: 0.75rem;">
+                    <a href="{% url 'lesson_detail' ex.lesson_id %}?exercise={{ ex.id }}#workbench"
+                        class="btn {% if ex.id in solved_ids %}btn-secondary{% else %}btn-primary{% endif %}"
+                        style="width: 100%; justify-content: center; font-size: 0.85rem; font-weight: 700; padding: 0.55rem 0.95rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        {% if ex.id in solved_ids %}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        {% if lang == 'en' %}Practice Again{% else %}Precvičiť znova{% endif %}
+                        {% else %}
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        {% if lang == 'en' %}Start Challenge{% else %}Spustiť výzvu{% endif %}
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Prázdny stav pri filtri -->
+    <div class="card-surface" style="padding: 3.5rem 2rem; text-align: center; border-radius: var(--radius-lg);">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--bg-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; color: var(--text-muted);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
+            {% if lang == 'en' %}No challenges match your filters{% else %}Žiadne úlohy nezodpovedajú zvoleným filtrom{% endif %}
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0 0 1.25rem;">
+            {% if lang == 'en' %}Try adjusting your search query, difficulty, or module selection.{% else %}Skús zmeniť hľadaný výraz, obťažnosť alebo zvoliť iný modul.{% endif %}
+        </p>
+        <a href="{% url 'practice_arena' %}" class="btn btn-secondary" style="font-weight: 700;">
+            {% if lang == 'en' %}Clear All Filters{% else %}Vymazať všetky filtre{% endif %}
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

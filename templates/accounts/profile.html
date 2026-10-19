@@ -224,6 +224,19 @@
                     {% if lang == 'en' %}Record streak:{% else %}Osobný rekord:{% endif %} {{ user.longest_streak }} {% if lang == 'en' %}days{% else %}dní{% endif %}
                 </div>
             </div>
+
+            <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    {% if lang == 'en' %}Hours Studied{% else %}Odštudované hodiny{% endif %}
+                </span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--gold-text); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {{ stats.studied_hours }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_curriculum_hours }} h</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+                    {% if lang == 'en' %}Theoretical & practical time{% else %}Čas teórie a cvičení{% endif %}
+                </div>
+            </div>
         </div>
     </section>
 

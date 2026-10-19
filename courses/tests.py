@@ -139,3 +139,79 @@ class EvaluationEngineTests(TestCase):
         self.assertIsInstance(feedback, str)
         self.assertTrue(len(feedback) > 10)
         self.assertNotIn("def sucet(a, b):\n    return a + b", feedback, "AI nesmie vygenerovať hotové riešenie!")
+
+
+class PracticeArenaAndLessonDetailTests(TestCase):
+    """Testy pre Tréningovú Arénu a prepínanie úloh v lekcii."""
+
+    def setUp(self):
+        self.student = User.objects.create_user(
+            username='student_arena', password='password123', role='STUDENT'
+        )
+        self.module = Module.objects.create(
+            title_sk='Modul 1', title_en='Module 1', order=1, estimated_hours=10
+        )
+        self.lesson = Lesson.objects.create(
+            module=self.module, title_sk='Lekcia 1', title_en='Lesson 1', order=1
+        )
+        self.ex1 = Exercise.objects.create(
+            lesson=self.lesson, title_sk='Úloha 1 (Ľahká)', title_en='Task 1 (Easy)',
+            difficulty=Exercise.Difficulty.EASY, order=1
+        )
+        self.ex2 = Exercise.objects.create(
+            lesson=self.lesson, title_sk='Úloha 2 (Boss)', title_en='Task 2 (Boss)',
+            difficulty=Exercise.Difficulty.HARD, order=2,
+            explanation_sk='Vzorové vysvetlenie k úlohe 2',
+            explanation_en='Model solution explanation for task 2'
+        )
+
+    def test_arena_requires_login(self):
+        response = self.client.get('/arena/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_arena_view_loads_for_student(self):
+        self.client.login(username='student_arena', password='password123')
+        response = self.client.get('/arena/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Úloha 1 (Ľahká)')
+        self.assertContains(response, 'Úloha 2 (Boss)')
+        self.assertEqual(response.context['total_exercises'], 2)
+
+    def test_arena_filter_difficulty(self):
+        self.client.login(username='student_arena', password='password123')
+        response = self.client.get('/arena/?difficulty=HARD')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['exercises']), 1)
+        self.assertEqual(response.context['exercises'][0].id, self.ex2.id)
+
+    def test_arena_filter_status_solved_and_unsolved(self):
+        self.client.login(username='student_arena', password='password123')
+        # Označíme ex1 ako PASSED
+        Submission.objects.create(
+            student=self.student, exercise=self.ex1, status=Submission.Status.PASSED,
+            submitted_code='x = 1'
+        )
+        # Filter: unsolved
+        res_unsolved = self.client.get('/arena/?status=unsolved')
+        self.assertEqual(len(res_unsolved.context['exercises']), 1)
+        self.assertEqual(res_unsolved.context['exercises'][0].id, self.ex2.id)
+
+        # Filter: solved
+        res_solved = self.client.get('/arena/?status=solved')
+        self.assertEqual(len(res_solved.context['exercises']), 1)
+        self.assertEqual(res_solved.context['exercises'][0].id, self.ex1.id)
+
+    def test_lesson_detail_exercise_switching_and_next_task(self):
+        self.client.login(username='student_arena', password='password123')
+        # Predvolene načíta ex1
+        res = self.client.get(f'/lesson/{self.lesson.id}/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.context['current_exercise'].id, self.ex1.id)
+        self.assertEqual(res.context['next_exercise'].id, self.ex2.id)
+
+        # Prepnutie na ex2 cez GET parameter
+        res2 = self.client.get(f'/lesson/{self.lesson.id}/?exercise={self.ex2.id}')
+        self.assertEqual(res2.status_code, 200)
+        self.assertEqual(res2.context['current_exercise'].id, self.ex2.id)
+        self.assertIsNone(res2.context['next_exercise'])
+
