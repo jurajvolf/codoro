@@ -65,6 +65,19 @@
         background: var(--ro-indigo-soft);
         box-shadow: 0 0 0 3px rgba(70, 54, 245, 0.25);
     }
+    .color-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .color-swatch-indigo { background: #4636F5; }
+    .color-swatch-cyan { background: #0891B2; }
+    .color-swatch-emerald { background: #059669; }
+    .color-swatch-amber { background: #D97706; }
+    .color-swatch-rose { background: #E11D48; }
+    .color-swatch-violet { background: #7C3AED; }
 </style>
 
 <div class="animate-in" style="max-width: 1140px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
@@ -364,7 +377,7 @@
                     {% for code, hex in avatar_colors %}
                     <label style="cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--bg-subtle);">
                         <input type="radio" name="avatar_color" value="{{ code }}" {% if user.avatar_color == code %}checked{% endif %}>
-                        <span style="width: 14px; height: 14px; border-radius: 50%; background: {{ hex }}; display: inline-block;"></span>
+                        <span class="color-swatch color-swatch-{{ code }}"></span>
                         <span style="font-size: 0.82rem; font-weight: 600;">{{ code|title }}</span>
                     </label>
                     {% endfor %}
