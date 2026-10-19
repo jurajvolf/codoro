@@ -55,8 +55,8 @@ def check_code_safety(code, lang='sk'):
         line = exc.lineno or '?'
         return False, _msg(
             lang,
-            f"❌ Syntaktická chyba na riadku {line}: {exc.msg}\n\n💡 Skontroluj dvojbodky, zátvorky, úvodzovky a odsadenie.",
-            f"❌ Syntax error on line {line}: {exc.msg}\n\n💡 Check colons, brackets, quotes and indentation."
+            f"[SyntaxError] Chyba na riadku {line}: {exc.msg}\n\nTip: Skontroluj dvojbodky, zátvorky, úvodzovky a odsadenie.",
+            f"[SyntaxError] Error on line {line}: {exc.msg}\n\nTip: Check colons, brackets, quotes and indentation."
         )
 
     for node in ast.walk(tree):
@@ -79,8 +79,8 @@ def check_code_safety(code, lang='sk'):
 def _blocked(lang, what, line):
     return _msg(
         lang,
-        f"🛡️ Bezpečnostná ochrana Codoro: '{what}' (riadok {line}) nie je v cvičeniach povolené.",
-        f"🛡️ Codoro security guard: '{what}' (line {line}) is not allowed in exercises."
+        f"[Bezpečnostná ochrana Codoro] Príkaz '{what}' (riadok {line}) nie je v cvičeniach povolený.",
+        f"[Codoro Security Guard] Command '{what}' (line {line}) is not permitted in exercises."
     )
 
 
@@ -145,7 +145,7 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
             if proc.returncode != 0:
                 return False, 'ERROR', _clean_traceback(proc.stderr, workdir)[-max_chars:]
             out = (proc.stdout or '')[:max_chars]
-            return True, 'PASSED', _msg(lang, "✅ Kód bol úspešne spustený.", "✅ Code ran successfully.") + (
+            return True, 'PASSED', _msg(lang, "[PASS] Kód bol úspešne spustený.", "[PASS] Code ran successfully.") + (
                 f"\n\n--- stdout ---\n{out}" if out else '')
 
         for index, tc in enumerate(test_cases, start=1):
@@ -164,7 +164,7 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
                 stdout_preview = proc.stdout[:max_chars]
 
             if proc.returncode == 0:
-                results_log.append(f"✅ {label}: " + _msg(lang, "ÚSPEŠNÝ", "PASSED"))
+                results_log.append(f"[PASS] {label}: " + _msg(lang, "ÚSPEŠNÝ", "PASSED"))
                 continue
 
             all_passed = False
@@ -180,14 +180,14 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
                 err_line = _msg(lang, "Nesprávny výsledok", "Wrong result")
             if tc.is_hidden and err_line.startswith('AssertionError'):
                 err_line = _msg(lang, "Nesprávny výsledok pre skrytý vstup", "Wrong result for a hidden input")
-            results_log.append(f"❌ {label}: " + _msg(lang, "ZLYHAL", "FAILED") + f" -> {err_line}")
+            results_log.append(f"[FAIL] {label}: " + _msg(lang, "ZLYHAL", "FAILED") + f" -> {err_line}")
 
             if any(e in stderr for e in ('SyntaxError', 'IndentationError', 'NameError', 'TypeError')) \
                     and 'AssertionError' not in stderr:
                 detail = _clean_traceback(stderr, workdir)[-max_chars:]
                 return False, 'ERROR', "\n".join(results_log) + "\n\n" + _msg(lang, "Detail chyby:", "Error details:") + f"\n{detail}"
 
-    passed_n = sum(1 for r in results_log if r.startswith('✅'))
+    passed_n = sum(1 for r in results_log if r.startswith('[PASS]'))
     summary = _msg(lang, f"\n\nVýsledok: {passed_n}/{len(test_cases)} testov prešlo.",
                    f"\n\nResult: {passed_n}/{len(test_cases)} tests passed.")
     log = "\n".join(results_log) + summary
@@ -199,8 +199,8 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
 def _timeout_msg(lang, timeout):
     return _msg(
         lang,
-        f"⏱️ Časový limit vypršal (Timeout > {timeout}s)! Skontroluj, či tvoj kód neobsahuje nekonečný cyklus.",
-        f"⏱️ Time limit exceeded (> {timeout}s)! Check your code for an infinite loop."
+        f"[Timeout] Časový limit vypršal (> {timeout}s)! Skontroluj, či tvoj kód neobsahuje nekonečný cyklus.",
+        f"[Timeout] Time limit exceeded (> {timeout}s)! Check your code for an infinite loop."
     )
 
 
@@ -266,49 +266,49 @@ def get_codo_ai_feedback(exercise, student_code, error_log, lang='sk'):
     )
     answer = call_gemini(prompt, timeout=8)
     if answer:
-        return "🤖 " + answer.strip()
+        return answer.strip()
     return local_socratic_feedback(student_code, error_log, lang)
 
 
 def local_socratic_feedback(student_code, error_log, lang='sk'):
     """Deterministická lokálna Sokratovská analýza (funguje okamžite aj bez internetu a API kľúča)."""
     log = error_log or ''
-    last_line = next((ln for ln in reversed(log.splitlines()) if ln.strip().startswith('❌')), '')
+    last_line = next((ln for ln in reversed(log.splitlines()) if ln.strip().startswith(('FAIL', 'CHYBA', '[FAIL]', 'Error', 'Exception'))), '')
     last_line = last_line or (log.strip().splitlines()[-1] if log.strip() else '')
 
     rules = [
-        ('⏱️' in log or 'Timeout' in log,
-         "🤖 Codo: Tvoj program beží príliš dlho. Mení sa v tvojom cykle `while` premenná z podmienky? Kedy by mal cyklus skončiť?",
-         "🤖 Codo: Your program runs too long. Does the variable in your `while` condition ever change? When should the loop stop?"),
-        ('🛡️' in log,
-         "🤖 Codo: Tento príkaz je v cvičeniach zablokovaný z bezpečnostných dôvodov. Dá sa úloha vyriešiť len pomocou premenných, podmienok a cyklov?",
-         "🤖 Codo: That statement is blocked for security reasons. Can you solve the task using only variables, conditions and loops?"),
+        ('Timeout' in log or 'limit vypršal' in log,
+         "Codo: Tvoj program beží príliš dlho. Mení sa v tvojom cykle `while` premenná z podmienky? Kedy by mal cyklus skončiť?",
+         "Codo: Your program runs too long. Does the variable in your `while` condition ever change? When should the loop stop?"),
+        ('Bezpečnostná ochrana' in log or 'Security' in log,
+         "Codo: Tento príkaz je v cvičeniach zablokovaný z bezpečnostných dôvodov. Dá sa úloha vyriešiť len pomocou premenných, podmienok a cyklov?",
+         "Codo: That statement is blocked for security reasons. Can you solve the task using only variables, conditions and loops?"),
         ('IndentationError' in log,
-         "🤖 Codo: Python je citlivý na odsadenie. Sú všetky riadky vo vnútri funkcie, `if` alebo `for` odsadené o rovnaký počet medzier (4)?",
-         "🤖 Codo: Python is sensitive to indentation. Are all lines inside your function, `if` or `for` indented by the same 4 spaces?"),
+         "Codo: Python je citlivý na odsadenie. Sú všetky riadky vo vnútri funkcie, `if` alebo `for` odsadené o rovnaký počet medzier (4)?",
+         "Codo: Python is sensitive to indentation. Are all lines inside your function, `if` or `for` indented by the same 4 spaces?"),
         ('SyntaxError' in log or 'Syntaktická' in log or 'Syntax error' in log,
-         "🤖 Codo: Python nerozumie zápisu kódu. Nechýba ti na konci riadku s `def`, `if` alebo `for` dvojbodka `:`, alebo nejaká zátvorka?",
-         "🤖 Codo: Python can't parse your code. Are you missing a colon `:` after `def`, `if` or `for`, or a closing bracket?"),
+         "Codo: Python nerozumie zápisu kódu. Nechýba ti na konci riadku s `def`, `if` alebo `for` dvojbodka `:`, alebo nejaká zátvorka?",
+         "Codo: Python can't parse your code. Are you missing a colon `:` after `def`, `if` or `for`, or a closing bracket?"),
         ('NameError' in log,
-         "🤖 Codo: Používaš názov, ktorý Python nepozná. Je funkcia pomenovaná presne tak ako v zadaní a je premenná definovaná skôr, než ju použiješ?",
-         "🤖 Codo: You're using a name Python doesn't know. Is the function named exactly like in the task, and is every variable defined before use?"),
+         "Codo: Používaš názov, ktorý Python nepozná. Je funkcia pomenovaná presne tak ako v zadaní a je premenná definovaná skôr, než ju použiješ?",
+         "Codo: You're using a name Python doesn't know. Is the function named exactly like in the task, and is every variable defined before use?"),
         ('TypeError' in log,
-         "🤖 Codo: Nastala chyba typov. Nesčítavaš náhodou text (`str`) s číslom (`int`), alebo voláš funkciu s iným počtom parametrov?",
-         "🤖 Codo: There's a type error. Are you adding text (`str`) to a number (`int`), or calling a function with the wrong number of arguments?"),
+         "Codo: Nastala chyba typov. Nesčítavaš náhodou text (`str`) s číslom (`int`), alebo voláš funkciu s iným počtom parametrov?",
+         "Codo: There's a type error. Are you adding text (`str`) to a number (`int`), or calling a function with the wrong number of arguments?"),
         ('pass' in student_code and 'return' not in student_code,
-         "🤖 Codo: Vidím, že vo funkcii máš stále príkaz `pass` a chýba ti `return`. Aký výpočet má funkcia vykonať a vrátiť?",
-         "🤖 Codo: I see you still have `pass` in your function and no `return` statement. What value should your function compute and send back?"),
+         "Codo: Vidím, že vo funkcii máš stále príkaz `pass` a chýba ti `return`. Aký výpočet má funkcia vykonať a vrátiť?",
+         "Codo: I see you still have `pass` in your function and no `return` statement. What value should your function compute and send back?"),
         ('def ' in student_code and 'return' not in student_code,
-         "🤖 Codo: Tvoja funkcia nevracia žiadnu hodnotu! Testy kontrolujú výsledok vrátený cez `return`, nie iba výpis cez `print()`.",
-         "🤖 Codo: Your function doesn't return anything! Tests check the value sent back with `return`, not just `print()`."),
+         "Codo: Tvoja funkcia nevracia žiadnu hodnotu! Testy kontrolujú výsledok vrátený cez `return`, nie iba výpis cez `print()`.",
+         "Codo: Your function doesn't return anything! Tests check the value sent back with `return`, not just `print()`."),
     ]
     for condition, sk, en in rules:
         if condition:
             return en if lang == 'en' else sk
     if lang == 'en':
-        return (f"🤖 Codo: Look closely at the test output: „{last_line}“. "
+        return (f"Codo: Look closely at the test output: „{last_line}“. "
                 "Which input breaks your code? Check math operators and boundaries (e.g. `>` vs `>=`).")
-    return (f"🤖 Codo: Pozri sa na správu z testu: „{last_line}“. "
+    return (f"Codo: Pozri sa na správu z testu: „{last_line}“. "
             "Pre aký vstup tvoj kód zlyhá? Skontroluj znamienka vo výpočte a hraničné podmienky (napr. `>` vs `>=`).")
 
 

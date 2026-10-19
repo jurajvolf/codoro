@@ -1048,6 +1048,23 @@
             border: 1px solid var(--border-strong);
         }
 
+        .sidebar-close-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: var(--radius-sm);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-close-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-subtle);
+        }
+
         /* Responzívne správanie pre tablety a mobily */
         @media (max-width: 1024px) {
             .app-sidebar {
@@ -1060,7 +1077,7 @@
             }
 
             .sidebar-close-btn {
-                display: inline-block;
+                display: inline-flex;
             }
 
             .sidebar-backdrop {
@@ -1138,7 +1155,7 @@
                     </svg>
                     <span class="sidebar-brand-text">codo<span>ro</span></span>
                 </a>
-                <button class="sidebar-close-btn" onclick="toggleSidebarDrawer()" aria-label="Close" style="display: inline-flex; align-items: center; justify-content: center;">
+                <button class="sidebar-close-btn" onclick="toggleSidebarDrawer()" aria-label="Close">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
@@ -1215,7 +1232,7 @@
             <div class="sidebar-user-hud">
                 <div class="sidebar-user-header">
                     <a href="{% url 'profile' %}" class="sidebar-avatar-wrap" title="{% if lang == 'en' %}My Profile{% else %}Môj profil{% endif %}">
-                        <span class="sidebar-avatar-emoji">{{ user.avatar_emoji }}</span>
+                        <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Avatar" style="width: 26px; height: 26px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(70, 54, 245, 0.4));">
                         <span class="sidebar-lvl-badge">L{{ user.level }}</span>
                     </a>
                     <div class="sidebar-user-meta">

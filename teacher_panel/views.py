@@ -179,7 +179,7 @@ def create_coin_drop(request):
             max_doros=max_doros,
             created_by=request.user
         )
-        messages.success(request, f"🎁 Coin Drop '{title}' bol spustený na {duration_minutes} minút pre prvých {max_claims} študentov!")
+        messages.success(request, f"Coin Drop '{title}' bol spustený na {duration_minutes} minút pre prvých {max_claims} študentov!")
     return redirect('teacher_dashboard')
 
 

@@ -145,22 +145,22 @@ def _reward_solved_exercise(request, user, lesson, exercise, previous_attempts):
         new_badges = award_badges(user)
 
     msg = tr(lang,
-             f"✅ Výborne! Všetky testy prešli (+{exercise.xp_reward} XP, +{earned_doros} Doros).",
-             f"✅ Great job! All tests passed (+{exercise.xp_reward} XP, +{earned_doros} Doros).")
+             f"Výborne! Všetky testy prešli (+{exercise.xp_reward} XP, +{earned_doros} Doros).",
+             f"Great job! All tests passed (+{exercise.xp_reward} XP, +{earned_doros} Doros).")
     if lesson_completed_now:
-        msg += tr(lang, f" 📘 Lekcia dokončená (+{lesson.xp_reward} XP)!", f" 📘 Lesson completed (+{lesson.xp_reward} XP)!")
+        msg += tr(lang, f" Lekcia dokončená (+{lesson.xp_reward} XP)!", f" Lesson completed (+{lesson.xp_reward} XP)!")
     if lvl_bonus > 0:
-        msg += tr(lang, f" 🎉 LEVEL UP na úroveň {user.level}! Bonus +{lvl_bonus} Doros!",
-                  f" 🎉 LEVEL UP to level {user.level}! Bonus +{lvl_bonus} Doros!")
+        msg += tr(lang, f" LEVEL UP na úroveň {user.level}! Bonus +{lvl_bonus} Doros!",
+                  f" LEVEL UP to level {user.level}! Bonus +{lvl_bonus} Doros!")
     messages.success(request, msg)
     if cq and cq.is_completed:
         messages.success(request, tr(lang,
-                                     f"🏆 Trieda splnila kolektívnu výzvu „{cq.title_sk}“! Odmeny boli rozdelené.",
-                                     f"🏆 Your class completed the quest “{cq.title_en}”! Rewards have been distributed."))
+                                     f"Trieda splnila kolektívnu výzvu „{cq.title_sk}“! Odmeny boli rozdelené.",
+                                     f"Your class completed the quest “{cq.title_en}”! Rewards have been distributed."))
     for badge in new_badges:
         messages.success(request, tr(lang,
-                                     f"{badge.icon_name} Nový odznak: {badge.name_sk} (+{badge.bonus_doros} Doros)",
-                                     f"{badge.icon_name} New badge: {badge.name_en} (+{badge.bonus_doros} Doros)"))
+                                     f"Nový odznak: {badge.name_sk} (+{badge.bonus_doros} Doros)",
+                                     f"New badge: {badge.name_en} (+{badge.bonus_doros} Doros)"))
 
 
 @login_required
@@ -203,8 +203,8 @@ def lesson_detail(request, lesson_id):
                 else:
                     ai_feedback = tr(
                         lang,
-                        "🔒 Codo: Dnešný limit AI rád pre FREE účet je vyčerpaný. Aktivuj si EDU/PRO licenciu v obchode pre neobmedzené rady.",
-                        "🔒 Codo: You've used today's AI hints for the FREE plan. Activate an EDU/PRO license in the shop for unlimited hints."
+                        "Codo: Dnešný limit AI rád pre FREE účet je vyčerpaný. Aktivuj si EDU/PRO licenciu v obchode pre neobmedzené rady.",
+                        "Codo: You've used today's AI hints for the FREE plan. Activate an EDU/PRO license in the shop for unlimited hints."
                     )
 
             Submission.objects.create(
@@ -220,12 +220,12 @@ def lesson_detail(request, lesson_id):
                 _reward_solved_exercise(request, user, lesson, current_exercise, previous_attempts)
             elif passed:
                 messages.info(request, tr(lang,
-                                          "✅ Kód opäť prešiel všetkými testami (odmenu za túto úlohu si už získal).",
-                                          "✅ Your code passed again (you've already collected the reward for this task)."))
+                                          "Kód opäť prešiel všetkými testami (odmenu za túto úlohu si už získal).",
+                                          "Your code passed again (you've already collected the reward for this task)."))
             else:
                 messages.error(request, tr(lang,
-                                           "❌ Niektoré testy zlyhali. Pozri si výpis z konzoly a radu od AI tútora Codo nižšie.",
-                                           "❌ Some tests failed. Check the console output and Codo's hint below."))
+                                           "Niektoré testy zlyhali. Pozri si výpis z konzoly a radu od AI tútora Codo nižšie.",
+                                           "Some tests failed. Check the console output and Codo's hint below."))
             return redirect(f"{request.path}?exercise={current_exercise.id}#workbench")
 
         elif action == 'submit_quiz':
@@ -234,8 +234,8 @@ def lesson_detail(request, lesson_id):
             progress, _ = LessonProgress.objects.get_or_create(student=user, lesson=lesson)
             if not wrong and questions:
                 if progress.quiz_passed:
-                    messages.info(request, tr(lang, "🎯 Správne! Kvíz si už mal vyplnený (XP boli pripísané skôr).",
-                                              "🎯 Correct! You already passed this quiz (XP were awarded earlier)."))
+                    messages.info(request, tr(lang, "Správne! Kvíz si už mal vyplnený (XP boli pripísané skôr).",
+                                              "Correct! You already passed this quiz (XP were awarded earlier)."))
                 else:
                     progress.quiz_passed = True
                     progress.save(update_fields=['quiz_passed'])
@@ -243,13 +243,13 @@ def lesson_detail(request, lesson_id):
                         bonus = user.add_xp_and_check_level_up(20)
                         update_quests(user, Quest.MetricType.EARN_XP, 20)
                         new_badges = award_badges(user)
-                    msg = tr(lang, "🎯 Kvíz vyplnený na 100 %! Získavaš +20 XP.", "🎯 Quiz aced! You earned +20 XP.")
+                    msg = tr(lang, "Kvíz vyplnený na 100 %! Získavaš +20 XP.", "Quiz aced! You earned +20 XP.")
                     if bonus:
-                        msg += tr(lang, f" 🎉 LEVEL UP! Bonus +{bonus} Doros!", f" 🎉 LEVEL UP! Bonus +{bonus} Doros!")
+                        msg += tr(lang, f" LEVEL UP! Bonus +{bonus} Doros!", f" LEVEL UP! Bonus +{bonus} Doros!")
                     messages.success(request, msg)
                     for badge in new_badges:
-                        messages.success(request, tr(lang, f"{badge.icon_name} Nový odznak: {badge.name_sk}",
-                                                     f"{badge.icon_name} New badge: {badge.name_en}"))
+                        messages.success(request, tr(lang, f"Nový odznak: {badge.name_sk}",
+                                                     f"New badge: {badge.name_en}"))
             else:
                 messages.warning(request, tr(lang,
                                              f"Počet nesprávnych odpovedí: {len(wrong)}. Prečítaj si teóriu a skús to znova!",
@@ -328,5 +328,5 @@ def unlock_hint(request, exercise_id):
                 reason_sk=f"Odomknutá nápoveda: {exercise.title_sk}",
                 reason_en=f"Unlocked hint: {exercise.title_en}",
             )
-    messages.info(request, tr(lang, f"💡 Nápoveda odomknutá (-{cost} Doros).", f"💡 Hint unlocked (-{cost} Doros)."))
+    messages.info(request, tr(lang, f"Nápoveda odomknutá (-{cost} Doros).", f"Hint unlocked (-{cost} Doros)."))
     return redirect(target)

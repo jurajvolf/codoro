@@ -186,7 +186,7 @@ C. Aplikácia `gamification`:
     - `accounts/tests.py`: Matematický vzorec progresie úrovní (Rovnica 1), odmeny Doros za level-up, denný Streak, zmrazenia, detekcia prerušenia a záchrana za 200 Doros, aktivácia EDU/PRO licencií a denné kvóty AI rád pre FREE používateľov.
     - `gamification/tests.py`: Skladové hospodárstvo obchodu (odpočítanie skladu, kontrola zostatku Doros, generovanie kupónu CDR-XXXXXX, automatické naskladnenie po expirácii periódy), ClassQuest metriky a sledovanie príspevkov žiakov.
     - `teacher_panel/tests.py`: Ochrana prístupu pre rolu TEACHER, Code Review slovné hodnotenie učiteľa k odovzdanému riešeniu, schvaľovanie a zamietnutie kupónu s refundáciou mincí študentovi.
-- FÁZA 6: Vypracovanie 25+ stranovej písomnej dokumentácie a prezentácie na obhajobu.
+- FÁZA 6: Vypracovanie 25+ stranovej písomnej dokumentácie a prezentácie na obhajobu (pozastavené na žiadosť používateľa, prioritou je dokonalý UI/UX dizajn a unikátnosť aplikácie).
 
 
 8. ZÁVÄZNÉ POŽIADAVKY NA PÍSOMNÚ MATURITNÚ PRÁCU (ŠABLÓNA SPOJENÁ ŠKOLA NIŽNÁ)

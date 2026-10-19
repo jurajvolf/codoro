@@ -171,33 +171,33 @@ def get_student_stats(user):
 # Odznaky (Achievements)
 # ----------------------------------------------------------------------
 BADGE_DEFINITIONS = [
-    # code, emoji, name_sk, name_en, desc_sk, desc_en, bonus
-    ('FIRST_STEPS', '🐣', 'Prvé kroky', 'First Steps',
+    # code, icon_slug, name_sk, name_en, desc_sk, desc_en, bonus
+    ('FIRST_STEPS', 'first_steps', 'Prvé kroky', 'First Steps',
      'Vyrieš svoju prvú programátorskú úlohu.', 'Solve your first coding exercise.', 25),
-    ('SHARPSHOOTER', '🎯', 'Ostrostrelec', 'Sharpshooter',
+    ('SHARPSHOOTER', 'sharpshooter', 'Ostrostrelec', 'Sharpshooter',
      'Vyrieš 5 úloh hneď na prvý pokus.', 'Solve 5 exercises on the first try.', 75),
-    ('PROBLEM_SOLVER', '🧩', 'Riešiteľ problémov', 'Problem Solver',
+    ('PROBLEM_SOLVER', 'problem_solver', 'Riešiteľ problémov', 'Problem Solver',
      'Vyrieš 10 rôznych úloh.', 'Solve 10 different exercises.', 100),
-    ('QUIZ_MASTER', '🧠', 'Majster kvízov', 'Quiz Master',
+    ('QUIZ_MASTER', 'quiz_master', 'Majster kvízov', 'Quiz Master',
      'Vyplň 3 kvízy na 100 %.', 'Ace 3 lesson quizzes.', 50),
-    ('MODULE_MASTER', '📚', 'Absolvent modulu', 'Module Graduate',
+    ('MODULE_MASTER', 'module_master', 'Absolvent modulu', 'Module Graduate',
      'Dokonči všetky lekcie v jednom module.', 'Complete every lesson of a module.', 100),
-    ('STREAK_7', '🔥', 'Týždňová séria', 'Week Streak',
+    ('STREAK_7', 'streak_7', 'Týždňová séria', 'Week Streak',
      'Udrž sériu učenia 7 dní po sebe.', 'Keep a 7-day learning streak.', 100),
-    ('LEVEL_5', '⚡', 'Level 5', 'Level 5',
+    ('LEVEL_5', 'level_5', 'Level 5', 'Level 5',
      'Dosiahni 5. úroveň.', 'Reach level 5.', 100),
-    ('SHOPPER', '🛍️', 'Prvý nákup', 'First Purchase',
+    ('SHOPPER', 'shopper', 'Prvý nákup', 'First Purchase',
      'Kúp si prvú odmenu v školskom obchode.', 'Buy your first reward in the class shop.', 20),
-    ('TEAM_PLAYER', '🤝', 'Tímový hráč', 'Team Player',
+    ('TEAM_PLAYER', 'team_player', 'Tímový hráč', 'Team Player',
      'Prispej do splnenej kolektívnej výzvy triedy.', 'Contribute to a completed class quest.', 75),
 ]
 
 
 def ensure_badges_exist():
-    for order, (code, emoji, n_sk, n_en, d_sk, d_en, bonus) in enumerate(BADGE_DEFINITIONS, start=1):
+    for order, (code, icon_slug, n_sk, n_en, d_sk, d_en, bonus) in enumerate(BADGE_DEFINITIONS, start=1):
         Badge.objects.update_or_create(code=code, defaults={
             'name_sk': n_sk, 'name_en': n_en, 'description_sk': d_sk, 'description_en': d_en,
-            'icon_name': emoji, 'bonus_doros': bonus, 'order': order,
+            'icon_name': icon_slug, 'bonus_doros': bonus, 'order': order,
         })
 
 

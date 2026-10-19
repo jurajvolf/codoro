@@ -79,7 +79,7 @@ def buy_reward(request, reward_id):
         reason_en=f"Purchased reward: {reward.title_en} (Coupon {coupon_code})"
     )
 
-    messages.success(request, f"🎁 Odmena zakúpená! Tvoj kód kupónu pre učiteľa je: {coupon_code}")
+    messages.success(request, f"Odmena zakúpená! Tvoj kód kupónu pre učiteľa je: {coupon_code}")
     return redirect('shop')
 
 
@@ -106,7 +106,7 @@ def claim_quest_reward(request, progress_id):
                 reason_sk=f"Splnený Quest: {prog.quest.title_sk}",
                 reason_en=f"Completed Quest: {prog.quest.title_en}"
             )
-            messages.success(request, f"🏆 Odmena za Quest pripísaná: +{prog.quest.reward_doros} Doros a +{prog.quest.reward_xp} XP!")
+            messages.success(request, f"Odmena za Quest pripísaná: +{prog.quest.reward_doros} Doros a +{prog.quest.reward_xp} XP!")
     return redirect('dashboard')
 
 
@@ -137,5 +137,5 @@ def claim_coin_drop(request, drop_id):
             reason_sk=f"Chytený Coin Drop: {drop.title_sk}",
             reason_en=f"Claimed Coin Drop: {drop.title_en}"
         )
-        messages.success(request, f"🎉 Blesková reakcia! Z Coin Dropu ti padlo +{won_amount} Doros!")
+        messages.success(request, f"Blesková reakcia! Z Coin Dropu ti padlo +{won_amount} Doros!")
     return redirect('dashboard')
