@@ -1,66 +1,82 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
 <style>
-    .avatar-option-btn {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        border: 2px solid var(--border-hairline);
-        background: var(--bg-subtle);
-        font-size: 1.5rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: transform 0.15s ease, border-color 0.15s ease;
-    }
-    .avatar-option-btn:hover {
-        transform: scale(1.08);
-        border-color: var(--ro-indigo);
-    }
-    .avatar-option-btn.selected {
-        border-color: var(--ro-indigo);
-        background: var(--ro-indigo-soft);
-        box-shadow: var(--shadow-indigo);
-    }
     .badge-card {
         padding: 1.25rem;
-        border-radius: var(--radius-md);
-        background: var(--bg-subtle);
+        border-radius: var(--radius-lg);
+        background: var(--bg-surface);
         border: 1px solid var(--border-hairline);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
     .badge-card:hover {
         transform: translateY(-2px);
-    }
-    .badge-card.is-unlocked {
-        border-color: var(--ro-indigo-border);
-        background: linear-gradient(180deg, var(--ro-indigo-soft) 0%, var(--bg-surface) 100%);
-        box-shadow: var(--shadow-xs);
+        box-shadow: var(--shadow-md);
+        border-color: var(--border-strong);
     }
     .badge-card.is-locked {
         opacity: 0.65;
-        filter: grayscale(0.5);
+        filter: grayscale(0.7);
+        background: var(--bg-subtle);
+    }
+    .badge-card.is-unlocked {
+        border-color: var(--ro-indigo-border);
+        box-shadow: 0 4px 16px rgba(70, 54, 245, 0.08);
+    }
+    .metric-badge {
+        font-family: var(--font-mono);
+        font-size: 0.76rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: 999px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .metric-tier {
+        background: linear-gradient(135deg, var(--ro-indigo) 0%, #7C3AED 100%);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(70, 54, 245, 0.3);
+    }
+    .avatar-option-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: 2px solid var(--border-hairline);
+        background: var(--bg-surface);
+        font-size: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .avatar-option-btn:hover {
+        border-color: var(--ro-indigo);
+        transform: scale(1.08);
+    }
+    .avatar-option-btn.selected {
+        border-color: var(--ro-indigo);
+        background: var(--ro-indigo-soft);
+        box-shadow: 0 0 0 3px rgba(70, 54, 245, 0.25);
     }
 </style>
 
 <div class="animate-in" style="max-width: 1140px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
 
     <!-- 1. Hero profilová karta s avatarom a certifikátom -->
-    <section class="card-surface" style="padding: 2rem; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap;">
+    <section class="card-surface" style="padding: 2rem; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; border-radius: var(--radius-lg);">
         <div style="display: flex; align-items: center; gap: 1.5rem;">
             <div style="position: relative;">
                 <div style="width: 76px; height: 76px; border-radius: 20px; background: var(--bg-subtle); border: 3px solid var(--ro-indigo-border); display: flex; align-items: center; justify-content: center; font-size: 2.75rem; box-shadow: var(--shadow-sm);">
                     {{ user.avatar_emoji }}
                 </div>
-                <span style="position: absolute; bottom: -6px; right: -6px; width: 26px; height: 26px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald-text); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; border: 2px solid var(--bg-surface);">
-                    ✓
+                <span style="position: absolute; bottom: -6px; right: -6px; width: 26px; height: 26px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald-text); display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-surface);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
             </div>
 
@@ -71,26 +87,37 @@
                     </h1>
                     <span class="metric-badge metric-tier">{{ user.subscription_tier }}</span>
                     {% if user.is_teacher %}
-                    <span class="metric-badge" style="background: var(--ro-indigo-soft); color: var(--ro-indigo);">👨‍🏫 {% if lang == 'en' %}Teacher{% else %}Učiteľ{% endif %}</span>
+                    <span class="metric-badge" style="background: var(--ro-indigo-soft); color: var(--ro-indigo);">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        {% if lang == 'en' %}Teacher{% else %}Učiteľ{% endif %}
+                    </span>
                     {% endif %}
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.35rem; font-size: 0.88rem; color: var(--text-muted); flex-wrap: wrap;">
                     <span>@{{ user.username }}</span>
                     {% if user.school_class %}
-                    <span>🏫 {{ user.school_class.name }} ({{ user.school_class.join_code }})</span>
+                    <span style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        {{ user.school_class.name }} ({{ user.school_class.join_code }})
+                    </span>
                     {% endif %}
-                    <span>📅 {% if lang == 'en' %}Member since{% else %}Člen od{% endif %}: {{ user.date_joined|date:"d.m.Y" }}</span>
+                    <span style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        {% if lang == 'en' %}Member since{% else %}Člen od{% endif %}: {{ user.date_joined|date:"d.m.Y" }}
+                    </span>
                 </div>
             </div>
         </div>
 
         <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
             <a href="{% url 'certificate' %}" target="_blank" class="btn btn-primary" style="padding: 0.75rem 1.35rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem;">
-                📜 {% if lang == 'en' %}Course Certificate{% else %}Zobraziť Certifikát{% endif %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                {% if lang == 'en' %}Course Certificate{% else %}Zobraziť Certifikát{% endif %}
             </a>
-            <a href="{% url 'shop' %}" class="btn btn-secondary" style="padding: 0.75rem 1.25rem; font-weight: 700;">
-                🪙 {{ user.doros }} Doros
+            <a href="{% url 'shop' %}" class="btn btn-secondary" style="padding: 0.75rem 1.25rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.45rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+                {{ user.doros }} Doros
             </a>
         </div>
     </section>
@@ -98,57 +125,64 @@
     <!-- 2. Štatistiky študenta -->
     <section>
         <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                📊 {% if lang == 'en' %}Learning & Performance Stats{% else %}Kariérne štatistiky a progres{% endif %}
-            </h2>
-            <span style="font-size: 0.85rem; color: var(--text-muted);">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    {% if lang == 'en' %}Learning & Performance Stats{% else %}Kariérne štatistiky a progres{% endif %}
+                </h2>
+            </div>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
                 Level {{ user.level }} · {{ user.xp }} XP total
             </span>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem;">
-            <div class="card-surface" style="padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
                 <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
                     {% if lang == 'en' %}Solved Tasks{% else %}Vyriešené úlohy{% endif %}
                 </span>
-                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--text-primary);">
-                    ✅ {{ stats.solved_count }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_exercises }}</span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    {{ stats.solved_count }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_exercises }}</span>
                 </div>
                 <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
                     {% if lang == 'en' %}Unique coding exercises solved{% else %}Rôzne úspešne zvládnuté úlohy{% endif %}
                 </div>
             </div>
 
-            <div class="card-surface" style="padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
                 <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
                     {% if lang == 'en' %}First-Try Accuracy{% else %}Riešenie na 1. pokus{% endif %}
                 </span>
-                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--ro-indigo);">
-                    🎯 {{ stats.first_try_count }}
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--ro-indigo); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    {{ stats.first_try_count }}
                 </div>
                 <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
                     {{ stats.success_rate }}% {% if lang == 'en' %}overall test pass rate{% else %}celková úspešnosť pokusov{% endif %}
                 </div>
             </div>
 
-            <div class="card-surface" style="padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
                 <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
                     {% if lang == 'en' %}Completed Lessons{% else %}Dokončené lekcie{% endif %}
                 </span>
-                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--emerald-text);">
-                    📚 {{ stats.lessons_completed }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_lessons }}</span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--emerald-text); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                    {{ stats.lessons_completed }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">/ {{ stats.total_lessons }}</span>
                 </div>
                 <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
                     {{ stats.quizzes_passed }} {% if lang == 'en' %}lesson quizzes passed{% else %}úspešných kvízov{% endif %}
                 </div>
             </div>
 
-            <div class="card-surface" style="padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
                 <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
                     {% if lang == 'en' %}Learning Streak{% else %}Séria učenia (Streak){% endif %}
                 </span>
-                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--flame-text);">
-                    🔥 {{ user.current_streak }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{% if lang == 'en' %}days{% else %}dní{% endif %}</span>
+                <div style="font-family: var(--font-mono); font-size: 1.55rem; font-weight: 800; color: var(--flame-text); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    {{ user.current_streak }} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{% if lang == 'en' %}days{% else %}dní{% endif %}</span>
                 </div>
                 <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
                     {% if lang == 'en' %}Record streak:{% else %}Osobný rekord:{% endif %} {{ user.longest_streak }} {% if lang == 'en' %}days{% else %}dní{% endif %}
@@ -158,12 +192,15 @@
     </section>
 
     <!-- 3. Vitrína odznakov (Badge Showcase) -->
-    <section class="card-surface" style="padding: 2rem;">
+    <section class="card-surface" style="padding: 2rem; border-radius: var(--radius-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
             <div>
-                <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                    🎖️ {% if lang == 'en' %}Badge Showcase{% else %}Vitrína odznakov a ocenení{% endif %}
-                </h2>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                        {% if lang == 'en' %}Badge Showcase{% else %}Vitrína odznakov a ocenení{% endif %}
+                    </h2>
+                </div>
                 <span style="font-size: 0.86rem; color: var(--text-muted);">
                     {% if lang == 'en' %}Earn badges by coding, keeping daily streaks, and helping your class.{% else %}Získavaj odznaky programovaním, udržiavaním sérií a tímovou spoluprácou.{% endif %}
                 </span>
@@ -178,14 +215,16 @@
             <article class="badge-card {% if b.is_earned %}is-unlocked{% else %}is-locked{% endif %}">
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <span style="font-size: 2rem;">{{ b.badge.icon_name }}</span>
+                        <span style="font-size: 1.8rem;">{{ b.badge.icon_name }}</span>
                         {% if b.is_earned %}
-                        <span class="badge-emerald" style="font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px;">
-                            ✓ {% if lang == 'en' %}Unlocked{% else %}Získané{% endif %}
+                        <span class="badge-emerald" style="font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            {% if lang == 'en' %}Unlocked{% else %}Získané{% endif %}
                         </span>
                         {% else %}
-                        <span class="badge-neutral" style="font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px;">
-                            🔒 {% if lang == 'en' %}Locked{% else %}Zamknuté{% endif %}
+                        <span class="badge-neutral" style="font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            {% if lang == 'en' %}Locked{% else %}Zamknuté{% endif %}
                         </span>
                         {% endif %}
                     </div>
@@ -199,7 +238,8 @@
                 </div>
 
                 <div style="margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted);">
-                    <span style="color: var(--gold-text); font-weight: 700;">
+                    <span style="color: var(--gold-text); font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
                         +{{ b.badge.bonus_doros }} Doros
                     </span>
                     <span>
@@ -219,10 +259,13 @@
     <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start;">
 
         <!-- Výber avatara a farby -->
-        <section class="card-surface" style="padding: 2rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; color: var(--text-primary);">
-                🎨 {% if lang == 'en' %}Avatar & Character Customization{% else %}Výber avatara a maskota{% endif %}
-            </h2>
+        <section class="card-surface" style="padding: 2rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C21.499 6.5 17.5 2 12 2z"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                    {% if lang == 'en' %}Avatar & Character Customization{% else %}Výber avatara a maskota{% endif %}
+                </h2>
+            </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}Pick your in-game identity and badge color visible on the class leaderboard.{% else %}Vyber si postavičku a farebný motív, ktorý sa zobrazuje v rebríčku triedy.{% endif %}
             </p>
@@ -254,17 +297,21 @@
                     {% endfor %}
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
-                    💾 {% if lang == 'en' %}Save Avatar{% else %}Uložiť avatara{% endif %}
+                <button type="submit" class="btn btn-primary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    {% if lang == 'en' %}Save Avatar{% else %}Uložiť avatara{% endif %}
                 </button>
             </form>
         </section>
 
         <!-- Zmena hesla -->
-        <section class="card-surface" style="padding: 2rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; color: var(--text-primary);">
-                🔒 {% if lang == 'en' %}Change Password{% else %}Zmena hesla{% endif %}
-            </h2>
+        <section class="card-surface" style="padding: 2rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                    {% if lang == 'en' %}Change Password{% else %}Zmena hesla{% endif %}
+                </h2>
+            </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}Keep your account secure with a strong password.{% else %}Zabezpeč si svoj účet novým silným heslom.{% endif %}
             </p>
@@ -288,8 +335,9 @@
                     <input type="password" name="confirm_password" class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-secondary" style="font-weight: 700;">
-                    🔑 {% if lang == 'en' %}Update Password{% else %}Zmeniť heslo{% endif %}
+                <button type="submit" class="btn btn-secondary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21 2-2 2m-6 6 7 7-3 3-2-2-2 2-3-3 2-2-2-2 7-7Zm0 0-4-4"/></svg>
+                    {% if lang == 'en' %}Update Password{% else %}Zmeniť heslo{% endif %}
                 </button>
             </form>
         </section>

@@ -6,8 +6,9 @@
     style="max-width: 1040px; margin: 2rem auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center;">
 
     <div>
-        <div style="display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: var(--ro-indigo-soft); color: var(--ro-indigo); font-weight: 700; font-size: 0.8rem; margin-bottom: 1.25rem;">
-            <span>✨ Codoro Classroom Ecosystem</span>
+        <div style="display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: var(--ro-indigo-soft); color: var(--ro-indigo); font-weight: 700; font-size: 0.8rem; margin-bottom: 1.25rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Codoro Classroom Ecosystem</span>
         </div>
 
         <h1 style="font-family: var(--font-display); font-size: 2.6rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.1rem; color: var(--text-primary);">
@@ -38,7 +39,7 @@
             <pre style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-primary); line-height: 1.6; overflow-x: auto; margin: 0;"><code>def vypocitaj_odmenu(ulohy, bonus):
     return ulohy * 20 + bonus
 
-# ✅ 3/3 unit tests passed (+50 XP, +30 Doros)</code></pre>
+# [PASSED] 3/3 unit tests verified (+50 XP, +30 Doros)</code></pre>
         </div>
     </div>
 
@@ -90,11 +91,13 @@
                 {% if lang == 'en' %}Quick demo access (for presentation):{% else %}Rýchly prístup pre ukážku na obhajobe:{% endif %}
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('student', 'heslo123')">
-                    🎓 {% if lang == 'en' %}Demo Student{% else %}Demo Študent{% endif %}
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('student', 'heslo123')" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    {% if lang == 'en' %}Demo Student{% else %}Demo Študent{% endif %}
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('ucitel', 'heslo123')">
-                    👩‍🏫 {% if lang == 'en' %}Demo Teacher{% else %}Demo Učiteľ{% endif %}
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('ucitel', 'heslo123')" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    {% if lang == 'en' %}Demo Teacher{% else %}Demo Učiteľ{% endif %}
                 </button>
             </div>
         </div>

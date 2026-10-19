@@ -1104,13 +1104,20 @@
 
         <div style="display: flex; align-items: center; gap: 0.65rem;">
             <span class="sidebar-stat-pill flame" style="padding: 0.25rem 0.55rem; font-size: 0.74rem;">
-                🔥 {{ user.current_streak }}d
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block; vertical-align:-1px;">
+                    <path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/>
+                </svg>
+                {{ user.current_streak }}d
             </span>
             <span class="sidebar-stat-pill gold" style="padding: 0.25rem 0.55rem; font-size: 0.74rem;">
-                🪙 {{ user.doros }}
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px;">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/>
+                </svg>
+                {{ user.doros }}
             </span>
-            <button class="mobile-drawer-toggle" onclick="toggleSidebarDrawer()" aria-label="Menu">
-                ☰
+            <button class="mobile-drawer-toggle" onclick="toggleSidebarDrawer()" aria-label="Menu" style="display: inline-flex; align-items: center; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
         </div>
     </header>
@@ -1131,15 +1138,22 @@
                     </svg>
                     <span class="sidebar-brand-text">codo<span>ro</span></span>
                 </a>
-                <button class="sidebar-close-btn" onclick="toggleSidebarDrawer()" aria-label="Close">✕</button>
+                <button class="sidebar-close-btn" onclick="toggleSidebarDrawer()" aria-label="Close" style="display: inline-flex; align-items: center; justify-content: center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
 
-            <!-- Hlavná navigácia -->
+            <!-- Hlavná navigácia s čistými vektorovými ikonami -->
             <nav class="sidebar-nav">
                 <span class="sidebar-section-label">{% if lang == 'en' %}LEARNING{% else %}VZDELÁVANIE{% endif %}</span>
                 <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}active{% endif %}">
                     <span class="sidebar-link-content">
-                        <span class="sidebar-link-icon">🧭</span>
+                        <span class="sidebar-link-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                            </svg>
+                        </span>
                         <span>{% if lang == 'en' %}Learning Path{% else %}Cesta výučby{% endif %}</span>
                     </span>
                     {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}
@@ -1148,7 +1162,13 @@
                 </a>
                 <a href="{% url 'shop' %}" class="sidebar-link {% if request.resolver_match.url_name == 'shop' %}active{% endif %}">
                     <span class="sidebar-link-content">
-                        <span class="sidebar-link-icon">🛒</span>
+                        <span class="sidebar-link-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                                <line x1="3" y1="6" x2="21" y2="6"/>
+                                <path d="M16 10a4 4 0 0 1-8 0"/>
+                            </svg>
+                        </span>
                         <span>{% if lang == 'en' %}Rewards Shop{% else %}Školský obchod{% endif %}</span>
                     </span>
                     {% if request.resolver_match.url_name == 'shop' %}
@@ -1157,7 +1177,12 @@
                 </a>
                 <a href="{% url 'profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
                     <span class="sidebar-link-content">
-                        <span class="sidebar-link-icon">🎖️</span>
+                        <span class="sidebar-link-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                        </span>
                         <span>{% if lang == 'en' %}Profile & Badges{% else %}Môj profil & odznaky{% endif %}</span>
                     </span>
                     {% if request.resolver_match.url_name == 'profile' %}
@@ -1169,7 +1194,12 @@
                 <span class="sidebar-section-label" style="margin-top: 0.85rem;">{% if lang == 'en' %}TEACHING{% else %}ADMINISTRÁCIA{% endif %}</span>
                 <a href="{% url 'teacher_dashboard' %}" class="sidebar-link sidebar-link-teacher {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
                     <span class="sidebar-link-content">
-                        <span class="sidebar-link-icon">👨‍🏫</span>
+                        <span class="sidebar-link-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                            </svg>
+                        </span>
                         <span>{% if lang == 'en' %}Teacher Studio{% else %}Učiteľské štúdio{% endif %}</span>
                     </span>
                     {% if request.resolver_match.url_name == 'teacher_dashboard' %}
@@ -1194,14 +1224,25 @@
                             <span class="sidebar-tier-chip">{{ user.subscription_tier }}</span>
                         </div>
                         {% if user.school_class %}
-                        <span class="sidebar-class-chip">🏫 {{ user.school_class.name }}</span>
+                        <span class="sidebar-class-chip">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:-1px; margin-right:2px;">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                            {{ user.school_class.name }}
+                        </span>
                         {% endif %}
                     </div>
                 </div>
 
                 <div class="sidebar-xp-block">
                     <div class="sidebar-xp-label">
-                        <span>⚡ {{ user.xp }} XP</span>
+                        <span>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block; vertical-align:-1px; color:var(--ro-indigo);">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            {{ user.xp }} XP
+                        </span>
                         <span>{{ user.level_progress_pct }}%</span>
                     </div>
                     <div class="progress-track" style="height: 6px;">
@@ -1211,11 +1252,16 @@
 
                 <div class="sidebar-stats-row">
                     <div class="sidebar-stat-pill flame">
-                        <span>🔥</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/>
+                        </svg>
                         <strong>{{ user.current_streak }} d</strong>
                     </div>
                     <div class="sidebar-stat-pill gold">
-                        <span>🪙</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/>
+                        </svg>
                         <strong>{{ user.doros }}</strong>
                     </div>
                 </div>
@@ -1229,12 +1275,17 @@
                         <a href="{% url 'switch_language' 'en' %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
                     </div>
                     <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleCodoroTheme()"
-                        title="{% if lang == 'en' %}Switch Light / Dark mode{% else %}Prepnúť svetlý / tmavý režim{% endif %}">
-                        🌙
+                        title="{% if lang == 'en' %}Switch Light / Dark mode{% else %}Prepnúť svetlý / tmavý režim{% endif %}"
+                        style="display: inline-flex; align-items: center; justify-content: center;">
+                        <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                     </button>
                 </div>
                 <a href="{% url 'logout' %}" class="sidebar-logout-link">
-                    <span>🚪</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
                     <span>{% if lang == 'en' %}Sign out{% else %}Odhlásiť sa{% endif %}</span>
                 </a>
             </div>
@@ -1263,9 +1314,9 @@
                 <a href="{% url 'switch_language' 'sk' %}" class="{% if lang == 'sk' %}active{% endif %}">SK</a>
                 <a href="{% url 'switch_language' 'en' %}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
             </div>
-            <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleCodoroTheme()"
-                title="Light / Dark">
-                🌙
+            <button type="button" class="theme-toggle-btn" id="themeToggleBtnPub" onclick="toggleCodoroTheme()"
+                title="Light / Dark" style="display: inline-flex; align-items: center; justify-content: center;">
+                <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
             </button>
             <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">
                 {% if lang == 'en' %}Sign in{% else %}Prihlásenie{% endif %}
@@ -1284,7 +1335,9 @@
             <div class="toast-msg toast-{{ message.tags }}">
                 <span>{{ message }}</span>
                 <button onclick="this.parentElement.remove()"
-                    style="background:none; border:none; cursor:pointer; font-weight:700; color:inherit; padding-left:1rem;">✕</button>
+                    style="background:none; border:none; cursor:pointer; font-weight:700; color:inherit; padding-left:1rem; display: inline-flex; align-items: center;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
             {% endfor %}
         </div>
@@ -1304,11 +1357,14 @@
             if (backdrop) backdrop.classList.toggle('active');
         }
 
+        var sunSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+        var moonSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+
         function syncThemeButtonIcon() {
             var btns = document.querySelectorAll('.theme-toggle-btn');
             var current = document.documentElement.getAttribute('data-theme') || 'light';
             btns.forEach(function (btn) {
-                btn.textContent = current === 'dark' ? '☀️' : '🌙';
+                btn.innerHTML = current === 'dark' ? sunSvg : moonSvg;
             });
         }
 

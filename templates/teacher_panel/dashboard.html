@@ -5,25 +5,28 @@
 
 <div class="animate-in" style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
     <div>
-        <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo);">
+        <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.04em;">
             {% if lang == 'en' %}INSTRUCTOR ADMINISTRATION{% else %}ADMINISTRÁCIA VYUČUJÚCEHO{% endif %}
         </span>
-        <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em;">
+        <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin: 0.2rem 0 0;">
             {% if lang == 'en' %}Teacher Studio & Economy Control{% else %}Učiteľský panel a správa ekonomiky{% endif %}
         </h1>
     </div>
 
     <!-- Prepínač sekcií (Tabs) -->
     <div style="display: flex; gap: 0.4rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); flex-wrap: wrap;">
-        <button type="button" class="btn btn-sm tab-btn btn-primary" onclick="switchTab('tab-students', this)">
-            👥 {% if lang == 'en' %}Students & Coupons{% else %}Študenti a kupóny{% endif %}
-            {% if pending_coupons %}<span style="background:#FFF; color:var(--ro-indigo); padding:0 6px; border-radius:99px; font-size:0.72rem;">{{ pending_coupons.count }}</span>{% endif %}
+        <button type="button" class="btn btn-sm tab-btn btn-primary" onclick="switchTab('tab-students', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            {% if lang == 'en' %}Students & Coupons{% else %}Študenti a kupóny{% endif %}
+            {% if pending_coupons %}<span style="background:var(--bg-canvas); color:var(--ro-indigo); padding:0 6px; border-radius:99px; font-size:0.72rem; font-weight: 800;">{{ pending_coupons.count }}</span>{% endif %}
         </button>
-        <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-economy', this)">
-            🎁 {% if lang == 'en' %}Shop, Drops & Quests{% else %}Obchod, Dropy a Výzvy{% endif %}
+        <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-economy', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+            {% if lang == 'en' %}Shop, Drops & Quests{% else %}Obchod, Dropy a Výzvy{% endif %}
         </button>
-        <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-content', this)">
-            💻 {% if lang == 'en' %}Exercises & Code Reviews{% else %}Cvičenia a riešenia{% endif %}
+        <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-content', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+            {% if lang == 'en' %}Exercises & Code Reviews{% else %}Cvičenia a riešenia{% endif %}
         </button>
     </div>
 </div>
@@ -32,11 +35,14 @@
 <div id="tab-students" class="teacher-tab animate-in">
 
     <!-- Čakajúce kupóny -->
-    <section class="card-surface" style="margin-bottom: 1.75rem; overflow: hidden;">
+    <section class="card-surface" style="margin-bottom: 1.75rem; overflow: hidden; border-radius: var(--radius-lg);">
         <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">
-                🎟️ {% if lang == 'en' %}Pending Student Reward Coupons{% else %}Študentské kupóny čakajúce na schválenie{% endif %}
-            </h2>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--flame-text)" stroke-width="2"><rect width="20" height="12" x="2" y="6" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                    {% if lang == 'en' %}Pending Student Reward Coupons{% else %}Študentské kupóny čakajúce na schválenie{% endif %}
+                </h2>
+            </div>
         </div>
 
         {% if pending_coupons %}
@@ -63,15 +69,17 @@
                                 <form method="post" action="{% url 'process_coupon' p.id %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="redeem">
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        ✓ {% if lang == 'en' %}Accept on class{% else %}Uplatniť na hodine{% endif %}
+                                    <button type="submit" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 0.3rem;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        {% if lang == 'en' %}Accept on class{% else %}Uplatniť na hodine{% endif %}
                                     </button>
                                 </form>
                                 <form method="post" action="{% url 'process_coupon' p.id %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="refund">
-                                    <button type="submit" class="btn btn-secondary btn-sm">
-                                        ✕ {% if lang == 'en' %}Reject & Refund{% else %}Zamietnuť a vrátiť Doros{% endif %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.3rem;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+                                        {% if lang == 'en' %}Reject & Refund{% else %}Zamietnuť a vrátiť Doros{% endif %}
                                     </button>
                                 </form>
                             </div>
@@ -82,17 +90,18 @@
             </table>
         </div>
         {% else %}
-        <div style="padding: 2rem; text-align: center; color: var(--codo-muted);">
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
             {% if lang == 'en' %}No pending coupons awaiting redemption.{% else %}Žiadne kupóny nečakajú na schválenie.{% endif %}
         </div>
         {% endif %}
     </section>
 
     <!-- Zoznam študentov a God Mode úpravy peňaženky -->
-    <section class="card-surface" style="overflow: hidden;">
-        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline);">
-            <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">
-                👥 {% if lang == 'en' %}Classroom Roster & Economy Management{% else %}Zoznam študentov a správa herných účtov{% endif %}
+    <section class="card-surface" style="overflow: hidden; border-radius: var(--radius-lg);">
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                {% if lang == 'en' %}Classroom Roster & Economy Management{% else %}Zoznam študentov a správa herných účtov{% endif %}
             </h2>
         </div>
 
@@ -114,19 +123,29 @@
                     <tr>
                         <td>
                             <strong style="color: var(--text-primary);">{{ s.username }}</strong>
-                            <div style="font-size: 0.78rem; color: var(--codo-muted);">{{ s.get_full_name|default:s.email }}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">{{ s.get_full_name|default:s.email }}</div>
                         </td>
                         <td>
                             {% if s.school_class %}
                             <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;">{{ s.school_class.name }}</span>
                             {% else %}
-                            <span style="color: var(--codo-muted);">-</span>
+                            <span style="color: var(--text-muted);">-</span>
                             {% endif %}
                         </td>
                         <td><span class="metric-badge metric-tier">{{ s.subscription_tier }}</span></td>
                         <td style="font-family: var(--font-mono);">Lvl {{ s.level }} ({{ s.xp }} XP)</td>
-                        <td><strong style="color: var(--gold-text); font-family: var(--font-mono);">🪙 {{ s.doros }}</strong></td>
-                        <td><span style="color: var(--flame-text); font-family: var(--font-mono); font-weight: 700;">🔥 {{ s.current_streak }}d</span></td>
+                        <td>
+                            <strong style="color: var(--gold-text); font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+                                {{ s.doros }}
+                            </strong>
+                        </td>
+                        <td>
+                            <span style="color: var(--flame-text); font-family: var(--font-mono); font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                                {{ s.current_streak }}d
+                            </span>
+                        </td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
@@ -134,19 +153,19 @@
                                     <input type="hidden" name="action" value="adjust_doros">
                                     <input type="hidden" name="amount" value="50">
                                     <input type="hidden" name="reason" value="Bonus od učiteľa za aktivitu na hodine">
-                                    <button type="submit" class="btn btn-secondary btn-sm" title="+50 Doros">+50 🪙</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="+50 Doros">+50 Doros</button>
                                 </form>
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="adjust_doros">
                                     <input type="hidden" name="amount" value="-50">
                                     <input type="hidden" name="reason" value="Zrážka od učiteľa za porušenie pravidiel">
-                                    <button type="submit" class="btn btn-secondary btn-sm" title="-50 Doros">-50 🪙</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="-50 Doros">-50 Doros</button>
                                 </form>
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="add_streak">
-                                    <button type="submit" class="btn btn-secondary btn-sm" title="+1 Streak">+1 🔥</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="+1 Streak">+1 Streak</button>
                                 </form>
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
                                     {% csrf_token %}
@@ -158,7 +177,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" style="color: var(--codo-muted);">{% if lang == 'en' %}No registered students found.{% else %}V systéme nie sú zatiaľ registrovaní žiadni študenti.{% endif %}</td>
+                        <td colspan="7" style="color: var(--text-muted);">{% if lang == 'en' %}No registered students found.{% else %}V systéme nie sú zatiaľ registrovaní žiadni študenti.{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -173,11 +192,14 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; align-items: start; margin-bottom: 2rem;">
 
         <!-- Formulár na vytvorenie odmeny so skladom -->
-        <section class="card-surface" style="padding: 1.75rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
-                🛍️ {% if lang == 'en' %}Create Stock-Managed Reward{% else %}Pridať odmenu do obchodu so skladom{% endif %}
-            </h2>
-            <p style="font-size: 0.86rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0;">
+                    {% if lang == 'en' %}Create Stock-Managed Reward{% else %}Pridať odmenu do obchodu so skladom{% endif %}
+                </h2>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}
                     Set maximum class stock and automatic restock frequency (Daily, Weekly, Monthly).
                 {% else %}
@@ -226,11 +248,14 @@
         </section>
 
         <!-- Formulár na spustenie Coin Dropu -->
-        <section class="card-surface" style="padding: 1.75rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
-                🎁 {% if lang == 'en' %}Launch Live Coin Drop{% else %}Spustiť časovaný Coin Drop{% endif %}
-            </h2>
-            <p style="font-size: 0.86rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-text)" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0;">
+                    {% if lang == 'en' %}Launch Live Coin Drop{% else %}Spustiť časovaný Coin Drop{% endif %}
+                </h2>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}
                     Reward active students with a surprise mystery Doros chest on their dashboard.
                 {% else %}
@@ -275,11 +300,14 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; align-items: start;">
 
         <!-- Kolektívna výzva triedy -->
-        <section class="card-surface" style="padding: 1.75rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
-                🤝 {% if lang == 'en' %}Create Collective Class Quest{% else %}Nová kolektívna výzva triedy{% endif %}
-            </h2>
-            <p style="font-size: 0.86rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0;">
+                    {% if lang == 'en' %}Create Collective Class Quest{% else %}Nová kolektívna výzva triedy{% endif %}
+                </h2>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}Set a shared goal for the entire school class to achieve together.{% else %}Zadaj spoločný cieľ vyriešených úloh pre celú triedu s odmenou pre každého prispievateľa.{% endif %}
             </p>
             <form method="post" action="{% url 'create_class_quest' %}">
@@ -323,11 +351,14 @@
         </section>
 
         <!-- Osobná výzva (Quest) -->
-        <section class="card-surface" style="padding: 1.75rem;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">
-                🎯 {% if lang == 'en' %}Create Personal Quest{% else %}Nová osobná výzva (Quest){% endif %}
-            </h2>
-            <p style="font-size: 0.86rem; color: var(--codo-slate); margin-bottom: 1.25rem;">
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0;">
+                    {% if lang == 'en' %}Create Personal Quest{% else %}Nová osobná výzva (Quest){% endif %}
+                </h2>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}Add an individual milestone challenge for all students.{% else %}Pridaj výzvu zameranú na riešenie úloh, XP alebo presnosť na 1. pokus.{% endif %}
             </p>
             <form method="post" action="{% url 'create_quest' %}">
@@ -375,11 +406,14 @@
     <div class="layout-2col" style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 1.75rem; align-items: start;">
 
         <!-- Tvorba cvičení s AI asistentom -->
-        <section class="card-surface" style="padding: 1.75rem;">
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
-                <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 0;">
-                    ➕ {% if lang == 'en' %}Add Python Exercise & Unit Test{% else %}Pridať Python cvičenie s testom{% endif %}
-                </h2>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 0;">
+                        {% if lang == 'en' %}Add Python Exercise & Unit Test{% else %}Pridať Python cvičenie s testom{% endif %}
+                    </h2>
+                </div>
             </div>
 
             <!-- AI Asistent Toolbar -->
@@ -395,10 +429,10 @@
                     <input type="text" id="aiTopicInput" class="form-control" style="font-size: 0.82rem; flex: 1; min-width: 140px; padding: 0.35rem 0.6rem;"
                            placeholder="Zadaj tému (napr. Cyklus for a párne čísla)">
                     <button type="button" class="btn btn-primary btn-sm" onclick="generateAiExercise()" style="font-size: 0.78rem; font-weight: 700;">
-                        ✨ Generovať
+                        Generovať
                     </button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="translateAiExercise()" style="font-size: 0.78rem;">
-                        🌐 Preložiť EN
+                        Preložiť EN
                     </button>
                 </div>
             </div>
@@ -436,10 +470,11 @@
         </section>
 
         <!-- Zoznam odovzdaných kódov s Code Review -->
-        <section class="card-surface" style="overflow: hidden;">
-            <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline);">
+        <section class="card-surface" style="overflow: hidden; border-radius: var(--radius-lg);">
+            <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
                 <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
-                    📝 {% if lang == 'en' %}Recent Student Submissions & Code Review{% else %}Posledné odovzdané riešenia a Code Review{% endif %}
+                    {% if lang == 'en' %}Recent Student Submissions & Code Review{% else %}Posledné odovzdané riešenia a Code Review{% endif %}
                 </h2>
             </div>
             <div style="overflow-x: auto;">
@@ -457,7 +492,7 @@
                     <tbody>
                         {% for sub in recent_submissions %}
                         <tr>
-                            <td style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--codo-muted); white-space: nowrap;">
+                            <td style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;">
                                 {{ sub.created_at|date:"d.m. H:i" }}
                             </td>
                             <td style="font-weight: 600; white-space: nowrap;">{{ sub.student.username }}</td>
@@ -480,15 +515,15 @@
                                     <input type="text" name="teacher_comment" value="{{ sub.teacher_comment|default:'' }}"
                                            placeholder="{% if lang == 'en' %}Review note...{% else %}Komentár...{% endif %}"
                                            class="form-control" style="font-size: 0.76rem; padding: 0.25rem 0.5rem; min-width: 140px;">
-                                    <button type="submit" class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Uložiť komentár">
-                                        💬
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; display: inline-flex; align-items: center;" title="Uložiť komentár">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                                     </button>
                                 </form>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" style="color: var(--codo-muted);">{% if lang == 'en' %}No submissions recorded yet.{% else %}Zatiaľ neboli odovzdané žiadne riešenia.{% endif %}</td>
+                            <td colspan="6" style="color: var(--text-muted);">{% if lang == 'en' %}No submissions recorded yet.{% else %}Zatiaľ neboli odovzdané žiadne riešenia.{% endif %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -514,7 +549,7 @@ function switchTab(tabId, btn) {
 function generateAiExercise() {
     var topic = document.getElementById('aiTopicInput').value.trim() || 'Podmienky if-else';
     var status = document.getElementById('aiStatusMsg');
-    status.textContent = '⏳ Generujem cvičenie...';
+    status.textContent = 'Generujem cvičenie...';
 
     fetch('/teacher/exercise/ai-generate/?topic=' + encodeURIComponent(topic))
         .then(r => r.json())
@@ -531,10 +566,10 @@ function generateAiExercise() {
             if (data.tests && data.tests.length > 0) {
                 document.getElementById('ex_test_code').value = data.tests[0];
             }
-            status.textContent = '✅ Hotovo (' + (data.source || 'AI') + ')';
+            status.textContent = 'Hotovo (' + (data.source || 'AI') + ')';
         })
         .catch(err => {
-            status.textContent = '❌ Chyba spojenia';
+            status.textContent = 'Chyba spojenia';
         });
 }
 
@@ -547,15 +582,15 @@ function translateAiExercise() {
         alert('Najskôr zadaj názov a zadanie v slovenčine.');
         return;
     }
-    status.textContent = '⏳ Prekladám do EN...';
+    status.textContent = 'Prekladám do EN...';
 
     fetch('/teacher/exercise/ai-translate/?title_sk=' + encodeURIComponent(title) + '&instructions_sk=' + encodeURIComponent(inst))
         .then(r => r.json())
         .then(data => {
-            status.textContent = '✅ Preložené (' + (data.source || 'AI') + ')';
+            status.textContent = 'Preložené (' + (data.source || 'AI') + ')';
         })
         .catch(err => {
-            status.textContent = '❌ Chyba prekladu';
+            status.textContent = 'Chyba prekladu';
         });
 }
 </script>
