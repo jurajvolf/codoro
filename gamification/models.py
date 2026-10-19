@@ -231,6 +231,35 @@ class ClassQuest(models.Model):
             return 100
         return min(100, int(self.current_exercises_count * 100 / self.target_exercises_count))
 
+    def distribute_rewards(self):
+        """Manuálne alebo automatické vyhodnotenie a rozdelenie odmien študentom."""
+        if self.rewards_distributed:
+            return 0
+        from accounts.models import User
+        if self.reward_policy == self.RewardPolicy.ALL_STUDENTS:
+            eligible_students = list(User.objects.filter(school_class=self.school_class, role=User.Role.STUDENT))
+        else:
+            eligible_students = [
+                c.student for c in self.contributions.filter(amount_contributed__gte=self.min_contribution_required).select_related('student')
+            ]
+
+        distributed_count = 0
+        for student in eligible_students:
+            student.doros += self.reward_doros_per_student
+            student.save(update_fields=['doros'])
+            DorosTransaction.objects.create(
+                student=student,
+                amount=self.reward_doros_per_student,
+                reason_sk=f"Splnená triedna výzva: {self.title_sk}",
+                reason_en=f"Completed class quest: {self.title_en}"
+            )
+            distributed_count += 1
+
+        self.rewards_distributed = True
+        self.is_completed = True
+        self.save(update_fields=['rewards_distributed', 'is_completed'])
+        return distributed_count
+
     def __str__(self):
         return f"Triedny Quest ({self.school_class.name}): {self.title_sk} [{self.current_exercises_count}/{self.target_exercises_count}]"
 

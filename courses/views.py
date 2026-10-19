@@ -194,7 +194,9 @@ def lesson_detail(request, lesson_id):
             previous_attempts = Submission.objects.filter(student=user, exercise=current_exercise).count()
 
             # Spustenie sandboxu prebieha MIMO databázovej transakcie (nedrží zámok počas behu kódu)
-            passed, status_str, output_log = evaluate_python_code(current_exercise, submitted_code, lang=lang)
+            eval_result = evaluate_python_code(current_exercise, submitted_code, lang=lang)
+            passed, status_str, output_log = eval_result
+            exec_time_ms = getattr(eval_result, 'execution_time_ms', 0)
 
             ai_feedback = ""
             if not passed:
@@ -212,6 +214,7 @@ def lesson_detail(request, lesson_id):
                 exercise=current_exercise,
                 submitted_code=submitted_code,
                 status=status_str,
+                execution_time_ms=exec_time_ms,
                 output_log=output_log,
                 ai_tutor_feedback=ai_feedback
             )

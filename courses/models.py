@@ -9,6 +9,11 @@ class Module(models.Model):
         JAVASCRIPT = 'javascript', 'JavaScript (Pripravené na rozšírenie)'
         SQL = 'sql', 'SQL (Pripravené na rozšírenie)'
 
+    class Difficulty(models.TextChoices):
+        BEGINNER = 'BEGINNER', 'Začiatočník / Beginner'
+        INTERMEDIATE = 'INTERMEDIATE', 'Mierne pokročilý / Intermediate'
+        ADVANCED = 'ADVANCED', 'Pokročilý / Advanced'
+
     title_sk = models.CharField(max_length=150, verbose_name="Názov modulu (SK)")
     title_en = models.CharField(max_length=150, verbose_name="Názov modulu (EN)")
     description_sk = models.TextField(verbose_name="Popis modulu (SK)")
@@ -20,8 +25,16 @@ class Module(models.Model):
         verbose_name="Programovací jazyk"
     )
     order = models.PositiveIntegerField(default=1, verbose_name="Poradie modulu")
+    estimated_hours = models.PositiveIntegerField(default=10, verbose_name="Odhadovaný počet hodín štúdia")
+    difficulty_level = models.CharField(
+        max_length=20,
+        choices=Difficulty.choices,
+        default=Difficulty.BEGINNER,
+        verbose_name="Úroveň náročnosti"
+    )
     is_pro_only = models.BooleanField(default=False, verbose_name="Vyžaduje PRO/EDU účet")
     icon_name = models.CharField(max_length=50, default="bi-terminal", verbose_name="Ikona (Bootstrap Icons)")
+    is_published = models.BooleanField(default=True, verbose_name="Publikovaný modul")
 
     class Meta:
         ordering = ['order']
@@ -37,10 +50,14 @@ class Lesson(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='lessons', verbose_name="Modul")
     title_sk = models.CharField(max_length=150, verbose_name="Názov lekcie (SK)")
     title_en = models.CharField(max_length=150, verbose_name="Názov lekcie (EN)")
+    summary_sk = models.CharField(max_length=300, blank=True, verbose_name="Krátke zhrnutie (SK)")
+    summary_en = models.CharField(max_length=300, blank=True, verbose_name="Krátke zhrnutie (EN)")
     content_sk = models.TextField(verbose_name="Teoretický výklad v Markdowne (SK)")
     content_en = models.TextField(verbose_name="Teoretický výklad v Markdowne (EN)")
+    estimated_minutes = models.PositiveIntegerField(default=45, verbose_name="Odhadovaný čas (minúty)")
     order = models.PositiveIntegerField(default=1, verbose_name="Poradie v module")
     xp_reward = models.PositiveIntegerField(default=15, verbose_name="Odmena XP za prečítanie")
+    is_published = models.BooleanField(default=True, verbose_name="Publikovaná lekcia")
 
     class Meta:
         ordering = ['module__order', 'order']
@@ -68,6 +85,8 @@ class Exercise(models.Model):
         verbose_name="Štartovací kód v editore"
     )
     solution_code = models.TextField(verbose_name="Vzorové riešenie (pre učiteľa a AI tútora Codo)")
+    explanation_sk = models.TextField(blank=True, verbose_name="Vysvetlenie vzorového riešenia (SK)")
+    explanation_en = models.TextField(blank=True, verbose_name="Vysvetlenie vzorového riešenia (EN)")
     hint_sk = models.TextField(blank=True, verbose_name="Nápoveda (SK)")
     hint_en = models.TextField(blank=True, verbose_name="Nápoveda (EN)")
     hint_cost_doros = models.PositiveIntegerField(default=15, verbose_name="Cena nápovedy v Doros")
@@ -98,6 +117,10 @@ class TestCase(models.Model):
         default=False,
         verbose_name="Skrytý test (ochrana proti natvrdo napísaným odpovediam)"
     )
+    order = models.PositiveIntegerField(default=1, verbose_name="Poradie testu")
+
+    class Meta:
+        ordering = ['exercise', 'order', 'id']
 
     def __str__(self):
         return f"Test pre {self.exercise.title_sk} (Skrytý: {self.is_hidden})"
@@ -119,6 +142,7 @@ class Submission(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='submissions', verbose_name="Cvičenie")
     submitted_code = models.TextField(verbose_name="Odovzdaný kód študenta")
     status = models.CharField(max_length=10, choices=Status.choices, verbose_name="Výsledok kontroly")
+    execution_time_ms = models.PositiveIntegerField(default=0, verbose_name="Čas behu v ms")
     output_log = models.TextField(blank=True, verbose_name="Výpis z konzoly / Chybová hláška")
     ai_tutor_feedback = models.TextField(blank=True, verbose_name="Sokratovská rada od AI tútora Codo")
     teacher_comment = models.TextField(blank=True, verbose_name="Komentár od učiteľa (Code Review)")
@@ -144,11 +168,19 @@ class QuizQuestion(models.Model):
     option_b_en = models.CharField(max_length=200)
     option_c_sk = models.CharField(max_length=200)
     option_c_en = models.CharField(max_length=200)
+    option_d_sk = models.CharField(max_length=200, blank=True)
+    option_d_en = models.CharField(max_length=200, blank=True)
     correct_option = models.CharField(
         max_length=1,
-        choices=[('A', 'A'), ('B', 'B'), ('C', 'C')],
+        choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')],
         verbose_name="Správna odpoveď"
     )
+    explanation_sk = models.TextField(blank=True, verbose_name="Vysvetlenie správnej odpovede (SK)")
+    explanation_en = models.TextField(blank=True, verbose_name="Vysvetlenie správnej odpovede (EN)")
+    order = models.PositiveIntegerField(default=1, verbose_name="Poradie otázky")
+
+    class Meta:
+        ordering = ['lesson', 'order', 'id']
 
     def __str__(self):
         return f"Kvíz: {self.question_sk[:50]}..."

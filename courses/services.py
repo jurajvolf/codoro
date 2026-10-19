@@ -12,9 +12,22 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.request
 
 from django.conf import settings
+
+
+class EvaluationResult(tuple):
+    """Trojica (passed, status, log) s dodatočným atribútom execution_time_ms."""
+    def __new__(cls, passed, status, log, execution_time_ms=0):
+        obj = super().__new__(cls, (passed, status, log))
+        obj.passed = passed
+        obj.status = status
+        obj.log = log
+        obj.execution_time_ms = execution_time_ms
+        return obj
+
 
 # ----------------------------------------------------------------------
 # 1. SANDBOX
@@ -120,18 +133,32 @@ def _clean_traceback(stderr, workdir):
     return text.strip()
 
 
-def evaluate_python_code(exercise, student_code, lang='sk'):
+def evaluate_python_code(exercise, student_code, lang='sk', custom_test_cases=None):
     """
-    Bezpečne spustí študentský Python kód oproti všetkým TestCase prípadom danej úlohy.
-    Vráti trojicu: (passed_all: bool, status_str: str, output_log: str)
+    Bezpečne spustí študentský Python kód oproti všetkým TestCase prípadom danej úlohy
+    alebo zoznamu custom_test_cases.
+    Vráti EvaluationResult: (passed_all: bool, status_str: str, output_log: str) s .execution_time_ms
     """
+    t_start = time.perf_counter()
+
+    def _ret(passed, status, log):
+        ms = int((time.perf_counter() - t_start) * 1000)
+        return EvaluationResult(passed, status, log, ms)
+
     is_safe, error = check_code_safety(student_code, lang)
     if not is_safe:
-        return False, 'ERROR', error
+        return _ret(False, 'ERROR', error)
 
     timeout = getattr(settings, 'SANDBOX_TIMEOUT_SECONDS', 3)
     max_chars = getattr(settings, 'SANDBOX_MAX_OUTPUT_CHARS', 2000)
-    test_cases = list(exercise.test_cases.all())
+
+    if custom_test_cases is not None:
+        test_cases = list(custom_test_cases)
+    elif exercise:
+        test_cases = list(exercise.test_cases.all())
+    else:
+        test_cases = []
+
     results_log = []
     all_passed = True
     stdout_preview = ''
@@ -141,24 +168,28 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
             try:
                 proc = _run_isolated(student_code, workdir, timeout)
             except subprocess.TimeoutExpired:
-                return False, 'ERROR', _timeout_msg(lang, timeout)
+                return _ret(False, 'ERROR', _timeout_msg(lang, timeout))
             if proc.returncode != 0:
-                return False, 'ERROR', _clean_traceback(proc.stderr, workdir)[-max_chars:]
+                return _ret(False, 'ERROR', _clean_traceback(proc.stderr, workdir)[-max_chars:])
             out = (proc.stdout or '')[:max_chars]
-            return True, 'PASSED', _msg(lang, "[PASS] Kód bol úspešne spustený.", "[PASS] Code ran successfully.") + (
-                f"\n\n--- stdout ---\n{out}" if out else '')
+            return _ret(True, 'PASSED', _msg(lang, "[PASS] Kód bol úspešne spustený.", "[PASS] Code ran successfully.") + (
+                f"\n\n--- stdout ---\n{out}" if out else ''))
 
         for index, tc in enumerate(test_cases, start=1):
-            if tc.is_hidden:
+            is_hidden = getattr(tc, 'is_hidden', False) if not isinstance(tc, dict) else tc.get('is_hidden', False)
+            input_data = getattr(tc, 'input_data', '') if not isinstance(tc, dict) else tc.get('input_data', '')
+            test_code = getattr(tc, 'test_code', '') if not isinstance(tc, dict) else tc.get('test_code', '')
+
+            if is_hidden:
                 label = _msg(lang, f"Skrytý test #{index}", f"Hidden test #{index}")
             else:
-                label = f"Test #{index} ({tc.input_data})" if tc.input_data else f"Test #{index}"
-            full_script = f"{student_code}\n\n# --- AUTOMATICKÝ TEST CODORO ---\n{tc.test_code}\n"
+                label = f"Test #{index} ({input_data})" if input_data else f"Test #{index}"
+            full_script = f"{student_code}\n\n# --- AUTOMATICKÝ TEST CODORO ---\n{test_code}\n"
 
             try:
                 proc = _run_isolated(full_script, workdir, timeout)
             except subprocess.TimeoutExpired:
-                return False, 'ERROR', "\n".join(results_log + [_timeout_msg(lang, timeout)])
+                return _ret(False, 'ERROR', "\n".join(results_log + [_timeout_msg(lang, timeout)]))
 
             if index == 1 and proc.stdout:
                 stdout_preview = proc.stdout[:max_chars]
@@ -178,14 +209,14 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
                 )
             elif err_line.strip() == 'AssertionError':
                 err_line = _msg(lang, "Nesprávny výsledok", "Wrong result")
-            if tc.is_hidden and err_line.startswith('AssertionError'):
+            if is_hidden and err_line.startswith('AssertionError'):
                 err_line = _msg(lang, "Nesprávny výsledok pre skrytý vstup", "Wrong result for a hidden input")
             results_log.append(f"[FAIL] {label}: " + _msg(lang, "ZLYHAL", "FAILED") + f" -> {err_line}")
 
             if any(e in stderr for e in ('SyntaxError', 'IndentationError', 'NameError', 'TypeError')) \
                     and 'AssertionError' not in stderr:
                 detail = _clean_traceback(stderr, workdir)[-max_chars:]
-                return False, 'ERROR', "\n".join(results_log) + "\n\n" + _msg(lang, "Detail chyby:", "Error details:") + f"\n{detail}"
+                return _ret(False, 'ERROR', "\n".join(results_log) + "\n\n" + _msg(lang, "Detail chyby:", "Error details:") + f"\n{detail}")
 
     passed_n = sum(1 for r in results_log if r.startswith('[PASS]'))
     summary = _msg(lang, f"\n\nVýsledok: {passed_n}/{len(test_cases)} testov prešlo.",
@@ -193,7 +224,7 @@ def evaluate_python_code(exercise, student_code, lang='sk'):
     log = "\n".join(results_log) + summary
     if stdout_preview:
         log += f"\n\n--- {_msg(lang, 'Výpis tvojho programu (stdout)', 'Your program output (stdout)')} ---\n{stdout_preview}"
-    return all_passed, ('PASSED' if all_passed else 'FAILED'), log
+    return _ret(all_passed, ('PASSED' if all_passed else 'FAILED'), log)
 
 
 def _timeout_msg(lang, timeout):

@@ -1,0 +1,623 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="animate-in" style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+
+    <!-- Horná navigačná lišta -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 1.25rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.84rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                <a href="{% url 'cms_modules' %}" style="color: var(--ro-indigo); font-weight: 700; text-decoration: none;">
+                    {% if lang == 'en' %}Curriculum Modules{% else %}Vzdelávacie moduly{% endif %}
+                </a>
+                <span>/</span>
+                <a href="{% url 'cms_lesson_edit' lesson.id %}" style="color: var(--ro-indigo); font-weight: 700; text-decoration: none;">
+                    {{ lesson.title_sk }}
+                </a>
+                <span>/</span>
+                <span style="color: var(--text-primary); font-weight: 600;">
+                    {% if is_new %}{% if lang == 'en' %}New Exercise{% else %}Nové cvičenie{% endif %}{% else %}{{ exercise.title_sk }}{% endif %}
+                </span>
+            </div>
+            <h1 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; margin: 0; color: var(--text-primary);">
+                {% if is_new %}
+                    {% if lang == 'en' %}Create Coding Exercise{% else %}Vytvoriť programátorské cvičenie{% endif %}
+                {% else %}
+                    {% if lang == 'en' %}Exercise Studio & TestCase Sandbox{% else %}Štúdio cvičení a TestCase sandbox{% endif %}
+                {% endif %}
+            </h1>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <a href="{% url 'cms_lesson_edit' lesson.id %}" class="btn btn-secondary btn-sm" style="font-weight: 600;">
+                {% if lang == 'en' %}Back to Lesson{% else %}Späť na lekciu{% endif %}
+            </a>
+
+            <!-- AI Asistent: Vygenerovať úlohu podľa témy -->
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('modal-ai-generate').style.display='flex';" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; color: #0891B2;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {% if lang == 'en' %}AI Generate by Topic{% else %}✨ AI Vygenerovať podľa témy{% endif %}
+            </button>
+
+            <!-- AI Asistent: Preložiť do EN -->
+            <button type="button" class="btn btn-secondary btn-sm" onclick="translateExerciseToEn()" id="btn-ai-translate" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                {% if lang == 'en' %}AI Translate to EN{% else %}🌐 AI Preložiť do EN{% endif %}
+            </button>
+
+            <!-- Uložiť cvičenie -->
+            <button type="button" onclick="submitExerciseForm();" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                {% if lang == 'en' %}Save Exercise{% else %}Uložiť cvičenie{% endif %}
+            </button>
+        </div>
+    </div>
+
+    <!-- HLAVNÝ FORMULÁR CVIČENIA -->
+    <form id="form-exercise-main" method="post" action="{% if is_new %}{% url 'cms_exercise_create' lesson.id %}{% else %}{% url 'cms_exercise_edit' exercise.id %}{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_exercise">
+
+        <!-- 1. Metadáta cvičenia -->
+        <section class="card-surface" style="padding: 1.5rem 1.75rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Parent Lesson{% else %}Lekcia{% endif %}</label>
+                    <select name="lesson_id" class="form-select">
+                        {% for l in lessons %}
+                        <option value="{{ l.id }}" {% if l.id == lesson.id %}selected{% endif %}>
+                            {{ l.module.order }}.{{ l.order }} {{ l.title_sk }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Title (Slovak){% else %}Názov úlohy (SK){% endif %}</label>
+                    <input type="text" id="ex_title_sk" name="title_sk" class="form-control" value="{% if exercise %}{{ exercise.title_sk }}{% endif %}" placeholder="napr. Súčet dvoch čísel" required>
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Title (English){% else %}Názov úlohy (EN){% endif %}</label>
+                    <input type="text" id="ex_title_en" name="title_en" class="form-control" value="{% if exercise %}{{ exercise.title_en }}{% endif %}" placeholder="e.g. Sum of Two Numbers">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Difficulty{% else %}Obtiažnosť{% endif %}</label>
+                    <select id="ex_difficulty" name="difficulty" class="form-select" style="min-width: 140px;">
+                        <option value="EASY" {% if exercise and exercise.difficulty == 'EASY' %}selected{% endif %}>Ľahká / Easy</option>
+                        <option value="MEDIUM" {% if exercise and exercise.difficulty == 'MEDIUM' %}selected{% endif %}>Stredná / Medium</option>
+                        <option value="HARD" {% if exercise and exercise.difficulty == 'HARD' %}selected{% endif %}>Ťažká (Boss) / Hard</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}XP Reward{% else %}Odmena XP{% endif %}</label>
+                    <input type="number" name="xp_reward" value="{% if exercise %}{{ exercise.xp_reward }}{% else %}50{% endif %}" min="5" max="500" class="form-control" style="width: 95px;">
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Doros Reward{% else %}Odmena Doros{% endif %}</label>
+                    <input type="number" name="doros_reward" value="{% if exercise %}{{ exercise.doros_reward }}{% else %}25{% endif %}" min="1" max="200" class="form-control" style="width: 95px;">
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Hint Cost (Doros){% else %}Cena nápovedy (Doros){% endif %}</label>
+                    <input type="number" name="hint_cost_doros" value="{% if exercise %}{{ exercise.hint_cost_doros }}{% else %}15{% endif %}" min="0" max="100" class="form-control" style="width: 95px;">
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Order in Lesson{% else %}Poradie v lekcii{% endif %}</label>
+                    <input type="number" name="order" value="{% if exercise %}{{ exercise.order }}{% else %}1{% endif %}" min="1" max="99" class="form-control" style="width: 80px;">
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Zadanie úlohy a vzorové vysvetlenie -->
+        <section class="card-surface" style="padding: 1.5rem 1.75rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0 0 1rem; color: var(--text-primary);">
+                {% if lang == 'en' %}Instructions & Explanation{% else %}Zadanie úlohy a vysvetlenie vzorového riešenia{% endif %}
+            </h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Instructions (SK - Markdown){% else %}Zadanie úlohy (SK - Markdown){% endif %}</label>
+                    <textarea id="ex_instructions_sk" name="instructions_sk" rows="4" class="form-control" placeholder="Napíš funkciu `sucet(a, b)`, ktorá vráti ich súčet..." required>{% if exercise %}{{ exercise.instructions_sk }}{% endif %}</textarea>
+                </div>
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Instructions (EN - Markdown){% else %}Zadanie úlohy (EN - Markdown){% endif %}</label>
+                    <textarea id="ex_instructions_en" name="instructions_en" rows="4" class="form-control" placeholder="Write a function `sucet(a, b)` that returns their sum...">{% if exercise %}{{ exercise.instructions_en }}{% endif %}</textarea>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Hint for student (SK){% else %}Nápoveda pre študenta (SK){% endif %}</label>
+                    <input type="text" id="ex_hint_sk" name="hint_sk" class="form-control" value="{% if exercise %}{{ exercise.hint_sk }}{% endif %}" placeholder="Použi operátor + a príkaz return.">
+                </div>
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Hint for student (EN){% else %}Nápoveda pre študenta (EN){% endif %}</label>
+                    <input type="text" id="ex_hint_en" name="hint_en" class="form-control" value="{% if exercise %}{{ exercise.hint_en }}{% endif %}" placeholder="Use the + operator and the return statement.">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Sample Solution Explanation (SK){% else %}Vysvetlenie vzorového riešenia (SK po vyriešení){% endif %}</label>
+                    <textarea id="ex_explanation_sk" name="explanation_sk" rows="2" class="form-control" placeholder="Funkcia prijíma dva argumenty a vracia ich matematický súčet...">{% if exercise %}{{ exercise.explanation_sk }}{% endif %}</textarea>
+                </div>
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Sample Solution Explanation (EN){% else %}Vysvetlenie vzorového riešenia (EN po vyriešení){% endif %}</label>
+                    <textarea id="ex_explanation_en" name="explanation_en" rows="2" class="form-control" placeholder="The function takes two parameters and returns their sum...">{% if exercise %}{{ exercise.explanation_en }}{% endif %}</textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CODEMIRROR EDITORY: Štartovací kód vs. Vzorové riešenie učiteľa -->
+        <section class="card-surface" style="padding: 1.5rem 1.75rem; border-radius: var(--radius-lg); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                        {% if lang == 'en' %}Python Code Editors (Starter vs. Teacher's Solution){% else %}Python editory (Štartovací kód žiaka vs. Vzorové riešenie učiteľa){% endif %}
+                    </h2>
+                </div>
+
+                <!-- Tlačidlo: Otestovať vzorové riešenie učiteľa -->
+                <button type="button" class="btn btn-primary btn-sm" onclick="testTeacherSolution();" id="btn-test-solution" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.45rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    {% if lang == 'en' %}Test Solution in Sandbox{% else %}▶ Otestovať vzorové riešenie učiteľa{% endif %}
+                </button>
+            </div>
+
+            <!-- Výsledok testovania vzorového riešenia (AJAX box) -->
+            <div id="solution-test-result" style="display: none; margin-bottom: 1.25rem; padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-hairline);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span id="solution-status-badge" style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; padding: 0.2rem 0.65rem; border-radius: 99px;"></span>
+                        <span id="solution-exec-time" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);"></span>
+                    </div>
+                </div>
+                <pre id="solution-output-log" style="background: var(--console-bg); color: var(--console-text); padding: 0.85rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.82rem; margin: 0; overflow-x: auto; max-height: 220px; line-height: 1.5;"></pre>
+            </div>
+
+            <!-- Dva CodeMirror editory vedľa seba -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <!-- Štartovací kód pre študenta -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <label class="form-label" style="margin: 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                            1. ŠTARTOVACÍ KÓD V EDITORE ŽIAKA
+                        </label>
+                        <span style="font-size: 0.74rem; color: var(--text-muted);">Zobrazí sa žiakovi po otvorení úlohy</span>
+                    </div>
+                    <div style="border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden;">
+                        <textarea id="starter_code" name="starter_code">{% if exercise %}{{ exercise.starter_code }}{% else %}def sucet(a, b):
+    # Sem napíš svoje riešenie
+    pass
+{% endif %}</textarea>
+                    </div>
+                </div>
+
+                <!-- Vzorové riešenie učiteľa -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <label class="form-label" style="margin: 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ro-indigo); font-weight: 700;">
+                            2. VZOROVÉ RIEŠENIE UČITEĽA (SOLUTION)
+                        </label>
+                        <span style="font-size: 0.74rem; color: var(--text-muted);">Používa sa na verifikáciu a AI tútora</span>
+                    </div>
+                    <div style="border: 1px solid var(--ro-indigo-border); border-radius: var(--radius-sm); overflow: hidden;">
+                        <textarea id="solution_code" name="solution_code">{% if exercise %}{{ exercise.solution_code }}{% else %}def sucet(a, b):
+    return a + b
+{% endif %}</textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+
+    <!-- 4. SPRÁVA TESTOVACÍCH PRÍPADOV (TESTCASE) -->
+    {% if not is_new %}
+    <section class="card-surface" style="padding: 1.75rem 2rem; border-radius: var(--radius-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                        {% if lang == 'en' %}Automated Test Cases ({{ test_cases.count }}){% else %}Testovacie prípady cvičenia (TestCase: {{ test_cases.count }}){% endif %}
+                    </h2>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0 0;">
+                    {% if lang == 'en' %}Each test runs safely in an isolated Python subprocess sandbox with a 3-second timeout.{% else %}Každý test spúšťa Python assert príkaz v izolovanom AST sandboxe s 3s timeoutom.{% endif %}
+                </p>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('modal-add-testcase').style.display='flex';" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                {% if lang == 'en' %}Add Test Case{% else %}Pridať testovací prípad{% endif %}
+            </button>
+        </div>
+
+        {% if test_cases %}
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            {% for tc in test_cases %}
+            <div style="padding: 1rem 1.25rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 260px;">
+                    <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 800; color: var(--text-muted);">#{{ tc.order }}</span>
+
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                            <code style="font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; color: var(--ro-indigo); background: var(--bg-surface); padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-hairline);">
+                                {{ tc.test_code }}
+                            </code>
+
+                            {% if tc.is_hidden %}
+                            <span style="font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 99px; background: rgba(92, 225, 230, 0.15); color: #0891B2; font-weight: 700;">
+                                🔒 {% if lang == 'en' %}Hidden Test{% else %}Skrytý test{% endif %}
+                            </span>
+                            {% else %}
+                            <span style="font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 99px; background: var(--bg-surface); color: var(--text-muted); font-weight: 600; border: 1px solid var(--border-hairline);">
+                                👁 {% if lang == 'en' %}Public Test{% else %}Verejný test{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            {% if tc.input_data %}<strong>Vstup:</strong> {{ tc.input_data }} | {% endif %}
+                            <strong>Očakávané:</strong> {{ tc.expected_output }}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditTestCaseModal('{{ tc.id }}', '{{ tc.input_data|escapejs }}', '{{ tc.expected_output|escapejs }}', '{{ tc.test_code|escapejs }}', {{ tc.is_hidden|yesno:'true,false' }}, {{ tc.order }})" style="font-size: 0.78rem;">
+                        {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
+                    </button>
+                    <form method="post" action="{% url 'cms_testcase_delete' tc.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete test case?{% else %}Naozaj vymazať tento test?{% endif %}');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.78rem;" title="Vymazať test">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border-hairline);">
+            {% if lang == 'en' %}No test cases added yet. Add at least 1 assert test so student solutions can be evaluated.{% else %}Úloha zatiaľ nemá žiadne testy. Pridaj aspoň 1 assert test na automatickú kontrolu.{% endif %}
+            <br>
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('modal-add-testcase').style.display='flex';" style="margin-top: 0.75rem; font-weight: 700;">
+                + {% if lang == 'en' %}Add First Test Case{% else %}Pridať prvý test{% endif %}
+            </button>
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
+
+</div>
+
+<!-- MODAL: Pridanie TestCase -->
+{% if not is_new %}
+<div id="modal-add-testcase" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px);">
+    <div class="card-surface" style="width: 100%; max-width: 580px; border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-md); max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin: 0;">
+                {% if lang == 'en' %}Add TestCase{% else %}Pridať testovací prípad (TestCase){% endif %}
+            </h3>
+            <button type="button" onclick="document.getElementById('modal-add-testcase').style.display='none';" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
+
+        <form method="post" action="{% url 'cms_testcase_create' exercise.id %}">
+            {% csrf_token %}
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">{% if lang == 'en' %}Test Code (Python assert){% else %}Príkaz testu v Pythone (assert){% endif %}</label>
+                <textarea name="test_code" rows="2" class="form-control" style="font-family: var(--font-mono); font-size: 0.9rem;" placeholder="assert sucet(2, 3) == 5" required></textarea>
+                <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 3px;">
+                    Príklad: <code>assert sucet(10, -5) == 5</code> alebo <code>assert palindrom('oko') is True</code>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label class="form-label">Vstupné dáta (popis pre žiaka)</label>
+                    <input type="text" name="input_data" class="form-control" placeholder="sucet(2, 3)">
+                </div>
+                <div>
+                    <label class="form-label">Očakávaný výstup</label>
+                    <input type="text" name="expected_output" class="form-control" placeholder="5" value="5">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.88rem; font-weight: 600;">
+                    <input type="checkbox" name="is_hidden">
+                    <span>🔒 {% if lang == 'en' %}Hidden Test (prevent hardcoded answers){% else %}Skrytý test (ochrana proti natvrdo napísaným odpovediam){% endif %}</span>
+                </label>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-add-testcase').style.display='none';">
+                    {% if lang == 'en' %}Cancel{% else %}Zrušiť{% endif %}
+                </button>
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                    {% if lang == 'en' %}Add TestCase{% else %}Pridať test{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Úprava TestCase -->
+<div id="modal-edit-testcase" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px);">
+    <div class="card-surface" style="width: 100%; max-width: 580px; border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-md); max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin: 0;">
+                {% if lang == 'en' %}Edit TestCase{% else %}Upraviť testovací prípad{% endif %}
+            </h3>
+            <button type="button" onclick="document.getElementById('modal-edit-testcase').style.display='none';" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
+
+        <form id="form-edit-testcase" method="post" action="">
+            {% csrf_token %}
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">Príkaz testu v Pythone (assert)</label>
+                <textarea id="edit_tc_code" name="test_code" rows="2" class="form-control" style="font-family: var(--font-mono); font-size: 0.9rem;" required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label class="form-label">Vstupné dáta (popis)</label>
+                    <input type="text" id="edit_tc_input" name="input_data" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label">Očakávaný výstup</label>
+                    <input type="text" id="edit_tc_expected" name="expected_output" class="form-control">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.88rem; font-weight: 600;">
+                    <input type="checkbox" id="edit_tc_hidden" name="is_hidden">
+                    <span>🔒 Skrytý test</span>
+                </label>
+
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <label class="form-label" style="margin: 0;">Poradie:</label>
+                    <input type="number" id="edit_tc_order" name="order" class="form-control" style="width: 70px;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-edit-testcase').style.display='none';">
+                    {% if lang == 'en' %}Cancel{% else %}Zrušiť{% endif %}
+                </button>
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                    {% if lang == 'en' %}Save Changes{% else %}Uložiť zmeny{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<!-- MODAL: AI Generátor cvičenia podľa témy -->
+<div id="modal-ai-generate" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px);">
+    <div class="card-surface" style="width: 100%; max-width: 540px; border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0;">
+                    {% if lang == 'en' %}AI Exercise Generator{% else %}AI Generátor cvičenia{% endif %}
+                </h3>
+            </div>
+            <button type="button" onclick="document.getElementById('modal-ai-generate').style.display='none';" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
+
+        <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            {% if lang == 'en' %}Enter the topic (e.g. 'Factorial with recursion' or 'List slicing') and AI will populate code, solution, and test cases.{% else %}Zadaj tému (napr. „Rekurzívny faktoriál“ alebo „Filtrovanie zoznamu“) a AI ti vygeneruje zadanie, štartovací kód, vzorové riešenie a assert testy.{% endif %}
+        </p>
+
+        <div style="margin-bottom: 1rem;">
+            <label class="form-label">{% if lang == 'en' %}Topic or Programming Concept{% else %}Téma alebo programátorský koncept{% endif %}</label>
+            <input type="text" id="ai-topic-input" class="form-control" placeholder="napr. Cyklus for a výpočet faktoriálu" value="Podmienky a vetvenie if-else">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label class="form-label">{% if lang == 'en' %}Difficulty Level{% else %}Úroveň náročnosti{% endif %}</label>
+            <select id="ai-diff-input" class="form-select">
+                <option value="EASY">Ľahká (EASY)</option>
+                <option value="MEDIUM">Stredná (MEDIUM)</option>
+                <option value="HARD">Ťažká (HARD)</option>
+            </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-ai-generate').style.display='none';">
+                {% if lang == 'en' %}Cancel{% else %}Zrušiť{% endif %}
+            </button>
+            <button type="button" class="btn btn-primary" onclick="runAiGenerateExercise();" id="btn-run-ai-generate" style="font-weight: 700;">
+                {% if lang == 'en' %}Generate with AI{% else %}Vygenerovať úlohu{% endif %}
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- CodeMirror & Test Runner Script -->
+<script>
+var cmStarter = null;
+var cmSolution = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    var activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    var cmTheme = activeTheme === 'dark' ? "material-darker" : "eclipse";
+
+    var starterElem = document.getElementById("starter_code");
+    if (starterElem) {
+        cmStarter = CodeMirror.fromTextArea(starterElem, {
+            mode: "python",
+            theme: cmTheme,
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true,
+            autoCloseBrackets: true
+        });
+        cmStarter.setSize("100%", 280);
+    }
+
+    var solutionElem = document.getElementById("solution_code");
+    if (solutionElem) {
+        cmSolution = CodeMirror.fromTextArea(solutionElem, {
+            mode: "python",
+            theme: cmTheme,
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true,
+            autoCloseBrackets: true
+        });
+        cmSolution.setSize("100%", 280);
+    }
+});
+
+function submitExerciseForm() {
+    if (cmStarter) cmStarter.save();
+    if (cmSolution) cmSolution.save();
+    document.getElementById('form-exercise-main').submit();
+}
+
+function testTeacherSolution() {
+    if (cmSolution) cmSolution.save();
+    var solutionCode = cmSolution ? cmSolution.getValue() : document.getElementById('solution_code').value;
+    var btn = document.getElementById('btn-test-solution');
+    var resultBox = document.getElementById('solution-test-result');
+    var badge = document.getElementById('solution-status-badge');
+    var timeEl = document.getElementById('solution-exec-time');
+    var logEl = document.getElementById('solution-output-log');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Testujem v sandboxe...</span>';
+
+    var payload = new URLSearchParams();
+    payload.append('solution_code', solutionCode);
+    {% if exercise %}
+    payload.append('exercise_id', '{{ exercise.id }}');
+    {% endif %}
+
+    fetch('{% url "cms_test_solution" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: payload.toString()
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>▶ Otestovať vzorové riešenie učiteľa</span>';
+        resultBox.style.display = 'block';
+
+        if (data.passed) {
+            badge.style.background = 'var(--emerald-bg)';
+            badge.style.color = 'var(--emerald-text)';
+            badge.innerText = '✓ PASSED (Všetky testy prešli)';
+            resultBox.style.borderColor = 'var(--emerald-border)';
+        } else {
+            badge.style.background = 'var(--flame-bg)';
+            badge.style.color = 'var(--flame-text)';
+            badge.innerText = '✗ ' + data.status + ' (Chyba v testoch)';
+            resultBox.style.borderColor = 'var(--flame-border)';
+        }
+        timeEl.innerText = '⏱ ' + data.execution_time_ms + ' ms';
+        logEl.innerText = data.output_log;
+    })
+    .catch(function(err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>▶ Otestovať vzorové riešenie učiteľa</span>';
+        alert('Chyba testovania sandboxu: ' + err);
+    });
+}
+
+function runAiGenerateExercise() {
+    var topic = document.getElementById('ai-topic-input').value;
+    var diff = document.getElementById('ai-diff-input').value;
+    var btn = document.getElementById('btn-run-ai-generate');
+
+    btn.disabled = true;
+    btn.innerText = 'Generujem...';
+
+    fetch('/teacher/exercise/ai-generate/?topic=' + encodeURIComponent(topic) + '&difficulty=' + encodeURIComponent(diff))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            btn.innerText = 'Vygenerovať úlohu';
+            document.getElementById('modal-ai-generate').style.display = 'none';
+
+            if (data.title_sk) document.getElementById('ex_title_sk').value = data.title_sk;
+            if (data.title_en) document.getElementById('ex_title_en').value = data.title_en;
+            if (data.instructions_sk) document.getElementById('ex_instructions_sk').value = data.instructions_sk;
+            if (data.instructions_en) document.getElementById('ex_instructions_en').value = data.instructions_en;
+            if (data.hint_sk) document.getElementById('ex_hint_sk').value = data.hint_sk;
+            if (data.hint_en) document.getElementById('ex_hint_en').value = data.hint_en;
+            if (data.starter_code && cmStarter) {
+                cmStarter.setValue(data.starter_code);
+            }
+            if (data.solution_code && cmSolution) {
+                cmSolution.setValue(data.solution_code);
+            }
+            alert('Cvičenie bolo vygenerované! Skontroluj zadané texty a otestuj vzorové riešenie.');
+        })
+        .catch(function(err) {
+            btn.disabled = false;
+            btn.innerText = 'Vygenerovať úlohu';
+            alert('Chyba AI generátora: ' + err);
+        });
+}
+
+function translateExerciseToEn() {
+    var btn = document.getElementById('btn-ai-translate');
+    var titleSk = document.getElementById('ex_title_sk').value;
+    var instSk = document.getElementById('ex_instructions_sk').value;
+    var hintSk = document.getElementById('ex_hint_sk').value;
+    var expSk = document.getElementById('ex_explanation_sk').value;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Prekladám...</span>';
+
+    fetch('/teacher/exercise/ai-translate/?title_sk=' + encodeURIComponent(titleSk) +
+          '&instructions_sk=' + encodeURIComponent(instSk) +
+          '&hint_sk=' + encodeURIComponent(hintSk) +
+          '&explanation_sk=' + encodeURIComponent(expSk))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>🌐 AI Preložiť do EN</span>';
+            if (data.title_en) document.getElementById('ex_title_en').value = data.title_en;
+            if (data.instructions_en) document.getElementById('ex_instructions_en').value = data.instructions_en;
+            if (data.hint_en) document.getElementById('ex_hint_en').value = data.hint_en;
+            if (data.explanation_en) document.getElementById('ex_explanation_en').value = data.explanation_en;
+        })
+        .catch(function(err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>🌐 AI Preložiť do EN</span>';
+            alert('Chyba pri preklade: ' + err);
+        });
+}
+
+function openEditTestCaseModal(id, inputData, expected, testCode, isHidden, order) {
+    var form = document.getElementById('form-edit-testcase');
+    form.action = '/teacher/testcase/' + id + '/edit/';
+    document.getElementById('edit_tc_input').value = inputData;
+    document.getElementById('edit_tc_expected').value = expected;
+    document.getElementById('edit_tc_code').value = testCode;
+    document.getElementById('edit_tc_hidden').checked = isHidden;
+    document.getElementById('edit_tc_order').value = order;
+    document.getElementById('modal-edit-testcase').style.display = 'flex';
+}
+</script>
+
+{% endblock %}

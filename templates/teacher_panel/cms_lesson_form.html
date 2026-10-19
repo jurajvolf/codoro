@@ -1,0 +1,659 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="animate-in" style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+
+    <!-- Horná navigačná lišta -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 1.25rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.84rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                <a href="{% url 'cms_modules' %}" style="color: var(--ro-indigo); font-weight: 700; text-decoration: none;">
+                    {% if lang == 'en' %}Curriculum Modules{% else %}Vzdelávacie moduly{% endif %}
+                </a>
+                <span>/</span>
+                <span>{{ module.title_sk }}</span>
+                <span>/</span>
+                <span style="color: var(--text-primary); font-weight: 600;">
+                    {% if is_new %}{% if lang == 'en' %}New Lesson{% else %}Nová lekcia{% endif %}{% else %}{{ lesson.title_sk }}{% endif %}
+                </span>
+            </div>
+            <h1 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; margin: 0; color: var(--text-primary);">
+                {% if is_new %}
+                    {% if lang == 'en' %}Create New Lesson{% else %}Vytvorenie novej lekcie{% endif %}
+                {% else %}
+                    {% if lang == 'en' %}Lesson Editor & Live Markdown Studio{% else %}Editor lekcie a živý Markdown náhľad{% endif %}
+                {% endif %}
+            </h1>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center;">
+            <a href="{% url 'cms_modules' %}" class="btn btn-secondary btn-sm" style="font-weight: 600;">
+                {% if lang == 'en' %}Back to Modules{% else %}Späť na moduly{% endif %}
+            </a>
+            {% if not is_new %}
+            <a href="{% url 'lesson_detail' lesson.id %}" target="_blank" class="btn btn-secondary btn-sm" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                {% if lang == 'en' %}Student View{% else %}Pohľad študenta{% endif %}
+            </a>
+            {% endif %}
+            <button type="button" onclick="document.getElementById('form-lesson-main').submit();" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                {% if lang == 'en' %}Save Lesson{% else %}Uložiť lekciu{% endif %}
+            </button>
+        </div>
+    </div>
+
+    <!-- HLAVNÝ FORMULÁR LEKCIE S DVOJSTĹPCOVÝM MARKDOWN EDITOROM -->
+    <form id="form-lesson-main" method="post" action="{% if is_new %}{% url 'cms_lesson_create' module.id %}{% else %}{% url 'cms_lesson_edit' lesson.id %}{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_lesson">
+
+        <!-- Metadáta lekcie -->
+        <section class="card-surface" style="padding: 1.5rem 1.75rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Parent Module{% else %}Rodičovský modul{% endif %}</label>
+                    <select name="module_id" class="form-select">
+                        {% for m in modules %}
+                        <option value="{{ m.id }}" {% if m.id == module.id %}selected{% endif %}>
+                            {{ m.order }}. {{ m.title_sk }} ({{ m.programming_language|upper }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Title (Slovak){% else %}Názov lekcie (SK){% endif %}</label>
+                    <input type="text" id="lesson_title_sk" name="title_sk" class="form-control" value="{% if lesson %}{{ lesson.title_sk }}{% endif %}" placeholder="napr. 1.1 Prvý program a funkcia print()" required>
+                </div>
+
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Title (English){% else %}Názov lekcie (EN){% endif %}</label>
+                    <input type="text" id="lesson_title_en" name="title_en" class="form-control" value="{% if lesson %}{{ lesson.title_en }}{% endif %}" placeholder="e.g. 1.1 First Program and print()">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Short Summary (Slovak){% else %}Krátke zhrnutie lekcie (SK){% endif %}</label>
+                    <input type="text" id="lesson_summary_sk" name="summary_sk" class="form-control" value="{% if lesson %}{{ lesson.summary_sk }}{% endif %}" placeholder="Naučíš sa používať výpis textu, funkciu print a oddeľovače...">
+                </div>
+                <div>
+                    <label class="form-label">{% if lang == 'en' %}Short Summary (English){% else %}Krátke zhrnutie lekcie (EN){% endif %}</label>
+                    <input type="text" id="lesson_summary_en" name="summary_en" class="form-control" value="{% if lesson %}{{ lesson.summary_en }}{% endif %}" placeholder="Learn how to print text and use separator arguments...">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label class="form-label" style="margin: 0;">{% if lang == 'en' %}Order in Module:{% else %}Poradie v module:{% endif %}</label>
+                    <input type="number" name="order" value="{% if lesson %}{{ lesson.order }}{% else %}1{% endif %}" min="1" max="99" class="form-control" style="width: 75px;">
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label class="form-label" style="margin: 0;">{% if lang == 'en' %}Est. Minutes:{% else %}Odhad (min.):{% endif %}</label>
+                    <input type="number" name="estimated_minutes" value="{% if lesson %}{{ lesson.estimated_minutes }}{% else %}45{% endif %}" min="5" max="300" class="form-control" style="width: 85px;">
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label class="form-label" style="margin: 0;">{% if lang == 'en' %}XP Reward:{% else %}Odmena XP:{% endif %}</label>
+                    <input type="number" name="xp_reward" value="{% if lesson %}{{ lesson.xp_reward }}{% else %}25{% endif %}" min="5" max="500" class="form-control" style="width: 85px;">
+                </div>
+
+                <label style="display: flex; align-items: center; gap: 0.45rem; cursor: pointer; font-size: 0.88rem; font-weight: 600; margin-left: auto;">
+                    <input type="checkbox" name="is_published" {% if not lesson or lesson.is_published %}checked{% endif %}>
+                    <span>{% if lang == 'en' %}Lesson Published{% else %}Lekcia je publikovaná{% endif %}</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- DVOJSTĹPCOVÝ MARKDOWN EDITOR + ŽIVÝ NÁHĽAD -->
+        <section class="card-surface" style="padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                        {% if lang == 'en' %}Markdown Theory Explanation{% else %}Teoretický výklad v Markdowne{% endif %}
+                    </h2>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <!-- AI Prekladač SK -> EN -->
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="translateLessonToEn()" id="btn-translate-lesson" style="font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <span>{% if lang == 'en' %}AI Translate to English{% else %}AI Preložiť SK -> EN{% endif %}</span>
+                    </button>
+
+                    <!-- Prepínač jazyka editora -->
+                    <div style="display: inline-flex; background: var(--bg-subtle); padding: 2px; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                        <button type="button" id="tab-btn-sk" class="btn btn-sm btn-primary" onclick="switchMarkdownLang('sk')" style="padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700;">
+                            Slovenčina (SK)
+                        </button>
+                        <button type="button" id="tab-btn-en" class="btn btn-sm btn-secondary" onclick="switchMarkdownLang('en')" style="padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700;">
+                            English (EN)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nástrojová lišta Markdownu -->
+            <div style="display: flex; gap: 0.35rem; padding: 0.5rem 0.75rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); margin-bottom: 0.75rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-weight: 800;" onclick="insertMarkdown('**', '**', 'tučný text')">B</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-style: italic;" onclick="insertMarkdown('*', '*', 'kurzíva')">I</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-family: var(--font-mono);" onclick="insertMarkdown('### ', '', 'Nadpis sekcie')">H3</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-family: var(--font-mono);" onclick="insertMarkdown('`', '`', 'kód')">&lt;/&gt;</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px;" onclick="insertMarkdown('```python\n', '\n```', '# Kód v Pythone\nprint(\'Ahoj svet\')')">Python Block</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px;" onclick="insertMarkdown('> [!TIP]\n> ', '', 'Užitočný tip pre študenta')">Tip Alert</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px;" onclick="insertMarkdown('| Stĺpec 1 | Stĺpec 2 |\n| :--- | :--- |\n| Hodnota A | Hodnota B |\n', '', '')">Tabuľka</button>
+            </div>
+
+            <!-- Dvojstĺpcový editor -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; min-height: 520px;">
+
+                <!-- Ľavý stĺpec: Textarea pre SK a EN -->
+                <div style="display: flex; flex-direction: column;">
+                    <div id="wrapper-content-sk" style="flex: 1; display: flex; flex-direction: column;">
+                        <textarea id="content_sk" name="content_sk" class="form-control" style="flex: 1; min-height: 500px; font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.6; resize: vertical;" oninput="updateLivePreview()" placeholder="Sem napíš slovenský výklad lekcie v Markdowne...">{% if lesson %}{{ lesson.content_sk }}{% else %}### 1. Úvod do témy
+
+V tejto lekcii sa pozrieme na kľúčové princípy...
+
+```python
+# Ukážka kódu
+x = 10
+print(f"Hodnota x je {x}")
+```
+
+> [!TIP]
+> Nezabudni na správne odsadenie kódu v Pythone.{% endif %}</textarea>
+                    </div>
+
+                    <div id="wrapper-content-en" style="flex: 1; display: none; flex-direction: column;">
+                        <textarea id="content_en" name="content_en" class="form-control" style="flex: 1; min-height: 500px; font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.6; resize: vertical;" oninput="updateLivePreview()" placeholder="Write English lesson explanation in Markdown here...">{% if lesson %}{{ lesson.content_en }}{% else %}### 1. Introduction
+
+In this lesson we will explore the fundamental concepts...
+
+```python
+# Code example
+x = 10
+print(f"The value of x is {x}")
+```
+
+> [!TIP]
+> Remember proper indentation in Python.{% endif %}</textarea>
+                    </div>
+                </div>
+
+                <!-- Pravý stĺpec: Živý Markdown náhľad -->
+                <div style="display: flex; flex-direction: column; background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm); overflow: hidden;">
+                    <div style="padding: 0.5rem 0.85rem; background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                            {% if lang == 'en' %}LIVE PREVIEW (marked.js){% else %}ŽIVÝ NÁHĽAD (marked.js){% endif %}
+                        </span>
+                        <span id="preview-active-lang" style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo);">
+                            SK
+                        </span>
+                    </div>
+
+                    <div id="markdown-preview" class="markdown-content" style="padding: 1.5rem; overflow-y: auto; flex: 1; max-height: 520px; line-height: 1.65; color: var(--text-primary);">
+                        <!-- Sem sa dynamicky renderuje obsah cez marked.js -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </form>
+
+    {% if not is_new %}
+    <!-- SEKCIA 2: PRAKTICKÉ CVIČENIA K TEJTO LEKCII -->
+    <section class="card-surface" style="padding: 1.75rem 2rem; border-radius: var(--radius-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                        {% if lang == 'en' %}Practical Coding Exercises ({{ exercises.count }}){% else %}Praktické cvičenia v Pythone ({{ exercises.count }}){% endif %}
+                    </h2>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0 0;">
+                    {% if lang == 'en' %}Each lesson can contain multiple stepped exercises from EASY to Boss level.{% else %}Každá lekcia môže obsahovať viacero stupňovaných úloh s automatickými TestCase testami.{% endif %}
+                </p>
+            </div>
+
+            <a href="{% url 'cms_exercise_create' lesson.id %}" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                {% if lang == 'en' %}Add New Exercise{% else %}Pridať nové cvičenie{% endif %}
+            </a>
+        </div>
+
+        {% if exercises %}
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            {% for ex in exercises %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.2rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.85rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 800; color: var(--text-muted);">#{{ ex.order }}</span>
+
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <strong style="font-size: 0.95rem; color: var(--text-primary);">{{ ex.title_sk }}</strong>
+
+                            <span style="font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 99px; font-weight: 700;
+                                {% if ex.difficulty == 'EASY' %}background: var(--emerald-bg); color: var(--emerald-text);
+                                {% elif ex.difficulty == 'MEDIUM' %}background: var(--gold-bg); color: var(--gold-text);
+                                {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
+                                {{ ex.get_difficulty_display }}
+                            </span>
+
+                            <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); font-weight: 600;">
+                                +{{ ex.xp_reward }} XP • +{{ ex.doros_reward }} Doros
+                            </span>
+                        </div>
+
+                        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
+                            {{ ex.test_cases.count }} {% if lang == 'en' %}test cases configured{% else %}testovacích prípadov (TestCase){% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <a href="{% url 'cms_exercise_edit' ex.id %}" class="btn btn-secondary btn-sm" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        {% if lang == 'en' %}CodeMirror & Tests{% else %}Editor & Testy{% endif %}
+                    </a>
+
+                    <form method="post" action="{% url 'cms_exercise_delete' ex.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete exercise?{% else %}Naozaj vymazať túto úlohu?{% endif %}');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text);" title="{% if lang == 'en' %}Delete Exercise{% else %}Vymazať cvičenie{% endif %}">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border-hairline);">
+            {% if lang == 'en' %}No coding exercises created in this lesson yet.{% else %}Táto lekcia zatiaľ nemá žiadne programátorské úlohy.{% endif %}
+            <br>
+            <a href="{% url 'cms_exercise_create' lesson.id %}" class="btn btn-primary btn-sm" style="margin-top: 0.75rem; font-weight: 700;">
+                + {% if lang == 'en' %}Create First Exercise{% else %}Vytvoriť prvú úlohu{% endif %}
+            </a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- SEKCIA 3: SPRÁVA KVÍZOVÝCH OTÁZOK (QUIZQUESTION) -->
+    <section class="card-surface" style="padding: 1.75rem 2rem; border-radius: var(--radius-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-text)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                        {% if lang == 'en' %}Knowledge Check Quiz Questions ({{ quizzes.count }}){% else %}Kvízové otázky lekcie ({{ quizzes.count }}){% endif %}
+                    </h2>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0 0;">
+                    {% if lang == 'en' %}Multiple choice questions displayed at the end of theory to verify student comprehension.{% else %}Otázky s možnosťami A, B, C a D na overenie porozumenia výkladu.{% endif %}
+                </p>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('modal-add-quiz').style.display='flex';" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                {% if lang == 'en' %}Add Quiz Question{% else %}Pridať kvízovú otázku{% endif %}
+            </button>
+        </div>
+
+        {% if quizzes %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for q in quizzes %}
+            <div style="padding: 1.15rem 1.35rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem;">
+                    <div>
+                        <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--ro-indigo);">Otázka #{{ forloop.counter }}</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; margin: 0.25rem 0 0; color: var(--text-primary);">
+                            {{ q.question_sk }}
+                        </h4>
+                        {% if q.question_en %}
+                        <div style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">{{ q.question_en }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div style="display: flex; gap: 0.4rem;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="openEditQuizModal('{{ q.id }}', '{{ q.question_sk|escapejs }}', '{{ q.question_en|escapejs }}', '{{ q.option_a_sk|escapejs }}', '{{ q.option_a_en|escapejs }}', '{{ q.option_b_sk|escapejs }}', '{{ q.option_b_en|escapejs }}', '{{ q.option_c_sk|escapejs }}', '{{ q.option_c_en|escapejs }}', '{{ q.option_d_sk|escapejs }}', '{{ q.option_d_en|escapejs }}', '{{ q.correct_option }}', '{{ q.explanation_sk|escapejs }}', '{{ q.explanation_en|escapejs }}')" style="font-size: 0.78rem;">
+                            {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
+                        </button>
+                        <form method="post" action="{% url 'cms_quiz_delete' q.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete quiz question?{% else %}Naozaj vymazať túto otázku?{% endif %}');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.78rem;" title="Vymazať">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; font-size: 0.85rem;">
+                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'A' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                        <strong>A)</strong> {{ q.option_a_sk }}
+                    </div>
+                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'B' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                        <strong>B)</strong> {{ q.option_b_sk }}
+                    </div>
+                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'C' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                        <strong>C)</strong> {{ q.option_c_sk }}
+                    </div>
+                    {% if q.option_d_sk %}
+                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'D' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                        <strong>D)</strong> {{ q.option_d_sk }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if q.explanation_sk %}
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-surface); padding: 0.4rem 0.65rem; border-radius: 6px;">
+                    💡 <strong>{% if lang == 'en' %}Explanation:{% else %}Vysvetlenie správnej odpovede:{% endif %}</strong> {{ q.explanation_sk }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="padding: 2rem; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border-hairline);">
+            {% if lang == 'en' %}No quiz questions created for this lesson yet.{% else %}Táto lekcia zatiaľ nemá žiadne kvízové otázky.{% endif %}
+            <br>
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('modal-add-quiz').style.display='flex';" style="margin-top: 0.75rem; font-weight: 700;">
+                + {% if lang == 'en' %}Add First Quiz Question{% else %}Pridať prvú otázku{% endif %}
+            </button>
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
+
+</div>
+
+<!-- MODAL: Pridanie kvízovej otázky -->
+{% if not is_new %}
+<div id="modal-add-quiz" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px);">
+    <div class="card-surface" style="width: 100%; max-width: 650px; border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-md); max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin: 0;">
+                {% if lang == 'en' %}Add Quiz Question{% else %}Nová kvízová otázka{% endif %}
+            </h3>
+            <button type="button" onclick="document.getElementById('modal-add-quiz').style.display='none';" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
+
+        <form method="post" action="{% url 'cms_quiz_create' lesson.id %}">
+            {% csrf_token %}
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">{% if lang == 'en' %}Question (Slovak){% else %}Otázka (SK){% endif %}</label>
+                <textarea name="question_sk" rows="2" class="form-control" placeholder="Čo vypíše nasledujúci kód print(type(42))?" required></textarea>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">{% if lang == 'en' %}Question (English){% else %}Otázka (EN){% endif %}</label>
+                <textarea name="question_en" rows="2" class="form-control" placeholder="What does print(type(42)) output?"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                    <label class="form-label">Možnosť A (SK)</label>
+                    <input type="text" name="option_a_sk" class="form-control" required>
+                </div>
+                <div>
+                    <label class="form-label">Možnosť A (EN)</label>
+                    <input type="text" name="option_a_en" class="form-control">
+                </div>
+
+                <div>
+                    <label class="form-label">Možnosť B (SK)</label>
+                    <input type="text" name="option_b_sk" class="form-control" required>
+                </div>
+                <div>
+                    <label class="form-label">Možnosť B (EN)</label>
+                    <input type="text" name="option_b_en" class="form-control">
+                </div>
+
+                <div>
+                    <label class="form-label">Možnosť C (SK)</label>
+                    <input type="text" name="option_c_sk" class="form-control" required>
+                </div>
+                <div>
+                    <label class="form-label">Možnosť C (EN)</label>
+                    <input type="text" name="option_c_en" class="form-control">
+                </div>
+
+                <div>
+                    <label class="form-label">Možnosť D (SK - voliteľné)</label>
+                    <input type="text" name="option_d_sk" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label">Možnosť D (EN - voliteľné)</label>
+                    <input type="text" name="option_d_en" class="form-control">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">{% if lang == 'en' %}Correct Option{% else %}Správna možnosť{% endif %}</label>
+                <select name="correct_option" class="form-select">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label class="form-label">{% if lang == 'en' %}Explanation of correct answer (SK){% else %}Vysvetlenie správnej odpovede (SK){% endif %}</label>
+                <input type="text" name="explanation_sk" class="form-control" placeholder="Číslo 42 je celé číslo, preto type vracia triedu int.">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-add-quiz').style.display='none';">
+                    {% if lang == 'en' %}Cancel{% else %}Zrušiť{% endif %}
+                </button>
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                    {% if lang == 'en' %}Add Question{% else %}Pridať otázku{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Úprava kvízovej otázky -->
+<div id="modal-edit-quiz" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px);">
+    <div class="card-surface" style="width: 100%; max-width: 650px; border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-md); max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin: 0;">
+                {% if lang == 'en' %}Edit Quiz Question{% else %}Upraviť kvízovú otázku{% endif %}
+            </h3>
+            <button type="button" onclick="document.getElementById('modal-edit-quiz').style.display='none';" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
+
+        <form id="form-edit-quiz" method="post" action="">
+            {% csrf_token %}
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">Otázka (SK)</label>
+                <textarea id="edit_q_sk" name="question_sk" rows="2" class="form-control" required></textarea>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">Otázka (EN)</label>
+                <textarea id="edit_q_en" name="question_en" rows="2" class="form-control"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                    <label class="form-label">Možnosť A (SK)</label>
+                    <input type="text" id="edit_opt_a_sk" name="option_a_sk" class="form-control" required>
+                </div>
+                <div>
+                    <label class="form-label">Možnosť A (EN)</label>
+                    <input type="text" id="edit_opt_a_en" name="option_a_en" class="form-control">
+                </div>
+
+                <div>
+                    <label class="form-label">Možnosť B (SK)</label>
+                    <input type="text" id="edit_opt_b_sk" name="option_b_sk" class="form-control" required>
+                </div>
+                <div>
+                    <label class="form-label">Možnosť B (EN)</label>
+                    <input type="text" id="edit_opt_b_en" name="option_b_en" class="form-control">
+                </div>
+
+                <div>
+                    <label class="form-label">Možnosť C (SK)</label>
+                    <input type="text" id="edit_opt_c_sk" name="option_c_sk" class="form-control" required>
+                </div>
+                <div>
+                    <label class="form-label">Možnosť C (EN)</label>
+                    <input type="text" id="edit_opt_c_en" name="option_c_en" class="form-control">
+                </div>
+
+                <div>
+                    <label class="form-label">Možnosť D (SK)</label>
+                    <input type="text" id="edit_opt_d_sk" name="option_d_sk" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label">Možnosť D (EN)</label>
+                    <input type="text" id="edit_opt_d_en" name="option_d_en" class="form-control">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label class="form-label">Správna možnosť</label>
+                <select id="edit_correct_opt" name="correct_option" class="form-select">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label class="form-label">Vysvetlenie správnej odpovede</label>
+                <input type="text" id="edit_exp_sk" name="explanation_sk" class="form-control">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-edit-quiz').style.display='none';">
+                    {% if lang == 'en' %}Cancel{% else %}Zrušiť{% endif %}
+                </button>
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                    {% if lang == 'en' %}Save Changes{% else %}Uložiť zmeny{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<!-- Skripty pre živý Markdown náhľad, prepínanie jazyka a AI preklad -->
+<script>
+var currentLang = 'sk';
+
+function switchMarkdownLang(lang) {
+    currentLang = lang;
+    var btnSk = document.getElementById('tab-btn-sk');
+    var btnEn = document.getElementById('tab-btn-en');
+    var wrapSk = document.getElementById('wrapper-content-sk');
+    var wrapEn = document.getElementById('wrapper-content-en');
+    var prevLang = document.getElementById('preview-active-lang');
+
+    if (lang === 'sk') {
+        btnSk.className = 'btn btn-sm btn-primary';
+        btnEn.className = 'btn btn-sm btn-secondary';
+        wrapSk.style.display = 'flex';
+        wrapEn.style.display = 'none';
+        prevLang.innerText = 'SK';
+    } else {
+        btnSk.className = 'btn btn-sm btn-secondary';
+        btnEn.className = 'btn btn-sm btn-primary';
+        wrapSk.style.display = 'none';
+        wrapEn.style.display = 'flex';
+        prevLang.innerText = 'EN';
+    }
+    updateLivePreview();
+}
+
+function updateLivePreview() {
+    var sourceText = currentLang === 'sk'
+        ? document.getElementById('content_sk').value
+        : document.getElementById('content_en').value;
+
+    var previewEl = document.getElementById('markdown-preview');
+    if (typeof marked !== 'undefined') {
+        previewEl.innerHTML = marked.parse(sourceText || '');
+    } else {
+        previewEl.innerText = sourceText || '';
+    }
+}
+
+function insertMarkdown(before, after, placeholder) {
+    var textarea = currentLang === 'sk' ? document.getElementById('content_sk') : document.getElementById('content_en');
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var selected = textarea.value.substring(start, end) || placeholder;
+    var replacement = before + selected + after;
+    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+    textarea.focus();
+    textarea.selectionStart = start + before.length;
+    textarea.selectionEnd = start + before.length + selected.length;
+    updateLivePreview();
+}
+
+function translateLessonToEn() {
+    var btn = document.getElementById('btn-translate-lesson');
+    var titleSk = document.getElementById('lesson_title_sk').value;
+    var summarySk = document.getElementById('lesson_summary_sk').value;
+    var contentSk = document.getElementById('content_sk').value;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Prekladám cez AI...</span>';
+
+    fetch('/teacher/exercise/ai-translate/?title_sk=' + encodeURIComponent(titleSk) +
+          '&instructions_sk=' + encodeURIComponent(summarySk) +
+          '&hint_sk=' + encodeURIComponent(contentSk.substring(0, 3000)))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>AI Preložiť SK -> EN</span>';
+            if (data.title_en) {
+                document.getElementById('lesson_title_en').value = data.title_en;
+            }
+            if (data.instructions_en) {
+                document.getElementById('lesson_summary_en').value = data.instructions_en;
+            }
+            if (data.hint_en) {
+                document.getElementById('content_en').value = data.hint_en;
+            }
+            switchMarkdownLang('en');
+        })
+        .catch(function(err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>AI Preložiť SK -> EN</span>';
+            alert('Chyba pri preklade: ' + err);
+        });
+}
+
+function openEditQuizModal(id, qSk, qEn, aSk, aEn, bSk, bEn, cSk, cEn, dSk, dEn, correct, expSk, expEn) {
+    var form = document.getElementById('form-edit-quiz');
+    form.action = '/teacher/quiz/' + id + '/edit/';
+    document.getElementById('edit_q_sk').value = qSk;
+    document.getElementById('edit_q_en').value = qEn;
+    document.getElementById('edit_opt_a_sk').value = aSk;
+    document.getElementById('edit_opt_a_en').value = aEn;
+    document.getElementById('edit_opt_b_sk').value = bSk;
+    document.getElementById('edit_opt_b_en').value = bEn;
+    document.getElementById('edit_opt_c_sk').value = cSk;
+    document.getElementById('edit_opt_c_en').value = cEn;
+    document.getElementById('edit_opt_d_sk').value = dSk || '';
+    document.getElementById('edit_opt_d_en').value = dEn || '';
+    document.getElementById('edit_correct_opt').value = correct;
+    document.getElementById('edit_exp_sk').value = expSk;
+    document.getElementById('modal-edit-quiz').style.display = 'flex';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateLivePreview();
+});
+</script>
+
+{% endblock %}

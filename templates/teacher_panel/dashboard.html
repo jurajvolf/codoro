@@ -17,7 +17,7 @@
     <div style="display: flex; gap: 0.4rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); flex-wrap: wrap;">
         <button type="button" class="btn btn-sm tab-btn btn-primary" onclick="switchTab('tab-students', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            {% if lang == 'en' %}Students & Coupons{% else %}Študenti a kupóny{% endif %}
+            {% if lang == 'en' %}Students & Classes{% else %}Študenti a triedy{% endif %}
             {% if pending_coupons %}<span style="background:var(--bg-canvas); color:var(--ro-indigo); padding:0 6px; border-radius:99px; font-size:0.72rem; font-weight: 800;">{{ pending_coupons.count }}</span>{% endif %}
         </button>
         <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-economy', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
@@ -28,6 +28,10 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
             {% if lang == 'en' %}Exercises & Code Reviews{% else %}Cvičenia a riešenia{% endif %}
         </button>
+        <a href="{% url 'cms_modules' %}" class="btn btn-sm btn-secondary" style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--ro-indigo); font-weight: 700; text-decoration: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            {% if lang == 'en' %}Curriculum CMS Studio{% else %}Správa kurikula (CMS){% endif %}
+        </a>
     </div>
 </div>
 
@@ -122,7 +126,9 @@
                     {% for s in students %}
                     <tr>
                         <td>
-                            <strong style="color: var(--text-primary);">{{ s.username }}</strong>
+                            <a href="{% url 'teacher_student_detail' s.id %}" style="color: var(--text-primary); text-decoration: none;">
+                                <strong style="color: var(--ro-indigo);">{{ s.username }}</strong>
+                            </a>
                             <div style="font-size: 0.78rem; color: var(--text-muted);">{{ s.get_full_name|default:s.email }}</div>
                         </td>
                         <td>
@@ -147,30 +153,28 @@
                             </span>
                         </td>
                         <td>
-                            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;">
+                                <a href="{% url 'teacher_student_detail' s.id %}" class="btn btn-secondary btn-sm" style="font-weight: 700; color: var(--ro-indigo); font-size: 0.78rem;" title="Detail študenta, riešenia a Code Review">
+                                    Detail & Kód
+                                </a>
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="adjust_doros">
                                     <input type="hidden" name="amount" value="50">
                                     <input type="hidden" name="reason" value="Bonus od učiteľa za aktivitu na hodine">
-                                    <button type="submit" class="btn btn-secondary btn-sm" title="+50 Doros">+50 Doros</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="+50 Doros">+50</button>
                                 </form>
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="adjust_doros">
                                     <input type="hidden" name="amount" value="-50">
                                     <input type="hidden" name="reason" value="Zrážka od učiteľa za porušenie pravidiel">
-                                    <button type="submit" class="btn btn-secondary btn-sm" title="-50 Doros">-50 Doros</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="-50 Doros">-50</button>
                                 </form>
                                 <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
                                     {% csrf_token %}
-                                    <input type="hidden" name="action" value="add_streak">
-                                    <button type="submit" class="btn btn-secondary btn-sm" title="+1 Streak">+1 Streak</button>
-                                </form>
-                                <form method="post" action="{% url 'manage_student_economy' s.id %}" style="display: inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="toggle_tier">
-                                    <button type="submit" class="btn btn-secondary btn-sm">Toggle EDU</button>
+                                    <input type="hidden" name="action" value="toggle_edu">
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.78rem;">Toggle EDU</button>
                                 </form>
                             </div>
                         </td>
@@ -184,6 +188,144 @@
             </table>
         </div>
     </section>
+
+    <!-- Správa tried a Licenčných kľúčov -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-top: 1.75rem;">
+        
+        <!-- Školské triedy -->
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                        {% if lang == 'en' %}School Classes & Join Codes{% else %}Školské triedy a prístupové kódy{% endif %}
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Formulár na vytvorenie triedy -->
+            <form method="post" action="{% url 'cms_class_create' %}" style="margin-bottom: 1.25rem; background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-hairline);">
+                {% csrf_token %}
+                <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.65rem; color: var(--ro-indigo);">
+                    {% if lang == 'en' %}+ Add New School Class{% else %}+ Vytvoriť novú školskú triedu{% endif %}
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.6rem; align-items: end;">
+                    <div>
+                        <label class="form-label" style="font-size: 0.76rem;">{% if lang == 'en' %}Class Name{% else %}Názov triedy{% endif %}</label>
+                        <input type="text" name="name" class="form-control" placeholder="napr. IV.C" required style="font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size: 0.76rem;">{% if lang == 'en' %}Join Code{% else %}Kód triedy{% endif %}</label>
+                        <input type="text" name="join_code" class="form-control" placeholder="napr. IVC-2027" style="font-size: 0.82rem; padding: 0.4rem 0.6rem; text-transform: uppercase;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm" style="height: 34px;">
+                        {% if lang == 'en' %}Create{% else %}Vytvoriť{% endif %}
+                    </button>
+                </div>
+            </form>
+
+            <!-- Zoznam tried -->
+            <div style="max-height: 240px; overflow-y: auto;">
+                <table class="clean-table" style="font-size: 0.84rem;">
+                    <thead>
+                        <tr>
+                            <th>{% if lang == 'en' %}Class{% else %}Trieda{% endif %}</th>
+                            <th>{% if lang == 'en' %}Join Code{% else %}Kód{% endif %}</th>
+                            <th>{% if lang == 'en' %}Students{% else %}Žiaci{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in classes %}
+                        <tr>
+                            <td style="font-weight: 700;">{{ c.name }}</td>
+                            <td><code style="font-family: var(--font-mono); color: var(--ro-indigo); font-weight: 700;">{{ c.join_code }}</code></td>
+                            <td style="font-family: var(--font-mono);">{{ c.student_count|default:c.students.count }} žiakov</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="color: var(--text-muted); text-align: center;">Žiadne triedy nevytvorené.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Licencie -->
+        <section class="card-surface" style="padding: 1.75rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                        {% if lang == 'en' %}Subscription Licenses (PRO / EDU){% else %}Licenčné kľúče (PRO / EDU){% endif %}
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Formulár na generovanie licencie -->
+            <form method="post" action="{% url 'cms_license_create' %}" style="margin-bottom: 1.25rem; background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-hairline);">
+                {% csrf_token %}
+                <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.65rem; color: var(--emerald-text);">
+                    {% if lang == 'en' %}+ Generate License Key{% else %}+ Vygenerovať nový licenčný kľúč{% endif %}
+                </div>
+                <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr auto; gap: 0.6rem; align-items: end;">
+                    <div>
+                        <label class="form-label" style="font-size: 0.76rem;">Tier</label>
+                        <select name="tier" class="form-select" style="font-size: 0.82rem; padding: 0.35rem 0.5rem;">
+                            <option value="EDU">EDU (Škola)</option>
+                            <option value="PRO">PRO</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size: 0.76rem;">{% if lang == 'en' %}Max Uses{% else %}Max. použití{% endif %}</label>
+                        <input type="number" name="max_uses" class="form-control" value="30" style="font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size: 0.76rem;">{% if lang == 'en' %}Custom Code{% else %}Vlastný kód{% endif %}</label>
+                        <input type="text" name="code" class="form-control" placeholder="EDU-2027-IVC" style="font-size: 0.82rem; padding: 0.4rem 0.6rem; text-transform: uppercase;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm" style="height: 34px;">
+                        {% if lang == 'en' %}Generate{% else %}Vytvoriť{% endif %}
+                    </button>
+                </div>
+            </form>
+
+            <!-- Zoznam licencií -->
+            <div style="max-height: 240px; overflow-y: auto;">
+                <table class="clean-table" style="font-size: 0.84rem;">
+                    <thead>
+                        <tr>
+                            <th>{% if lang == 'en' %}License Code{% else %}Kód licencie{% endif %}</th>
+                            <th>Tier</th>
+                            <th>{% if lang == 'en' %}Usage{% else %}Využitie{% endif %}</th>
+                            <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lic in licenses %}
+                        <tr>
+                            <td><code style="font-family: var(--font-mono); color: var(--ro-indigo); font-weight: 700;">{{ lic.code }}</code></td>
+                            <td><span class="metric-badge metric-tier">{{ lic.tier }}</span></td>
+                            <td style="font-family: var(--font-mono);">{{ lic.current_uses }} / {{ lic.max_uses }}</td>
+                            <td>
+                                {% if lic.is_active and lic.current_uses < lic.max_uses %}
+                                <span class="badge-emerald" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Aktívna</span>
+                                {% else %}
+                                <span class="badge-flame" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Vyčerpaná</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" style="color: var(--text-muted); text-align: center;">Žiadne licenčné kľúče.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
 
 </div>
 
@@ -396,6 +538,207 @@
                     {% if lang == 'en' %}Add Quest to Students{% else %}Pridať výzvu študentom{% endif %}
                 </button>
             </form>
+        </section>
+
+    </div>
+
+    <!-- Zoznam existujúcich odmien, triednych a osobných výziev -->
+    <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 2rem;">
+
+        <!-- Tabuľka odmien v obchode so správou zásob a restockom -->
+        <section class="card-surface" style="overflow: hidden; border-radius: var(--radius-lg);">
+            <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-text)" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                        {% if lang == 'en' %}Active Shop Inventory & Stock Control{% else %}Položky v obchode a riadenie skladových zásob{% endif %}
+                    </h2>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="clean-table">
+                    <thead>
+                        <tr>
+                            <th>{% if lang == 'en' %}Reward{% else %}Odmena{% endif %}</th>
+                            <th>{% if lang == 'en' %}Cost{% else %}Cena{% endif %}</th>
+                            <th>{% if lang == 'en' %}Class Stock{% else %}Sklad triedy{% endif %}</th>
+                            <th>{% if lang == 'en' %}Restock Cycle{% else %}Cyklus obnovy{% endif %}</th>
+                            <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th>{% if lang == 'en' %}Teacher Stock Actions{% else %}Správa skladu a položky{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in rewards %}
+                        <tr>
+                            <td>
+                                <strong style="color: var(--text-primary);">{% if lang == 'en' %}{{ r.title_en }}{% else %}{{ r.title_sk }}{% endif %}</strong>
+                                <div style="font-size: 0.78rem; color: var(--text-muted);">{{ r.description_sk|truncatewords:8 }}</div>
+                            </td>
+                            <td>
+                                <span style="font-family: var(--font-mono); font-weight: 700; color: var(--gold-text);">{{ r.cost_doros }} Doros</span>
+                            </td>
+                            <td>
+                                <span style="font-family: var(--font-mono); font-weight: 700; {% if r.current_stock == 0 %}color: var(--flame-text);{% else %}color: var(--emerald-text);{% endif %}">
+                                    {{ r.current_stock }} / {{ r.max_stock }} ks
+                                </span>
+                            </td>
+                            <td style="font-size: 0.8rem; font-family: var(--font-mono);">{{ r.restock_period }}</td>
+                            <td>
+                                {% if r.is_active %}
+                                <span class="badge-emerald" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Aktívna</span>
+                                {% else %}
+                                <span class="badge-flame" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Pozastavená</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                    <form method="post" action="{% url 'cms_reward_restock' r.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm" title="Doplniť sklad na maximum" style="font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo);">
+                                            Restock Now
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'cms_reward_toggle_active' r.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.76rem;">
+                                            {% if r.is_active %}Pozastaviť{% else %}Aktivovať{% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'cms_reward_delete' r.id %}" onsubmit="return confirm('Naozaj vymazať túto odmenu z obchodu?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; color: var(--flame-text);">
+                                            Vymazať
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted);">Žiadne odmeny v obchode.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tabuľka triednych výziev (ClassQuests) s tlačidlom na manuálne rozdelenie odmien -->
+        <section class="card-surface" style="overflow: hidden; border-radius: var(--radius-lg);">
+            <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                        {% if lang == 'en' %}Classroom Collective Quests & Payouts{% else %}Kolektívne triedne výzvy a vyplatenie odmien{% endif %}
+                    </h2>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="clean-table">
+                    <thead>
+                        <tr>
+                            <th>{% if lang == 'en' %}Quest{% else %}Výzva{% endif %}</th>
+                            <th>{% if lang == 'en' %}Class{% else %}Trieda{% endif %}</th>
+                            <th>{% if lang == 'en' %}Progress{% else %}Progres{% endif %}</th>
+                            <th>{% if lang == 'en' %}Reward{% else %}Odmena{% endif %}</th>
+                            <th>{% if lang == 'en' %}Deadline{% else %}Termín{% endif %}</th>
+                            <th>{% if lang == 'en' %}Payout Status{% else %}Stav vyplatenia{% endif %}</th>
+                            <th>{% if lang == 'en' %}Action{% else %}Akcia{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cq in class_quests %}
+                        <tr>
+                            <td style="font-weight: 700;">{% if lang == 'en' %}{{ cq.title_en }}{% else %}{{ cq.title_sk }}{% endif %}</td>
+                            <td><span style="font-family: var(--font-mono); font-weight: 700;">{{ cq.school_class.name }}</span></td>
+                            <td style="font-family: var(--font-mono);">{{ cq.current_exercises_count }} / {{ cq.target_exercises_count }} úloh</td>
+                            <td style="font-family: var(--font-mono); color: var(--gold-text); font-weight: 700;">+{{ cq.reward_doros_per_student }} Doros</td>
+                            <td style="font-size: 0.8rem; font-family: var(--font-mono);">{{ cq.deadline|date:"d.m.Y H:i" }}</td>
+                            <td>
+                                {% if cq.rewards_distributed %}
+                                <span class="badge-emerald" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Vyplatené</span>
+                                {% elif cq.is_completed %}
+                                <span class="badge-gold" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Splnená (Čaká)</span>
+                                {% else %}
+                                <span class="badge-secondary" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 4px;">Prebieha</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.4rem;">
+                                    {% if not cq.rewards_distributed %}
+                                    <form method="post" action="{% url 'cms_classquest_distribute' cq.id %}" onsubmit="return confirm('Naozaj vyhodnotiť výzvu a pripísať Doros študentom triedy?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.76rem; font-weight: 700;">
+                                            Vyplatiť odmeny
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="post" action="{% url 'cms_classquest_delete' cq.id %}" onsubmit="return confirm('Naozaj vymazať túto triednu výzvu?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; color: var(--flame-text);">
+                                            Vymazať
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Žiadne triedne výzvy.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tabuľka osobných výziev (Quests) -->
+        <section class="card-surface" style="overflow: hidden; border-radius: var(--radius-lg);">
+            <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0;">
+                        {% if lang == 'en' %}Individual Milestone Quests{% else %}Osobné výzvy študentov{% endif %}
+                    </h2>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="clean-table">
+                    <thead>
+                        <tr>
+                            <th>{% if lang == 'en' %}Quest Title{% else %}Názov výzvy{% endif %}</th>
+                            <th>{% if lang == 'en' %}Metric{% else %}Metrika{% endif %}</th>
+                            <th>{% if lang == 'en' %}Target{% else %}Cieľ{% endif %}</th>
+                            <th>{% if lang == 'en' %}Reward{% else %}Odmena{% endif %}</th>
+                            <th>{% if lang == 'en' %}Period{% else %}Typ{% endif %}</th>
+                            <th>{% if lang == 'en' %}Action{% else %}Akcia{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for q in all_quests %}
+                        <tr>
+                            <td style="font-weight: 700;">{% if lang == 'en' %}{{ q.title_en }}{% else %}{{ q.title_sk }}{% endif %}</td>
+                            <td style="font-family: var(--font-mono); font-size: 0.8rem;">{{ q.metric_type }}</td>
+                            <td style="font-family: var(--font-mono); font-weight: 700;">{{ q.target_value }}</td>
+                            <td style="font-family: var(--font-mono); color: var(--gold-text); font-weight: 700;">+{{ q.reward_doros }} Doros / +{{ q.reward_xp }} XP</td>
+                            <td><span class="metric-badge" style="font-size: 0.72rem;">{{ q.period }}</span></td>
+                            <td>
+                                <form method="post" action="{% url 'cms_quest_delete' q.id %}" onsubmit="return confirm('Naozaj vymazať túto výzvu?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; color: var(--flame-text);">
+                                        Vymazať
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted);">Žiadne osobné výzvy.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </section>
 
     </div>
