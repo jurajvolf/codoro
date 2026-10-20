@@ -230,3 +230,68 @@ class PracticeArenaAndLessonDetailTests(TestCase):
         self.module.save()
         self.assertEqual(Module.objects.get(id=self.module.id).track, Module.Track.OOP)
 
+
+class LandingPageTests(TestCase):
+    """Testy verejnej landing page a inteligentného smerovania (anonym vs študent)."""
+
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            username='ucitel_landing', password='password123', role='TEACHER'
+        )
+        self.student = User.objects.create_user(
+            username='student_landing', password='password123', role='STUDENT'
+        )
+        self.module = Module.objects.create(
+            title_sk='1. Základy Pythonu',
+            title_en='1. Python Basics',
+            description_sk='Úvod do syntaxe',
+            description_en='Intro to syntax',
+            order=1,
+            track=Module.Track.FUNDAMENTALS,
+            estimated_hours=10
+        )
+        self.lesson = Lesson.objects.create(
+            module=self.module,
+            title_sk='Premenné',
+            title_en='Variables',
+            order=1,
+            xp_reward=25
+        )
+        self.exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            title_sk='Zadanie 1',
+            title_en='Task 1',
+            starter_code='x = 1',
+            order=1
+        )
+
+    def test_anonymous_visitor_sees_landing_page(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'landing.html')
+        self.assertIn('tracks_data', response.context)
+        self.assertIn('total_modules', response.context)
+        self.assertIn('total_lessons', response.context)
+        self.assertIn('total_exercises', response.context)
+        self.assertContains(response, 'Codoro')
+        self.assertContains(response, 'priemer_znamok.py')
+
+    def test_welcome_url_renders_landing_page_for_anyone(self):
+        # Anonymous
+        res_anon = self.client.get('/welcome/')
+        self.assertEqual(res_anon.status_code, 200)
+        self.assertTemplateUsed(res_anon, 'landing.html')
+
+        # Authenticated
+        self.client.login(username='student_landing', password='password123')
+        res_auth = self.client.get('/welcome/')
+        self.assertEqual(res_auth.status_code, 200)
+        self.assertTemplateUsed(res_auth, 'landing.html')
+
+    def test_authenticated_student_root_renders_dashboard(self):
+        self.client.login(username='student_landing', password='password123')
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'courses/dashboard.html')
+
+

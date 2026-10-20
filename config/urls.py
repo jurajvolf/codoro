@@ -22,6 +22,7 @@ urlpatterns = [
 
     # Študentský Dashboard, Lekcie a Editor kódu
     path('', course_views.dashboard, name='dashboard'),
+    path('welcome/', course_views.landing_page, name='landing_page'),
     path('arena/', course_views.practice_arena, name='practice_arena'),
     path('cheatsheets/', course_views.cheat_sheets_view, name='cheat_sheets'),
     path('lesson/<int:lesson_id>/', course_views.lesson_detail, name='lesson_detail'),

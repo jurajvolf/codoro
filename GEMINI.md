@@ -123,9 +123,15 @@ codoro/
    - Na začiatku každej šablóny používať bezpečný tag `{% firstof user.preferred_language ui_lang 'sk' as lang %}`.
 
 
-6. DOTERAJŠÍ STAV A ŠPECIFIKÁCIA NOVÝCH FÁZ (FÁZA 9, 10 A 11)
+6. DOTERAJŠÍ STAV A ŠPECIFIKÁCIA NOVÝCH FÁZ PROJEKTU
 --------------------------------------------------------------------------------
 - FÁZA 1 až 8: Základná architektúra, databáza, autentifikácia, Sokratovský AI tútor, CMS základy, aréna, profil a unit testy [DOKONČENÉ]
+- FÁZA 9: Rearchitektúra UI/UX proti nekonečnému scrollovaniu (Dashboard Hub, Split-Screen IDE) [DOKONČENÉ]
+- FÁZA 10: Masívne rozšírenie kurikula na 18 modulov (220+ hodín, 5 kariérnych ciest) [DOKONČENÉ]
+- FÁZA 11: Interaktívne Python ťaháky a slovník pojmov (/cheatsheets/) [DOKONČENÉ]
+- FÁZA 12: SuperAdmin rozhranie a Live Support Helpdesk (/admin-panel/) [DOKONČENÉ]
+- FÁZA 13: Registrácia pedagógov, zaobstaranie licencií a správa tried (/get-license/, /teacher/) [DOKONČENÉ]
+- FÁZA 14: Verejná prezentácia a Landing Page (/ a /welcome/) [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
@@ -223,4 +229,65 @@ Cieľ: Pridať do hlavnej navigácie novú podstránku `📚 Ťaháky a Slovník
   5. Objektovo-orientované programovanie (OOP),
   6. Časová zložitosť (Big-O) a vstavané funkcie Pythonu.
 - Každá karta v ťaháku obsahuje názov konštrukcie (SK/EN), stručné vysvetlenie, ukážku kódu s tlačidlom `📋 Kopírovať kód` a informáciu o návratovej hodnote.
+
+--------------------------------------------------------------------------------
+FÁZA 12: SUPERADMIN ROZHRANIE A LIVE SUPPORT HELPDESK (`/admin-panel/`)
+--------------------------------------------------------------------------------
+Cieľ: Poskytnúť hlavnému administrátorovi platformy (`role=ADMIN` / `is_admin`) nezávislé webové rozhranie na kompletnú správu platformy Codoro bez nutnosti otvárať vývojové prostredie (IDE), terminál či Django `/admin/`.
+- 12.1 Analytický SuperAdmin Dashboard (`/admin-panel/`):
+  * Celkové štatistiky používateľov (počet študentov, učiteľov, administrátorov).
+  * Metriky kurikula (počet modulov, lekcií, cvičení a úspešných odovzdaní).
+  * Diagnostika databázy, pamäte a integrity sandboxu.
+- 12.2 Live User & Student Helpdesk (`/admin-panel/users/`):
+  * Okamžité vyhľadávanie a filtrovanie študentov podľa mena, triedy, roly a stavu licencie.
+  * Zásahová pomoc priamo z webu (Helpdesk):
+    - Reset hesla používateľa na počkanie bez e-mailového potvrdzovania,
+    - Manuálna oprava poškodeného Streaku pri výpadku pripojenia,
+    - Úprava hernej peňaženky (pridanie/odčítanie mincí Doros a bodov XP),
+    - Zmena roly (povýšenie na učiteľa/admina) a preradenie medzi triedami.
+- 12.3 Správa a schvaľovanie školských licencií (`/admin-panel/licenses/`):
+  * Schvaľovanie a zamietanie verejných žiadostí škôl (`SchoolLicenseRequest`).
+  * Generovanie oficiálnych EDU kľúčov s určením expiračného dátumu a počtu žiackych slotov.
+  * Správa aktívnych a expirovaných licencií.
+
+--------------------------------------------------------------------------------
+FÁZA 13: REGISTRÁCIA PEDAGÓGOV, ZAOBSTARANIE LICENCIÍ A SPRÁVA TRIED
+--------------------------------------------------------------------------------
+Cieľ: Vybudovať ucelený a jednoduchý onboardingový systém pre školy a pedagógov bez byrokracie a manuálneho zásahu.
+- 13.1 Dvojitá registrácia (`/register/`):
+  * Prepínač rolí: `Študent` vs. `Učiteľ / Škola`.
+  * Ak učiteľ disponuje školským EDU kľúčom, okamžite ho overí. Ak kľúč nemá, systém mu automaticky vytvorí 30-dňovú plnohodnotnú pilotnú EDU licenciu (`EDU-PILOT-XXXX`) pre okamžitý začiatok výučby.
+- 13.2 Verejný portál na získanie licencie (`/get-license/`):
+  * Transparentný formulár pre riaditeľov a učiteľov stredných škôl.
+  * Automatické generovanie pilotného kľúča a uloženie žiadosti do `SchoolLicenseRequest` pre schválenie v SuperAdmin paneli.
+- 13.3 Správa tried a hromadné generovanie účtov v Učiteľskom štúdiu (`/teacher/`):
+  * Karta `Triedy & Kódy (School Classes)` s prehľadom všetkých tried učiteľa.
+  * Založenie triedy s automatickým generovaním 8-miestneho kľúča triedy (napr. `IVC-2027`).
+  * Zmazanie triedy a bezpečné odobratie žiaka z triedy.
+  * Hromadný import žiakov (Batch Provisioning):
+    - Učiteľ vloží zoznam mien (napr. z triednej knihy EduPage).
+    - Systém automaticky odstráni diakritiku (mäkčene a dĺžne), transformuje mená na normalizované prihlasovacie mená (napr. `juraj_volf`) a vygeneruje bezpečné heslo pre každého žiaka.
+    - Okamžitý náhľad, generovanie tlačiteľných kartičiek s prihlasovacími údajmi pre žiakov do lavice a CSV export.
+
+--------------------------------------------------------------------------------
+FÁZA 14: VEREJNÁ PREZENTÁCIA A LANDING PAGE (`/` A `/welcome/`)
+--------------------------------------------------------------------------------
+Cieľ: Vytvoriť špičkovú, vizuálne pôsobivú a modernú vstupnú stránku (Landing Page) Codoro pre verejnosť, potenciálne školy a komisiu maturitnej skúšky.
+- 14.1 Inteligentné smerovanie (`courses/views.py`):
+  * Neprihlásený návštevník smerujúci na koreňovú adresu `/` vidí modernú Landing Page (`templates/landing.html`).
+  * Prihlásený študent smerujúci na `/` je priamo presmerovaný na svoj študentský Dashboard.
+  * Trvalá priama adresa `/welcome/` umožňuje zobraziť verejnú prezentáciu kedykoľvek.
+- 14.2 Komponenty a sekcie Landing Page (`templates/landing.html`):
+  1. Hero sekcia s aurora efektom, dynamickým odznakom maturitného projektu a úderným nadpisom ("Od prvej premennej po maturitu") s CTA tlačidlami pre študentov a pedagógov.
+  2. Živé interaktívne IDE & Sokratovský Codo showcase:
+     - Realistické okno editora kódu (Python 3.12 sandbox) s funkciou na výpočet študijného priemeru,
+     - Tlačidlo na interaktívne spustenie unit testov s animáciou odozvy v milisekundách,
+     - Bublina Sokratovského AI tútora Codo (Gemini 2.5 Flash), ktorá demonštruje princíp navádzania bez prezradenia riešenia.
+  3. Lišta metrík (Metrics Ribbon): 18 Modulov, 220+ Hodín výučby, 250+ Cvičení, 100% Sokratovské AI.
+  4. 4 Strategické piliere Codoro: Detailné porovnanie s bežnými platformami (Sokratovské AI, Triedny ekosystém, Skladový obchod Doros, 100% SK/EN s maturitným zameraním).
+  5. Interaktívny prehliadač 5 kariérnych ciest a 18 modulov kurikula so záložkami bez znovunačítania stránky.
+  6. Sprievodca pre stredné školy a učiteľov: 3 jednoduché kroky nasadenia a živý náhľad Učiteľského štúdia.
+  7. Porovnávacia tabuľka: Codoro vs. Duolingo vs. W3Schools vs. Školská tabuľa.
+  8. FAQ akordeón s najčastejšími otázkami k inštalácii, bezpečnosti a licenciám.
+  9. Záverečný konverzný banner a oficiálna maturitná pätička (Spojená škola Nižná, Téma č. 22, Juraj Volf, Mgr. Markéta Brišová, TMview ochranná známka a GitHub).
 ================================================================================

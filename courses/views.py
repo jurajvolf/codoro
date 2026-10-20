@@ -25,8 +25,96 @@ def _leaderboard_for(user, limit=8):
     return list(qs.order_by('-xp', '-doros')[:limit])
 
 
-@login_required
+def landing_page(request):
+    """Verejná landing page Codoro pre návštevníkov a prezentáciu školy."""
+    modules = list(Module.objects.prefetch_related('lessons__exercises').all())
+    total_modules = len(modules)
+    total_lessons = sum(m.lessons.count() for m in modules)
+    total_exercises = sum(
+        sum(l.exercises.count() for l in m.lessons.all())
+        for m in modules
+    )
+    total_hours = sum(m.estimated_hours for m in modules)
+
+    track_meta = {
+        Module.Track.FUNDAMENTALS: {
+            'sk': '1. Základy a Logika',
+            'en': '1. Fundamentals & Logic',
+            'icon': '⚡',
+            'badge': '4 Moduly • 46h',
+            'desc_sk': 'Úvod do algoritmizácie, premenné, dátové typy, operátory, podmienky if/else a 2D cykly.',
+            'desc_en': 'Algorithmics intro, variables, data types, logic operators, conditions and 2D loops.',
+        },
+        Module.Track.DATA_STRUCTURES: {
+            'sk': '2. Funkcie a Dátové štruktúry',
+            'en': '2. Functions & Data Structures',
+            'icon': '🧩',
+            'badge': '4 Moduly • 50h',
+            'desc_sk': 'Definície funkcií, scope, rekurzia, zoznamy, slovníky, množiny a ošetrovanie výnimiek.',
+            'desc_en': 'Function scopes, recursion, lists, dicts, sets, comprehensions and exception handling.',
+        },
+        Module.Track.OOP: {
+            'sk': '3. OOP a Softvérové inžinierstvo',
+            'en': '3. OOP & Software Engineering',
+            'icon': '🏛️',
+            'badge': '2 Moduly • 24h',
+            'desc_sk': 'Triedy, inštancie, konštruktor __init__, dedičnosť, polymorfizmus a magické dunder metódy.',
+            'desc_en': 'Classes, instances, constructor __init__, inheritance, polymorphism and dunder methods.',
+        },
+        Module.Track.ALGORITHMS_AND_DATA: {
+            'sk': '4. Algoritmy, Dáta a Bezpečnosť',
+            'en': '4. Algorithms, Data & Security',
+            'icon': '🔬',
+            'badge': '5 Modulov • 60h',
+            'desc_sk': 'Big-O zložitosť, binárne vyhľadávanie, Regex, SQL v pamäti (sqlite3), REST API a TDD testy.',
+            'desc_en': 'Big-O notation, binary search, Regex parsing, SQLite in-memory, REST APIs and TDD.',
+        },
+        Module.Track.MATURITA_PREP: {
+            'sk': '5. Maturitný špeciál a Projekty',
+            'en': '5. Maturita Special & Projects',
+            'icon': '🎓',
+            'badge': '3 Moduly • 42h',
+            'desc_sk': 'Kryptografia, praktické úlohy PČOZ z elektrotechniky/IMT a záverečné certifikačné projekty.',
+            'desc_en': 'Applied cryptography, vocational matura exam tasks, and graduation boss projects.',
+        },
+    }
+
+    tracks_data = []
+    for track_key, track_label in Module.Track.choices:
+        mods = [m for m in modules if m.track == track_key]
+        meta = track_meta.get(track_key, {
+            'sk': track_label,
+            'en': track_label,
+            'icon': '📘',
+            'badge': f'{len(mods)} Modulov',
+            'desc_sk': '',
+            'desc_en': '',
+        })
+        tracks_data.append({
+            'key': track_key,
+            'label_sk': meta['sk'],
+            'label_en': meta['en'],
+            'icon': meta['icon'],
+            'badge': meta['badge'],
+            'desc_sk': meta['desc_sk'],
+            'desc_en': meta['desc_en'],
+            'modules': mods,
+        })
+
+    context = {
+        'modules': modules,
+        'tracks_data': tracks_data,
+        'total_modules': total_modules,
+        'total_lessons': total_lessons,
+        'total_exercises': total_exercises,
+        'total_hours': total_hours,
+    }
+    return render(request, 'landing.html', context)
+
+
 def dashboard(request):
+    if not request.user.is_authenticated:
+        return landing_page(request)
     user = request.user
     modules = Module.objects.prefetch_related('lessons__exercises').all()
     completed_lesson_ids = set(

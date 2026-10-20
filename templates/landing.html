@@ -1,0 +1,2038 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+{% if lang == 'en' %}Codoro | Next-Gen Python Learning Platform{% else %}Codoro | Interaktívna výučba Pythonu novej generácie{% endif %}
+{% endblock %}
+
+{% block body_class %}page-landing{% endblock %}
+
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="landing-page-root">
+
+    <!-- HERO SEKCE S AURORA EFEKTOM A PUNCHLINE -->
+    <section class="landing-hero-section">
+        <div class="hero-content">
+            <div class="hero-badge-pill">
+                <span class="pulse-dot"></span>
+                <span>
+                    {% if lang == 'en' %}
+                    MATURA GRADUATION PROJECT 2026/2027 • THEME #22 • SOŠ TECHNICKÁ NIŽNÁ
+                    {% else %}
+                    MATURITNÝ PROJEKT 2026/2027 • TÉMA Č. 22 • SOŠ TECHNICKÁ NIŽNÁ
+                    {% endif %}
+                </span>
+            </div>
+
+            <h1 class="hero-headline">
+                {% if lang == 'en' %}
+                Master Python Programming.<br>
+                <span class="hero-gradient-text">From First Variable to Graduation.</span>
+                {% else %}
+                Nauč sa programovať v Pythone.<br>
+                <span class="hero-gradient-text">Od prvej premennej po maturitu.</span>
+                {% endif %}
+            </h1>
+
+            <p class="hero-subhead">
+                {% if lang == 'en' %}
+                Codoro unites an in-browser Python IDE, Socratic AI tutor Codo, Doros token economy, and a real-time classroom ecosystem in one cohesive platform. Zero installation, 100% focused on understanding.
+                {% else %}
+                Codoro spája moderný prehliadačový Python editor, Sokratovského AI tútora Codo, hernú ekonomiku Doros a prepojenie celej triedy s učiteľom v jednom ucelenom systéme. Bez akejkoľvek inštalácie, s dôrazom na skutočné pochopenie.
+                {% endif %}
+            </p>
+
+            <div class="hero-cta-group">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    {% if lang == 'en' %}Start Learning Free{% else %}Začať sa učiť zadarmo{% endif %}
+                </a>
+                <a href="{% url 'get_license' %}" class="btn btn-secondary btn-hero-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                    {% if lang == 'en' %}For Schools & Teachers{% else %}Portál pre školy a učiteľov{% endif %}
+                </a>
+            </div>
+
+            <div class="hero-trust-row">
+                <span class="trust-chip">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    {% if lang == 'en' %}Zero installation required{% else %}100% v prehliadači bez inštalácie{% endif %}
+                </span>
+                <span class="trust-chip">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    {% if lang == 'en' %}Socratic AI guidance{% else %}Sokratovské AI navádzanie{% endif %}
+                </span>
+                <span class="trust-chip">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    {% if lang == 'en' %}18 Modules • 220+ Hours{% else %}18 Modulov • 220+ Hodín výučby{% endif %}
+                </span>
+                <span class="trust-chip">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    {% if lang == 'en' %}100% Bilingual (SK / EN){% else %}Plne v slovenčine aj angličtine{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- INTERAKTÍVNE IDE & CODO TÚTOR SHOWCASE -->
+        <div class="hero-ide-preview">
+            <div class="ide-window card-surface">
+                <div class="ide-window-bar">
+                    <div class="ide-window-dots">
+                        <span class="dot-red"></span>
+                        <span class="dot-yellow"></span>
+                        <span class="dot-green"></span>
+                    </div>
+                    <div class="ide-window-tab">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <span>priemer_znamok.py</span>
+                    </div>
+                    <div class="ide-window-meta">
+                        <span class="sandbox-badge">
+                            <span class="dot-pulse"></span>
+                            Python 3.12 Sandbox
+                        </span>
+                    </div>
+                </div>
+
+                <div class="ide-body">
+                    <div class="code-lines">
+                        <div class="code-row"><span class="line-num">1</span><span class="code-kw">def</span> <span class="code-fn">vypocitaj_priemer</span>(znamky: <span class="code-type">list</span>[<span class="code-type">int</span>]) -&gt; <span class="code-type">float</span>:</div>
+                        <div class="code-row"><span class="line-num">2</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-doc">"""Vráti vážený študijný priemer žiaka zo známok 1 až 5."""</span></div>
+                        <div class="code-row"><span class="line-num">3</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-kw">if not</span> znamky:</div>
+                        <div class="code-row"><span class="line-num">4</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-kw">return</span> <span class="code-num">0.0</span></div>
+                        <div class="code-row"><span class="line-num">5</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-kw">return</span> <span class="code-fn">round</span>(<span class="code-fn">sum</span>(znamky) / <span class="code-fn">len</span>(znamky), <span class="code-num">2</span>)</div>
+                    </div>
+                </div>
+
+                <div class="ide-toolbar">
+                    <div class="ide-toolbar-left">
+                        <button type="button" class="btn btn-primary btn-sm" id="demoRunBtn" onclick="runInteractiveDemo()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <span id="demoRunBtnText">{% if lang == 'en' %}Run Sandbox Tests{% else %}Spustiť a otestovať kód{% endif %}</span>
+                        </button>
+                        <span class="ide-reward-tag">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--amber)"><circle cx="12" cy="12" r="9"/></svg>
+                            +35 XP • +10 Doros
+                        </span>
+                    </div>
+                    <span class="ide-time-tag" id="demoTimerTag">0.42 ms AST exec</span>
+                </div>
+
+                <!-- TERMINÁL A CODO TÚTOR ODPIS -->
+                <div class="ide-output-panel">
+                    <div class="ide-test-cases" id="demoTestCases">
+                        <div class="test-item pass">
+                            <span class="test-icon">✓</span>
+                            <span class="test-name">Test #1: [1, 2, 1, 3]</span>
+                            <span class="test-expected">== 1.75</span>
+                            <span class="test-ms">0.31ms</span>
+                        </div>
+                        <div class="test-item pass">
+                            <span class="test-icon">✓</span>
+                            <span class="test-name">Test #2: Prázdny zoznam []</span>
+                            <span class="test-expected">== 0.0</span>
+                            <span class="test-ms">0.24ms</span>
+                        </div>
+                        <div class="test-item pass">
+                            <span class="test-icon">✓</span>
+                            <span class="test-name">Test #3: Skrytý test hraničných hodnôt</span>
+                            <span class="test-expected">PASSED</span>
+                            <span class="test-ms">0.40ms</span>
+                        </div>
+                    </div>
+
+                    <div class="codo-ai-bubble">
+                        <div class="codo-ai-header">
+                            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="codo-bubble-avatar">
+                            <div class="codo-bubble-title">
+                                <strong>Codo</strong>
+                                <span class="codo-pill">{% if lang == 'en' %}Socratic AI Tutor{% else %}Sokratovský AI Tútor{% endif %}</span>
+                            </div>
+                            <span class="codo-model-pill">Gemini 2.5 Flash</span>
+                        </div>
+                        <p class="codo-ai-text" id="demoCodoText">
+                            {% if lang == 'en' %}
+                            💡 <em>"Excellent logic! You guarded against division by zero using `if not znamky: return 0.0`. What would happen if a user passed float numbers or a single grade? How does the time complexity scale?"</em>
+                            {% else %}
+                            💡 <em>"Výborne! Správne si ošetril delenie nulou podmienkou `if not znamky: return 0.0`. Premýšľal si, čo by sa stalo, ak by niekto do zoznamu poslal známky s desatinným číslom alebo extrémne dlhý zoznam?"</em>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METRICS TICKER ROW -->
+    <section class="landing-metrics-ribbon card-surface">
+        <div class="metric-ribbon-item">
+            <span class="metric-icon">📚</span>
+            <div class="metric-data">
+                <strong class="metric-val">{{ total_modules|default:"18" }}</strong>
+                <span class="metric-lbl">{% if lang == 'en' %}Learning Modules{% else %}Učebných modulov{% endif %}</span>
+            </div>
+        </div>
+        <div class="metric-ribbon-item">
+            <span class="metric-icon">⏱️</span>
+            <div class="metric-data">
+                <strong class="metric-val">{{ total_hours|default:"220" }}+</strong>
+                <span class="metric-lbl">{% if lang == 'en' %}Hours of Curriculum{% else %}Hodín študijného materiálu{% endif %}</span>
+            </div>
+        </div>
+        <div class="metric-ribbon-item">
+            <span class="metric-icon">⚡</span>
+            <div class="metric-data">
+                <strong class="metric-val">{{ total_exercises|default:"250" }}+</strong>
+                <span class="metric-lbl">{% if lang == 'en' %}Interactive Exercises{% else %}Praktických úloh a testov{% endif %}</span>
+            </div>
+        </div>
+        <div class="metric-ribbon-item">
+            <span class="metric-icon">🤖</span>
+            <div class="metric-data">
+                <strong class="metric-val">100%</strong>
+                <span class="metric-lbl">{% if lang == 'en' %}Socratic AI Feedback{% else %}Sokratovské navádzanie AI{% endif %}</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4 HLAVNÉ PILIERE - PREČO CODORO (SEKCIA #pillars) -->
+    <section class="landing-section" id="pillars">
+        <div class="section-header text-center">
+            <span class="section-kicker">{% if lang == 'en' %}COMPETITIVE ADVANTAGE{% else %}UNIKÁTNA HODNOTA PRE VÝUČBU{% endif %}</span>
+            <h2 class="section-title">
+                {% if lang == 'en' %}
+                4 Pillars Where Codoro Outperforms Traditional Platforms
+                {% else %}
+                4 Piliere, ktorými Codoro prekonáva bežné výučbové nástroje
+                {% endif %}
+            </h2>
+            <p class="section-lead">
+                {% if lang == 'en' %}
+                Generic apps are built for solitary learning and output full answers. Codoro connects the student, the class, and the teacher through pedagogical rigor and a real school economy.
+                {% else %}
+                Bežné aplikácie sú navrhnuté pre samoukov a AI vám napíše hotové riešenie. Codoro prepája študenta, triedu a učiteľa prostredníctvom pedagogického prístupu a skutočnej školskej ekonomiky.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="pillars-grid">
+            <!-- PILIER 1: SOKRATOVSKÉ AI -->
+            <div class="pillar-card card-surface" id="codo-ai">
+                <div class="pillar-icon-box cyan">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
+                        <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
+                        <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
+                        <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
+                    </svg>
+                </div>
+                <h3 class="pillar-title">
+                    {% if lang == 'en' %}1. Socratic AI Tutor Codo{% else %}1. Sokratovský AI Tútor Codo{% endif %}
+                </h3>
+                <p class="pillar-desc">
+                    {% if lang == 'en' %}
+                    Standard ChatGPT gives students the full solution immediately, resulting in zero retention. Codo is constrained by strict pedagogical prompts: it analyzes failing unit test tracebacks and responds with guiding questions pointing to the exact line and logic.
+                    {% else %}
+                    Bežný ChatGPT napíše žiakovi celý kód, takže sa nič nenaučí. Codo má striktnú inštrukciu nikdy neprezradiť hotové riešenie – analyzuje chybu v unit testoch a sokratovskou otázkou navedie študenta na správny riadok a logiku.
+                    {% endif %}
+                </p>
+                <div class="pillar-tag-list">
+                    <span class="pillar-chip">Gemini 2.5 Flash</span>
+                    <span class="pillar-chip">Pedagogický Sokratovský filter</span>
+                    <span class="pillar-chip">SK / EN podpora</span>
+                </div>
+            </div>
+
+            <!-- PILIER 2: TRIEDNY EKOSYSTÉM -->
+            <div class="pillar-card card-surface">
+                <div class="pillar-icon-box indigo">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </div>
+                <h3 class="pillar-title">
+                    {% if lang == 'en' %}2. Classroom Ecosystem & Teacher Studio{% else %}2. Prepojenie Žiak – Trieda – Učiteľ{% endif %}
+                </h3>
+                <p class="pillar-desc">
+                    {% if lang == 'en' %}
+                    Students join real school classes (e.g. IV.C) with a class code. Teachers have a full CMS studio to monitor live progress, create customized tasks, review code submissions, and batch-provision student accounts in 5 seconds without diacritics issues.
+                    {% else %}
+                    Študenti sú spojení do reálnych školských tried (napr. IV.C) pomocou kódu. Učiteľ má k dispozícii kompletné štúdio na sledovanie živého progresu, zadávanie úloh, hodnotenie kódov a hromadné generovanie účtov za 5 sekúnd bez problémov s diakritikou.
+                    {% endif %}
+                </p>
+                <div class="pillar-tag-list">
+                    <span class="pillar-chip">Kódy tried (IVC-2027)</span>
+                    <span class="pillar-chip">Hromadný import žiakov</span>
+                    <span class="pillar-chip">Spoločné triedne výzvy</span>
+                </div>
+            </div>
+
+            <!-- PILIER 3: REÁLNA ŠKOLSKÁ EKONOMIKA -->
+            <div class="pillar-card card-surface">
+                <div class="pillar-icon-box gold">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/>
+                    </svg>
+                </div>
+                <h3 class="pillar-title">
+                    {% if lang == 'en' %}3. Doros Economy with Stock Management{% else %}3. Reálna školská ekonomika so skladom{% endif %}
+                </h3>
+                <p class="pillar-desc">
+                    {% if lang == 'en' %}
+                    Tokens earned by solving exercises are not just vanity numbers. Teachers define real school benefits in the shop (homework waiver, test bonus, hint tokens) with strict weekly stock limits (e.g. 2 per week) to prevent inflation and abuse.
+                    {% else %}
+                    Mince Doros nie sú len bezcenné čísla na obrazovke. Učiteľ v obchode vypisuje reálne školské odmeny (odpustenie domácej úlohy, +10% bodov k písomke, žolík) s prísne riadeným skladom pre triedu, aby nedošlo k inflácii a vykúpeniu.
+                    {% endif %}
+                </p>
+                <div class="pillar-tag-list">
+                    <span class="pillar-chip">Riadené zásoby (Stock)</span>
+                    <span class="pillar-chip">Reálne školské kupóny</span>
+                    <span class="pillar-chip">Ochrana pred infláciou</span>
+                </div>
+            </div>
+
+            <!-- PILIER 4: MATURITNÝ ŠPECIÁL A DVOJJAZYČNOSŤ -->
+            <div class="pillar-card card-surface">
+                <div class="pillar-icon-box emerald">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <h3 class="pillar-title">
+                    {% if lang == 'en' %}4. 100% Bilingual & High School Matura Prep{% else %}4. 100% Dvojjazyčnosť & Maturitný špeciál{% endif %}
+                </h3>
+                <p class="pillar-desc">
+                    {% if lang == 'en' %}
+                    Every lesson, theory, exercise, and AI prompt is completely bilingual (Slovak and English). Includes dedicated tracks for the practical part of the graduation exam (PČOZ MS), technical data parsing, and graduation certificate generation.
+                    {% else %}
+                    Každá lekcia, teória, cvičenie aj odpovede AI tútora sú plne dvojjazyčné (SK/EN). Obsahuje špecializované moduly pre praktickú časť odbornej zložky maturitnej skúšky (PČOZ MS), merania v elektrotechnike/IMT a certifikáty s overovacím ID.
+                    {% endif %}
+                </p>
+                <div class="pillar-tag-list">
+                    <span class="pillar-chip">100% SK / EN lokalizácia</span>
+                    <span class="pillar-chip">Zadania pre PČOZ MS</span>
+                    <span class="pillar-chip">Overiteľné certifikáty</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UČEBNÉ CESTY A KURIKULUM (SEKCIA #curriculum) -->
+    <section class="landing-section" id="curriculum">
+        <div class="section-header text-center">
+            <span class="section-kicker">{% if lang == 'en' %}COMPREHENSIVE SYLLABUS{% else %}ŠTRUKTÚROVANÉ UČIVO PRE STREDNÉ ŠKOLY{% endif %}</span>
+            <h2 class="section-title">
+                {% if lang == 'en' %}
+                5 Career Tracks • 18 Modules • 220+ Hours
+                {% else %}
+                5 Kariérnych ciest • 18 Modulov • 220+ Hodín výučby
+                {% endif %}
+            </h2>
+            <p class="section-lead">
+                {% if lang == 'en' %}
+                From absolute algorithmic fundamentals to object-oriented programming, in-memory databases, and practical high school graduation challenges.
+                {% else %}
+                Od úplných algoritmických základov cez objektovo-orientované programovanie a SQL databázy až po praktické maturitné výzvy.
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- SEGMENTED TABS PRE 5 CIEST -->
+        <div class="track-tab-container">
+            <div class="track-segmented-bar">
+                {% for track in tracks_data %}
+                <button type="button" class="track-pill-btn {% if forloop.first %}active{% endif %}" onclick="switchLandingTrack('{{ track.key }}', this)">
+                    <span class="track-pill-icon">{{ track.icon }}</span>
+                    <span class="track-pill-text">{% if lang == 'en' %}{{ track.label_en }}{% else %}Track {{ forloop.counter }}: {{ track.label_sk }}{% endif %}</span>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ZOZNAM KARIÉRNYCH CIEST A MODULOV -->
+        <div class="track-content-panels">
+            {% for track in tracks_data %}
+            <div class="track-panel {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}">
+                <div class="track-panel-banner card-surface">
+                    <div class="track-banner-info">
+                        <span class="track-badge-pill">{{ track.badge }}</span>
+                        <h3 class="track-panel-title">
+                            {{ track.icon }} {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
+                        </h3>
+                        <p class="track-panel-desc">
+                            {% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}
+                        </p>
+                    </div>
+                    <div class="track-banner-meta">
+                        <span class="track-count-badge">{{ track.modules|length }} {% if lang == 'en' %}modules{% else %}modulov{% endif %}</span>
+                    </div>
+                </div>
+
+                <div class="modules-compact-grid">
+                    {% for mod in track.modules %}
+                    <div class="module-mini-card card-surface">
+                        <div class="module-mini-header">
+                            <span class="module-num-chip">#{{ mod.order }}</span>
+                            <div class="module-tier-badges">
+                                {% if mod.is_pro_only %}
+                                <span class="badge-pro">PRO / EDU</span>
+                                {% else %}
+                                <span class="badge-free">FREE</span>
+                                {% endif %}
+                                <span class="badge-hours">{{ mod.estimated_hours }}h</span>
+                            </div>
+                        </div>
+
+                        <h4 class="module-mini-title">
+                            {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
+                        </h4>
+
+                        <p class="module-mini-desc">
+                            {% if lang == 'en' %}{{ mod.description_en|truncatewords:18 }}{% else %}{{ mod.description_sk|truncatewords:18 }}{% endif %}
+                        </p>
+
+                        <div class="module-mini-footer">
+                            <span class="module-lesson-count">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                                {{ mod.lessons.count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}
+                            </span>
+                            <span class="module-diff-tag diff-{{ mod.difficulty_level|lower }}">
+                                {{ mod.get_difficulty_level_display|truncatewords:1 }}
+                            </span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-track-box">
+                        {% if lang == 'en' %}Modules in this track will be loaded shortly.{% else %}Moduly v tejto ceste sa načítavajú.{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- PRE ŠKOLY A PEDAGÓGOV (SEKCIA #schools) -->
+    <section class="landing-section" id="schools">
+        <div class="schools-showcase-box card-surface">
+            <div class="schools-left-content">
+                <span class="section-kicker">{% if lang == 'en' %}FOR EDUCATORS & HIGH SCHOOLS{% else %}PRE STREDNÉ ŠKOLY A UČITEĽOV INFORMATIKY{% endif %}</span>
+                <h2 class="schools-headline">
+                    {% if lang == 'en' %}
+                    Onboard Your Entire Class in 3 Simple Steps
+                    {% else %}
+                    Nasaďte Codoro vo svojej triede za menej ako 5 minút
+                    {% endif %}
+                </h2>
+                <p class="schools-subhead">
+                    {% if lang == 'en' %}
+                    No bureaucracy, no software installation on school computers. Get an instant 30-day pilot license, generate student credentials in 1 click, and start teaching.
+                    {% else %}
+                    Žiadne papierovanie ani inštalovanie softvéru na školské počítače. Získajte okamžitú 30-dňovú pilotnú licenciu, vygenerujte žiacke účty na 1 klik a začnite učiť.
+                    {% endif %}
+                </p>
+
+                <div class="steps-flow">
+                    <div class="step-flow-item">
+                        <div class="step-num-badge">1</div>
+                        <div class="step-body">
+                            <strong>{% if lang == 'en' %}Instant School Pilot Key{% else %}Okamžitý pilotný EDU kľúč{% endif %}</strong>
+                            <p>{% if lang == 'en' %}Request a 30-day pilot license for your school via our instant portal.{% else %}Požiadajte o 30-dňovú pilotnú licenciu cez náš verejný formulár bez čakania.{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="step-flow-item">
+                        <div class="step-num-badge">2</div>
+                        <div class="step-body">
+                            <strong>{% if lang == 'en' %}Create Class & Batch Provisioning{% else %}Založenie triedy & Hromadné účty{% endif %}</strong>
+                            <p>{% if lang == 'en' %}Generate student accounts with automatic diacritics removal and printable login slips.{% else %}Vytvorte 30 študentov naraz s automatickým orezaním diakritiky a kartičkami hesiel.{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="step-flow-item">
+                        <div class="step-num-badge">3</div>
+                        <div class="step-body">
+                            <strong>{% if lang == 'en' %}Live Studio & Homework Rewards{% else %}Živý dozor a riadenie obchodu{% endif %}</strong>
+                            <p>{% if lang == 'en' %}Track real-time student submissions, run class quests, and manage school rewards.{% else %}Sledujte úspešnosť v reálnom čase, vyhlasujte triedne questy a schvaľujte odmeny.{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schools-cta-row">
+                    <a href="{% url 'get_license' %}" class="btn btn-primary btn-lg">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        {% if lang == 'en' %}Request Free School License{% else %}Požiadať o školskú pilotnú licenciu{% endif %}
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-secondary btn-lg">
+                        {% if lang == 'en' %}Teacher Registration{% else %}Registrácia učiteľa{% endif %}
+                    </a>
+                </div>
+            </div>
+
+            <div class="schools-right-card">
+                <div class="teacher-preview-card">
+                    <div class="preview-card-header">
+                        <div class="teacher-avatar-mock">
+                            <span>👨‍🏫</span>
+                        </div>
+                        <div>
+                            <strong>Mgr. Markéta Brišová</strong>
+                            <span class="preview-school-sub">SOŠ Technická Nižná • Trieda IV.C</span>
+                        </div>
+                        <span class="preview-live-tag">● Živý náhľad</span>
+                    </div>
+
+                    <div class="preview-stats-grid">
+                        <div class="preview-stat-box">
+                            <span class="stat-number">28</span>
+                            <span class="stat-label">{% if lang == 'en' %}Active Students{% else %}Aktívnych žiakov{% endif %}</span>
+                        </div>
+                        <div class="preview-stat-box">
+                            <span class="stat-number">94.2%</span>
+                            <span class="stat-label">{% if lang == 'en' %}Test Pass Rate{% else %}Úspešnosť testov{% endif %}</span>
+                        </div>
+                        <div class="preview-stat-box">
+                            <span class="stat-number">4 / 5</span>
+                            <span class="stat-label">{% if lang == 'en' %}Coupons Used{% else %}Kupóny v obchode{% endif %}</span>
+                        </div>
+                    </div>
+
+                    <div class="preview-class-quest">
+                        <div class="preview-quest-header">
+                            <strong>🤝 {% if lang == 'en' %}Class Quest: 100 Solved Exercises{% else %}Triedny Quest: 100 Vyriešených úloh{% endif %}</strong>
+                            <span class="quest-pct">78%</span>
+                        </div>
+                        <div class="progress-track" style="height: 8px;">
+                            <div class="progress-fill" style="width: 78%; background: var(--ro-indigo);"></div>
+                        </div>
+                    </div>
+
+                    <div class="preview-quote-box">
+                        <p>
+                            {% if lang == 'en' %}
+                            <em>"Codoro completely transformed our Python classes. Students are self-motivated by Doros rewards, and Codo guides them through errors without revealing the solution."</em>
+                            {% else %}
+                            <em>"Codoro posunulo hodiny programovania na úplne inú úroveň. Žiaci sa sami motivujú vďaka minciam Doros a Codo im pomáha odhaľovať chyby bez toho, aby im prezradil riešenie."</em>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- POROVNÁVACIA TABUĽKA (CODORO VS OSTATNÉ) -->
+    <section class="landing-section">
+        <div class="section-header text-center">
+            <span class="section-kicker">{% if lang == 'en' %}FEATURE MATRIX{% else %}PREHĽADNÉ POROVNANIE{% endif %}</span>
+            <h2 class="section-title">
+                {% if lang == 'en' %}
+                Why Codoro is Different
+                {% else %}
+                Prečo je Codoro iné než bežné riešenia
+                {% endif %}
+            </h2>
+        </div>
+
+        <div class="table-responsive card-surface" style="padding: 1.5rem; overflow-x: auto;">
+            <table class="landing-compare-table">
+                <thead>
+                    <tr>
+                        <th style="width: 38%;">{% if lang == 'en' %}Feature / Capability{% else %}Vlastnosť / Schopnosť{% endif %}</th>
+                        <th style="width: 22%;" class="highlight-col">Codoro (Slovensko)</th>
+                        <th style="width: 20%;">Duolingo / Codecademy</th>
+                        <th style="width: 20%;">W3Schools / YouTube</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Socratic AI Guidance (No full code leaks){% else %}Sokratovský AI Tútor (Nikdy neprezradí riešenie){% endif %}</strong></td>
+                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Yes (Pedagogical prompt){% else %}Áno (Pedagogický filter){% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}No (Gives answers directly){% else %}Nie (Generuje hotový kód){% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}No AI{% else %}Žiadne AI{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Real Classroom Ecosystem & Teacher Studio{% else %}Triedny ekosystém a Učiteľské štúdio (CMS){% endif %}</strong></td>
+                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Full Teacher CRUD{% else %}Kompletný CMS pre učiteľa{% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}Only individual users{% else %}Iba pre samoukov{% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}No classroom support{% else %}Žiadna správa triedy{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}School Marketplace with Stock Controls{% else %}Školský obchod so zásobami (Odpustenie úloh){% endif %}</strong></td>
+                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Yes (Managed quotas){% else %}Áno (Riadené týždenné kvóty){% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}Virtual cosmetic points{% else %}Iba virtuálne body{% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}None{% else %}Žiadne{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}100% Slovak & English Localization{% else %}100% Slovenská a anglická lokalizácia{% endif %}</strong></td>
+                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Native SK & EN{% else %}Plná slovenčina i angličtina{% endif %}</td>
+                        <td class="check-partial">~ {% if lang == 'en' %}Partial machine translation{% else %}Len strojový preklad{% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}English only{% else %}Väčšinou iba anglicky{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Tailored for High School Matura (PČOZ MS){% else %}Príprava na slovenskú maturitu (PČOZ MS){% endif %}</strong></td>
+                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Dedicated Track 5{% else %}Vyhradená Kariérna cesta 5{% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}Generic curriculum{% else %}Všeobecné kurikulum{% endif %}</td>
+                        <td class="check-no">✕ {% if lang == 'en' %}Generic tutorials{% else %}Všeobecné návody{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Zero Installation Browser Python Sandbox{% else %}Prehliadačový Python sandbox bez inštalácie{% endif %}</strong></td>
+                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Yes (AST Security){% else %}Áno (Bezpečný AST sandbox){% endif %}</td>
+                        <td class="check-yes">✓ {% if lang == 'en' %}Yes{% else %}Áno{% endif %}</td>
+                        <td class="check-partial">~ {% if lang == 'en' %}Limited Try-It{% else %}Iba obmedzené ukážky{% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FAQ AKORDEÓN -->
+    <section class="landing-section">
+        <div class="section-header text-center">
+            <span class="section-kicker">{% if lang == 'en' %}FAQ{% else %}ČASTÉ OTÁZKY{% endif %}</span>
+            <h2 class="section-title">
+                {% if lang == 'en' %}Frequently Asked Questions{% else %}Všetko, čo potrebujete vedieť{% endif %}
+            </h2>
+        </div>
+
+        <div class="landing-faq-accordion">
+            <details class="faq-item card-surface">
+                <summary class="faq-question">
+                    <span>{% if lang == 'en' %}Is Codoro free for high school students?{% else %}Je Codoro bezplatné pre študentov a školy?{% endif %}</span>
+                    <span class="faq-arrow">▼</span>
+                </summary>
+                <div class="faq-answer">
+                    <p>
+                        {% if lang == 'en' %}
+                        Yes! Tracks 1, 2, and parts of 4 and 5 are completely free forever. Schools can also request a free 30-day pilot EDU license for all advanced PRO features including all 18 modules and batch provisioning.
+                        {% else %}
+                        Áno! Základné cesty (Moduly 1 až 8 a vybrané pokročilé moduly) sú navždy bezplatné. Pre stredné školy poskytujeme bezplatnú 30-dňovú pilotnú EDU licenciu na odomknutie všetkých 18 modulov pre celú triedu.
+                        {% endif %}
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item card-surface">
+                <summary class="faq-question">
+                    <span>{% if lang == 'en' %}Do students need to install Python or Visual Studio Code?{% else %}Je potrebné na počítače inštalovať Python alebo VS Code?{% endif %}</span>
+                    <span class="faq-arrow">▼</span>
+                </summary>
+                <div class="faq-answer">
+                    <p>
+                        {% if lang == 'en' %}
+                        Not at all. Everything runs directly inside modern web browsers. Codoro evaluates student code in an isolated, secure backend sandbox with sub-second response times.
+                        {% else %}
+                        Vôbec nie. Celé prostredie beží v internetovom prehliadači (Chrome, Firefox, Safari, Edge). Kód sa spúšťa a overuje v zabezpečenom serverovom sandboxe s odozvou v milisekundách.
+                        {% endif %}
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item card-surface">
+                <summary class="faq-question">
+                    <span>{% if lang == 'en' %}How does Codo prevent students from cheating?{% else %}Ako Codo zabraňuje podvádzaniu pri písomkách?{% endif %}</span>
+                    <span class="faq-arrow">▼</span>
+                </summary>
+                <div class="faq-answer">
+                    <p>
+                        {% if lang == 'en' %}
+                        Codo's system prompt strictly prohibits generating functional code solutions. It only evaluates syntax and algorithmic errors, asking clarifying questions. Teachers can also monitor attempts and submission history.
+                        {% else %}
+                        Systémová inštrukcia Codo tútora prísne zakazuje vygenerovať hotový kód. Codo analyzuje chybový traceback unit testov a kladie navádzacie otázky. Učiteľ má navyše v paneli kompletnú históriu odovzdaní študenta.
+                        {% endif %}
+                    </p>
+                </div>
+            </details>
+
+            <details class="faq-item card-surface">
+                <summary class="faq-question">
+                    <span>{% if lang == 'en' %}What is the Doros currency and how does the shop work?{% else %}Čo je mena Doros a ako funguje školský obchod?{% endif %}</span>
+                    <span class="faq-arrow">▼</span>
+                </summary>
+                <div class="faq-answer">
+                    <p>
+                        {% if lang == 'en' %}
+                        Doros is our in-app gold currency earned by solving exercises, maintaining daily streaks, and completing quests. Teachers can add real classroom perks to the shop with weekly stock quotas.
+                        {% else %}
+                        Doros sú zlaté mince, ktoré žiaci získavajú za správne riešenia, udržiavanie Streaku a plnenie questov. Učiteľ v obchode definuje reálne odmeny (odpustenie úlohy, bonusové body) s obmedzeným týždenným skladom.
+                        {% endif %}
+                    </p>
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <!-- ZÁVEREČNÝ HIGH-CONVERSION CTA BANNER -->
+    <section class="landing-cta-banner card-surface">
+        <div class="cta-banner-content text-center">
+            <span class="cta-pill">🚀 {% if lang == 'en' %}START YOUR JOURNEY TODAY{% else %}ZAČNITE UŽ DNES{% endif %}</span>
+            <h2 class="cta-title">
+                {% if lang == 'en' %}
+                Ready to Master Python the Smart Way?
+                {% else %}
+                Pripravený zvládnuť Python s modernou platformou?
+                {% endif %}
+            </h2>
+            <p class="cta-desc">
+                {% if lang == 'en' %}
+                Join hundreds of students preparing for university and IT careers with Codoro. Free forever for individuals, instant trial for schools.
+                {% else %}
+                Pripojte sa k modernej výučbe programovania. Bezplatne pre študentov a samoukov, s okamžitým nasadením pre stredné školy.
+                {% endif %}
+            </p>
+            <div class="cta-buttons-row">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary">
+                    {% if lang == 'en' %}Create Free Account{% else %}Vytvoriť bezplatný účet{% endif %}
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-secondary btn-hero-secondary">
+                    {% if lang == 'en' %}Sign In to Classroom{% else %}Prihlásiť sa do triedy{% endif %}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER S IDENTIFIKÁCIOU MATURITNEJ PRÁCE -->
+    <footer class="landing-footer">
+        <div class="footer-grid">
+            <div class="footer-col brand-col">
+                <a href="{% url 'dashboard' %}" class="sidebar-brand">
+                    <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="sidebar-brand-logo">
+                    <span class="sidebar-brand-text">codo<span>ro</span></span>
+                </a>
+                <p class="footer-text">
+                    {% if lang == 'en' %}
+                    Next-generation gamified Python learning platform designed for secondary technical education and graduation exam preparation.
+                    {% else %}
+                    Gamifikovaný vzdelávací systém na výučbu programovania v jazyku Python určený pre stredné odborné školy a prípravu na maturitnú skúšku.
+                    {% endif %}
+                </p>
+                <span class="footer-patent-tag">TMview Verified Brand • Codoro™</span>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-col-title">{% if lang == 'en' %}Navigation{% else %}Navigácia{% endif %}</h4>
+                <ul class="footer-link-list">
+                    <li><a href="/#curriculum">{% if lang == 'en' %}Curriculum{% else %}Učebné cesty{% endif %}</a></li>
+                    <li><a href="/#pillars">{% if lang == 'en' %}Why Codoro{% else %}Prečo Codoro{% endif %}</a></li>
+                    <li><a href="{% url 'cheat_sheets' %}">{% if lang == 'en' %}Cheat Sheets{% else %}Ťaháky Pythonu{% endif %}</a></li>
+                    <li><a href="{% url 'get_license' %}">{% if lang == 'en' %}For Schools{% else %}Pre školy{% endif %}</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-col-title">{% if lang == 'en' %}Matura Project Info{% else %}Maturitný projekt{% endif %}</h4>
+                <ul class="footer-meta-list">
+                    <li><strong>{% if lang == 'en' %}School:{% else %}Škola:{% endif %}</strong> Spojená škola Nižná (SOŠ Technická)</li>
+                    <li><strong>{% if lang == 'en' %}Theme:{% else %}Téma:{% endif %}</strong> Téma č. 22 (Trieda IV.C, 2026/2027)</li>
+                    <li><strong>{% if lang == 'en' %}Author:{% else %}Autor:{% endif %}</strong> Juraj Volf</li>
+                    <li><strong>{% if lang == 'en' %}Consultant:{% else %}Konzultantka:{% endif %}</strong> Mgr. Markéta Brišová</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            <span>&copy; 2026/2027 Juraj Volf • Codoro Education System. Všetky práva vyhradené.</span>
+            <div class="footer-bottom-links">
+                <a href="https://github.com/jurajvolf/codoro.git" target="_blank" rel="noopener">GitHub Repozitár</a>
+                <span>•</span>
+                <a href="{% url 'get_license' %}">{% if lang == 'en' %}School License{% else %}Školská licencia{% endif %}</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<style>
+/* ==========================================================================
+   LANDING PAGE BESPOKE DESIGN SYSTEM
+   ========================================================================== */
+.landing-page-root {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4.5rem;
+}
+
+/* HERO SECTION */
+.landing-hero-section {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 3.5rem;
+    align-items: center;
+    padding: 2.5rem 0 1rem;
+}
+
+@media (max-width: 1080px) {
+    .landing-hero-section {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+.hero-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background: var(--ro-indigo-subtle);
+    border: 1px solid var(--ro-indigo-border);
+    color: var(--ro-indigo);
+    font-size: 0.76rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(70, 54, 245, 0.15);
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ro-indigo);
+    box-shadow: 0 0 10px var(--ro-indigo);
+    animation: pulseGlow 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.hero-headline {
+    font-family: var(--font-display);
+    font-size: 2.85rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 640px) {
+    .hero-headline {
+        font-size: 2.15rem;
+    }
+}
+
+.hero-gradient-text {
+    background: linear-gradient(135deg, var(--ro-indigo) 0%, var(--visor-cyan) 85%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.hero-subhead {
+    font-size: 1.12rem;
+    color: var(--text-secondary);
+    line-height: 1.68;
+    margin-bottom: 2rem;
+    max-width: 620px;
+}
+
+.hero-cta-group {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.btn-hero-primary {
+    padding: 0.85rem 1.75rem;
+    font-size: 1.02rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px -4px rgba(70, 54, 245, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -4px rgba(70, 54, 245, 0.6);
+}
+
+.btn-hero-secondary {
+    padding: 0.85rem 1.5rem;
+    font-size: 1.02rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+}
+
+.hero-trust-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.trust-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* IDE WINDOW SIMULATION */
+.hero-ide-preview {
+    position: relative;
+}
+
+.hero-ide-preview::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle at 60% 40%, rgba(70, 54, 245, 0.2), rgba(92, 225, 230, 0.12), transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.ide-window {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+}
+
+.ide-window-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.15rem;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-hairline);
+}
+
+.ide-window-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.ide-window-dots span {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+}
+
+.dot-red { background: #EF4444; }
+.dot-yellow { background: #F59E0B; }
+.dot-green { background: #10B981; }
+
+.ide-window-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--bg-surface);
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1px solid var(--border-hairline);
+    color: var(--text-primary);
+}
+
+.sandbox-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--visor-cyan);
+    background: var(--visor-cyan-bg);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--visor-cyan-border);
+    font-weight: 700;
+}
+
+.dot-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--visor-cyan);
+    box-shadow: 0 0 6px var(--visor-cyan);
+}
+
+.ide-body {
+    padding: 1.15rem 1.25rem;
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    border-bottom: 1px solid var(--border-hairline);
+}
+
+.code-lines {
+    display: flex;
+    flex-direction: column;
+}
+
+.code-row {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.line-num {
+    display: inline-block;
+    width: 24px;
+    color: #64748B;
+    user-select: none;
+    font-size: 0.78rem;
+}
+
+.code-kw { color: #F43F5E; font-weight: 700; }
+.code-fn { color: #60A5FA; font-weight: 600; }
+.code-type { color: #38BDF8; }
+.code-doc { color: #94A3B8; font-style: italic; }
+.code-num { color: #F59E0B; }
+
+.ide-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1.15rem;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-hairline);
+}
+
+.ide-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.ide-reward-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--amber);
+}
+
+.ide-time-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.ide-output-panel {
+    padding: 1rem 1.15rem;
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.ide-test-cases {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.test-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-hairline);
+}
+
+.test-item.pass {
+    border-left: 3px solid var(--emerald);
+}
+
+.test-icon {
+    font-weight: 800;
+    color: var(--emerald);
+    margin-right: 0.4rem;
+}
+
+.test-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.test-expected {
+    color: var(--text-secondary);
+    margin: 0 0.8rem;
+}
+
+.test-ms {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+}
+
+.codo-ai-bubble {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--ro-indigo-subtle);
+    border: 1px solid var(--ro-indigo-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.codo-ai-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.codo-bubble-avatar {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(70, 54, 245, 0.4));
+}
+
+.codo-bubble-title {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+}
+
+.codo-pill {
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 0.12rem 0.45rem;
+    border-radius: 4px;
+    background: var(--visor-cyan-bg);
+    color: var(--visor-cyan);
+    border: 1px solid var(--visor-cyan-border);
+}
+
+.codo-model-pill {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+.codo-ai-text {
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* METRICS RIBBON */
+.landing-metrics-ribbon {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    padding: 1.75rem 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 860px) {
+    .landing-metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .landing-metrics-ribbon {
+        grid-template-columns: 1fr;
+    }
+}
+
+.metric-ribbon-item {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+}
+
+.metric-icon {
+    font-size: 2.1rem;
+    line-height: 1;
+}
+
+.metric-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-val {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.metric-lbl {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* LANDING SECTION GENERAL */
+.landing-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+}
+
+.section-header.text-center {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+.section-kicker {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--ro-indigo);
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.85rem;
+}
+
+@media (max-width: 640px) {
+    .section-title {
+        font-size: 1.75rem;
+    }
+}
+
+.section-lead {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+/* PILLARS GRID */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+}
+
+@media (max-width: 860px) {
+    .pillars-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pillar-card {
+    padding: 2.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pillar-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.pillar-icon-box {
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.35rem;
+}
+
+.pillar-icon-box.cyan {
+    background: var(--visor-cyan-bg);
+    color: var(--visor-cyan);
+    border: 1px solid var(--visor-cyan-border);
+}
+
+.pillar-icon-box.indigo {
+    background: var(--ro-indigo-subtle);
+    color: var(--ro-indigo);
+    border: 1px solid var(--ro-indigo-border);
+}
+
+.pillar-icon-box.gold {
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--amber);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.pillar-icon-box.emerald {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--emerald);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pillar-title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pillar-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    flex: 1;
+}
+
+.pillar-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.pillar-chip {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-hairline);
+}
+
+/* TRACK SEGMENTED TABS */
+.track-tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.track-segmented-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    background: var(--bg-subtle);
+    padding: 0.35rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-hairline);
+    justify-content: center;
+}
+
+.track-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.track-pill-btn:hover {
+    color: var(--text-primary);
+}
+
+.track-pill-btn.active {
+    background: var(--bg-surface);
+    color: var(--ro-indigo);
+    box-shadow: var(--shadow-xs);
+}
+
+.track-panel {
+    display: none;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.track-panel.active {
+    display: flex;
+}
+
+.track-panel-banner {
+    padding: 1.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .track-panel-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.track-badge-pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: var(--ro-indigo);
+    background: var(--ro-indigo-subtle);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--ro-indigo-border);
+}
+
+.track-panel-title {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+}
+
+.track-panel-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 780px;
+}
+
+.track-count-badge {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-hairline);
+    white-space: nowrap;
+}
+
+.modules-compact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.module-mini-card {
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.module-mini-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ro-indigo);
+}
+
+.module-mini-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.module-num-chip {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+.module-tier-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.badge-pro {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--ro-indigo);
+    background: var(--ro-indigo-subtle);
+    border: 1px solid var(--ro-indigo-border);
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+}
+
+.badge-free {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--emerald);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+}
+
+.badge-hours {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.module-mini-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.35;
+}
+
+.module-mini-desc {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.module-mini-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--border-hairline);
+    font-size: 0.78rem;
+}
+
+.module-lesson-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.module-diff-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.diff-beginner { color: var(--emerald); }
+.diff-intermediate { color: var(--amber); }
+.diff-advanced { color: #EF4444; }
+
+/* SCHOOLS SHOWCASE */
+.schools-showcase-box {
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3.5rem;
+    align-items: center;
+}
+
+@media (max-width: 1024px) {
+    .schools-showcase-box {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+    }
+}
+
+.schools-headline {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.85rem;
+    line-height: 1.25;
+}
+
+.schools-subhead {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 2rem;
+}
+
+.steps-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2.25rem;
+}
+
+.step-flow-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.15rem;
+}
+
+.step-num-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ro-indigo);
+    color: #FFFFFF;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(70, 54, 245, 0.35);
+}
+
+.step-body strong {
+    display: block;
+    font-size: 0.98rem;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+}
+
+.step-body p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.schools-cta-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* TEACHER CARD PREVIEW */
+.teacher-preview-card {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.preview-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.teacher-avatar-mock {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--ro-indigo-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.preview-school-sub {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.preview-live-tag {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--emerald);
+    background: rgba(16, 185, 129, 0.12);
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.preview-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    background: var(--bg-surface);
+    padding: 0.85rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-hairline);
+    text-align: center;
+}
+
+.preview-stat-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ro-indigo);
+}
+
+.stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.preview-class-quest {
+    background: var(--bg-surface);
+    padding: 0.95rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.preview-quest-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.84rem;
+}
+
+.quest-pct {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    color: var(--ro-indigo);
+}
+
+.preview-quote-box {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    border-left: 2px solid var(--ro-indigo);
+    padding-left: 0.85rem;
+}
+
+/* COMPARISON TABLE */
+.landing-compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.landing-compare-table th,
+.landing-compare-table td {
+    padding: 1.15rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-hairline);
+}
+
+.landing-compare-table th {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.landing-compare-table th.highlight-col,
+.landing-compare-table td.highlight-col {
+    background: var(--ro-indigo-subtle);
+    font-weight: 700;
+    color: var(--ro-indigo);
+}
+
+.check-yes {
+    color: var(--emerald) !important;
+    font-weight: 700;
+}
+
+.check-no {
+    color: var(--text-muted) !important;
+}
+
+.check-partial {
+    color: var(--amber) !important;
+}
+
+/* FAQ ACCORDION */
+.landing-faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    max-width: 860px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.faq-item {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    user-select: none;
+}
+
+.faq-question::-webkit-details-marker {
+    display: none;
+}
+
+.faq-arrow {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+    color: var(--ro-indigo);
+}
+
+.faq-answer {
+    padding: 0 1.5rem 1.35rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+
+/* FINAL CTA BANNER */
+.landing-cta-banner {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, rgba(92, 225, 230, 0.08) 100%), var(--bg-surface);
+    border: 1px solid var(--ro-indigo-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-banner-content {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.cta-pill {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: var(--ro-indigo);
+    background: var(--ro-indigo-subtle);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--ro-indigo-border);
+}
+
+.cta-title {
+    font-family: var(--font-display);
+    font-size: 2.35rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.cta-desc {
+    font-size: 1.08rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+.cta-buttons-row {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+/* FOOTER */
+.landing-footer {
+    padding-top: 3.5rem;
+    border-top: 1px solid var(--border-hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr;
+    gap: 3rem;
+}
+
+@media (max-width: 860px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+.brand-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 380px;
+}
+
+.footer-patent-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.footer-col-title {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.footer-link-list,
+.footer-meta-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    font-size: 0.88rem;
+}
+
+.footer-link-list a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-link-list a:hover {
+    color: var(--ro-indigo);
+}
+
+.footer-meta-list li {
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.footer-meta-list strong {
+    color: var(--text-primary);
+}
+
+.footer-bottom-bar {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-hairline);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-bottom-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer-bottom-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: var(--ro-indigo);
+}
+</style>
+
+<script>
+// Prepínanie kariérnych ciest (Tracks)
+function switchLandingTrack(trackKey, btnEl) {
+    document.querySelectorAll('.track-pill-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.track-panel').forEach(p => p.classList.remove('active'));
+    
+    btnEl.classList.add('active');
+    const targetPanel = document.getElementById('track-panel-' + trackKey);
+    if (targetPanel) {
+        targetPanel.classList.add('active');
+    }
+}
+
+// Interaktívna simulácia spustenia sandboxu v Hero okne
+function runInteractiveDemo() {
+    const btn = document.getElementById('demoRunBtn');
+    const btnText = document.getElementById('demoRunBtnText');
+    const timerTag = document.getElementById('demoTimerTag');
+    const testCases = document.getElementById('demoTestCases');
+    const codoText = document.getElementById('demoCodoText');
+    
+    btn.disabled = true;
+    btnText.textContent = "{% if lang == 'en' %}Executing Sandbox...{% else %}Vyhodnocujem v sandboxe...{% endif %}";
+    testCases.style.opacity = '0.35';
+    
+    setTimeout(() => {
+        btn.disabled = false;
+        btnText.textContent = "{% if lang == 'en' %}Run Sandbox Tests{% else %}Spustiť a otestovať kód{% endif %}";
+        testCases.style.opacity = '1';
+        timerTag.textContent = "0.38 ms AST exec";
+        
+        codoText.innerHTML = `
+            {% if lang == 'en' %}
+            ✨ <strong>All 3 Unit Tests Passed in 0.38ms!</strong><br>
+            <em>"Great work! The AST safety checks confirmed clean code with O(1) memory overhead. What if input was an iterator instead of a list?"</em>
+            {% else %}
+            ✨ <strong>Všetky 3 testovacie prípady úspešne prešli za 0.38ms!</strong><br>
+            <em>"Skvelá práca! AST bezpečnostná kontrola overila čistý kód s pamäťovou náročnosťou O(1). Ako by si funkciu upravil, ak by vstupom bol generátor namiesto zoznamu?"</em>
+            {% endif %}
+        `;
+    }, 450);
+}
+</script>
+{% endblock %}
