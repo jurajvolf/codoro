@@ -1,6 +1,7 @@
 import json
 import secrets
 import os
+import re
 from datetime import timedelta
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,7 +13,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.conf import settings
 
-from accounts.models import User, SchoolClass, SubscriptionLicense
+from accounts.models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest
 from courses.models import Module, Lesson, Exercise, TestCase, Submission, QuizQuestion, LessonProgress
 from gamification.models import (
     RewardItem, RewardPurchase, DorosTransaction, ClassQuest, CoinDrop, Quest, Badge, StudentBadge
@@ -61,8 +62,9 @@ def admin_dashboard(request):
     total_users_count = User.objects.count()
     users_list = users_qs[:100]  # Max 100 s rýchlym vyhľadávaním
 
-    # 2. LICENCIE
+    # 2. LICENCIE A ŽIADOSTI ŠKÔL
     licenses = SubscriptionLicense.objects.all().order_by('-created_at')
+    school_requests = SchoolLicenseRequest.objects.all().order_by('-created_at')
 
     # 3. GLOBÁLNE KURIKULUM (18 MODULOV)
     modules = Module.objects.annotate(
@@ -115,6 +117,7 @@ def admin_dashboard(request):
         'users_list': users_list,
         'total_users_count': total_users_count,
         'licenses': licenses,
+        'school_requests': school_requests,
         'modules': modules,
         'db_stats': db_stats,
         'recent_submissions': recent_submissions,
@@ -369,6 +372,46 @@ def admin_license_quick_assign(request):
             request,
             f"Licencia '{lic.code}' ({lic.tier}) bola úspešne priradená používateľovi '{target_user.username}'."
         )
+    return redirect('/admin-panel/?tab=licenses')
+
+
+@admin_required
+@transaction.atomic
+def admin_license_request_approve(request, request_id):
+    """Schválenie žiadosti školy a vygenerovanie/predĺženie oficiálnej EDU licencie."""
+    req_obj = get_object_or_404(SchoolLicenseRequest, id=request_id)
+    if request.method == 'POST':
+        max_students = int(request.POST.get('max_uses', req_obj.estimated_students or 35))
+
+        if not req_obj.generated_license:
+            clean_prefix = re.sub(r'[^A-Za-z0-9]', '', req_obj.school_name).upper()[:4] or "EDU"
+            code = f"EDU-{clean_prefix}-{timezone.now().year}-{secrets.token_hex(2).upper()}"
+            lic = SubscriptionLicense.objects.create(
+                code=code,
+                tier=User.SubscriptionTier.EDU,
+                max_uses=max_students,
+                is_active=True
+            )
+            req_obj.generated_license = lic
+        else:
+            req_obj.generated_license.max_uses = max_students
+            req_obj.generated_license.is_active = True
+            req_obj.generated_license.save()
+
+        req_obj.status = SchoolLicenseRequest.Status.APPROVED
+        req_obj.save()
+        messages.success(request, f"Žiadosť školy '{req_obj.school_name}' bola schválená. Licencia: {req_obj.generated_license.code}.")
+    return redirect('/admin-panel/?tab=licenses')
+
+
+@admin_required
+def admin_license_request_reject(request, request_id):
+    """Zamietnutie žiadosti o školskú licenciu."""
+    req_obj = get_object_or_404(SchoolLicenseRequest, id=request_id)
+    if request.method == 'POST':
+        req_obj.status = SchoolLicenseRequest.Status.REJECTED
+        req_obj.save(update_fields=['status'])
+        messages.info(request, f"Žiadosť školy '{req_obj.school_name}' bola zamietnutá.")
     return redirect('/admin-panel/?tab=licenses')
 
 

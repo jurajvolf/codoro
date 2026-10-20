@@ -14,8 +14,8 @@ class SchoolClass(models.Model):
         'User',
         on_delete=models.CASCADE,
         related_name='managed_classes',
-        limit_choices_to={'role': 'TEACHER'},
-        verbose_name="Triedny učiteľ / Vyucujúci"
+        limit_choices_to={'role__in': ['TEACHER', 'ADMIN']},
+        verbose_name="Triedny učiteľ / Vyučujúci"
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -272,3 +272,42 @@ class SubscriptionLicense(models.Model):
 
     def __str__(self):
         return f"{self.code} ({self.current_uses}/{self.max_uses})"
+
+
+class SchoolLicenseRequest(models.Model):
+    """Oficiálna žiadosť školy / pedagóga o zaobstaranie školskej EDU licencie Codoro."""
+
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Čaká na spracovanie'
+        APPROVED = 'APPROVED', 'Schválená (Aktívna)'
+        REJECTED = 'REJECTED', 'Zamietnutá'
+
+    school_name = models.CharField(max_length=150, verbose_name="Názov školy / Vzdelávacej inštitúcie")
+    contact_name = models.CharField(max_length=100, verbose_name="Meno a priezvisko vyučujúceho")
+    email = models.EmailField(verbose_name="Školská e-mailová adresa")
+    phone = models.CharField(max_length=40, blank=True, verbose_name="Telefónny kontakt")
+    estimated_students = models.PositiveIntegerField(default=30, verbose_name="Predpokladaný počet žiakov")
+    note = models.TextField(blank=True, verbose_name="Zameranie odboru alebo poznámka")
+    status = models.CharField(
+        max_length=15,
+        choices=Status.choices,
+        default=Status.PENDING,
+        verbose_name="Stav žiadosti"
+    )
+    generated_license = models.ForeignKey(
+        SubscriptionLicense,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='school_requests',
+        verbose_name="Priradený licenčný kľúč"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Žiadosť o školskú licenciu"
+        verbose_name_plural = "Žiadosti o školské licencie"
+
+    def __str__(self):
+        return f"{self.school_name} - {self.contact_name} ({self.get_status_display()})"

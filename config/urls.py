@@ -16,6 +16,7 @@ urlpatterns = [
     path('lang/<str:lang_code>/', acc_views.switch_language, name='switch_language'),
     path('streak/repair/', acc_views.repair_streak, name='repair_streak'),
     path('license/activate/', acc_views.activate_license, name='activate_license'),
+    path('get-license/', acc_views.get_license_view, name='get_license'),
     path('profile/', acc_views.profile_view, name='profile'),
     path('certificate/', acc_views.certificate_view, name='certificate'),
 
@@ -39,6 +40,9 @@ urlpatterns = [
     path('teacher/student/<int:student_id>/assign-class/', teacher_views.cms_student_assign_class, name='cms_student_assign_class'),
     path('teacher/coupon/<int:purchase_id>/', teacher_views.process_coupon, name='process_coupon'),
     path('teacher/class/create/', teacher_views.cms_class_create, name='cms_class_create'),
+    path('teacher/class/<int:class_id>/delete/', teacher_views.cms_class_delete, name='cms_class_delete'),
+    path('teacher/class/<int:class_id>/batch-students/', teacher_views.cms_class_batch_students, name='cms_class_batch_students'),
+    path('teacher/class/<int:class_id>/remove-student/<int:student_id>/', teacher_views.cms_class_remove_student, name='cms_class_remove_student'),
     path('teacher/license/create/', teacher_views.cms_license_create, name='cms_license_create'),
 
     # CMS - Moduly

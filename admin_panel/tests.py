@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 
-from accounts.models import User, SchoolClass, SubscriptionLicense
+from accounts.models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest
 from courses.models import Module, Lesson, Exercise, TestCase as ExerciseTestCase, Submission
 
 
@@ -224,3 +224,38 @@ class SuperAdminPanelTests(TestCase):
         self.assertIn('school_classes', payload)
         self.assertIn('licenses', payload)
         self.assertIn('modules_summary', payload)
+
+    def test_admin_license_request_approve(self):
+        self.client.login(username='admin_test', password='password123')
+        req = SchoolLicenseRequest.objects.create(
+            school_name='Gymnázium Tvrdošín',
+            contact_name='Mgr. Anton Vlček',
+            email='vlcek@gymtvrsin.sk',
+            estimated_students=45,
+            status=SchoolLicenseRequest.Status.PENDING
+        )
+        response = self.client.post(
+            reverse('admin_license_request_approve', args=[req.id]),
+            {'max_uses': 50}
+        )
+        self.assertEqual(response.status_code, 302)
+        req.refresh_from_db()
+        self.assertEqual(req.status, SchoolLicenseRequest.Status.APPROVED)
+        self.assertIsNotNone(req.generated_license)
+        self.assertEqual(req.generated_license.max_uses, 50)
+        self.assertEqual(req.generated_license.tier, User.SubscriptionTier.EDU)
+
+    def test_admin_license_request_reject(self):
+        self.client.login(username='admin_test', password='password123')
+        req = SchoolLicenseRequest.objects.create(
+            school_name='Neznáma inštitúcia',
+            contact_name='Test',
+            email='test@spam.com',
+            estimated_students=10,
+            status=SchoolLicenseRequest.Status.PENDING
+        )
+        response = self.client.post(reverse('admin_license_request_reject', args=[req.id]))
+        self.assertEqual(response.status_code, 302)
+        req.refresh_from_db()
+        self.assertEqual(req.status, SchoolLicenseRequest.Status.REJECTED)
+

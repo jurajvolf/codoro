@@ -403,3 +403,53 @@ class TeacherCMSStudioTests(TestCase):
         self.assertIsNotNone(lic)
         self.assertEqual(lic.max_uses, 40)
         self.assertEqual(lic.tier, 'EDU')
+
+    def test_cms_class_batch_students_provisioning(self):
+        self.client.login(username='pan_ucitel', password='password123')
+        names = "Ján Novák\nPeter Kováč\nLucia Horváthová"
+        response = self.client.post(
+            reverse('cms_class_batch_students', args=[self.school_class.id]),
+            {'student_names': names, 'default_password': 'TestPassword2027!'}
+        )
+        self.assertEqual(response.status_code, 302)
+
+        # Overenie vytvorených používateľov
+        s1 = User.objects.get(username='jan_novak')
+        s2 = User.objects.get(username='peter_kovac')
+        s3 = User.objects.get(username='lucia_horvathova')
+
+        for st in [s1, s2, s3]:
+            self.assertEqual(st.role, User.Role.STUDENT)
+            self.assertEqual(st.school_class, self.school_class)
+            self.assertEqual(st.subscription_tier, User.SubscriptionTier.EDU)
+            self.assertEqual(st.doros, 100)
+            self.assertTrue(st.check_password('TestPassword2027!'))
+
+        # Overenie uloženia do session pre zobrazenie prihlasovacích kariet
+        session = self.client.session
+        self.assertIn('batch_created_students', session)
+        self.assertEqual(len(session['batch_created_students']), 3)
+
+    def test_cms_class_remove_student(self):
+        self.client.login(username='pan_ucitel', password='password123')
+        self.assertEqual(self.student.school_class, self.school_class)
+
+        response = self.client.post(
+            reverse('cms_class_remove_student', args=[self.school_class.id, self.student.id])
+        )
+        self.assertEqual(response.status_code, 302)
+
+        self.student.refresh_from_db()
+        self.assertIsNone(self.student.school_class)
+
+    def test_cms_class_delete(self):
+        self.client.login(username='pan_ucitel', password='password123')
+        class_id = self.school_class.id
+
+        response = self.client.post(reverse('cms_class_delete', args=[class_id]))
+        self.assertEqual(response.status_code, 302)
+
+        self.assertFalse(SchoolClass.objects.filter(id=class_id).exists())
+        self.student.refresh_from_db()
+        self.assertIsNone(self.student.school_class)
+

@@ -5,9 +5,26 @@ from django.contrib import messages
 from django.db import transaction
 from django.utils import timezone
 import hashlib
-from .models import User, SchoolClass, SubscriptionLicense
+import secrets
+import re
+from .models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest
 from gamification.models import DorosTransaction, Badge, StudentBadge
 from gamification.services import get_student_stats, award_badges, ensure_badges_exist
+
+
+def generate_unique_join_code(base_name="CLASS"):
+    """Vygeneruje unikátny, zapamätateľný kód triedy (napr. IVC-2027 alebo PY-789A)."""
+    clean = re.sub(r'[^A-Za-z0-9]', '', base_name).upper()[:4] or "CLASS"
+    year = timezone.now().year
+    code = f"{clean}-{year}"
+    if not SchoolClass.objects.filter(join_code=code).exists():
+        return code
+    for _ in range(30):
+        suffix = secrets.token_hex(2).upper()
+        cand = f"{clean}-{suffix}"
+        if not SchoolClass.objects.filter(join_code=cand).exists():
+            return cand
+    return f"C-{secrets.token_hex(3).upper()}"
 
 
 def get_active_lang(request):
@@ -43,20 +60,112 @@ def register_view(request):
         return redirect('dashboard')
 
     lang = get_active_lang(request)
+    initial_tab = request.GET.get('role', 'student')
+
     if request.method == 'POST':
+        account_type = (request.POST.get('account_type') or request.POST.get('role') or 'student').lower()
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').strip()
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
         password = request.POST.get('password', '')
-        join_code = request.POST.get('join_code', '').strip().upper()
         pref_lang = request.POST.get('preferred_language', lang)
+
+        if not username or not password:
+            messages.error(request, "Vyplň používateľské meno a heslo." if pref_lang == 'sk' else "Please fill in username and password.")
+            return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': account_type})
 
         if User.objects.filter(username=username).exists():
             err = "This username is already taken." if pref_lang == 'en' else "Toto používateľské meno sa už používa."
             messages.error(request, err)
-            return render(request, 'accounts/register.html', {'ui_lang': lang})
+            return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': account_type})
 
+        # ==========================================================
+        # A) REGISTRÁCIA UČITEĽA (TEACHER & SCHOOL ECOSYSTEM)
+        # ==========================================================
+        if account_type == 'teacher':
+            license_code = (request.POST.get('teacher_license_code') or request.POST.get('school_license_key') or '').strip().upper()
+            initial_class_name = request.POST.get('initial_class_name', '').strip()
+
+            lic = None
+            if license_code:
+                lic = SubscriptionLicense.objects.filter(code=license_code, is_active=True).first()
+                if not lic or lic.current_uses >= lic.max_uses:
+                    err = (
+                        "Invalid or exhausted school license key. Please check your key or request a pilot key."
+                        if pref_lang == 'en'
+                        else "Zadaný školský licenčný kľúč je neplatný alebo vyčerpaný. Môžete požiadať o pilotný kľúč."
+                    )
+                    messages.error(request, err)
+                    return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': 'teacher'})
+                lic.current_uses += 1
+                lic.save(update_fields=['current_uses'])
+            else:
+                # Automatické vydanie pilotnej školskej EDU licencie (35 žiakov)
+                pilot_code = f"EDU-PILOT-{secrets.token_hex(3).upper()}"
+                lic = SubscriptionLicense.objects.create(
+                    code=pilot_code,
+                    tier=User.SubscriptionTier.EDU,
+                    max_uses=35,
+                    current_uses=1,
+                    is_active=True
+                )
+                SchoolLicenseRequest.objects.create(
+                    school_name=f"Škola - {first_name} {last_name}",
+                    contact_name=f"{first_name} {last_name}",
+                    email=email,
+                    estimated_students=35,
+                    note="Automaticky aktivovaný pilotný prístup pri registrácii učiteľa",
+                    status=SchoolLicenseRequest.Status.APPROVED,
+                    generated_license=lic
+                )
+
+            teacher_user = User.objects.create_user(
+                username=username,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password=password,
+                role=User.Role.TEACHER,
+                subscription_tier=User.SubscriptionTier.EDU,
+                is_staff=True,
+                preferred_language=pref_lang,
+                doros=1000,
+                avatar='wizard',
+                avatar_color='indigo'
+            )
+
+            created_class = None
+            if initial_class_name:
+                code = generate_unique_join_code(initial_class_name)
+                created_class = SchoolClass.objects.create(
+                    name=initial_class_name,
+                    join_code=code,
+                    teacher=teacher_user
+                )
+
+            request.session['ui_lang'] = pref_lang
+            login(request, teacher_user)
+
+            if created_class:
+                msg = (
+                    f"Welcome to Codoro Teacher Studio! Class '{created_class.name}' created with join code: {created_class.join_code}"
+                    if pref_lang == 'en'
+                    else f"Vitajte v Učiteľskom štúdiu Codoro! Trieda '{created_class.name}' bola vytvorená s kódom: {created_class.join_code}"
+                )
+            else:
+                msg = (
+                    "Welcome to Codoro Teacher Studio! You can now create your school classes."
+                    if pref_lang == 'en'
+                    else "Vitajte v Učiteľskom štúdiu Codoro! Môžete začať vytvárať svoje školské triedy."
+                )
+            messages.success(request, msg)
+            return redirect('teacher_dashboard')
+
+        # ==========================================================
+        # B) REGISTRÁCIA ŠTUDENTA (STUDENT)
+        # ==========================================================
+        join_code = (request.POST.get('join_code') or request.POST.get('class_code') or '').strip().upper()
         school_class = None
         if join_code:
             school_class = SchoolClass.objects.filter(join_code=join_code).first()
@@ -95,7 +204,68 @@ def register_view(request):
         messages.success(request, msg)
         return redirect('dashboard')
 
-    return render(request, 'accounts/register.html', {'ui_lang': lang})
+    return render(request, 'accounts/register.html', {
+        'ui_lang': lang,
+        'active_tab': initial_tab
+    })
+
+
+def get_license_view(request):
+    """
+    Verejný portál pre školy a učiteľov na zaobstaranie školskej licencie Codoro EDU.
+    Umožní okamžite získať pilotný kľúč a odoslať oficiálnu žiadosť.
+    """
+    lang = get_active_lang(request)
+
+    if request.method == 'POST':
+        school_name = request.POST.get('school_name', '').strip()
+        contact_name = (request.POST.get('contact_name') or request.POST.get('contact_person') or '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        estimated_students = int(request.POST.get('estimated_students') or request.POST.get('expected_students') or 30)
+        note = request.POST.get('note', '').strip()
+
+        if not school_name or not contact_name or not email:
+            messages.error(request, "Vyplňte prosím všetky povinné polia (škola, vyučujúci, e-mail).")
+            return render(request, 'accounts/get_license.html', {'ui_lang': lang})
+
+        # Okamžité vygenerovanie pilotného kľúča
+        clean_prefix = re.sub(r'[^A-Za-z0-9]', '', school_name).upper()[:4] or "EDU"
+        pilot_code = f"EDU-{clean_prefix}-{secrets.token_hex(3).upper()}"
+        lic = SubscriptionLicense.objects.create(
+            code=pilot_code,
+            tier=User.SubscriptionTier.EDU,
+            max_uses=max(10, estimated_students + 5),
+            current_uses=0,
+            is_active=True
+        )
+
+        SchoolLicenseRequest.objects.create(
+            school_name=school_name,
+            contact_name=contact_name,
+            email=email,
+            phone=phone,
+            estimated_students=estimated_students,
+            note=note,
+            status=SchoolLicenseRequest.Status.PENDING,
+            generated_license=lic
+        )
+
+        success_msg = (
+            f"License key {lic.code} has been generated for {school_name}! You can now use it to register your teacher account."
+            if lang == 'en'
+            else f"Školský licenčný kľúč {lic.code} bol vygenerovaný pre {school_name}! Môžete ho ihneď použiť pri registrácii učiteľa."
+        )
+        messages.success(request, success_msg)
+
+        return render(request, 'accounts/get_license.html', {
+            'ui_lang': lang,
+            'generated_license': lic,
+            'school_name': school_name,
+            'contact_name': contact_name,
+        })
+
+    return render(request, 'accounts/get_license.html', {'ui_lang': lang})
 
 
 @login_required

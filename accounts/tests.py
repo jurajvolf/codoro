@@ -127,3 +127,122 @@ class SubscriptionLicenseTests(TestCase):
         self.user.save()
         self.assertIsNone(self.user.ai_hints_remaining())
         self.assertTrue(self.user.consume_ai_hint())
+
+
+class TeacherRegistrationAndLicenseTests(TestCase):
+    """Testy duálnej registrácie (študent / učiteľ), školskej licencie a žiadostí o pilotný kľúč."""
+
+    def setUp(self):
+        self.teacher_user = User.objects.create_user(
+            username='pedagog_base', password='password123', role=User.Role.TEACHER
+        )
+        self.school_class = SchoolClass.objects.create(
+            name='IV.C',
+            join_code='IVC-TEST',
+            teacher=self.teacher_user,
+        )
+        self.edu_license = SubscriptionLicense.objects.create(
+            code='EDU-TEACHER-KEY',
+            tier=User.SubscriptionTier.EDU,
+            max_uses=30,
+            current_uses=0,
+            is_active=True
+        )
+
+    def test_student_registration_with_class_code(self):
+        response = self.client.post(reverse('register'), {
+            'role': 'STUDENT',
+            'username': 'novy_ziak',
+            'email': 'ziak@skola.sk',
+            'password': 'Password123!',
+            'class_code': 'IVC-TEST',
+        })
+        self.assertEqual(response.status_code, 302)
+        user = User.objects.get(username='novy_ziak')
+        self.assertEqual(user.role, User.Role.STUDENT)
+        self.assertEqual(user.school_class, self.school_class)
+
+    def test_teacher_registration_with_valid_key(self):
+        response = self.client.post(reverse('register'), {
+            'role': 'TEACHER',
+            'username': 'novy_ucitel',
+            'first_name': 'Ján',
+            'last_name': 'Kováč',
+            'email': 'kovac@skola.sk',
+            'password': 'Password123!',
+            'school_license_key': 'EDU-TEACHER-KEY',
+            'initial_class_name': 'III.B',
+        })
+        self.assertEqual(response.status_code, 302)
+        teacher = User.objects.get(username='novy_ucitel')
+        self.assertEqual(teacher.role, User.Role.TEACHER)
+        self.assertEqual(teacher.subscription_tier, User.SubscriptionTier.EDU)
+        self.assertTrue(teacher.is_staff)
+
+        # Overenie vytvorenia triedy
+        created_class = SchoolClass.objects.filter(teacher=teacher, name='III.B').first()
+        self.assertIsNotNone(created_class)
+        self.assertTrue(created_class.join_code.startswith('IIIB-'))
+
+    def test_teacher_registration_with_pilot_fallback(self):
+        # Ak učiteľ nemá kľúč, systém mu automaticky vygeneruje 30-dňový pilotný EDU kľúč
+        response = self.client.post(reverse('register'), {
+            'role': 'TEACHER',
+            'username': 'pilot_ucitel',
+            'first_name': 'Eva',
+            'last_name': 'Biela',
+            'email': 'biela@gymnazium.sk',
+            'password': 'Password123!',
+            'school_license_key': '',
+            'initial_class_name': 'Sexta A',
+        })
+        self.assertEqual(response.status_code, 302)
+        teacher = User.objects.get(username='pilot_ucitel')
+        self.assertEqual(teacher.role, User.Role.TEACHER)
+        self.assertEqual(teacher.subscription_tier, User.SubscriptionTier.EDU)
+
+        # Pilotný kľúč bol automaticky vystavený v DB
+        pilot_license = SubscriptionLicense.objects.filter(tier='EDU', max_uses=35).first()
+        self.assertIsNotNone(pilot_license)
+
+        # Trieda bola vytvorená
+        created_class = SchoolClass.objects.filter(teacher=teacher, name='Sexta A').first()
+        self.assertIsNotNone(created_class)
+
+    def test_teacher_registration_invalid_key_fails(self):
+        response = self.client.post(reverse('register'), {
+            'role': 'TEACHER',
+            'username': 'fake_ucitel',
+            'email': 'fake@skola.sk',
+            'password': 'Password123!',
+            'school_license_key': 'NEEXISTUJUCI-KLUČ',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username='fake_ucitel').exists())
+
+    def test_get_license_portal_view(self):
+        # GET
+        response = self.client.get(reverse('get_license'))
+        self.assertEqual(response.status_code, 200)
+
+        # POST pre okamžité vygenerovanie pilotného EDU kľúča
+        post_data = {
+            'school_name': 'Stredná odborná škola technická',
+            'school_city': 'Nižná',
+            'contact_person': 'Mgr. Markéta Brišová',
+            'email': 'brisova@sos-nizna.sk',
+            'phone': '+421901234567',
+            'expected_students': 35,
+            'note': 'Pilotná výučba IV.C',
+        }
+        resp_post = self.client.post(reverse('get_license'), post_data)
+        self.assertEqual(resp_post.status_code, 200)
+        self.assertIn('generated_license', resp_post.context)
+
+        from accounts.models import SchoolLicenseRequest
+        req = SchoolLicenseRequest.objects.filter(email='brisova@sos-nizna.sk').first()
+        self.assertIsNotNone(req)
+        self.assertEqual(req.status, SchoolLicenseRequest.Status.PENDING)
+        self.assertIsNotNone(req.generated_license)
+        self.assertTrue(req.generated_license.code.startswith('EDU-'))
+

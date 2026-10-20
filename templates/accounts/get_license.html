@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if lang == 'en' %}Get Codoro School License (EDU) — For Teachers & Schools{% else %}Zaobstaranie školskej licencie Codoro EDU — Pre školy a učiteľov{% endif %}
+{% endblock %}
+
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="animate-in" style="max-width: 900px; margin: 1.5rem auto; padding-bottom: 3rem;">
+
+    <!-- ========================================================================
+         HERO SECTION: ZAOBSTARANIE ŠKOLSKEJ LICENCIE
+         ======================================================================== -->
+    <div style="background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%);
+                border: 1px solid var(--ro-indigo-border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem; text-align: center;">
+        <span style="background: var(--ro-indigo); color: #FFFFFF; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; padding: 0.2rem 0.65rem; border-radius: 999px; letter-spacing: 0.05em; display: inline-block; margin-bottom: 0.75rem;">
+            CODORO FOR EDUCATION (EDU)
+        </span>
+        <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem 0;">
+            {% if lang == 'en' %}Empower Your Classroom with Python{% else %}Zaobstarajte pre svoju triedu vzdelávací systém Codoro{% endif %}
+        </h1>
+        <p style="font-size: 0.96rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto; line-height: 1.6;">
+            {% if lang == 'en' %}
+            Complete classroom management, live code reviews, anti-inflation school reward economy, and unlimited Socratic AI Tutor Codo. Request a pilot license for your school in 30 seconds.
+            {% else %}
+            Kompletný triedny ekosystém, živá kontrola riešení, školská ekonomika reálnych odmien a neobmedzený Sokratovský AI tútor Codo. Získajte okamžitý pilotný kľúč pre svoju triedu za 30 sekúnd.
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Ak bol kľúč vygenerovaný (Success Box) -->
+    {% if generated_license %}
+    <div class="card-surface" style="padding: 2rem; border-color: #10B981; background: rgba(16, 185, 129, 0.06); margin-bottom: 2rem; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald-text); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 0.75rem;">
+            ✓
+        </div>
+        <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem;">
+            {% if lang == 'en' %}Pilot School License Generated!{% else %}Pilotný školský licenčný kľúč bol vygenerovaný!{% endif %}
+        </h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            {% if lang == 'en' %}Institution:{% else %}Pre inštitúciu:{% endif %} <strong>{{ school_name }}</strong> · {% if lang == 'en' %}Educator:{% else %}Vyučujúci:{% endif %} <strong>{{ contact_name }}</strong>
+        </p>
+
+        <div style="background: var(--bg-surface); border: 2px dashed var(--ro-indigo); border-radius: var(--radius-md); padding: 1.25rem; max-width: 420px; margin: 0 auto 1.5rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
+                {% if lang == 'en' %}Your School License Key{% else %}Váš licenčný kód do školy{% endif %}
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: var(--ro-indigo); letter-spacing: 0.06em;">
+                {{ generated_license.code }}
+            </div>
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.35rem;">
+                {{ generated_license.max_uses }} {% if lang == 'en' %}student activations included{% else %}študentských aktivácií pre triedu{% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'register' %}?role=teacher&key={{ generated_license.code }}" class="btn btn-primary" style="padding: 0.75rem 1.75rem; font-weight: 700;">
+            {% if lang == 'en' %}Proceed to Teacher Registration with this Key →{% else %}Pokračovať k registrácii učiteľa s týmto kľúčom →{% endif %}
+        </a>
+    </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem;">
+
+        <!-- ĽAVÝ STĹPEC: 4 HLAVNÉ PILIERE EDU PRE ŠKOLY -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="card-surface" style="padding: 1.25rem;">
+                <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--ro-indigo-soft); color: var(--ro-indigo); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                        🏫
+                    </div>
+                    <div>
+                        <h3 style="font-size: 0.98rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.2rem 0;">
+                            {% if lang == 'en' %}School Classroom Ecosystem{% else %}Ekosystém tried a pripájacie kódy{% endif %}
+                        </h3>
+                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                            {% if lang == 'en' %}Create multiple classes (e.g. IV.C, 1.A), share join codes, set collective class quests, and track live student progress.{% else %}Vytvárajte triedy, zdieľajte kódy so žiakmi, zadávajte triedne výzvy a sledujte výsledky celej triedy v reálnom čase.{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-surface" style="padding: 1.25rem;">
+                <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--visor-cyan-bg); color: var(--visor-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                        🤖
+                    </div>
+                    <div>
+                        <h3 style="font-size: 0.98rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.2rem 0;">
+                            {% if lang == 'en' %}Unlimited Socratic AI Tutor Codo{% else %}Neobmedzený Sokratovský AI tútor Codo{% endif %}
+                        </h3>
+                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                            {% if lang == 'en' %}Students never get spoon-fed code. Codo analyzes unit test failures and asks targeted guiding questions to teach problem solving.{% else %}Žiaci nedostanú hotové riešenie. Codo zanalyzuje chybu v teste a navedie žiaka otázkou na správnu logiku a riadok.{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-surface" style="padding: 1.25rem;">
+                <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--gold-bg); color: var(--gold-text); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                        🪙
+                    </div>
+                    <div>
+                        <h3 style="font-size: 0.98rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.2rem 0;">
+                            {% if lang == 'en' %}Stock-Managed School Rewards{% else %}Reálna školská ekonomika s riadením zásob{% endif %}
+                        </h3>
+                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                            {% if lang == 'en' %}Offer real rewards (homework waivers, +10% test points) with limited weekly stock per class to prevent inflation.{% else %}Vypisujte reálne školské odmeny (odpustenie domácej úlohy, +10 % bodov k písomke) s obmedzeným skladom pre triedu.{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-surface" style="padding: 1.25rem;">
+                <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--emerald-bg); color: var(--emerald-text); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                        🛠️
+                    </div>
+                    <div>
+                        <h3 style="font-size: 0.98rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.2rem 0;">
+                            {% if lang == 'en' %}Full Teacher CMS & AI Generator{% else %}Plný CMS redakčný systém a AI generátor úloh{% endif %}
+                        </h3>
+                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                            {% if lang == 'en' %}Create custom exercises, write assert unit tests, or auto-generate differentiated tasks using Gemini API in seconds.{% else %}Tvorba vlastných cvičení, automatické assert testy a generovanie nových úloh na mieru cez AI asistenta.{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRAVÝ STĹPEC: FORMULÁR ŽIADOSTI O ZAOBSTARANIE LICENCIE -->
+        <div class="card-surface" style="padding: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem 0;">
+                {% if lang == 'en' %}Request & Generate School License{% else %}Formulár zaobstarania školskej licencie{% endif %}
+            </h2>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                {% if lang == 'en' %}
+                Fill out this short form to instantly receive a 30-day pilot EDU key with full privileges.
+                {% else %}
+                Vyplňte formulár a systém vám okamžite vygeneruje pilotný EDU kľúč s plnými funkciami.
+                {% endif %}
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label">{% if lang == 'en' %}School / Educational Institution Name *{% else %}Názov školy / Inštitúcie *{% endif %}</label>
+                    <input type="text" name="school_name" class="form-control" required placeholder="napr. Spojená škola Nižná">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label">{% if lang == 'en' %}Educator Contact Name *{% else %}Meno a priezvisko vyučujúceho *{% endif %}</label>
+                    <input type="text" name="contact_name" class="form-control" required placeholder="napr. Mgr. Ján Novák">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label">{% if lang == 'en' %}School Email Address *{% else %}Školská e-mailová adresa *{% endif %}</label>
+                    <input type="email" name="email" class="form-control" required placeholder="ucitel@skola.sk">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Phone (optional){% else %}Telefón (voliteľné){% endif %}</label>
+                        <input type="text" name="phone" class="form-control" placeholder="+421 900 123 456">
+                    </div>
+                    <div>
+                        <label class="form-label">{% if lang == 'en' %}Estimated Students{% else %}Počet žiakov{% endif %}</label>
+                        <input type="number" name="estimated_students" class="form-control" value="30" min="5" max="500">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label class="form-label">{% if lang == 'en' %}Notes / Subjects (optional){% else %}Odbor / Zameranie triedy (voliteľné){% endif %}</label>
+                    <textarea name="note" class="form-control" rows="2" placeholder="napr. Trieda IV.C, odbor Informačno-mediálne technológie"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.78rem; font-weight: 700;">
+                    {% if lang == 'en' %}Generate Pilot License & Submit Request{% else %}Vygenerovať pilotnú licenciu a odoslať žiadosť{% endif %}
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

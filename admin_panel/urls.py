@@ -16,11 +16,13 @@ urlpatterns = [
     path('user/<int:user_id>/toggle-active/', views.admin_user_toggle_active, name='admin_user_toggle_active'),
     path('user/<int:user_id>/delete/', views.admin_user_delete, name='admin_user_delete'),
 
-    # Licencie
+    # Licencie a žiadosti škôl
     path('license/create/', views.admin_license_create, name='admin_license_create'),
     path('license/<int:license_id>/toggle/', views.admin_license_toggle, name='admin_license_toggle'),
     path('license/<int:license_id>/delete/', views.admin_license_delete, name='admin_license_delete'),
     path('license/quick-assign/', views.admin_license_quick_assign, name='admin_license_quick_assign'),
+    path('license/request/<int:request_id>/approve/', views.admin_license_request_approve, name='admin_license_request_approve'),
+    path('license/request/<int:request_id>/reject/', views.admin_license_request_reject, name='admin_license_request_reject'),
 
     # Globálne kurikulum
     path('module/<int:module_id>/toggle-pro/', views.admin_module_toggle_pro, name='admin_module_toggle_pro'),

@@ -45,11 +45,12 @@ def teacher_dashboard(request):
         exercise_count=Count('lessons__exercises', distinct=True)
     ).order_by('order')
     lessons = Lesson.objects.select_related('module').all().order_by('module__order', 'order')
-    classes = SchoolClass.objects.annotate(student_count=Count('students')).order_by('name')
+    classes = SchoolClass.objects.select_related('teacher').annotate(student_count=Count('students')).prefetch_related('students').order_by('name')
     licenses = SubscriptionLicense.objects.all().order_by('-created_at')
     active_drops = CoinDrop.objects.order_by('-available_from')[:10]
     all_quests = Quest.objects.all().order_by('period', '-id')
     class_quests = ClassQuest.objects.select_related('school_class').order_by('-deadline')[:10]
+    batch_created_students = request.session.pop('batch_created_students', None)
 
     return render(request, 'teacher_panel/dashboard.html', {
         'students': students,
@@ -63,6 +64,7 @@ def teacher_dashboard(request):
         'active_drops': active_drops,
         'all_quests': all_quests,
         'class_quests': class_quests,
+        'batch_created_students': batch_created_students,
     })
 
 
@@ -813,6 +815,108 @@ def cms_class_create(request):
 
         sc = SchoolClass.objects.create(name=name, join_code=join_code, teacher=request.user)
         messages.success(request, f"Trieda '{sc.name}' s prihlasovacím kódom '{sc.join_code}' bola vytvorená.")
+    return redirect('teacher_dashboard')
+
+
+@teacher_required
+def cms_class_delete(request, class_id):
+    """Zmazanie školskej triedy (žiaci zostanú v systéme, len sa odhlásia z triedy)."""
+    sc = get_object_or_404(SchoolClass, id=class_id)
+    if sc.teacher != request.user and not request.user.is_admin():
+        messages.error(request, "Nemáte oprávnenie zmazať túto triedu.")
+        return redirect('teacher_dashboard')
+
+    if request.method == 'POST':
+        name = sc.name
+        User.objects.filter(school_class=sc).update(school_class=None)
+        sc.delete()
+        messages.success(request, f"Trieda '{name}' bola vymazaná. Žiaci boli odhlásení z triedy.")
+    return redirect('teacher_dashboard')
+
+
+@teacher_required
+@transaction.atomic
+def cms_class_batch_students(request, class_id):
+    """
+    Hromadné vytvorenie študentských účtov pre triedu zo zoznamu mien.
+    Učiteľ zadá zoznam mien (1 na riadok) a systém automaticky vygeneruje študentské účty.
+    """
+    import unicodedata
+    import re
+    sc = get_object_or_404(SchoolClass, id=class_id)
+    if sc.teacher != request.user and not request.user.is_admin():
+        messages.error(request, "Nemáte oprávnenie spravovať túto triedu.")
+        return redirect('teacher_dashboard')
+
+    if request.method == 'POST':
+        raw_names = request.POST.get('student_names', '').strip()
+        default_pwd = request.POST.get('default_password', '').strip() or 'Codoro2027!'
+        lines = [line.strip() for line in raw_names.split('\n') if line.strip()]
+
+        if not lines:
+            messages.warning(request, "Nezadali ste žiadne mená žiakov.")
+            return redirect('teacher_dashboard')
+
+        created_students = []
+        for full_name in lines:
+            parts = full_name.split(None, 1)
+            first_name = parts[0]
+            last_name = parts[1] if len(parts) > 1 else ''
+
+            # Vyčistenie diakritiky pre login
+            clean_first = unicodedata.normalize('NFKD', first_name).encode('ASCII', 'ignore').decode('utf-8').lower()
+            clean_last = unicodedata.normalize('NFKD', last_name).encode('ASCII', 'ignore').decode('utf-8').lower()
+            clean_first = re.sub(r'[^a-z0-9]', '', clean_first)
+            clean_last = re.sub(r'[^a-z0-9]', '', clean_last)
+
+            base_username = f"{clean_first}_{clean_last}" if clean_last else clean_first
+            base_username = base_username[:20] or "student"
+
+            username = base_username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}_{counter}"
+                counter += 1
+
+            email = f"{username}@{sc.join_code.lower()}.codoro.local"
+            User.objects.create_user(
+                username=username,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password=default_pwd,
+                role=User.Role.STUDENT,
+                school_class=sc,
+                subscription_tier=User.SubscriptionTier.EDU,
+                doros=100
+            )
+            created_students.append({
+                'full_name': full_name,
+                'username': username,
+                'password': default_pwd,
+                'class_name': sc.name,
+                'join_code': sc.join_code,
+            })
+
+        request.session['batch_created_students'] = created_students
+        messages.success(request, f"Úspešne vytvorených {len(created_students)} študentských účtov pre triedu {sc.name}.")
+
+    return redirect('teacher_dashboard')
+
+
+@teacher_required
+def cms_class_remove_student(request, class_id, student_id):
+    """Odstránenie žiaka z triedy."""
+    sc = get_object_or_404(SchoolClass, id=class_id)
+    if sc.teacher != request.user and not request.user.is_admin():
+        messages.error(request, "Nemáte oprávnenie spravovať túto triedu.")
+        return redirect('teacher_dashboard')
+
+    student = get_object_or_404(User, id=student_id, school_class=sc)
+    if request.method == 'POST':
+        student.school_class = None
+        student.save(update_fields=['school_class'])
+        messages.info(request, f"Študent {student.username} bol odhlásený z triedy {sc.name}.")
     return redirect('teacher_dashboard')
 
 

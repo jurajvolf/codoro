@@ -574,6 +574,112 @@
                 </table>
             </div>
         </div>
+
+        <!-- ŽIADOSTI ŠKÔL O LICENCIE (SCHOOL INQUIRIES & PILOT REQUESTS) -->
+        <div style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    🏫 {% if lang == 'en' %}School License Inquiries & Pilot Requests{% else %}Žiadosti škôl o licencie a pilotné kľúče{% endif %} ({{ school_requests.count }})
+                </h3>
+                <a href="{% url 'get_license' %}" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700;">
+                    🔗 {% if lang == 'en' %}Open Public Request Portal ↗{% else %}Verejný portál žiadostí ↗{% endif %}
+                </a>
+            </div>
+
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                        <thead>
+                            <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
+                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Date{% else %}Dátum{% endif %}</th>
+                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}School / Educator{% else %}Škola / Vyučujúci{% endif %}</th>
+                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Contact{% else %}Kontakt{% endif %}</th>
+                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Students{% else %}Žiaci{% endif %}</th>
+                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Generated License{% else %}Priradený kľúč{% endif %}</th>
+                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                                <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}Admin Action{% else %}Rozhodnutie{% endif %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in school_requests %}
+                            <tr style="border-bottom: 1px solid var(--border-hairline);">
+                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted);">
+                                    {{ req.created_at|date:"d.m.Y H:i" }}
+                                </td>
+                                <td style="padding: 0.75rem 1rem;">
+                                    <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">{{ req.school_name }}</strong>
+                                    <span style="font-size: 0.78rem; color: var(--text-muted);">{{ req.contact_name }}</span>
+                                    {% if req.note %}
+                                    <p style="font-size: 0.74rem; color: var(--text-secondary); margin: 0.2rem 0 0 0; font-style: italic;">"{{ req.note }}"</p>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem 1rem; font-size: 0.78rem;">
+                                    <a href="mailto:{{ req.email }}" style="color: var(--ro-indigo); font-weight: 600; display: block;">{{ req.email }}</a>
+                                    {% if req.phone %}
+                                    <span style="color: var(--text-muted);">{{ req.phone }}</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 700; color: var(--text-primary);">
+                                    {{ req.estimated_students }}
+                                </td>
+                                <td style="padding: 0.75rem 1rem;">
+                                    {% if req.generated_license %}
+                                    <code style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; color: var(--ro-indigo);">{{ req.generated_license.code }}</code>
+                                    <span style="display: block; font-size: 0.7rem; color: var(--text-muted);">{{ req.generated_license.current_uses }}/{{ req.generated_license.max_uses }} využití</span>
+                                    {% else %}
+                                    <span style="color: var(--text-muted); font-size: 0.78rem;">—</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem 1rem;">
+                                    {% if req.status == 'APPROVED' %}
+                                    <span style="color: #10B981; font-weight: 800; font-size: 0.76rem; background: var(--emerald-bg); padding: 0.15rem 0.45rem; border-radius: 4px;">
+                                        ✓ {{ req.get_status_display }}
+                                    </span>
+                                    {% elif req.status == 'REJECTED' %}
+                                    <span style="color: #EF4444; font-weight: 800; font-size: 0.76rem; background: var(--flame-bg); padding: 0.15rem 0.45rem; border-radius: 4px;">
+                                        ✗ {{ req.get_status_display }}
+                                    </span>
+                                    {% else %}
+                                    <span style="color: var(--gold-text); font-weight: 800; font-size: 0.76rem; background: var(--gold-bg); padding: 0.15rem 0.45rem; border-radius: 4px;">
+                                        ⏳ {{ req.get_status_display }}
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem 1rem; text-align: right;">
+                                    <div style="display: flex; justify-content: flex-end; gap: 0.4rem;">
+                                        {% if req.status != 'APPROVED' %}
+                                        <form method="post" action="{% url 'admin_license_request_approve' req.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="max_uses" value="{{ req.estimated_students|default:35 }}">
+                                            <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.74rem; font-weight: 700;">
+                                                {% if lang == 'en' %}Approve EDU{% else %}Schváliť EDU{% endif %}
+                                            </button>
+                                        </form>
+                                        {% endif %}
+
+                                        {% if req.status != 'REJECTED' %}
+                                        <form method="post" action="{% url 'admin_license_request_reject' req.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; color: #EF4444;">
+                                                {% if lang == 'en' %}Reject{% else %}Odmietnuť{% endif %}
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                    {% if lang == 'en' %}No school license inquiries submitted yet.{% else %}Zatiaľ neboli zaevidované žiadne žiadosti o školské licencie.{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ========================================================================
