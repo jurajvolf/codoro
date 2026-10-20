@@ -1020,6 +1020,7 @@ html[data-theme="dark"] .landing-grid-overlay {
     padding: 1.5px;
     background: radial-gradient(350px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(99, 102, 241, 0.45), transparent 75%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
@@ -2555,8 +2556,8 @@ const SNIPPETS = [
         ],
         codo_init_sk: "<em>Codo analyzuje kód:</em> Skvelé použitie funkcie <code>ord()</code> a <code>chr()</code> s modulárnou aritmetikou. Aká je časová zložitosť tohto algoritmu?",
         codo_init_en: "<em>Codo analyzing code:</em> Elegant use of <code>ord()</code> and <code>chr()</code> with modular arithmetic. What is the time complexity with respect to text length?",
-        codo_run_sk: "<strong>Kryptografické testy úspešne overené (0.41ms)!</strong><br><em>Codo radí:</em> Algoritmus beží v čase O(n). Vieš, prečo je v Pythone lepšie použiť <code>"".join()</code> namiesto opakovaného sčítavania reťazcov <code>+</code>?",
-        codo_run_en: "<strong>Cryptographic tests verified (0.41ms)!</strong><br><em>Codo tip:</em> The algorithm runs in linear O(n) time. Why is <code>"".join()</code> vastly faster in Python than repeated string concatenation <code>+</code>?"
+        codo_run_sk: "<strong>Kryptografické testy úspešne overené (0.41ms)!</strong><br><em>Codo radí:</em> Algoritmus beží v čase O(n). Vieš, prečo je v Pythone lepšie použiť <code>\'\'.join()</code> namiesto opakovaného sčítavania reťazcov <code>+</code>?",
+        codo_run_en: "<strong>Cryptographic tests verified (0.41ms)!</strong><br><em>Codo tip:</em> The algorithm runs in linear O(n) time. Why is <code>\'\'.join()</code> vastly faster in Python than repeated string concatenation <code>+</code>?"
     },
     {
         filename: "03_fibonacci.py",
