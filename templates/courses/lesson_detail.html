@@ -660,7 +660,13 @@
             <div class="console-panel-body" id="console-panel-tests" style="color: #CBD5E1;">
                 {% if latest_submission %}
                 <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; font-size: 0.76rem; color: #94A3B8;">
-                    <span>Execution Status: <strong style="color:{% if latest_submission.status == 'PASSED' %}#10B981{% else %}#EF4444{% endif %};">{{ latest_submission.status }}</strong></span>
+                    <span>Execution Status: 
+                        {% if latest_submission.status == 'PASSED' %}
+                        <strong style="color: #10B981;">{{ latest_submission.status }}</strong>
+                        {% else %}
+                        <strong style="color: #EF4444;">{{ latest_submission.status }}</strong>
+                        {% endif %}
+                    </span>
                     <span>Time: {{ latest_submission.execution_time_ms }} ms</span>
                 </div>
                 <pre style="margin: 0; white-space: pre-wrap; word-break: break-all; color: #E2E8F0;">{{ latest_submission.output_log }}</pre>
@@ -696,9 +702,11 @@
                 {% for sub in submission_history %}
                 <div style="padding: 0.45rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); display: flex; justify-content: space-between; font-size: 0.78rem;">
                     <div>
-                        <span style="font-weight: 700; color: {% if sub.status == 'PASSED' %}#10B981{% else %}#EF4444{% endif %}; margin-right: 0.5rem;">
-                            {{ sub.status }}
-                        </span>
+                        {% if sub.status == 'PASSED' %}
+                        <span style="font-weight: 700; color: #10B981; margin-right: 0.5rem;">{{ sub.status }}</span>
+                        {% else %}
+                        <span style="font-weight: 700; color: #EF4444; margin-right: 0.5rem;">{{ sub.status }}</span>
+                        {% endif %}
                         <span style="color: #94A3B8;">{{ sub.created_at|date:"d.m.Y H:i" }}</span>
                         {% if sub.teacher_comment %}
                         <span style="color: var(--ro-indigo); font-weight: 700; margin-left: 0.4rem;">💬 Review</span>

@@ -574,7 +574,7 @@
              id="module-card-{{ card.module.id }}">
 
             <!-- Klikateľná hlavička akordeónu -->
-            <div class="module-accordion-header" onclick="toggleModuleAccordion({{ card.module.id }})">
+            <div class="module-accordion-header" onclick="toggleModuleAccordion(this)">
                 <div class="module-header-left">
                     <div class="module-number-badge">
                         {% if card.done == card.total and card.total > 0 %}
@@ -592,12 +592,19 @@
                             <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 0.1rem 0.45rem; border-radius: 6px;">
                                 {{ card.module.estimated_hours }}h
                             </span>
-                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px;
-                                {% if card.module.difficulty_level == 'BEGINNER' %}background: var(--emerald-bg); color: var(--emerald-text);
-                                {% elif card.module.difficulty_level == 'INTERMEDIATE' %}background: var(--gold-bg); color: var(--gold-text);
-                                {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
+                            {% if card.module.difficulty_level == 'BEGINNER' %}
+                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px; background: var(--emerald-bg); color: var(--emerald-text);">
                                 {{ card.module.get_difficulty_level_display }}
                             </span>
+                            {% elif card.module.difficulty_level == 'INTERMEDIATE' %}
+                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px; background: var(--gold-bg); color: var(--gold-text);">
+                                {{ card.module.get_difficulty_level_display }}
+                            </span>
+                            {% else %}
+                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px; background: var(--flame-bg); color: var(--flame-text);">
+                                {{ card.module.get_difficulty_level_display }}
+                            </span>
+                            {% endif %}
                             {% if card.module.is_pro_only %}
                             <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.1rem 0.45rem; border-radius: 6px;">
                                 PRO / EDU
@@ -653,12 +660,19 @@
                        class="lesson-item-row {% if next_lesson and lesson.id == next_lesson.id %}is-active{% endif %}"
                        data-lesson-title="{% if lang == 'en' %}{{ lesson.title_en|lower }}{% else %}{{ lesson.title_sk|lower }}{% endif %}">
                         <div style="display: flex; align-items: center; gap: 0.85rem; min-width: 0;">
-                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-                                {% if lesson.id in completed_lesson_ids %}background: var(--emerald-bg); color: var(--emerald-text);
-                                {% elif next_lesson and lesson.id == next_lesson.id %}background: var(--ro-indigo); color: #fff;
-                                {% else %}background: var(--bg-surface); color: var(--text-muted); border: 1px solid var(--border-hairline);{% endif %}">
-                                {% if lesson.id in completed_lesson_ids %}✓{% else %}{{ lesson.order }}{% endif %}
+                            {% if lesson.id in completed_lesson_ids %}
+                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--emerald-bg); color: var(--emerald-text);">
+                                ✓
                             </span>
+                            {% elif next_lesson and lesson.id == next_lesson.id %}
+                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--ro-indigo); color: #ffffff;">
+                                {{ lesson.order }}
+                            </span>
+                            {% else %}
+                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--bg-surface); color: var(--text-muted); border: 1px solid var(--border-hairline);">
+                                {{ lesson.order }}
+                            </span>
+                            {% endif %}
 
                             <div style="min-width: 0;">
                                 <div style="display: flex; align-items: center; gap: 0.45rem;">
@@ -854,7 +868,11 @@
 
                     <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                         {% for s in leaderboard %}
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.65rem; border-radius:var(--radius-sm); {% if s.id == user.id %}background: var(--ro-indigo-soft); border: 1px solid var(--ro-indigo-border);{% else %}background: var(--bg-subtle);{% endif %}">
+                        {% if s.id == user.id %}
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.65rem; border-radius:var(--radius-sm); background: var(--ro-indigo-soft); border: 1px solid var(--ro-indigo-border);">
+                        {% else %}
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.65rem; border-radius:var(--radius-sm); background: var(--bg-subtle);">
+                        {% endif %}
                             <div style="display: flex; align-items: center; gap: 0.6rem;">
                                 <span class="podium-rank-chip {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
                                     #{{ forloop.counter }}
@@ -888,8 +906,8 @@
 
 <!-- JavaScript pre Akordeóny, Filtrovanie Trackov, Vyhľadávanie a Prepínanie Záložiek -->
 <script>
-    function toggleModuleAccordion(moduleId) {
-        var card = document.getElementById('module-card-' + moduleId);
+    function toggleModuleAccordion(param) {
+        var card = (param && param.closest) ? param.closest('.module-accordion-card') : document.getElementById('module-card-' + param);
         if (!card) return;
         var wasOpen = card.classList.contains('open');
 
