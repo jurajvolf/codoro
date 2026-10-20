@@ -1,0 +1,716 @@
+{% extends 'base.html' %}
+{% load static %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+{% block title %}
+codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python Ťaháky & Slovník pojmov{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="cheatsheet-page-container">
+
+    <!-- Horná Hero hlavička -->
+    <div class="hero-cheatsheet card-surface">
+        <div class="hero-cheatsheet-content">
+            <div class="hero-cheatsheet-badge">
+                <span class="badge-dot"></span>
+                <span>{% if lang == 'en' %}Interactive Reference & Syntax Guide{% else %}Interaktívna referenčná príručka & syntax{% endif %}</span>
+            </div>
+            <h1 class="hero-cheatsheet-title">
+                📚 {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python Ťaháky & Slovník pojmov{% endif %}
+            </h1>
+            <p class="hero-cheatsheet-subtitle">
+                {% if lang == 'en' %}
+                Quick interactive reference with executable code snippets, return types, and Big-O complexities for maturitná exam and real-world development.
+                {% else %}
+                Okamžitá interaktívna príručka s priamo spustiteľnými ukážkami kódu, návratovými hodnotami a Big-O zložitosťami pre maturitu aj praktický vývoj.
+                {% endif %}
+            </p>
+        </div>
+        
+        <!-- Vyhľadávacie pole v reálnom čase -->
+        <div class="cheatsheet-search-box">
+            <div class="search-input-wrapper">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="cheatsheetSearchInput" class="cheatsheet-search-input" 
+                       placeholder="{% if lang == 'en' %}Search functions, methods, Big-O, keywords (e.g. print, split, lambda, sqlite3)...{% else %}Hľadať funkcie, metódy, Big-O, kľúčové slová (napr. print, split, lambda, sqlite3)...{% endif %}"
+                       autocomplete="off" autofocus>
+                <button type="button" id="clearSearchBtn" class="clear-search-btn" style="display: none;" title="{% if lang == 'en' %}Clear search{% else %}Vymazať filter{% endif %}">
+                    ✕
+                </button>
+            </div>
+            <div class="search-stats-bar">
+                <span id="resultsCount"><strong>{{ total_items_count }}</strong> {% if lang == 'en' %}entries available{% else %}dostupných ťahákov a pojmov{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Horizontálne prepínacie záložky (Segmented Category Pills) -->
+    <div class="category-tabs-container">
+        <div class="category-tabs-scroll" id="categoryTabs">
+            <button class="cat-pill active" data-category="all">
+                <span class="cat-pill-icon">✨</span>
+                <span>{% if lang == 'en' %}All Categories{% else %}Všetky kategórie{% endif %}</span>
+                <span class="cat-pill-count">{{ total_items_count }}</span>
+            </button>
+            {% for cat in categories %}
+            <button class="cat-pill" data-category="{{ cat.id }}">
+                <span class="cat-pill-icon">{{ cat.icon }}</span>
+                <span>{% if lang == 'en' %}{{ cat.name_en }}{% else %}{{ cat.name_sk }}{% endif %}</span>
+                <span class="cat-pill-count">{{ cat.count }}</span>
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Mriežka kariet ťahákov -->
+    <div class="cheatsheet-grid" id="cheatsheetGrid">
+        {% for item in items %}
+        <div class="cheat-card card-surface" 
+             data-category="{{ item.category }}" 
+             data-tags="{{ item.tags|join:' ' }}"
+             data-search="{{ item.title_sk|lower }} {{ item.title_en|lower }} {{ item.syntax|lower }} {{ item.return_type|lower }} {{ item.tags|join:' '|lower }}">
+            
+            <!-- Hlavička karty -->
+            <div class="cheat-card-header">
+                <div class="cheat-card-badges">
+                    <span class="badge-cat badge-cat-{{ item.category }}">
+                        {% if item.category == 'syntax' %}⚡ Syntax
+                        {% elif item.category == 'strings' %}🔤 Strings
+                        {% elif item.category == 'collections' %}📦 Collections
+                        {% elif item.category == 'functions' %}⚙️ Functions
+                        {% elif item.category == 'oop' %}🏗️ OOP
+                        {% elif item.category == 'algorithms' %}🚀 Algorithms
+                        {% else %}{{ item.category|upper }}
+                        {% endif %}
+                    </span>
+                    <span class="badge-return" title="{% if lang == 'en' %}Return type / evaluation{% else %}Návratová hodnota / typ{% endif %}">
+                        ↵ {{ item.return_type }}
+                    </span>
+                </div>
+                <h2 class="cheat-card-title">
+                    {% if lang == 'en' %}{{ item.title_en }}{% else %}{{ item.title_sk }}{% endif %}
+                </h2>
+                <div class="cheat-card-syntax">
+                    <code>{{ item.syntax }}</code>
+                </div>
+            </div>
+
+            <!-- Popis -->
+            <div class="cheat-card-body">
+                <p class="cheat-card-desc">
+                    {% if lang == 'en' %}{{ item.description_en }}{% else %}{{ item.description_sk }}{% endif %}
+                </p>
+                
+                <!-- Kód a tlačidlo kopírovania -->
+                <div class="code-snippet-box">
+                    <div class="code-snippet-header">
+                        <span class="code-lang-label">Python 3</span>
+                        <button class="btn-copy-code" onclick="copySnippet(this)" title="{% if lang == 'en' %}Copy code snippet{% else %}Kopírovať ukážku kódu{% endif %}">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            <span class="copy-text">{% if lang == 'en' %}Copy{% else %}Kopírovať{% endif %}</span>
+                        </button>
+                    </div>
+                    <pre class="cheat-code-pre"><code class="language-python">{{ item.code_example }}</code></pre>
+                </div>
+            </div>
+
+            <!-- Pätička s tagmi -->
+            <div class="cheat-card-footer">
+                <div class="cheat-tags-list">
+                    {% for tag in item.tags|slice:":4" %}
+                    <span class="cheat-tag">#{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Žiadne výsledky stav -->
+    <div id="noResultsState" class="no-results-box card-surface" style="display: none;">
+        <div class="no-results-icon">🔍</div>
+        <h3>{% if lang == 'en' %}No matching cheat sheets found{% else %}Nenašli sa žiadne zhodné ťaháky{% endif %}</h3>
+        <p>{% if lang == 'en' %}Try searching for another keyword, e.g. "print", "list", "lambda", "sqlite3" or clear the filter.{% else %}Skús vyhľadať iné kľúčové slovo, napr. "print", "list", "lambda", "sqlite3" alebo resetuj filter.{% endif %}</p>
+        <button class="btn-reset-filter" onclick="resetAllFilters()">
+            {% if lang == 'en' %}Show All Cheat Sheets{% else %}Zobraziť všetky ťaháky{% endif %}
+        </button>
+    </div>
+
+</div>
+
+<!-- Štýly pre interaktívne ťaháky -->
+<style>
+.cheatsheet-page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Hero sekcia */
+.hero-cheatsheet {
+    padding: 2rem 2.5rem;
+    border-radius: var(--radius-xl);
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border: 1px solid var(--border-hairline);
+    position: relative;
+    overflow: hidden;
+}
+
+html[data-theme="dark"] .hero-cheatsheet {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.hero-cheatsheet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: var(--ro-indigo-soft);
+    color: var(--ro-indigo);
+    border: 1px solid var(--ro-indigo-border);
+    width: fit-content;
+}
+
+.hero-cheatsheet-title {
+    font-size: 2.1rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    margin: 0.5rem 0 0.4rem;
+    line-height: 1.2;
+}
+
+.hero-cheatsheet-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 850px;
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* Vyhľadávacie pole */
+.cheatsheet-search-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.25rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.cheatsheet-search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 3.25rem;
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-strong);
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.cheatsheet-search-input:focus {
+    outline: none;
+    border-color: var(--ro-indigo);
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 4px var(--ro-indigo-soft);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 1.25rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.15s ease;
+}
+
+.clear-search-btn:hover {
+    color: var(--text-primary);
+    background: var(--border-hairline);
+}
+
+.search-stats-bar {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding-left: 0.25rem;
+}
+
+/* Horizontálne kategórie (Pills) */
+.category-tabs-container {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+}
+
+.category-tabs-scroll {
+    display: flex;
+    gap: 0.6rem;
+    min-width: max-content;
+}
+
+.cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-xs);
+    white-space: nowrap;
+}
+
+.cat-pill:hover {
+    border-color: var(--ro-indigo);
+    color: var(--ro-indigo);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.cat-pill.active {
+    background: var(--ro-indigo);
+    border-color: var(--ro-indigo);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(70, 54, 245, 0.3);
+}
+
+.cat-pill.active .cat-pill-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+}
+
+.cat-pill-count {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+/* Mriežka kariet */
+.cheatsheet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .cheatsheet-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Samotná karta */
+.cheat-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-hairline);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cheat-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--ro-indigo-border);
+    box-shadow: var(--shadow-md);
+}
+
+.cheat-card-header {
+    margin-bottom: 1rem;
+}
+
+.cheat-card-badges {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge-cat {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+.badge-cat-syntax { background: #EEF2FF; color: #4338CA; border-color: #C7D2FE; }
+.badge-cat-strings { background: #ECFDF5; color: #047857; border-color: #A7F3D0; }
+.badge-cat-collections { background: #FEF3C7; color: #B45309; border-color: #FDE68A; }
+.badge-cat-functions { background: #F3E8FF; color: #6B21A8; border-color: #E9D5FF; }
+.badge-cat-oop { background: #ECFEFF; color: #0E7490; border-color: #A5F3FC; }
+.badge-cat-algorithms { background: #FDF2F8; color: #BE185D; border-color: #FBCFE8; }
+
+html[data-theme="dark"] .badge-cat-syntax { background: rgba(67, 56, 202, 0.2); color: #A5B4FC; border-color: rgba(99, 102, 241, 0.4); }
+html[data-theme="dark"] .badge-cat-strings { background: rgba(4, 120, 87, 0.2); color: #6EE7B7; border-color: rgba(16, 185, 129, 0.4); }
+html[data-theme="dark"] .badge-cat-collections { background: rgba(180, 83, 9, 0.2); color: #FCD34D; border-color: rgba(245, 158, 11, 0.4); }
+html[data-theme="dark"] .badge-cat-functions { background: rgba(107, 33, 168, 0.2); color: #D8B4FE; border-color: rgba(168, 85, 247, 0.4); }
+html[data-theme="dark"] .badge-cat-oop { background: rgba(14, 116, 144, 0.2); color: #67E8F9; border-color: rgba(6, 182, 212, 0.4); }
+html[data-theme="dark"] .badge-cat-algorithms { background: rgba(190, 24, 93, 0.2); color: #F472B6; border-color: rgba(236, 72, 153, 0.4); }
+
+.badge-return {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    border: 1px solid var(--border-hairline);
+}
+
+.cheat-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+    line-height: 1.35;
+}
+
+.cheat-card-syntax {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem;
+}
+
+.cheat-card-syntax code {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ro-indigo);
+    word-break: break-all;
+    font-weight: 600;
+}
+
+.cheat-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.cheat-card-desc {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Kódový blok s tlačidlom */
+.code-snippet-box {
+    border-radius: var(--radius-md);
+    background: #0F172A;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.code-snippet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.code-lang-label {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    color: #94A3B8;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.btn-copy-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 5px;
+    padding: 0.2rem 0.55rem;
+    color: #E2E8F0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-copy-code:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+}
+
+.btn-copy-code.copied {
+    background: #10B981;
+    border-color: #10B981;
+    color: #FFFFFF;
+}
+
+.cheat-code-pre {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #F8FAFC;
+}
+
+.cheat-code-pre code {
+    background: none !important;
+    padding: 0 !important;
+    color: inherit;
+    font-weight: 500;
+}
+
+/* Tagy v pätičke */
+.cheat-card-footer {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-hairline);
+}
+
+.cheat-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.cheat-tag {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+}
+
+/* Prázdny stav vyhľadávania */
+.no-results-box {
+    padding: 4rem 2rem;
+    text-align: center;
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.no-results-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-results-box h3 {
+    font-size: 1.35rem;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.no-results-box p {
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 0 1rem;
+}
+
+.btn-reset-filter {
+    background: var(--ro-indigo);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-reset-filter:hover {
+    background: var(--ro-indigo-hover);
+    transform: translateY(-1px);
+}
+</style>
+
+<!-- Interaktívna JS logika pre okamžité filtrovanie a kopírovanie -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('cheatsheetSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const resultsCountEl = document.getElementById('resultsCount');
+    const categoryTabs = document.getElementById('categoryTabs');
+    const cards = Array.from(document.querySelectorAll('.cheat-card'));
+    const noResultsState = document.getElementById('noResultsState');
+
+    let currentCategory = 'all';
+    let searchQuery = '';
+
+    // Filtračná funkcia
+    function filterCards() {
+        const query = searchQuery.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            const searchIndex = card.getAttribute('data-search') || '';
+
+            const matchesCategory = (currentCategory === 'all' || cardCat === currentCategory);
+            const matchesQuery = (!query || searchIndex.includes(query));
+
+            if (matchesCategory && matchesQuery) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Aktualizácia počítadla a prázdneho stavu
+        const isEn = '{{ lang }}' === 'en';
+        if (resultsCountEl) {
+            resultsCountEl.innerHTML = `<strong>${visibleCount}</strong> ${isEn ? 'entries found' : 'nájdených ťahákov'}`;
+        }
+
+        if (visibleCount === 0) {
+            noResultsState.style.display = 'flex';
+        } else {
+            noResultsState.style.display = 'none';
+        }
+
+        if (clearBtn) {
+            clearBtn.style.display = query ? 'inline-flex' : 'none';
+        }
+    }
+
+    // Vyhľadávanie pri písaní
+    if (searchInput) {
+        searchInput.addEventListener('input', function (e) {
+            searchQuery = e.target.value;
+            filterCards();
+        });
+    }
+
+    // Vymazanie vyhľadávania
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            searchInput.value = '';
+            searchQuery = '';
+            filterCards();
+            searchInput.focus();
+        });
+    }
+
+    // Kliknutie na kategórie (Pills)
+    if (categoryTabs) {
+        categoryTabs.addEventListener('click', function (e) {
+            const pill = e.target.closest('.cat-pill');
+            if (!pill) return;
+
+            categoryTabs.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            currentCategory = pill.getAttribute('data-category');
+            filterCards();
+        });
+    }
+
+    // Globálny reset filtrov
+    window.resetAllFilters = function () {
+        currentCategory = 'all';
+        searchQuery = '';
+        if (searchInput) searchInput.value = '';
+        categoryTabs.querySelectorAll('.cat-pill').forEach(p => {
+            if (p.getAttribute('data-category') === 'all') {
+                p.classList.add('active');
+            } else {
+                p.classList.remove('active');
+            }
+        });
+        filterCards();
+    };
+});
+
+// Kopírovanie ukážky kódu do schránky
+function copySnippet(btn) {
+    const card = btn.closest('.cheat-card');
+    if (!card) return;
+    const codeEl = card.querySelector('.cheat-code-pre code');
+    if (!codeEl) return;
+
+    const textToCopy = codeEl.innerText || codeEl.textContent;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalHtml = btn.innerHTML;
+        btn.classList.add('copied');
+        const isEn = '{{ lang }}' === 'en';
+        btn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="copy-text">${isEn ? 'Copied!' : 'Skopírované!'}</span>
+        `;
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = originalHtml;
+        }, 1800);
+    }).catch(err => {
+        console.error('Nepodarilo sa skopírovať kód:', err);
+    });
+}
+</script>
+{% endblock %}

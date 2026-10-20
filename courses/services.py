@@ -36,7 +36,7 @@ FORBIDDEN_MODULES = {
     'os', 'sys', 'subprocess', 'shutil', 'socket', 'ctypes', 'importlib', 'pathlib',
     'builtins', 'multiprocessing', 'threading', 'signal', 'pickle', 'marshal', 'urllib',
     'http', 'requests', 'glob', 'tempfile', 'io', 'inspect', 'gc', 'code', 'pty', 'asyncio',
-    'webbrowser', 'ftplib', 'smtplib', 'sqlite3', 'resource', 'platform',
+    'webbrowser', 'ftplib', 'smtplib', 'resource', 'platform',
 }
 FORBIDDEN_CALLS = {
     'open', 'eval', 'exec', 'compile', '__import__', 'globals', 'locals', 'vars',

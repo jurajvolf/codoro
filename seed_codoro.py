@@ -112,9 +112,9 @@ def run_seed():
     )
 
     # ==================================================================
-    # 4. KOMPLETNÝCH 12 MODULOV KURIKULA CODORO (140+ HODÍN, 58+ LEKCIÍ)
-    # ==================================================================
-    print("📚 Napĺňam 12 modulov vzdelávacieho kurikula Codoro...")
+    # 4. KOMPLETNÝCH 18 MODULOV KURIKULA CODORO (220+ HODÍN, 83 LEKCIÍ, 249 CVIČENÍ)
+    # ==============================================================================
+    print("📚 Napĺňam 18 modulov vzdelávacieho kurikula Codoro...")
     total_modules = 0
     total_lessons = 0
     total_quizzes = 0
@@ -139,6 +139,7 @@ def run_seed():
                 'is_pro_only': m_data.get('is_pro_only', False),
                 'icon_name': icon_name,
                 'is_published': m_data.get('is_published', True),
+                'track': m_data.get('track', Module.Track.FUNDAMENTALS),
             }
         )
         total_modules += 1
@@ -361,7 +362,7 @@ def run_seed():
             reason_en='Starter bonus and activity rewards'
         )
 
-    print("✅ Databáza Codoro bola úspešne naplnená všetkými 12 modulmi, odznakmi a odmenami!")
+    print("✅ Databáza Codoro bola úspešne naplnená všetkými 18 modulmi, odznakmi a odmenami!")
     print("👉 Prihlásenie UČITEĽ:  meno: ucitel  | heslo: heslo123")
     print("👉 Prihlásenie ŠTUDENT: meno: student | heslo: heslo123")
 

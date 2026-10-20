@@ -15,6 +15,7 @@ from gamification.services import (
     get_quest_progress_for, update_quests, get_active_class_quest,
     contribute_to_class_quest, award_badges, badge_leaderboard_counts
 )
+from .curriculum.cheatsheets_data import CHEATSHEET_CATEGORIES, CHEATSHEET_ITEMS
 
 
 def _leaderboard_for(user, limit=8):
@@ -38,12 +39,21 @@ def dashboard(request):
     # Prehľad modulov s percentuálnym progresom
     module_cards = []
     next_lesson = None
+    total_lessons = 0
+    total_completed = 0
+    first_incomplete_module_id = None
+
     for module in modules:
         lessons = list(module.lessons.all())
         done = sum(1 for lesson in lessons if lesson.id in completed_lesson_ids)
+        total_lessons += len(lessons)
+        total_completed += done
         locked = module.is_pro_only and not user.has_pro_access()
         if not next_lesson and not locked:
             next_lesson = next((lesson for lesson in lessons if lesson.id not in completed_lesson_ids), None)
+        if first_incomplete_module_id is None and not locked and (done < len(lessons) or len(lessons) == 0):
+            first_incomplete_module_id = module.id
+
         module_cards.append({
             'module': module,
             'lessons': lessons,
@@ -52,6 +62,11 @@ def dashboard(request):
             'pct': int(done * 100 / len(lessons)) if lessons else 0,
             'locked': locked,
         })
+
+    if first_incomplete_module_id is None and module_cards:
+        first_incomplete_module_id = module_cards[0]['module'].id
+
+    overall_progress_pct = int(total_completed * 100 / total_lessons) if total_lessons else 0
 
     # Osobné questy (Daily / Weekly / Monthly) s automatickým resetom obdobia
     quest_items = get_quest_progress_for(user) if not user.is_teacher() else []
@@ -81,6 +96,10 @@ def dashboard(request):
         'next_lesson': next_lesson,
         'completed_lesson_ids': completed_lesson_ids,
         'solved_count': len(solved_ids),
+        'total_lessons': total_lessons,
+        'total_completed': total_completed,
+        'overall_progress_pct': overall_progress_pct,
+        'default_open_module_id': first_incomplete_module_id,
         'quest_items': quest_items,
         'class_quest': class_quest,
         'top_contributors': top_contributors,
@@ -298,6 +317,14 @@ def lesson_detail(request, lesson_id):
     prev_lesson = all_lessons[idx - 1] if idx > 0 else None
     next_lesson = all_lessons[idx + 1] if idx + 1 < len(all_lessons) else None
 
+    module_lessons = list(lesson.module.lessons.order_by('order'))
+    completed_lesson_ids = set(
+        LessonProgress.objects.filter(student=user, is_completed=True).values_list('lesson_id', flat=True)
+    )
+    submission_history = list(
+        Submission.objects.filter(student=user, exercise=current_exercise).order_by('-created_at')[:10]
+    ) if current_exercise else []
+
     context = {
         'lesson': lesson,
         'exercises': exercises,
@@ -314,6 +341,9 @@ def lesson_detail(request, lesson_id):
         'lesson_completed': bool(progress and progress.is_completed),
         'prev_lesson': prev_lesson,
         'next_lesson': next_lesson,
+        'module_lessons': module_lessons,
+        'completed_lesson_ids': completed_lesson_ids,
+        'submission_history': submission_history,
         'ai_hints_remaining': user.ai_hints_remaining(),
     }
     return render(request, 'courses/lesson_detail.html', context)
@@ -414,3 +444,24 @@ def practice_arena(request):
         'search_query': q,
     }
     return render(request, 'courses/practice_arena.html', context)
+
+
+@login_required
+def cheat_sheets_view(request):
+    """Interaktívne Python Ťaháky a Slovník pojmov (/cheatsheets/)."""
+    user = request.user
+    lang = getattr(user, 'preferred_language', 'sk')
+
+    categories = []
+    for cat in CHEATSHEET_CATEGORIES:
+        cat_items = [it for it in CHEATSHEET_ITEMS if it['category'] == cat['id']]
+        c_copy = dict(cat)
+        c_copy['count'] = len(cat_items)
+        categories.append(c_copy)
+
+    context = {
+        'categories': categories,
+        'items': CHEATSHEET_ITEMS,
+        'total_items_count': len(CHEATSHEET_ITEMS),
+    }
+    return render(request, 'courses/cheat_sheets.html', context)

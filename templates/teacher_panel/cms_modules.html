@@ -3,6 +3,94 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
+<style>
+    /* ==========================================================================
+       CMS MODULES: TREE ACCORDION VIEW (ANTI-SCROLL PROGRESSIVE DISCLOSURE)
+       ========================================================================== */
+    .cms-tree-module {
+        border-radius: var(--radius-lg);
+        background: var(--bg-surface);
+        border: 1.5px solid var(--border-hairline);
+        overflow: hidden;
+        margin-bottom: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cms-tree-module.open {
+        border-color: var(--ro-indigo-border);
+        box-shadow: var(--shadow-sm);
+    }
+    .cms-tree-module-header {
+        padding: 1.15rem 1.45rem;
+        background: var(--bg-surface);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s ease;
+    }
+    .cms-tree-module-header:hover {
+        background: var(--bg-subtle);
+    }
+    .cms-module-chevron {
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        transition: transform 0.2s ease;
+    }
+    .cms-tree-module.open .cms-module-chevron {
+        transform: rotate(180deg);
+        color: var(--ro-indigo);
+    }
+    .cms-tree-lessons-drawer {
+        display: none;
+        padding: 1rem 1.45rem 1.25rem;
+        background: var(--bg-subtle);
+        border-top: 1px solid var(--border-hairline);
+    }
+    .cms-tree-module.open .cms-tree-lessons-drawer {
+        display: block;
+        animation: fadeIn 0.2s ease;
+    }
+
+    /* Nested Lesson Tree Node */
+    .cms-lesson-node {
+        border-radius: var(--radius-md);
+        background: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        margin-bottom: 0.65rem;
+        overflow: hidden;
+    }
+    .cms-lesson-node-header {
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .cms-lesson-children-drawer {
+        display: none;
+        padding: 0.75rem 1rem 1rem;
+        background: var(--bg-subtle);
+        border-top: 1px solid var(--border-hairline);
+        font-size: 0.85rem;
+    }
+    .cms-lesson-node.open .cms-lesson-children-drawer {
+        display: block;
+        animation: fadeIn 0.15s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(3px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 <div class="animate-in" style="margin-bottom: 2rem;">
 
     <!-- Horná lišta: Nadpis a akcie -->
@@ -10,20 +98,20 @@
         <div>
             <div style="display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                {% if lang == 'en' %}CONTENT MANAGEMENT SYSTEM{% else %}REDACNÝ SYSTÉM VÝUČBY{% endif %}
+                {% if lang == 'en' %}CONTENT MANAGEMENT SYSTEM{% else %}REDAKČNÝ SYSTÉM VÝUČBY{% endif %}
             </div>
             <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; color: var(--text-primary);">
                 {% if lang == 'en' %}Curriculum & Modules Studio{% else %}Správa modulov a kurikula{% endif %}
             </h1>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0.35rem 0 0;">
-                {% if lang == 'en' %}Create, reorganize, edit lessons, coding exercises and automated test cases.{% else %}Tvorba, zmena poradia a kompletná správa modulov, výkladov, zadaní a assert testov.{% endif %}
+                {% if lang == 'en' %}Expand any module or lesson to inspect nested coding exercises, unit tests, and quizzes.{% else %}Kliknutím na modul alebo lekciu rozbaľte zoznam cvičení, automatických testov a kvízov.{% endif %}
             </p>
         </div>
 
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
             <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary btn-sm" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
-                {% if lang == 'en' %}Back to Studio{% else %}Späť do štúdia{% endif %}
+                {% if lang == 'en' %}Back to Dashboard{% else %}Späť na prehľad{% endif %}
             </a>
             <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('modal-create-module').style.display='flex';" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -33,7 +121,7 @@
     </div>
 
     <!-- Metriky kurikula -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.75rem;">
         <div class="card-surface" style="padding: 1.15rem 1.35rem; border-radius: var(--radius-md); display: flex; align-items: center; gap: 1rem;">
             <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--ro-indigo-soft); color: var(--ro-indigo); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h10M7 12h10M7 17h10"/></svg>
@@ -75,145 +163,177 @@
         </div>
     </div>
 
-    <!-- Zoznam Modulov -->
-    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <!-- Zoznam Modulov v podobe Tree Akordeónu -->
+    <div style="display: flex; flex-direction: column;">
         {% for module in modules %}
-        <div class="card-surface" style="border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-hairline);">
+        <div class="cms-tree-module {% if forloop.first %}open{% endif %}" id="cms-mod-{{ module.id }}">
 
             <!-- Hlavička karty modulu -->
-            <div style="padding: 1.35rem 1.65rem; background: var(--bg-surface); display: flex; justify-content: space-between; align-items: center; gap: 1.25rem; flex-wrap: wrap; border-bottom: 1px solid var(--border-hairline);">
-
-                <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 280px;">
+            <div class="cms-tree-module-header" onclick="toggleCmsModule({{ module.id }})">
+                <div style="display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 280px;">
                     <!-- Ovládanie poradia (Up / Down) -->
-                    <div style="display: flex; flex-direction: column; gap: 2px;">
-                        <a href="{% url 'cms_module_reorder' module.id 'up' %}" class="btn btn-secondary" style="padding: 2px 7px; font-size: 0.7rem; line-height: 1;" title="{% if lang == 'en' %}Move Up{% else %}Posunúť vyššie{% endif %}">▲</a>
-                        <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; text-align: center; color: var(--text-muted);">{{ module.order }}</span>
-                        <a href="{% url 'cms_module_reorder' module.id 'down' %}" class="btn btn-secondary" style="padding: 2px 7px; font-size: 0.7rem; line-height: 1;" title="{% if lang == 'en' %}Move Down{% else %}Posunúť nižšie{% endif %}">▼</a>
+                    <div style="display: flex; flex-direction: column; gap: 2px;" onclick="event.stopPropagation();">
+                        <a href="{% url 'cms_module_reorder' module.id 'up' %}" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.65rem; line-height: 1;" title="{% if lang == 'en' %}Move Up{% else %}Posunúť vyššie{% endif %}">▲</a>
+                        <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; text-align: center; color: var(--text-muted);">{{ module.order }}</span>
+                        <a href="{% url 'cms_module_reorder' module.id 'down' %}" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.65rem; line-height: 1;" title="{% if lang == 'en' %}Move Down{% else %}Posunúť nižšie{% endif %}">▼</a>
                     </div>
 
                     <div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem;">
-                            <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.2rem;">
+                            <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 0; color: var(--text-primary);">
                                 {% if lang == 'en' %}{{ module.title_en }}{% else %}{{ module.title_sk }}{% endif %}
                             </h2>
 
-                            <!-- Odznak jazyka -->
-                            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 99px; background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); font-weight: 700;">
+                            <span style="font-family: var(--font-mono); font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); font-weight: 700;">
                                 {{ module.programming_language|upper }}
                             </span>
 
-                            <!-- Odznak náročnosti -->
-                            <span style="font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 99px; font-weight: 700;
+                            <span style="font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 99px; font-weight: 700;
                                 {% if module.difficulty_level == 'BEGINNER' %}background: var(--emerald-bg); color: var(--emerald-text);
                                 {% elif module.difficulty_level == 'INTERMEDIATE' %}background: var(--gold-bg); color: var(--gold-text);
                                 {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
                                 {{ module.get_difficulty_level_display }}
                             </span>
 
-                            <!-- Odznak hodín -->
-                            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 99px; background: var(--bg-subtle); color: var(--text-muted); font-weight: 600;">
-                                {{ module.estimated_hours }}h
+                            <span style="font-family: var(--font-mono); font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle); color: var(--text-muted); font-weight: 600;">
+                                {{ module.estimated_hours }}h · {{ module.lessons.count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}
                             </span>
                         </div>
 
-                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0; max-width: 680px;">
-                            {% if lang == 'en' %}{{ module.description_en|truncatewords:24 }}{% else %}{{ module.description_sk|truncatewords:24 }}{% endif %}
+                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; max-width: 680px;">
+                            {% if lang == 'en' %}{{ module.description_en|truncatewords:20 }}{% else %}{{ module.description_sk|truncatewords:20 }}{% endif %}
                         </p>
                     </div>
                 </div>
 
-                <!-- Tlačidlá stavu a akcií -->
-                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-
+                <!-- Tlačidlá stavu, akcií a šípka rozbalenia -->
+                <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;" onclick="event.stopPropagation();">
                     <!-- FREE / PRO toggle -->
-                    <a href="{% url 'cms_module_toggle_pro' module.id %}" class="btn btn-sm" style="font-size: 0.75rem; font-weight: 700;
+                    <a href="{% url 'cms_module_toggle_pro' module.id %}" class="btn btn-sm" style="font-size: 0.74rem; font-weight: 700;
                         {% if module.is_pro_only %}background: var(--ro-indigo-soft); color: var(--ro-indigo); border: 1px solid var(--ro-indigo-border);
-                        {% else %}background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline);{% endif %}"
-                        title="{% if lang == 'en' %}Toggle FREE / PRO requirement{% else %}Prepnúť FREE / PRO{% endif %}">
+                        {% else %}background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline);{% endif %}">
                         {% if module.is_pro_only %}★ PRO / EDU{% else %}FREE{% endif %}
                     </a>
 
                     <!-- Publikované toggle -->
-                    <a href="{% url 'cms_module_toggle_publish' module.id %}" class="btn btn-sm" style="font-size: 0.75rem; font-weight: 700;
+                    <a href="{% url 'cms_module_toggle_publish' module.id %}" class="btn btn-sm" style="font-size: 0.74rem; font-weight: 700;
                         {% if module.is_published %}background: var(--emerald-bg); color: var(--emerald-text); border: 1px solid var(--emerald-border);
-                        {% else %}background: var(--flame-bg); color: var(--flame-text); border: 1px solid var(--flame-border);{% endif %}"
-                        title="{% if lang == 'en' %}Toggle visibility{% else %}Prepnúť viditeľnosť{% endif %}">
-                        {% if module.is_published %}● {% if lang == 'en' %}Published{% else %}Publikovaný{% endif %}{% else %}○ {% if lang == 'en' %}Hidden{% else %}Skrytý{% endif %}{% endif %}
+                        {% else %}background: var(--flame-bg); color: var(--flame-text); border: 1px solid var(--flame-border);{% endif %}">
+                        {% if module.is_published %}● {% if lang == 'en' %}Pub{% else %}Publikovaný{% endif %}{% else %}○ {% if lang == 'en' %}Hidden{% else %}Skrytý{% endif %}{% endif %}
                     </a>
 
                     <!-- Upraviť modul modal button -->
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditModuleModal('{{ module.id }}', '{{ module.title_sk|escapejs }}', '{{ module.title_en|escapejs }}', '{{ module.description_sk|escapejs }}', '{{ module.description_en|escapejs }}', '{{ module.programming_language }}', '{{ module.estimated_hours }}', '{{ module.difficulty_level }}', '{{ module.icon_name }}', {{ module.is_pro_only|yesno:'true,false' }}, {{ module.is_published|yesno:'true,false' }})" style="display: inline-flex; align-items: center; gap: 0.35rem;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditModuleModal('{{ module.id }}', '{{ module.title_sk|escapejs }}', '{{ module.title_en|escapejs }}', '{{ module.description_sk|escapejs }}', '{{ module.description_en|escapejs }}', '{{ module.programming_language }}', '{{ module.estimated_hours }}', '{{ module.difficulty_level }}', '{{ module.icon_name }}', {{ module.is_pro_only|yesno:'true,false' }}, {{ module.is_published|yesno:'true,false' }})" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
                     </button>
 
                     <!-- Pridať lekciu do modulu -->
-                    <a href="{% url 'cms_lesson_create' module.id %}" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <a href="{% url 'cms_lesson_create' module.id %}" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         {% if lang == 'en' %}Add Lesson{% else %}Pridať lekciu{% endif %}
                     </a>
 
                     <!-- Vymazať modul -->
                     <form method="post" action="{% url 'cms_module_delete' module.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete module and all its lessons?{% else %}Naozaj vymazať modul aj všetky jeho lekcie?{% endif %}');">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text);" title="{% if lang == 'en' %}Delete Module{% else %}Vymazať modul{% endif %}">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); padding: 0.35rem 0.55rem;" title="{% if lang == 'en' %}Delete Module{% else %}Vymazať modul{% endif %}">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                     </form>
+
+                    <!-- Chevron rozbalenia stromu -->
+                    <span class="cms-module-chevron" onclick="toggleCmsModule({{ module.id }}); event.stopPropagation();">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
                 </div>
             </div>
 
-            <!-- Zoznam lekcií v module -->
-            <div style="padding: 1rem 1.65rem; background: var(--bg-subtle);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                    <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+            <!-- Stromový zoznam lekcií a cvičení v module (Zbaliteľný drawer) -->
+            <div class="cms-tree-lessons-drawer">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
                         {% if lang == 'en' %}LESSONS IN MODULE ({{ module.lessons.count }}){% else %}LEKCIE V MODULE ({{ module.lessons.count }}){% endif %}
                     </span>
                 </div>
 
                 {% if module.lessons.all %}
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; flex-direction: column;">
                     {% for lesson in module.lessons.all %}
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.95rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); gap: 0.75rem; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 0.65rem;">
-                            <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--ro-indigo); min-width: 38px;">
-                                {{ module.order }}.{{ lesson.order }}
-                            </span>
-                            <div>
-                                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">
-                                    {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
+                    <div class="cms-lesson-node" id="cms-lesson-{{ lesson.id }}">
+                        <div class="cms-lesson-node-header">
+                            <div style="display: flex; align-items: center; gap: 0.65rem; min-width: 0;">
+                                <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; color: var(--ro-indigo); min-width: 32px;">
+                                    {{ module.order }}.{{ lesson.order }}
                                 </span>
-                                <div style="display: flex; gap: 0.5rem; align-items: center; font-size: 0.76rem; color: var(--text-muted); margin-top: 2px;">
-                                    <span>⏱ {{ lesson.estimated_minutes }} min</span>
-                                    <span>•</span>
-                                    <span>⚡ +{{ lesson.xp_reward }} XP</span>
-                                    <span>•</span>
-                                    <span style="color: var(--text-secondary);">💻 {{ lesson.exercises.count }} {% if lang == 'en' %}exercises{% else %}úloh{% endif %}</span>
-                                    <span>•</span>
-                                    <span style="color: var(--text-secondary);">❓ {{ lesson.quiz_questions.count }} {% if lang == 'en' %}quiz Qs{% else %}kvízov{% endif %}</span>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-primary); display:block;">
+                                        {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
+                                    </strong>
+                                    <div style="display: flex; gap: 0.45rem; align-items: center; font-size: 0.74rem; color: var(--text-muted);">
+                                        <span>⏱ {{ lesson.estimated_minutes }} min</span>
+                                        <span>•</span>
+                                        <span>⚡ +{{ lesson.xp_reward }} XP</span>
+                                        <span>•</span>
+                                        <button type="button" onclick="toggleCmsLessonChildren({{ lesson.id }})" style="border:none; background:none; color:var(--ro-indigo); font-weight:700; cursor:pointer; font-size:0.74rem; padding:0;">
+                                            💻 {{ lesson.exercises.count }} {% if lang == 'en' %}exercises{% else %}úloh{% endif %} & ❓ {{ lesson.quiz_questions.count }} {% if lang == 'en' %}quizzes{% else %}kvízov{% endif %} ▾
+                                        </button>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 0.35rem;">
+                                <a href="{% url 'cms_lesson_edit' lesson.id %}" class="btn btn-secondary btn-sm" style="font-weight: 600; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    {% if lang == 'en' %}Editor{% else %}Upraviť{% endif %}
+                                </a>
+
+                                <form method="post" action="{% url 'cms_lesson_duplicate' lesson.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; padding: 0.3rem 0.5rem;" title="{% if lang == 'en' %}Duplicate Lesson{% else %}Duplikovať lekciu{% endif %}">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                    </button>
+                                </form>
+
+                                <form method="post" action="{% url 'cms_lesson_delete' lesson.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete lesson?{% else %}Naozaj vymazať túto lekciu?{% endif %}');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.76rem; padding: 0.3rem 0.5rem;" title="{% if lang == 'en' %}Delete Lesson{% else %}Vymazať lekciu{% endif %}">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
-                        <div style="display: flex; align-items: center; gap: 0.4rem;">
-                            <a href="{% url 'cms_lesson_edit' lesson.id %}" class="btn btn-secondary btn-sm" style="font-weight: 600; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                {% if lang == 'en' %}Editor & Tests{% else %}Markdown & Cvičenia{% endif %}
-                            </a>
+                        <!-- Vnorený drawer s cvičeniami a kvízmi lekcie (Stromová štruktúra) -->
+                        <div class="cms-lesson-children-drawer">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <strong style="font-size: 0.76rem; text-transform: uppercase; color: var(--ro-indigo); font-family: var(--font-mono); display: block; margin-bottom: 0.35rem;">
+                                        {% if lang == 'en' %}Coding Exercises ({{ lesson.exercises.count }}):{% else %}Praktické cvičenia ({{ lesson.exercises.count }}):{% endif %}
+                                    </strong>
+                                    {% for ex in lesson.exercises.all %}
+                                    <div style="padding: 0.35rem 0.6rem; border-radius: 4px; background: var(--bg-surface); border: 1px solid var(--border-hairline); margin-bottom: 0.25rem; font-size: 0.8rem; display: flex; justify-content: space-between;">
+                                        <span>{{ forloop.counter }}. {% if lang == 'en' %}{{ ex.title_en }}{% else %}{{ ex.title_sk }}{% endif %}</span>
+                                        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">{{ ex.difficulty }} · {{ ex.test_cases.count }} tests</span>
+                                    </div>
+                                    {% empty %}
+                                    <span style="font-size: 0.78rem; color: var(--text-muted);">{% if lang == 'en' %}No exercises yet.{% else %}Zatiaľ žiadne cvičenia.{% endif %}</span>
+                                    {% endfor %}
+                                </div>
 
-                            <form method="post" action="{% url 'cms_lesson_duplicate' lesson.id %}" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.78rem;" title="{% if lang == 'en' %}Duplicate Lesson{% else %}Duplikovať lekciu{% endif %}">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                                </button>
-                            </form>
-
-                            <form method="post" action="{% url 'cms_lesson_delete' lesson.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete lesson?{% else %}Naozaj vymazať túto lekciu?{% endif %}');">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.78rem;" title="{% if lang == 'en' %}Delete Lesson{% else %}Vymazať lekciu{% endif %}">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                </button>
-                            </form>
+                                <div>
+                                    <strong style="font-size: 0.76rem; text-transform: uppercase; color: var(--ro-indigo); font-family: var(--font-mono); display: block; margin-bottom: 0.35rem;">
+                                        {% if lang == 'en' %}Quiz Questions ({{ lesson.quiz_questions.count }}):{% else %}Kvízové otázky ({{ lesson.quiz_questions.count }}):{% endif %}
+                                    </strong>
+                                    {% for q in lesson.quiz_questions.all %}
+                                    <div style="padding: 0.35rem 0.6rem; border-radius: 4px; background: var(--bg-surface); border: 1px solid var(--border-hairline); margin-bottom: 0.25rem; font-size: 0.8rem;">
+                                        <span>{{ forloop.counter }}. {% if lang == 'en' %}{{ q.question_en|truncatewords:6 }}{% else %}{{ q.question_sk|truncatewords:6 }}{% endif %}</span>
+                                    </div>
+                                    {% empty %}
+                                    <span style="font-size: 0.78rem; color: var(--text-muted);">{% if lang == 'en' %}No quizzes yet.{% else %}Zatiaľ žiadne kvízy.{% endif %}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -400,6 +520,20 @@
 </div>
 
 <script>
+function toggleCmsModule(modId) {
+    var modEl = document.getElementById('cms-mod-' + modId);
+    if (modEl) {
+        modEl.classList.toggle('open');
+    }
+}
+
+function toggleCmsLessonChildren(lessonId) {
+    var lessonEl = document.getElementById('cms-lesson-' + lessonId);
+    if (lessonEl) {
+        lessonEl.classList.toggle('open');
+    }
+}
+
 function openEditModuleModal(id, titleSk, titleEn, descSk, descEn, lang, hours, diff, icon, isPro, isPub) {
     var form = document.getElementById('form-edit-module');
     form.action = '/teacher/module/' + id + '/edit/';

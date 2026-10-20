@@ -5,1027 +5,989 @@
 
 <style>
     /* ==========================================================================
-       CODORO HANDCRAFTED TACTILE GAME ROADMAP & LIVING COMMAND COCKPIT
+       CODORO REARCHITECTED DASHBOARD: ANTI-SCROLL HUB & PROGRESSIVE DISCLOSURE
        ========================================================================== */
 
-    /* 1. Sleek Gamer Cockpit (Top Header Bar - Single Level Plane) */
-    .cockpit-header {
-        margin-bottom: 2rem;
-        padding: 0.75rem 1.4rem;
-        min-height: 64px;
-        border-radius: var(--radius-lg);
-        background: linear-gradient(135deg, rgba(70, 54, 245, 0.06) 0%, var(--bg-surface) 60%, rgba(92, 225, 230, 0.05) 100%);
-        border: 1px solid var(--border-hairline);
-        box-shadow: var(--shadow-sm);
+    /* 1. Quick Alerts Ribbon (Coin Drop & Streak Repair) */
+    .dashboard-alert-banner {
+        padding: 0.85rem 1.25rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 1.25rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+        border: 1px solid var(--border-hairline);
+    }
+    .alert-drop {
+        background: linear-gradient(135deg, rgba(70, 54, 245, 0.12) 0%, var(--bg-surface) 100%);
+        border-color: var(--ro-indigo-border);
+    }
+    .alert-streak {
+        background: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, var(--bg-surface) 100%);
+        border-color: rgba(244, 63, 94, 0.35);
+    }
+
+    /* 2. Continue Learning Hero Card */
+    .hero-continue-card {
+        padding: 1.5rem 1.85rem;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, var(--bg-surface) 60%, rgba(92, 225, 230, 0.08) 100%);
+        border: 1.5px solid var(--ro-indigo-border);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
         position: relative;
+        overflow: hidden;
     }
-
-    html[data-theme="dark"] .cockpit-header {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(17, 24, 39, 0.95) 60%, rgba(92, 225, 230, 0.06) 100%);
-        border-color: rgba(99, 102, 241, 0.22);
-        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    html[data-theme="dark"] .hero-continue-card {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.16) 0%, rgba(15, 23, 42, 0.95) 60%, rgba(92, 225, 230, 0.08) 100%);
+        border-color: rgba(99, 102, 241, 0.3);
     }
-
-    .cockpit-lead {
+    .hero-left {
         display: flex;
         align-items: center;
-        gap: 0.85rem;
-        min-width: 0;
+        gap: 1.25rem;
         flex: 1;
+        min-width: 280px;
     }
-
-    .cockpit-codo-frame {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
+    .hero-codo-frame {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
         background: var(--bg-surface);
-        border: 1.5px solid var(--ro-indigo-border);
+        border: 2px solid var(--ro-indigo-border);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(70, 54, 245, 0.2);
+        box-shadow: 0 4px 16px rgba(70, 54, 245, 0.25);
     }
-
-    .cockpit-codo-img {
-        width: 34px;
-        height: 34px;
+    .hero-codo-img {
+        width: 42px;
+        height: 42px;
         object-fit: contain;
-        filter: drop-shadow(0 2px 6px rgba(70, 54, 245, 0.3));
         animation: codoBreathe 3.5s ease-in-out infinite;
     }
-
-    .cockpit-meta-row {
+    .hero-meta {
+        flex: 1;
+    }
+    .hero-eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--ro-indigo);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
         display: flex;
         align-items: center;
-        gap: 0.65rem;
-        white-space: nowrap;
-        overflow: hidden;
+        gap: 0.4rem;
+        margin-bottom: 0.2rem;
     }
-
-    .cockpit-greeting {
+    .hero-title {
         font-family: var(--font-display);
-        font-size: 1.15rem;
+        font-size: 1.45rem;
         font-weight: 800;
         color: var(--text-primary);
-        letter-spacing: -0.02em;
-        margin: 0;
+        margin: 0 0 0.4rem;
+        line-height: 1.25;
+    }
+    .hero-progress-box {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        max-width: 380px;
     }
 
-    .cockpit-inline-btn {
-        padding: 0.3rem 0.75rem;
-        border-radius: 8px;
-        font-size: 0.76rem;
+    /* 3. Track Segmented Tabs & Live Search Bar */
+    .tracks-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+    .track-pills-list {
+        display: flex;
+        gap: 0.45rem;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        flex-wrap: wrap;
+    }
+    .track-pill-btn {
+        padding: 0.5rem 0.95rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
         font-weight: 700;
+        border: 1px solid var(--border-hairline);
+        background: var(--bg-surface);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        text-decoration: none;
-        cursor: pointer;
-        border: none;
-        transition: all 0.15s ease;
-        white-space: nowrap;
+        gap: 0.4rem;
     }
-
-    .cockpit-inline-btn.flame {
-        background: var(--flame-text);
-        color: #ffffff;
-        box-shadow: 0 2px 8px rgba(244, 63, 94, 0.35);
-    }
-
-    .cockpit-inline-btn.flame:hover {
+    .track-pill-btn:hover {
+        border-color: var(--ro-indigo-border);
+        color: var(--text-primary);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(244, 63, 94, 0.45);
     }
-
-    .cockpit-inline-btn.primary {
+    .track-pill-btn.active {
         background: var(--ro-indigo);
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(70, 54, 245, 0.35);
+        border-color: var(--ro-indigo);
+        box-shadow: 0 3px 12px rgba(70, 54, 245, 0.35);
     }
-
-    .cockpit-inline-btn.primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(70, 54, 245, 0.45);
-    }
-
-    .cockpit-stats-deck {
-        display: flex;
-        gap: 0.65rem;
-        align-items: center;
+    .search-input-wrapper {
+        position: relative;
+        min-width: 240px;
         flex-shrink: 0;
     }
-
-    .cockpit-stat-pill {
-        padding: 0.4rem 0.75rem;
-        border-radius: var(--radius-sm);
-        background: var(--bg-surface);
+    .search-input-field {
+        width: 100%;
+        padding: 0.5rem 1rem 0.5rem 2.25rem;
+        border-radius: 999px;
         border: 1px solid var(--border-hairline);
-        box-shadow: var(--shadow-xs);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: var(--font-mono);
-        white-space: nowrap;
+        background: var(--bg-surface);
+        color: var(--text-primary);
+        font-size: 0.84rem;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .search-input-field:focus {
+        border-color: var(--ro-indigo);
+        box-shadow: 0 0 0 3px rgba(70, 54, 245, 0.15);
+    }
+    .search-icon-svg {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        pointer-events: none;
     }
 
-    /* 2. Serpentine Winding Skill Tree Path */
-    .dashboard-layout {
+    /* 4. Dashboard Main Layout */
+    .dashboard-grid {
         display: grid;
         grid-template-columns: 1fr 340px;
-        gap: 2.25rem;
+        gap: 1.75rem;
         align-items: start;
     }
-
     @media (max-width: 1024px) {
-        .dashboard-layout {
+        .dashboard-grid {
             grid-template-columns: 1fr;
         }
     }
 
-    .trail-container {
+    /* 5. Collapsible Module Accordion */
+    .modules-accordion-stack {
         display: flex;
         flex-direction: column;
-        gap: 3.5rem;
+        gap: 1rem;
     }
-
-    /* Waypoint Module Gate */
-    .unit-gate-section {
-        position: relative;
-    }
-
-    .unit-gate-header {
-        padding: 1.25rem 1.65rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1.25rem;
-        flex-wrap: wrap;
+    .module-accordion-card {
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-sm);
         background: var(--bg-surface);
         border: 1.5px solid var(--border-hairline);
-        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+        overflow: hidden;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .unit-gate-header:hover {
-        box-shadow: var(--shadow-md);
-    }
-
-    .unit-theme-1 { border-color: var(--ro-indigo-border); background: linear-gradient(135deg, rgba(70,54,245,0.08) 0%, var(--bg-surface) 70%); }
-    .unit-theme-2 { border-color: rgba(16,185,129,0.3); background: linear-gradient(135deg, rgba(16,185,129,0.08) 0%, var(--bg-surface) 70%); }
-    .unit-theme-3 { border-color: rgba(245,158,11,0.3); background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, var(--bg-surface) 70%); }
-    .unit-theme-4 { border-color: rgba(139,92,246,0.3); background: linear-gradient(135deg, rgba(139,92,246,0.08) 0%, var(--bg-surface) 70%); }
-    .unit-theme-5 { border-color: rgba(6,182,212,0.3); background: linear-gradient(135deg, rgba(6,182,212,0.08) 0%, var(--bg-surface) 70%); }
-    .unit-theme-6 { border-color: rgba(244,63,94,0.3); background: linear-gradient(135deg, rgba(244,63,94,0.08) 0%, var(--bg-surface) 70%); }
-
-    /* Sequential Mission Capsules & Biome Territory */
-    .mission-capsule-card {
-        padding: 1.1rem 1.35rem;
-        border-radius: var(--radius-md);
-        background: var(--bg-surface);
-        border: 1.5px solid var(--border-hairline);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1.25rem;
-        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
-        position: relative;
-        text-decoration: none;
-    }
-
-    .mission-capsule-card:hover {
-        transform: translateY(-2px);
+    .module-accordion-card.open {
         border-color: var(--ro-indigo-border);
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--shadow-sm);
     }
-
-    .mission-capsule-card.is-active {
-        border-color: var(--ro-indigo);
-        background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, var(--bg-surface) 100%);
-        box-shadow: 0 4px 20px rgba(70, 54, 245, 0.18);
+    .module-accordion-header {
+        padding: 1.15rem 1.45rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+        user-select: none;
+        background: var(--bg-surface);
+        transition: background 0.15s ease;
     }
-
-    html[data-theme="dark"] .mission-capsule-card.is-active {
-        border-color: #6366F1;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(15, 23, 42, 0.95) 100%);
-        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.25);
+    .module-accordion-header:hover {
+        background: var(--bg-subtle);
     }
-
-    .mission-capsule-card.is-completed {
-        border-color: rgba(16, 185, 129, 0.3);
-    }
-
-    .mission-lead {
+    .module-header-left {
         display: flex;
         align-items: center;
-        gap: 1.15rem;
+        gap: 1rem;
         flex: 1;
         min-width: 0;
     }
-
-    .mission-badge-circle {
-        width: 50px;
-        height: 50px;
-        border-radius: 15px;
+    .module-number-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: var(--ro-indigo-soft);
+        color: var(--ro-indigo);
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 0.92rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: var(--font-mono);
-        font-size: 1.15rem;
-        font-weight: 800;
         flex-shrink: 0;
-        transition: transform 0.2s ease;
-        position: relative;
     }
-
-    .mission-capsule-card.is-active .mission-badge-circle {
-        background: linear-gradient(180deg, #6366F1 0%, #4636F5 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 14px rgba(70, 54, 245, 0.45);
-        animation: activeBeaconPulse 2s infinite;
+    .module-accordion-card.is-completed .module-number-badge {
+        background: var(--emerald-bg);
+        color: var(--emerald-text);
     }
-
-    .mission-capsule-card.is-completed .mission-badge-circle {
-        background: linear-gradient(180deg, #10B981 0%, #059669 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
-    }
-
-    .mission-capsule-card.is-pending .mission-badge-circle {
-        background: var(--bg-subtle);
-        color: var(--text-muted);
-        border: 1.5px solid var(--border-hairline);
-    }
-
-    .mission-body {
+    .module-info-wrap {
         flex: 1;
         min-width: 0;
     }
-
-    .mission-meta-chips {
+    .module-chips-row {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.2rem;
         flex-wrap: wrap;
     }
-
-    .mission-meta-chip {
-        font-family: var(--font-mono);
-        font-size: 0.7rem;
-        font-weight: 800;
-        color: var(--ro-indigo);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-
-    .mission-reward-tag {
-        font-family: var(--font-mono);
-        font-size: 0.74rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .mission-title {
+    .module-title-h3 {
         font-family: var(--font-display);
-        font-size: 1.05rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: 800;
         color: var(--text-primary);
         margin: 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-    .mission-actions {
+    .module-header-right {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
+        gap: 1.25rem;
         flex-shrink: 0;
     }
-
-    /* Active Stone (Pulse Beacon) */
-    .stepping-stone-tactile.is-active {
-        background: linear-gradient(180deg, #6366F1 0%, #4636F5 100%);
-        color: #ffffff;
-        box-shadow: 0 7px 0 #3123C7, 0 12px 26px rgba(70, 54, 245, 0.5);
-        animation: activeBeaconPulse 2s infinite;
+    .module-progress-stat {
+        text-align: right;
+        min-width: 90px;
     }
-
-    .stepping-stone-tactile.is-active:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 9px 0 #3123C7, 0 16px 30px rgba(70, 54, 245, 0.6);
-    }
-
-    .stepping-stone-tactile.is-active:active {
-        transform: translateY(4px);
-        box-shadow: 0 2px 0 #3123C7;
-    }
-
-    /* Completed Stone */
-    .stepping-stone-tactile.is-completed {
-        background: linear-gradient(180deg, #10B981 0%, #059669 100%);
-        color: #ffffff;
-        box-shadow: 0 7px 0 #047857, 0 10px 22px rgba(16, 185, 129, 0.4);
-    }
-
-    .stepping-stone-tactile.is-completed:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 9px 0 #047857, 0 14px 26px rgba(16, 185, 129, 0.5);
-    }
-
-    .stepping-stone-tactile.is-completed:active {
-        transform: translateY(4px);
-        box-shadow: 0 2px 0 #047857;
-    }
-
-    /* Pending Stone */
-    .stepping-stone-tactile.is-pending {
-        background: var(--bg-surface);
-        color: var(--text-muted);
-        border: 2px solid var(--border-hairline);
-        box-shadow: 0 7px 0 var(--border-strong), 0 8px 18px rgba(0, 0, 0, 0.06);
-    }
-
-    .stepping-stone-tactile.is-pending:hover {
-        transform: translateY(-2px);
-        color: var(--text-primary);
-        border-color: var(--ro-indigo-border);
-    }
-
-    .stepping-stone-tactile.is-pending:active {
-        transform: translateY(4px);
-        box-shadow: 0 2px 0 var(--border-strong);
-    }
-
-    /* Floating Bouncing Action Pill */
-    .floating-action-pill {
-        position: absolute;
-        top: -36px;
-        background: var(--ro-indigo);
-        color: #ffffff;
-        font-family: var(--font-mono);
-        font-size: 0.72rem;
-        font-weight: 800;
-        padding: 0.28rem 0.75rem;
-        border-radius: 999px;
-        white-space: nowrap;
-        box-shadow: 0 4px 14px rgba(70, 54, 245, 0.45);
-        animation: tooltipBounce 1.6s ease-in-out infinite;
-        pointer-events: none;
-        display: flex;
-        align-items: center;
-        gap: 0.35rem;
-    }
-
-    .floating-action-pill::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-top: 5px solid var(--ro-indigo);
-    }
-
-    /* Stone Info Caption Flow (Clean typography beneath the stone) */
-    .stone-caption-flow {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        max-width: 200px;
-        text-decoration: none;
-        transition: transform 0.2s ease;
-    }
-
-    .stone-caption-flow:hover {
-        transform: translateY(-2px);
-    }
-
-    .stone-caption-title {
-        font-family: var(--font-display);
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        line-height: 1.35;
-        margin-bottom: 0.25rem;
-    }
-
-    .stone-caption-meta {
-        font-family: var(--font-mono);
-        font-size: 0.73rem;
-        font-weight: 700;
-        color: var(--ro-indigo);
-        background: var(--ro-indigo-soft);
-        padding: 0.15rem 0.6rem;
-        border-radius: 999px;
+    .accordion-chevron {
+        width: 24px;
+        height: 24px;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        justify-content: center;
+        color: var(--text-muted);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    /* Milestone Trophy Stone */
-    .milestone-checkpoint {
-        position: relative;
-        z-index: 2;
+    .module-accordion-card.open .accordion-chevron {
+        transform: rotate(180deg);
+        color: var(--ro-indigo);
+    }
+    .module-accordion-body {
+        display: none;
+        padding: 0 1.45rem 1.25rem;
+        border-top: 1px solid var(--border-hairline);
+        background: var(--bg-surface);
+    }
+    .module-accordion-card.open .module-accordion-body {
+        display: block;
+        animation: fadeIn 0.2s ease;
+    }
+    .module-description-text {
+        font-size: 0.86rem;
+        color: var(--text-secondary);
+        padding: 0.85rem 0;
+        margin: 0;
+        line-height: 1.5;
+    }
+    .module-lessons-list {
         display: flex;
         flex-direction: column;
+        gap: 0.65rem;
+    }
+    .lesson-item-row {
+        padding: 0.85rem 1.1rem;
+        border-radius: var(--radius-md);
+        background: var(--bg-subtle);
+        border: 1px solid var(--border-hairline);
+        display: flex;
         align-items: center;
-        gap: 0.5rem;
+        justify-content: space-between;
+        gap: 1rem;
         text-decoration: none;
-        margin-top: 0.5rem;
+        transition: all 0.15s ease;
+    }
+    .lesson-item-row:hover {
+        background: var(--bg-surface);
+        border-color: var(--ro-indigo-border);
+        transform: translateX(3px);
+    }
+    .lesson-item-row.is-active {
+        border-color: var(--ro-indigo);
+        background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, var(--bg-surface) 100%);
     }
 
-    .milestone-stone-btn {
-        width: 76px;
-        height: 76px;
-        border-radius: 26px;
-        background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-        color: #ffffff;
+    /* 6. Sidebar Unified Tabbed Hub */
+    .sidebar-unified-card {
+        border-radius: var(--radius-lg);
+        background: var(--bg-surface);
+        border: 1.5px solid var(--border-hairline);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        position: sticky;
+        top: 5rem;
+    }
+    .sidebar-tab-nav {
+        display: flex;
+        border-bottom: 1px solid var(--border-hairline);
+        background: var(--bg-subtle);
+    }
+    .sidebar-tab-btn {
+        flex: 1;
+        padding: 0.85rem 0.5rem;
+        font-family: var(--font-display);
+        font-size: 0.82rem;
+        font-weight: 700;
+        border: none;
+        background: none;
+        color: var(--text-muted);
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 7px 0 #B45309, 0 14px 28px rgba(245, 158, 11, 0.45);
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-        border: 2px solid rgba(255, 255, 255, 0.25);
+        gap: 0.35rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.15s ease;
     }
-
-    .milestone-stone-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 9px 0 #B45309, 0 18px 32px rgba(245, 158, 11, 0.55);
+    .sidebar-tab-btn:hover {
+        color: var(--text-primary);
     }
-
-    /* Keyframes */
-    @keyframes activeBeaconPulse {
-        0%, 100% {
-            box-shadow: 0 6px 0 #3123C7, 0 0 0 0 rgba(70, 54, 245, 0.5);
-        }
-        50% {
-            box-shadow: 0 6px 0 #3123C7, 0 0 0 12px rgba(70, 54, 245, 0);
-        }
+    .sidebar-tab-btn.active {
+        color: var(--ro-indigo);
+        border-bottom-color: var(--ro-indigo);
+        background: var(--bg-surface);
     }
-
-    @keyframes tooltipBounce {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-4px);
-        }
+    .sidebar-tab-content {
+        padding: 1.25rem;
     }
-
-    /* 3. Developer Companion HUD & Terminal (Right Rail) */
-    .companion-rail {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
+    .sidebar-panel {
+        display: none;
     }
-
-    .codo-code-terminal {
-        border-radius: var(--radius-lg);
-        background: #0B0F19;
-        color: #E2E8F0;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: var(--shadow-md);
-        overflow: hidden;
-    }
-
-    .terminal-topbar {
-        background: #151C2C;
-        padding: 0.65rem 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .terminal-dots {
-        display: flex;
-        gap: 6px;
-    }
-
-    .terminal-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-    }
-    .terminal-dot.red { background: #EF4444; }
-    .terminal-dot.yellow { background: #F59E0B; }
-    .terminal-dot.green { background: #10B981; }
-
-    .terminal-body {
-        padding: 1.15rem;
-        font-family: var(--font-mono);
-        font-size: 0.84rem;
-        line-height: 1.6;
-        color: #CBD5E1;
-    }
-
-    .terminal-body code {
-        color: var(--visor-cyan);
-        background: rgba(92, 225, 230, 0.12);
-        padding: 0.15rem 0.45rem;
-        border-radius: 4px;
+    .sidebar-panel.active {
+        display: block;
+        animation: fadeIn 0.18s ease;
     }
 
     .podium-rank-chip {
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
         border-radius: 8px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-family: var(--font-mono);
-        font-size: 0.78rem;
+        font-size: 0.74rem;
         font-weight: 800;
         background: var(--bg-subtle);
         color: var(--text-muted);
         flex-shrink: 0;
     }
+    .podium-rank-chip.gold { background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); }
+    .podium-rank-chip.silver { background: rgba(148, 163, 184, 0.2); color: var(--text-primary); }
+    .podium-rank-chip.bronze { background: rgba(180, 83, 9, 0.15); color: #B45309; }
 
-    .podium-rank-chip.gold {
-        background: var(--gold-bg);
-        color: var(--gold-text);
-        box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
-        border: 1px solid var(--gold-border);
-    }
-
-    .podium-rank-chip.silver {
-        background: rgba(148, 163, 184, 0.2);
-        color: var(--text-primary);
-        border: 1px solid var(--border-strong);
-    }
-
-    .podium-rank-chip.bronze {
-        background: rgba(180, 83, 9, 0.15);
-        color: #B45309;
-        border: 1px solid rgba(180, 83, 9, 0.3);
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 
 <!-- ========================================================================
-     1. BLESKOVÝ BONUSOVÝ COIN DROP (AK JE AKTÍVNY)
+     1. HORNY STATUS BANNER: COIN DROP ALEBO ZÁCHRANA STREAKU
      ======================================================================== -->
 {% if active_drop %}
-<section class="card-surface animate-in"
-    style="padding: 1.25rem 1.65rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap; border: 1.5px solid var(--ro-indigo-border); background: linear-gradient(135deg, var(--ro-indigo-soft) 0%, var(--bg-surface) 100%); border-radius: var(--radius-lg);">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-        <span style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background:var(--ro-indigo-soft); color:var(--ro-indigo);">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect width="20" height="5" x="2" y="7"/><line x1="12" x2="12" y1="22" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+<div class="dashboard-alert-banner alert-drop animate-in">
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; background:var(--ro-indigo-soft); color:var(--ro-indigo);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         </span>
         <div>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.35rem;">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                {% if lang == 'en' %}LIVE CLASSROOM DROP{% else %}BLESKOVÝ BONUSOVÝ DROP OD UČITEĽA{% endif %}
+            <strong style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); display:block;">
+                {% if lang == 'en' %}LIVE CLASSROOM DROP: {{ active_drop.title_en }}{% else %}BLESKOVÝ DROP: {{ active_drop.title_sk }}{% endif %}
+            </strong>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">
+                {% if lang == 'en' %}Bonus {{ active_drop.min_doros }}–{{ active_drop.max_doros }} Doros available now!{% else %}Bonus {{ active_drop.min_doros }}–{{ active_drop.max_doros }} Doros od učiteľa!{% endif %}
             </span>
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.1rem 0;">
-                {% if lang == 'en' %}{{ active_drop.title_en }}{% else %}{{ active_drop.title_sk }}{% endif %}
-            </h2>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
-                {% if lang == 'en' %}Mystery bonus between {{ active_drop.min_doros }} and {{ active_drop.max_doros }} Doros!{% else %}Získaj náhodnú odmenu od {{ active_drop.min_doros }} do {{ active_drop.max_doros }} Doros!{% endif %}
-            </p>
         </div>
     </div>
     <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary" style="padding: 0.65rem 1.35rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">
             {% if lang == 'en' %}Claim Drop{% else %}Vyzdvihnúť Coin Drop{% endif %}
         </button>
     </form>
-</section>
+</div>
+{% endif %}
+
+{% if user.lost_streak_value > 0 %}
+<div class="dashboard-alert-banner alert-streak animate-in">
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; background:rgba(244, 63, 94, 0.15); color:var(--flame-text);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/></svg>
+        </span>
+        <div>
+            <strong style="font-family: var(--font-display); font-size: 0.95rem; color: var(--flame-text); display:block;">
+                {% if lang == 'en' %}Streak Lost: {{ user.lost_streak_value }} Days{% else %}Prerušená séria: {{ user.lost_streak_value }} dní{% endif %}
+            </strong>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">
+                {% if lang == 'en' %}Use 200 Doros to repair and maintain your streak.{% else %}Použi 200 Doros na záchranu svojej série pred vymazaním.{% endif %}
+            </span>
+        </div>
+    </div>
+    <form method="post" action="{% url 'repair_streak' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm" style="background: var(--flame-text); color:#fff; font-weight: 700; border:none;">
+            {% if lang == 'en' %}Repair Streak (200 Doros){% else %}Zachrániť sériu (200 Doros){% endif %}
+        </button>
+    </form>
+</div>
 {% endif %}
 
 <!-- ========================================================================
-     2. STREAMLINED STUDENT COMMAND COCKPIT (Single Horizontal Plane)
+     2. CONTINUE LEARNING HERO CARD (KOMPAKTNÝ HUB NA VRCHU)
      ======================================================================== -->
-<section class="cockpit-header animate-in">
-    <div class="cockpit-lead">
-        <div class="cockpit-codo-frame">
-            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="cockpit-codo-img"
-                onerror="this.style.display='none'; document.getElementById('codo-cockpit-svg').style.display='inline-flex';">
-            <div id="codo-cockpit-svg" style="display:none; color:var(--ro-indigo);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+<section class="hero-continue-card animate-in">
+    <div class="hero-left">
+        <div class="hero-codo-frame">
+            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="hero-codo-img"
+                 onerror="this.style.display='none'; document.getElementById('codo-hero-svg').style.display='inline-flex';">
+            <div id="codo-hero-svg" style="display:none; color:var(--ro-indigo);">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
             </div>
         </div>
 
-        <div class="cockpit-meta-row">
-            <h1 class="cockpit-greeting">
-                {% if lang == 'en' %}Welcome,{% else %}Ahoj,{% endif %} {{ user.first_name|default:user.username }}!
-            </h1>
-            <span class="sidebar-tier-chip">{{ user.subscription_tier }}</span>
-            {% if user.school_class %}
-            <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
-                {{ user.school_class.name }}
-            </span>
-            {% endif %}
+        <div class="hero-meta">
+            <div class="hero-eyebrow">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                {% if lang == 'en' %}CONTINUE LEARNING{% else %}POKRAČOVAŤ V ŠTÚDIU{% endif %}
+                <span style="color:var(--text-muted);">·</span>
+                <span style="color:var(--text-secondary);">{{ user.subscription_tier }}</span>
+            </div>
 
-            <!-- Inline Action Pill on the EXACT same level line -->
-            {% if user.lost_streak_value > 0 %}
-            <form method="post" action="{% url 'repair_streak' %}" style="display:inline-flex; align-items:center; margin-left:0.35rem;">
-                {% csrf_token %}
-                <button type="submit" class="cockpit-inline-btn flame">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                    {% if lang == 'en' %}Rescue {{ user.lost_streak_value }}d Streak (200 Doros){% else %}Zachrániť sériu (200 Doros){% endif %}
-                </button>
-            </form>
-            {% elif next_lesson %}
-            <a href="{% url 'lesson_detail' next_lesson.id %}" class="cockpit-inline-btn primary" style="margin-left:0.35rem;">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                {% if lang == 'en' %}Continue: {{ next_lesson.title_en }}{% else %}Spustiť: {{ next_lesson.title_sk }}{% endif %}
-            </a>
+            {% if next_lesson %}
+            <h1 class="hero-title">
+                {% if lang == 'en' %}Lesson 0{{ next_lesson.order }}: {{ next_lesson.title_en }}{% else %}Lekcia 0{{ next_lesson.order }}: {{ next_lesson.title_sk }}{% endif %}
+            </h1>
+            <div class="hero-progress-box">
+                <div class="progress-track" style="height: 7px; flex: 1;">
+                    <div class="progress-fill" data-progress="{{ overall_progress_pct }}"></div>
+                </div>
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--ro-indigo); white-space: nowrap;">
+                    {{ overall_progress_pct }}% ({% if lang == 'en' %}{{ total_completed }}/{{ total_lessons }} done{% else %}{{ total_completed }}/{{ total_lessons }} hotovo{% endif %})
+                </span>
+            </div>
+            {% else %}
+            <h1 class="hero-title">
+                {% if lang == 'en' %}All Available Lessons Completed! 🎉{% else %}Všetky dostupné lekcie dokončené! 🎉{% endif %}
+            </h1>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
+                {% if lang == 'en' %}Congratulations! Check your graduation certificate or explore the Practice Arena.{% else %}Gratulujeme! Pozri si svoj absolventský certifikát alebo trénuj v Aréne.{% endif %}
+            </p>
             {% endif %}
         </div>
     </div>
 
-    <!-- HUD Telemetria in the same horizontal row -->
-    <div class="cockpit-stats-deck">
-        <div class="cockpit-stat-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--flame-text);"><path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/></svg>
-            <span style="font-size:0.8rem; font-weight:700; color:var(--flame-text);">{{ user.current_streak }} d</span>
+    <!-- Hero CTA Button & Stats Quick Pill -->
+    <div style="display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0;">
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--gold-text);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+                {{ user.doros }}
+            </div>
+            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text);">
+                🔥 {{ user.current_streak }}d
+            </div>
         </div>
 
-        <div class="cockpit-stat-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold-text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
-            <span style="font-size:0.8rem; font-weight:700; color:var(--gold-text);">{{ user.doros }}</span>
-        </div>
-
-        <div class="cockpit-stat-pill">
-            <span style="font-size:0.8rem; font-weight:800; color:var(--ro-indigo);">Lvl {{ user.level }}</span>
-            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">{{ user.level_progress_pct }}%</span>
-        </div>
+        {% if next_lesson %}
+        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary" style="padding: 0.75rem 1.6rem; font-weight: 800; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 16px rgba(70, 54, 245, 0.35);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            {% if lang == 'en' %}Continue Lesson {{ next_lesson.module.order }}.{{ next_lesson.order }} →{% else %}Pokračovať v lekcii {{ next_lesson.module.order }}.{{ next_lesson.order }} →{% endif %}
+        </a>
+        {% else %}
+        <a href="{% url 'certificate' %}" class="btn btn-primary" style="padding: 0.75rem 1.6rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.5rem;">
+            {% if lang == 'en' %}View Certificate 🎓{% else %}Zobraziť Certifikát 🎓{% endif %}
+        </a>
+        {% endif %}
     </div>
 </section>
 
 <!-- ========================================================================
-     3. HLAVNÝ LAYOUT: VIZUÁLNY SKILL TREE (VĽAVO) + SOCIAL COMPANION RAIL (VPRAVO)
+     3. HORIZONTÁLNY PREPÍNAČ KARIÉRNYCH CIEST (TRACKS) + VYHĽADÁVANIE
      ======================================================================== -->
-<div class="dashboard-layout">
+<div class="tracks-bar animate-in delay-1">
+    <div class="track-pills-list" id="trackFiltersList">
+        <button type="button" class="track-pill-btn active" data-track="ALL">
+            {% if lang == 'en' %}All Tracks (18){% else %}Všetky cesty (18){% endif %}
+        </button>
+        <button type="button" class="track-pill-btn" data-track="FUNDAMENTALS">
+            {% if lang == 'en' %}1. Fundamentals (Mod 1–4){% else %}1. Základy a Logika (Moduly 1–4){% endif %}
+        </button>
+        <button type="button" class="track-pill-btn" data-track="DATA_STRUCTURES">
+            {% if lang == 'en' %}2. Data Structures (Mod 5–8){% else %}2. Funkcie a Dáta (Moduly 5–8){% endif %}
+        </button>
+        <button type="button" class="track-pill-btn" data-track="OOP">
+            {% if lang == 'en' %}3. OOP & Architecture (Mod 9–10){% else %}3. OOP & Architektúra (Moduly 9–10){% endif %}
+        </button>
+        <button type="button" class="track-pill-btn" data-track="ALGORITHMS_AND_DATA">
+            {% if lang == 'en' %}4. Algorithms, SQL & APIs (Mod 11–15){% else %}4. Algoritmy, SQL a API (Moduly 11–15){% endif %}
+        </button>
+        <button type="button" class="track-pill-btn" data-track="MATURITA_PREP">
+            {% if lang == 'en' %}5. Maturita Special & Projects (Mod 16–18){% else %}5. Maturitný špeciál & Projekty (Moduly 16–18){% endif %}
+        </button>
+    </div>
 
-    <!-- ĽAVÝ STĹPEC: AUTENTICKÁ CESTA POZNANIA (SKILL TREE) -->
-    <div class="trail-container animate-in delay-1">
+    <!-- Živé vyhľadávacie pole -->
+    <div class="search-input-wrapper">
+        <svg class="search-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="curriculumSearchInput" class="search-input-field"
+               placeholder="{% if lang == 'en' %}Search lesson or topic...{% else %}Hľadať lekciu alebo tému...{% endif %}">
+    </div>
+</div>
 
+<!-- ========================================================================
+     4. HLAVNÝ LAYOUT: ZBALITEĽNÉ AKORDEÓNY MODULOV (VĽAVO) + TABS SIDEBAR (VPRAVO)
+     ======================================================================== -->
+<div class="dashboard-grid">
+
+    <!-- ĽAVÁ ČASŤ: ZBALITEĽNÉ AKORDEÓNY MODULOV (ŽIADNA NEKONEČNÁ STENA OBSAHU!) -->
+    <div class="modules-accordion-stack animate-in delay-2" id="modulesStack">
         {% for card in module_cards %}
-        <section class="unit-gate-section">
-            <!-- Waypoint Gate Záhlavie -->
-            <div class="unit-gate-header unit-theme-{{ forloop.counter }}">
-                <div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                            {% if lang == 'en' %}UNIT 0{{ card.module.order }}{% else %}KAPITOLA 0{{ card.module.order }}{% endif %}
-                        </span>
-                        {% if card.module.is_pro_only %}
-                        <span class="sidebar-tier-chip" style="background: var(--gold-bg); color: var(--gold-text); border-color: var(--gold-border);">
-                            PRO / EDU
-                        </span>
+        <div class="module-accordion-card {% if card.module.id == default_open_module_id %}open{% endif %} {% if card.done == card.total and card.total > 0 %}is-completed{% endif %}"
+             data-track="{{ card.module.track }}"
+             data-title="{% if lang == 'en' %}{{ card.module.title_en|lower }}{% else %}{{ card.module.title_sk|lower }}{% endif %}"
+             id="module-card-{{ card.module.id }}">
+
+            <!-- Klikateľná hlavička akordeónu -->
+            <div class="module-accordion-header" onclick="toggleModuleAccordion({{ card.module.id }})">
+                <div class="module-header-left">
+                    <div class="module-number-badge">
+                        {% if card.done == card.total and card.total > 0 %}
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        {% else %}
+                        {{ card.module.order|stringformat:"02d" }}
                         {% endif %}
                     </div>
-                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                        {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
-                    </h2>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.2rem 0 0; line-height: 1.45;">
-                        {% if lang == 'en' %}{{ card.module.description_en }}{% else %}{{ card.module.description_sk }}{% endif %}
-                    </p>
-                </div>
 
-                <!-- Progress Counter Pill -->
-                <div style="text-align: right;">
-                    <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; color: var(--text-primary);">
-                        {{ card.done }} / {{ card.total }}
-                    </span>
-                    <div class="progress-track" style="height: 6px; width: 110px; margin-top: 0.35rem;">
-                        <div class="progress-fill" data-progress="{{ card.pct }}"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vertikálna hadovitá cesta s tactile 3D stepping stones -->
-            {% if card.locked %}
-            <div style="padding: 2.25rem; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1.5px solid var(--border-hairline); margin-top: 1.25rem;">
-                <div style="width: 52px; height: 52px; border-radius: 16px; background: var(--bg-subtle); border: 1px solid var(--border-hairline); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; color: var(--gold-text);">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <strong style="display: block; font-family: var(--font-display); font-size: 1.05rem; color: var(--text-primary); margin-bottom: 0.35rem;">
-                    {% if lang == 'en' %}Advanced PRO/EDU Curriculum{% else %}Pokročilý PRO/EDU vzdelávací modul{% endif %}
-                </strong>
-                <p style="font-size: 0.86rem; color: var(--text-secondary); max-width: 440px; margin: 0 auto 1.25rem;">
-                    {% if lang == 'en' %}Unlock object-oriented programming with your school license key.{% else %}Odomkni objektovo-orientované programovanie pomocou školskej licencie.{% endif %}
-                </p>
-                <a href="{% url 'shop' %}" class="btn btn-secondary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-6 6 7 7-3 3-2-2-2 2-3-3 2-2-2-2 7-7Zm0 0-4-4"/></svg>
-                    {% if lang == 'en' %}Activate in Shop{% else %}Aktivovať v Obchode{% endif %}
-                </a>
-            </div>
-            {% else %}
-            <div style="padding: 1.25rem 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 0.85rem;">
-                {% for lesson in card.lessons %}
-                <a href="{% url 'lesson_detail' lesson.id %}" class="mission-capsule-card {% if lesson.id in completed_lesson_ids %}is-completed{% elif next_lesson and lesson.id == next_lesson.id %}is-active{% else %}is-pending{% endif %}">
-                    <div class="mission-lead">
-                        <div class="mission-badge-circle">
-                            {% if lesson.id in completed_lesson_ids %}
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                            {% elif next_lesson and lesson.id == next_lesson.id %}
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
+                    <div class="module-info-wrap">
+                        <div class="module-chips-row">
+                            <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                                {{ card.module.get_track_display|default:card.module.track }}
+                            </span>
+                            <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 0.1rem 0.45rem; border-radius: 6px;">
+                                {{ card.module.estimated_hours }}h
+                            </span>
+                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px;
+                                {% if card.module.difficulty_level == 'BEGINNER' %}background: var(--emerald-bg); color: var(--emerald-text);
+                                {% elif card.module.difficulty_level == 'INTERMEDIATE' %}background: var(--gold-bg); color: var(--gold-text);
+                                {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
+                                {{ card.module.get_difficulty_level_display }}
+                            </span>
+                            {% if card.module.is_pro_only %}
+                            <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.1rem 0.45rem; border-radius: 6px;">
+                                PRO / EDU
+                            </span>
                             {% else %}
-                                <span>{{ lesson.order }}</span>
+                            <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 0.1rem 0.45rem; border-radius: 6px;">
+                                FREE
+                            </span>
                             {% endif %}
                         </div>
 
-                        <div class="mission-body">
-                            <div class="mission-meta-chips">
-                                <span class="mission-meta-chip">
-                                    {% if lang == 'en' %}MISSION 0{{ lesson.order }}{% else %}MISIA 0{{ lesson.order }}{% endif %}
-                                </span>
-                                <span class="mission-reward-tag">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    {{ lesson.exercises.count }} {% if lang == 'en' %}tasks{% else %}úloh{% endif %}
-                                </span>
-                                <span class="mission-reward-tag" style="color:var(--ro-indigo); font-weight:700;">
-                                    +{{ lesson.xp_reward }} XP
-                                </span>
-                            </div>
-                            <h3 class="mission-title">
-                                {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
-                            </h3>
-                        </div>
+                        <h3 class="module-title-h3">
+                            {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
+                        </h3>
                     </div>
+                </div>
 
-                    <div class="mission-actions">
-                        {% if lesson.id in completed_lesson_ids %}
-                            <span class="btn btn-secondary btn-sm" style="font-weight:700; font-size:0.75rem; padding:0.35rem 0.85rem; display:inline-flex; align-items:center; gap:0.35rem;">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                                {% if lang == 'en' %}Review{% else %}Zopakovať{% endif %}
-                            </span>
-                        {% elif next_lesson and lesson.id == next_lesson.id %}
-                            <span class="btn btn-primary btn-sm" style="font-weight:800; font-size:0.75rem; padding:0.4rem 0.95rem; display:inline-flex; align-items:center; gap:0.4rem; box-shadow: 0 4px 14px rgba(70, 54, 245, 0.4);">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                {% if lang == 'en' %}Start Mission{% else %}Spustiť misiu{% endif %}
-                            </span>
-                        {% else %}
-                            <span class="btn btn-secondary btn-sm" style="font-weight:600; font-size:0.75rem; padding:0.35rem 0.85rem;">
-                                {% if lang == 'en' %}Open{% else %}Otvoriť{% endif %}
-                            </span>
-                        {% endif %}
-                    </div>
-                </a>
-                {% empty %}
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; padding: 1rem;">
-                    {% if lang == 'en' %}No lessons attached to this module yet.{% else %}Tento modul zatiaľ neobsahuje žiadne lekcie.{% endif %}
-                </p>
-                {% endfor %}
-
-                <!-- Chapter Milestone Checkpoint Banner -->
-                <div style="margin-top: 0.5rem; padding: 0.9rem 1.25rem; border-radius: var(--radius-md); background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, var(--bg-surface) 100%); border: 1px dashed var(--gold-border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 0.85rem;">
-                        <span style="display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px; background:var(--gold-bg); color:var(--gold-text);">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="8" r="6"/>
-                                <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
-                            </svg>
+                <div class="module-header-right">
+                    <div class="module-progress-stat">
+                        <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--text-primary);">
+                            {{ card.done }} / {{ card.total }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}
                         </span>
-                        <div>
-                            <strong style="font-family: var(--font-display); font-size: 0.92rem; color: var(--text-primary); display: block;">
-                                {% if lang == 'en' %}Chapter Milestone Exam{% else %}Míľniková skúška kapitoly{% endif %}
-                            </strong>
-                            <span style="font-size: 0.78rem; color: var(--text-secondary);">
-                                {% if card.pct == 100 %}
-                                    {% if lang == 'en' %}All missions complete! Checkpoint cleared.{% else %}Všetky misie splnené! Míľnik úspešne zvládnutý.{% endif %}
-                                {% else %}
-                                    {% if lang == 'en' %}Complete all {{ card.total }} lessons to clear this chapter.{% else %}Zvládni všetky {{ card.total }} lekcie na odomknutie míľnika.{% endif %}
-                                {% endif %}
-                            </span>
+                        <div class="progress-track" style="height: 5px; width: 90px; margin-top: 0.25rem;">
+                            <div class="progress-fill" data-progress="{{ card.pct }}"></div>
                         </div>
                     </div>
-                    <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; color: var(--gold-text); background: var(--gold-bg); padding: 0.2rem 0.6rem; border-radius: 999px;">
-                        {{ card.done }} / {{ card.total }} {% if lang == 'en' %}done{% else %}hotovo{% endif %}
+
+                    <span class="accordion-chevron">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                     </span>
                 </div>
             </div>
-            {% endif %}
-        </section>
+
+            <!-- Telo akordeónu s lekciami -->
+            <div class="module-accordion-body">
+                <p class="module-description-text">
+                    {% if lang == 'en' %}{{ card.module.description_en }}{% else %}{{ card.module.description_sk }}{% endif %}
+                </p>
+
+                {% if card.locked %}
+                <div style="padding: 1.5rem; text-align: center; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--gold-border);">
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 0 0.85rem;">
+                        {% if lang == 'en' %}This advanced module requires an active Codoro PRO account or School License key.{% else %}Tento pokročilý modul vyžaduje Codoro PRO účet alebo školskú licenciu.{% endif %}
+                    </p>
+                    <a href="{% url 'shop' %}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+                        {% if lang == 'en' %}Unlock in Shop{% else %}Odomknúť v Obchode{% endif %}
+                    </a>
+                </div>
+                {% else %}
+                <div class="module-lessons-list">
+                    {% for lesson in card.lessons %}
+                    <a href="{% url 'lesson_detail' lesson.id %}"
+                       class="lesson-item-row {% if next_lesson and lesson.id == next_lesson.id %}is-active{% endif %}"
+                       data-lesson-title="{% if lang == 'en' %}{{ lesson.title_en|lower }}{% else %}{{ lesson.title_sk|lower }}{% endif %}">
+                        <div style="display: flex; align-items: center; gap: 0.85rem; min-width: 0;">
+                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+                                {% if lesson.id in completed_lesson_ids %}background: var(--emerald-bg); color: var(--emerald-text);
+                                {% elif next_lesson and lesson.id == next_lesson.id %}background: var(--ro-indigo); color: #fff;
+                                {% else %}background: var(--bg-surface); color: var(--text-muted); border: 1px solid var(--border-hairline);{% endif %}">
+                                {% if lesson.id in completed_lesson_ids %}✓{% else %}{{ lesson.order }}{% endif %}
+                            </span>
+
+                            <div style="min-width: 0;">
+                                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                                    <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                                        {% if lang == 'en' %}LESSON 0{{ lesson.order }}{% else %}LEKCIA 0{{ lesson.order }}{% endif %}
+                                    </span>
+                                    <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);">
+                                        · {{ lesson.exercises.count }} {% if lang == 'en' %}tasks{% else %}úloh{% endif %}
+                                    </span>
+                                    <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--gold-text);">
+                                        +{{ lesson.xp_reward }} XP
+                                    </span>
+                                </div>
+                                <strong style="font-size: 0.94rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div style="flex-shrink: 0;">
+                            {% if lesson.id in completed_lesson_ids %}
+                            <span style="font-size: 0.76rem; font-weight: 700; color: var(--emerald-text); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                {% if lang == 'en' %}Completed{% else %}Dokončené{% endif %}
+                            </span>
+                            {% elif next_lesson and lesson.id == next_lesson.id %}
+                            <span class="btn btn-primary btn-sm" style="font-weight: 800; font-size: 0.74rem; padding: 0.35rem 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                {% if lang == 'en' %}Continue{% else %}Spustiť{% endif %}
+                            </span>
+                            {% else %}
+                            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
+                                {% if lang == 'en' %}Open →{% else %}Otvoriť →{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% empty %}
+                    <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0.5rem 0;">
+                        {% if lang == 'en' %}No lessons attached to this module yet.{% else %}Tento modul zatiaľ neobsahuje lekcie.{% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
         {% empty %}
         <div class="card-surface" style="padding: 3rem; text-align: center; color: var(--text-muted);">
             {% if lang == 'en' %}No modules configured yet. Run the seed script to populate curriculum.{% else %}Zatiaľ nie sú vytvorené žiadne moduly. Spusti seed_codoro.py.{% endif %}
         </div>
         {% endfor %}
-
     </div>
 
-    <!-- PRAVÝ STĹPEC: SOCIAL & COMPANION RAIL -->
-    <aside class="companion-rail animate-in delay-2">
+    <!-- PRAVÝ PANEL: JEDNA ZJEDNOTENÁ KARTA S 3 ZÁLOŽKAMI (BEZ NEKONEČNÉHO SCROLLU) -->
+    <aside class="animate-in delay-2">
+        <div class="sidebar-unified-card">
 
-        <!-- 1. Codo AI Tútor Companion Lounge -->
-        <section class="card-surface" style="padding: 1.35rem; border-radius: var(--radius-lg); position: relative; overflow: hidden; border: 1.5px solid var(--ro-indigo-border); background: linear-gradient(145deg, rgba(70, 54, 245, 0.08) 0%, var(--bg-surface) 100%);">
-            <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.85rem;">
-                <div style="width: 44px; height: 44px; border-radius: 14px; background: var(--bg-subtle); border: 1.5px solid var(--ro-indigo-border); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(70, 54, 245, 0.25); flex-shrink: 0;">
-                    <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" style="width: 32px; height: 32px; object-fit: contain; animation: codoBreathe 3s ease-in-out infinite;">
-                </div>
-                <div>
-                    <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                        Codo AI Tútor
-                    </h3>
-                    <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--visor-cyan); font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
-                        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--visor-cyan); box-shadow: 0 0 6px var(--visor-cyan);"></span>
-                        {% if lang == 'en' %}Socratic guide active{% else %}Sokratovský sprievodca{% endif %}
-                    </span>
-                </div>
+            <!-- Prepínacie záložky pravého panelu -->
+            <div class="sidebar-tab-nav">
+                <button type="button" class="sidebar-tab-btn active" onclick="switchSidebarTab('quests')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    {% if lang == 'en' %}Quests{% else %}Výzvy{% endif %}
+                </button>
+                <button type="button" class="sidebar-tab-btn" onclick="switchSidebarTab('classquest')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                    {% if lang == 'en' %}Class Quest{% else %}Trieda{% endif %}
+                </button>
+                <button type="button" class="sidebar-tab-btn" onclick="switchSidebarTab('leaderboard')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M14 14.66V17c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+                    {% if lang == 'en' %}Ranks{% else %}Rebríček{% endif %}
+                </button>
             </div>
 
-            <div style="background: var(--bg-subtle); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 0.95rem; font-size: 0.86rem; line-height: 1.55; color: var(--text-secondary); margin-bottom: 0.85rem; position: relative;">
-                {% if lang == 'en' %}
-                "Stuck on a tricky Python problem? In exercises, I analyze your test errors and guide you with hints — never giving away the final solution!"
-                {% else %}
-                "Zasekol si sa na úlohe? V cvičeniach analyzujem výstup testov a navediem ťa otázkami na správnu stopu bez prezradenia hotového kódu."
-                {% endif %}
-            </div>
+            <div class="sidebar-tab-content">
 
-            {% if next_lesson %}
-            <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary btn-sm" style="width: 100%; justify-content: center; font-weight: 700; display: inline-flex; align-items: center; gap: 0.45rem;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                {% if lang == 'en' %}Continue Mission{% else %}Spustiť dnešnú misiu{% endif %}
-            </a>
-            {% endif %}
-        </section>
-
-        <!-- 2. Spoločná Triedna Výzva (Raid Quest) -->
-        {% if class_quest %}
-        <section class="card-surface" style="padding: 1.45rem; border-left: 4px solid var(--ro-indigo); border-radius: var(--radius-lg);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.65rem;">
-                <div>
-                    <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; display:flex; align-items:center; gap:4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        {% if lang == 'en' %}CLASSROOM RAID{% else %}TRIEDNA SPOLUPRÁCA{% endif %}
-                    </span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0.15rem 0 0;">
-                        {% if lang == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}
-                    </h3>
-                </div>
-                <span class="sidebar-stat-pill gold" style="font-size: 0.75rem;">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
-                    +{{ class_quest.reward_doros_per_student }} Doros
-                </span>
-            </div>
-
-            <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 0.85rem; line-height: 1.45;">
-                {% if lang == 'en' %}
-                Class goal: Solve <strong>{{ class_quest.target_exercises_count }} tasks</strong> together. Qualify with at least {{ class_quest.min_contribution_required }} task(s)!
-                {% else %}
-                Spoločný cieľ: Vyriešiť <strong>{{ class_quest.target_exercises_count }} úloh</strong>. Prispej aspoň {{ class_quest.min_contribution_required }} úlohou!
-                {% endif %}
-            </p>
-
-            <div class="progress-track" style="height: 8px; margin-bottom: 0.6rem;">
-                <div class="progress-fill" data-progress="{{ class_quest.progress_pct }}"></div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted);">
-                <span>{{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }} ({{ class_quest.progress_pct }}%)</span>
-                {% if top_contributors %}
-                <span style="display:flex; align-items:center; gap:3px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold-text);"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-                    {{ top_contributors.0.student.username }} ({{ top_contributors.0.amount_contributed }}×)
-                </span>
-                {% endif %}
-            </div>
-        </section>
-        {% endif %}
-
-        <!-- 3. Osobné Questy -->
-        <section class="card-surface" style="padding: 1.4rem; border-radius: var(--radius-lg);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0; display:flex; align-items:center; gap:6px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ro-indigo);"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                    {% if lang == 'en' %}Personal Quests{% else %}Osobné výzvy (Questy){% endif %}
-                </h3>
-                <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
-                    {{ quest_items|length }} {% if lang == 'en' %}active{% else %}aktívnych{% endif %}
-                </span>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                {% for item in quest_items %}
-                <div style="padding: 0.85rem 0.95rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                            {{ item.quest.get_period_display|default:item.quest.period }}
+                <!-- 1. ZÁLOŽKA: OSOBNÉ VÝZVY (QUESTY) -->
+                <div class="sidebar-panel active" id="sidebar-panel-quests">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                            {% if lang == 'en' %}ACTIVE MISSIONS{% else %}AKTÍVNE VÝZVY{% endif %}
                         </span>
-                        <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--gold-text);">
-                            +{{ item.quest.reward_doros }} Doros · +{{ item.quest.reward_xp }} XP
+                        <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
+                            {{ quest_items|length }} {% if lang == 'en' %}active{% else %}aktívnych{% endif %}
                         </span>
                     </div>
 
-                    <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                        {% if lang == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
-                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.65rem; max-height: 480px; overflow-y: auto; padding-right: 2px;">
+                        {% for item in quest_items %}
+                        <div style="padding: 0.8rem 0.85rem; border-radius: var(--radius-sm); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                                    {{ item.quest.get_period_display|default:item.quest.period }}
+                                </span>
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--gold-text);">
+                                    +{{ item.quest.reward_doros }} Doros · +{{ item.quest.reward_xp }} XP
+                                </span>
+                            </div>
 
-                    <div class="progress-track" style="height: 6px; margin-bottom: 0.45rem; background: var(--bg-surface);">
-                        <div class="progress-fill" data-progress="{{ item.progress_pct }}"></div>
-                    </div>
+                            <div style="font-weight: 700; font-size: 0.84rem; margin-bottom: 0.4rem; color: var(--text-primary); line-height: 1.35;">
+                                {% if lang == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
+                            </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
-                            {{ item.current_value }} / {{ item.quest.target_value }}
-                        </span>
-                        {% if item.is_completed and not item.is_claimed %}
-                        <form method="post" action="{% url 'claim_quest_reward' item.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; font-weight: 800; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:3px;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-                                {% if lang == 'en' %}Claim{% else %}Prevziať{% endif %}
-                            </button>
-                        </form>
-                        {% elif item.is_claimed %}
-                        <span style="font-size: 0.76rem; font-weight: 800; color: var(--emerald-text); display:flex; align-items:center; gap:3px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
-                        </span>
-                        {% endif %}
-                    </div>
-                </div>
-                {% empty %}
-                <p style="font-size: 0.86rem; color: var(--text-muted); margin: 0;">
-                    {% if lang == 'en' %}No active quests at the moment.{% else %}Momentálne nemáš žiadne aktívne výzvy.{% endif %}
-                </p>
-                {% endfor %}
-            </div>
-        </section>
+                            <div class="progress-track" style="height: 5px; margin-bottom: 0.35rem; background: var(--bg-surface);">
+                                <div class="progress-fill" data-progress="{{ item.progress_pct }}"></div>
+                            </div>
 
-        <!-- 4. Triedny Rebríček (Class Leaderboard s pódiom) -->
-        <section class="card-surface" style="padding: 1.4rem; border-radius: var(--radius-lg);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0; display:flex; align-items:center; gap:6px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold-text);"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M14 14.66V17c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
-                    {% if lang == 'en' %}Class Leaderboard{% else %}Triedny rebríček{% endif %}
-                </h3>
-                {% if user.school_class %}
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.5rem; border-radius: 6px;">
-                    {{ user.school_class.name }}
-                </span>
-                {% endif %}
-            </div>
-
-            <div>
-                {% for s in leaderboard %}
-                <div class="leaderboard-item-row {% if s.id == user.id %}is-current-user{% endif %}" style="display:flex; justify-content:space-between; align-items:center; padding:0.65rem 0.8rem; border-radius:var(--radius-sm); margin-bottom:0.35rem;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <span class="podium-rank-chip {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
-                            #{{ forloop.counter }}
-                        </span>
-                        <div>
-                            <strong style="font-size: 0.9rem; color: var(--text-primary);">
-                                {{ s.username }} {% if s.id == user.id %}<span style="color: var(--ro-indigo); font-weight: 800;">({% if lang == 'en' %}You{% else %}Ty{% endif %})</span>{% endif %}
-                            </strong>
-                            <div style="font-size: 0.74rem; color: var(--text-muted); display:flex; align-items:center; gap:4px;">
-                                <span>Lvl {{ s.level }}</span>
-                                {% if s.badge_count %}
-                                <span>·</span>
-                                <span style="display:flex; align-items:center; gap:2px;">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-                                    {{ s.badge_count }} {% if lang == 'en' %}badges{% else %}odznakov{% endif %}
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
+                                    {{ item.current_value }} / {{ item.quest.target_value }}
+                                </span>
+                                {% if item.is_completed and not item.is_claimed %}
+                                <form method="post" action="{% url 'claim_quest_reward' item.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.25rem 0.65rem; font-size: 0.72rem; font-weight: 800;">
+                                        {% if lang == 'en' %}Claim{% else %}Prevziať{% endif %}
+                                    </button>
+                                </form>
+                                {% elif item.is_claimed %}
+                                <span style="font-size: 0.74rem; font-weight: 800; color: var(--emerald-text);">
+                                    ✓ {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
                                 </span>
                                 {% endif %}
                             </div>
                         </div>
+                        {% empty %}
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">
+                            {% if lang == 'en' %}No active quests at the moment.{% else %}Žiadne aktívne výzvy.{% endif %}
+                        </p>
+                        {% endfor %}
                     </div>
-                    <span style="font-family: var(--font-mono); font-size: 0.84rem; font-weight: 800; color: var(--text-primary);">
-                        {{ s.xp }} XP
-                    </span>
                 </div>
-                {% empty %}
-                <p style="font-size: 0.86rem; color: var(--text-muted); margin: 0;">
-                    {% if lang == 'en' %}No students in leaderboard yet.{% else %}Rebríček je zatiaľ prázdny.{% endif %}
-                </p>
-                {% endfor %}
-            </div>
-        </section>
 
+                <!-- 2. ZÁLOŽKA: TRIEDNY QUEST -->
+                <div class="sidebar-panel" id="sidebar-panel-classquest">
+                    {% if class_quest %}
+                    <div style="margin-bottom: 0.85rem;">
+                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                            {% if lang == 'en' %}CLASSROOM RAID{% else %}SPOLOČNÁ TRIEDNA VÝZVA{% endif %}
+                        </span>
+                        <h4 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0;">
+                            {% if lang == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}
+                        </h4>
+                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 0.75rem; line-height: 1.45;">
+                            {% if lang == 'en' %}
+                            Solve <strong>{{ class_quest.target_exercises_count }} tasks</strong> as a class. Reward: +{{ class_quest.reward_doros_per_student }} Doros per student!
+                            {% else %}
+                            Vyriešte spolu <strong>{{ class_quest.target_exercises_count }} úloh</strong>. Odmena: +{{ class_quest.reward_doros_per_student }} Doros každému!
+                            {% endif %}
+                        </p>
+
+                        <div class="progress-track" style="height: 7px; margin-bottom: 0.45rem;">
+                            <div class="progress-fill" data-progress="{{ class_quest.progress_pct }}"></div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                            <span>{{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }}</span>
+                            <span style="font-weight: 800; color: var(--ro-indigo);">{{ class_quest.progress_pct }}%</span>
+                        </div>
+                    </div>
+
+                    {% if top_contributors %}
+                    <div style="border-top: 1px solid var(--border-hairline); padding-top: 0.75rem;">
+                        <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-mono); display: block; margin-bottom: 0.45rem;">
+                            {% if lang == 'en' %}Top Contributors:{% else %}Najviac prispeli:{% endif %}
+                        </span>
+                        {% for c in top_contributors %}
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.25rem 0;">
+                            <span style="color: var(--text-primary); font-weight: 600;">{{ c.student.username }}</span>
+                            <span style="font-family: var(--font-mono); color: var(--gold-text); font-weight: 700;">{{ c.amount_contributed }}× úloh</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">
+                        {% if lang == 'en' %}No active classroom quest right now.{% else %}Vaša trieda momentálne nemá vypísaný triedny quest.{% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+
+                <!-- 3. ZÁLOŽKA: TRIEDNY REBRÍČEK -->
+                <div class="sidebar-panel" id="sidebar-panel-leaderboard">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
+                            {% if lang == 'en' %}CLASS LEADERBOARD{% else %}TRIEDNY REBRÍČEK{% endif %}
+                        </span>
+                        {% if user.school_class %}
+                        <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.1rem 0.45rem; border-radius: 4px;">
+                            {{ user.school_class.name }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                        {% for s in leaderboard %}
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.65rem; border-radius:var(--radius-sm); {% if s.id == user.id %}background: var(--ro-indigo-soft); border: 1px solid var(--ro-indigo-border);{% else %}background: var(--bg-subtle);{% endif %}">
+                            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                                <span class="podium-rank-chip {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
+                                    #{{ forloop.counter }}
+                                </span>
+                                <div>
+                                    <strong style="font-size: 0.85rem; color: var(--text-primary); display:block;">
+                                        {{ s.username }} {% if s.id == user.id %}<span style="color: var(--ro-indigo); font-weight: 800;">({% if lang == 'en' %}You{% else %}Ty{% endif %})</span>{% endif %}
+                                    </strong>
+                                    <span style="font-size: 0.72rem; color: var(--text-muted);">
+                                        Lvl {{ s.level }} · {{ s.badge_count }} 🎖️
+                                    </span>
+                                </div>
+                            </div>
+                            <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 800; color: var(--text-primary);">
+                                {{ s.xp }} XP
+                            </span>
+                        </div>
+                        {% empty %}
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">
+                            {% if lang == 'en' %}No students on the leaderboard yet.{% else %}Rebríček je zatiaľ prázdny.{% endif %}
+                        </p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </aside>
+
 </div>
 
-<!-- Automatické animovanie progress barov -->
+<!-- JavaScript pre Akordeóny, Filtrovanie Trackov, Vyhľadávanie a Prepínanie Záložiek -->
 <script>
+    function toggleModuleAccordion(moduleId) {
+        var card = document.getElementById('module-card-' + moduleId);
+        if (!card) return;
+        var wasOpen = card.classList.contains('open');
+
+        // Zavri všetky ostatné akordeóny pre čisté kompaktné zobrazenie
+        document.querySelectorAll('.module-accordion-card').forEach(function(c) {
+            c.classList.remove('open');
+        });
+
+        if (!wasOpen) {
+            card.classList.add('open');
+        }
+    }
+
+    function switchSidebarTab(tabName) {
+        // Prepnutie tlačidiel
+        document.querySelectorAll('.sidebar-tab-btn').forEach(function(b) {
+            b.classList.remove('active');
+        });
+        // Prepnutie panelov
+        document.querySelectorAll('.sidebar-panel').forEach(function(p) {
+            p.classList.remove('active');
+        });
+
+        var targetPanel = document.getElementById('sidebar-panel-' + tabName);
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+        }
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+        // Animácia progress barov
         document.querySelectorAll('.progress-fill').forEach(function (bar) {
             var pct = bar.getAttribute('data-progress') || 0;
             setTimeout(function () {
                 bar.style.width = pct + '%';
             }, 80);
         });
+
+        // Filtrovanie podľa kariérnych ciest (Tracks)
+        var trackButtons = document.querySelectorAll('.track-pill-btn');
+        var moduleCards = document.querySelectorAll('.module-accordion-card');
+        var searchInput = document.getElementById('curriculumSearchInput');
+
+        function applyFilters() {
+            var activeTrackBtn = document.querySelector('.track-pill-btn.active');
+            var selectedTrack = activeTrackBtn ? activeTrackBtn.getAttribute('data-track') : 'ALL';
+            var query = (searchInput.value || '').trim().toLowerCase();
+
+            moduleCards.forEach(function(card) {
+                var cardTrack = card.getAttribute('data-track') || '';
+                var cardTitle = card.getAttribute('data-title') || '';
+                var matchesTrack = (selectedTrack === 'ALL') || (cardTrack === selectedTrack);
+
+                var matchesQuery = true;
+                if (query.length > 0) {
+                    var lessonRows = card.querySelectorAll('.lesson-item-row');
+                    var anyLessonMatch = false;
+                    lessonRows.forEach(function(lr) {
+                        var lt = lr.getAttribute('data-lesson-title') || '';
+                        if (lt.indexOf(query) !== -1) {
+                            anyLessonMatch = true;
+                            lr.style.display = 'flex';
+                        } else {
+                            lr.style.display = 'none';
+                        }
+                    });
+                    matchesQuery = (cardTitle.indexOf(query) !== -1) || anyLessonMatch;
+                } else {
+                    card.querySelectorAll('.lesson-item-row').forEach(function(lr) {
+                        lr.style.display = 'flex';
+                    });
+                }
+
+                if (matchesTrack && matchesQuery) {
+                    card.style.display = 'block';
+                    if (query.length > 0) {
+                        card.classList.add('open');
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        trackButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                trackButtons.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                applyFilters();
+            });
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
     });
 </script>
 {% endblock %}

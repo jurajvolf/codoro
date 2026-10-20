@@ -215,3 +215,18 @@ class PracticeArenaAndLessonDetailTests(TestCase):
         self.assertEqual(res2.context['current_exercise'].id, self.ex2.id)
         self.assertIsNone(res2.context['next_exercise'])
 
+    def test_cheat_sheets_view(self):
+        self.client.login(username='student_arena', password='password123')
+        res = self.client.get('/cheatsheets/')
+        self.assertEqual(res.status_code, 200)
+        self.assertIn('categories', res.context)
+        self.assertIn('items', res.context)
+        self.assertGreaterEqual(len(res.context['categories']), 6)
+        self.assertGreaterEqual(len(res.context['items']), 20)
+
+    def test_module_track_choices(self):
+        self.assertEqual(self.module.track, Module.Track.FUNDAMENTALS)
+        self.module.track = Module.Track.OOP
+        self.module.save()
+        self.assertEqual(Module.objects.get(id=self.module.id).track, Module.Track.OOP)
+

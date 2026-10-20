@@ -14,10 +14,23 @@ class Module(models.Model):
         INTERMEDIATE = 'INTERMEDIATE', 'Mierne pokročilý / Intermediate'
         ADVANCED = 'ADVANCED', 'Pokročilý / Advanced'
 
+    class Track(models.TextChoices):
+        FUNDAMENTALS = 'FUNDAMENTALS', '1. Základy a Logika'
+        DATA_STRUCTURES = 'DATA_STRUCTURES', '2. Funkcie a Dátové štruktúry'
+        OOP = 'OOP', '3. OOP a Softvérové inžinierstvo'
+        ALGORITHMS_AND_DATA = 'ALGORITHMS_AND_DATA', '4. Algoritmy, Dáta a Bezpečnosť'
+        MATURITA_PREP = 'MATURITA_PREP', '5. Maturitný špeciál a Projekty'
+
     title_sk = models.CharField(max_length=150, verbose_name="Názov modulu (SK)")
     title_en = models.CharField(max_length=150, verbose_name="Názov modulu (EN)")
     description_sk = models.TextField(verbose_name="Popis modulu (SK)")
     description_en = models.TextField(verbose_name="Popis modulu (EN)")
+    track = models.CharField(
+        max_length=30,
+        choices=Track.choices,
+        default=Track.FUNDAMENTALS,
+        verbose_name="Kariérna cesta (Track)"
+    )
     programming_language = models.CharField(
         max_length=20,
         choices=ProgrammingLanguage.choices,

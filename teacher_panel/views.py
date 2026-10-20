@@ -76,7 +76,7 @@ def cms_modules(request):
     modules = Module.objects.annotate(
         lesson_count=Count('lessons', distinct=True),
         exercise_count=Count('lessons__exercises', distinct=True)
-    ).prefetch_related('lessons__exercises').order_by('order')
+    ).prefetch_related('lessons__exercises', 'lessons__quiz_questions').order_by('order')
 
     total_hours = sum(m.estimated_hours for m in modules)
     total_lessons = sum(m.lesson_count for m in modules)
