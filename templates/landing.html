@@ -11,13 +11,25 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
+<!-- REAKTÍVNE POHYBLIVÉ POZADIE S CYBERNETICKÝM MESHOM A KANVASOM -->
+<div class="landing-canvas-wrapper" aria-hidden="true">
+    <canvas id="heroBackgroundCanvas" class="hero-interactive-canvas"></canvas>
+    <div class="aurora-orb aurora-orb-1"></div>
+    <div class="aurora-orb aurora-orb-2"></div>
+    <div class="aurora-orb aurora-orb-3"></div>
+    <div class="landing-grid-overlay"></div>
+</div>
+
 <div class="landing-page-root">
 
-    <!-- HERO SEKCE S AURORA EFEKTOM A PUNCHLINE -->
-    <section class="landing-hero-section">
-        <div class="hero-content">
+    <!-- HERO SEKCE S AURORA EFEKTOM, INTERAKTÍVNYM KANVASOM A PUNCHLINE -->
+    <section class="landing-hero-section" id="hero">
+        <div class="hero-content reveal-on-scroll">
             <div class="hero-badge-pill">
                 <span class="pulse-dot"></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ro-indigo); flex-shrink: 0;">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
                 <span>
                     {% if lang == 'en' %}
                     MATURA GRADUATION PROJECT 2026/2027 • THEME #22 • SOŠ TECHNICKÁ NIŽNÁ
@@ -39,21 +51,22 @@
 
             <p class="hero-subhead">
                 {% if lang == 'en' %}
-                Codoro unites an in-browser Python IDE, Socratic AI tutor Codo, Doros token economy, and a real-time classroom ecosystem in one cohesive platform. Zero installation, 100% focused on understanding.
+                Codoro unites an in-browser Python IDE, Socratic AI tutor Codo, Doros token economy, and a real-time classroom ecosystem in one cohesive platform. Zero installation, 100% focused on genuine comprehension.
                 {% else %}
                 Codoro spája moderný prehliadačový Python editor, Sokratovského AI tútora Codo, hernú ekonomiku Doros a prepojenie celej triedy s učiteľom v jednom ucelenom systéme. Bez akejkoľvek inštalácie, s dôrazom na skutočné pochopenie.
                 {% endif %}
             </p>
 
             <div class="hero-cta-group">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary glow-effect">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
                     {% if lang == 'en' %}Start Learning Free{% else %}Začať sa učiť zadarmo{% endif %}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cta-arrow-icon"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
                 <a href="{% url 'get_license' %}" class="btn btn-secondary btn-hero-secondary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
                         <path d="M6 12v5c3 3 9 3 12 0v-5"/>
                     </svg>
@@ -81,8 +94,39 @@
             </div>
         </div>
 
-        <!-- INTERAKTÍVNE IDE & CODO TÚTOR SHOWCASE -->
-        <div class="hero-ide-preview">
+        <!-- MULTI-SNIPPET INTERAKTÍVNE IDE & CODO TÚTOR SHOWCASE -->
+        <div class="hero-ide-preview reveal-on-scroll" id="ide">
+            <!-- POHYBLIVÉ PLÁVAJÚCE WIDGETY S PARALAXOU -->
+            <div class="floating-widget widget-top-right">
+                <div class="widget-icon cyan">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div>
+                    <span class="widget-sub">AST Sandbox</span>
+                    <strong class="widget-main">Izolovaný podproces</strong>
+                </div>
+            </div>
+
+            <div class="floating-widget widget-bottom-left">
+                <div class="widget-icon gold">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                </div>
+                <div>
+                    <span class="widget-sub">Trieda IV.C</span>
+                    <strong class="widget-main">Top 5% v rebríčku</strong>
+                </div>
+            </div>
+
+            <div class="floating-widget widget-bottom-right">
+                <div class="widget-icon red">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/></svg>
+                </div>
+                <div>
+                    <span class="widget-sub">Denný Streak</span>
+                    <strong class="widget-main">14 dní aktivity</strong>
+                </div>
+            </div>
+
             <div class="ide-window card-surface">
                 <div class="ide-window-bar">
                     <div class="ide-window-dots">
@@ -90,10 +134,23 @@
                         <span class="dot-yellow"></span>
                         <span class="dot-green"></span>
                     </div>
-                    <div class="ide-window-tab">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        <span>priemer_znamok.py</span>
+
+                    <!-- PREPÍNAČ 3 REÁLNYCH PYTHON ÚLOH -->
+                    <div class="ide-file-tabs">
+                        <button type="button" class="ide-tab-btn active" onclick="switchSnippet(0, this)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span>priemer_znamok.py</span>
+                        </button>
+                        <button type="button" class="ide-tab-btn" onclick="switchSnippet(1, this)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span>02_caesar_sifra.py</span>
+                        </button>
+                        <button type="button" class="ide-tab-btn" onclick="switchSnippet(2, this)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span>03_fibonacci.py</span>
+                        </button>
                     </div>
+
                     <div class="ide-window-meta">
                         <span class="sandbox-badge">
                             <span class="dot-pulse"></span>
@@ -103,50 +160,29 @@
                 </div>
 
                 <div class="ide-body">
-                    <div class="code-lines">
-                        <div class="code-row"><span class="line-num">1</span><span class="code-kw">def</span> <span class="code-fn">vypocitaj_priemer</span>(znamky: <span class="code-type">list</span>[<span class="code-type">int</span>]) -&gt; <span class="code-type">float</span>:</div>
-                        <div class="code-row"><span class="line-num">2</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-doc">"""Vráti vážený študijný priemer žiaka zo známok 1 až 5."""</span></div>
-                        <div class="code-row"><span class="line-num">3</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-kw">if not</span> znamky:</div>
-                        <div class="code-row"><span class="line-num">4</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-kw">return</span> <span class="code-num">0.0</span></div>
-                        <div class="code-row"><span class="line-num">5</span><span class="code-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="code-kw">return</span> <span class="code-fn">round</span>(<span class="code-fn">sum</span>(znamky) / <span class="code-fn">len</span>(znamky), <span class="code-num">2</span>)</div>
+                    <div class="code-lines" id="editorCodeLines">
+                        <!-- Generované dynamicky cez JS pre plynulé prepínanie -->
                     </div>
                 </div>
 
                 <div class="ide-toolbar">
                     <div class="ide-toolbar-left">
-                        <button type="button" class="btn btn-primary btn-sm" id="demoRunBtn" onclick="runInteractiveDemo()">
+                        <button type="button" class="btn btn-primary btn-sm glow-effect" id="demoRunBtn" onclick="runInteractiveDemo()">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             <span id="demoRunBtnText">{% if lang == 'en' %}Run Sandbox Tests{% else %}Spustiť a otestovať kód{% endif %}</span>
                         </button>
-                        <span class="ide-reward-tag">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--amber)"><circle cx="12" cy="12" r="9"/></svg>
+                        <span class="ide-reward-tag" id="demoRewardTag">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/></svg>
                             +35 XP • +10 Doros
                         </span>
                     </div>
-                    <span class="ide-time-tag" id="demoTimerTag">0.42 ms AST exec</span>
+                    <span class="ide-time-tag" id="demoTimerTag">AST Static Safety: Verified</span>
                 </div>
 
                 <!-- TERMINÁL A CODO TÚTOR ODPIS -->
                 <div class="ide-output-panel">
                     <div class="ide-test-cases" id="demoTestCases">
-                        <div class="test-item pass">
-                            <span class="test-icon">✓</span>
-                            <span class="test-name">Test #1: [1, 2, 1, 3]</span>
-                            <span class="test-expected">== 1.75</span>
-                            <span class="test-ms">0.31ms</span>
-                        </div>
-                        <div class="test-item pass">
-                            <span class="test-icon">✓</span>
-                            <span class="test-name">Test #2: Prázdny zoznam []</span>
-                            <span class="test-expected">== 0.0</span>
-                            <span class="test-ms">0.24ms</span>
-                        </div>
-                        <div class="test-item pass">
-                            <span class="test-icon">✓</span>
-                            <span class="test-name">Test #3: Skrytý test hraničných hodnôt</span>
-                            <span class="test-expected">PASSED</span>
-                            <span class="test-ms">0.40ms</span>
-                        </div>
+                        <!-- Generované dynamicky -->
                     </div>
 
                     <div class="codo-ai-bubble">
@@ -159,11 +195,7 @@
                             <span class="codo-model-pill">Gemini 2.5 Flash</span>
                         </div>
                         <p class="codo-ai-text" id="demoCodoText">
-                            {% if lang == 'en' %}
-                            💡 <em>"Excellent logic! You guarded against division by zero using `if not znamky: return 0.0`. What would happen if a user passed float numbers or a single grade? How does the time complexity scale?"</em>
-                            {% else %}
-                            💡 <em>"Výborne! Správne si ošetril delenie nulou podmienkou `if not znamky: return 0.0`. Premýšľal si, čo by sa stalo, ak by niekto do zoznamu poslal známky s desatinným číslom alebo extrémne dlhý zoznam?"</em>
-                            {% endif %}
+                            <!-- Injected by script -->
                         </p>
                     </div>
                 </div>
@@ -171,33 +203,68 @@
         </div>
     </section>
 
-    <!-- METRICS TICKER ROW -->
-    <section class="landing-metrics-ribbon card-surface">
+    <!-- METRICS TICKER ROW S ANIMOVANÝMI POČÍTADLAMI -->
+    <section class="landing-metrics-ribbon card-surface reveal-on-scroll" id="metrics">
         <div class="metric-ribbon-item">
-            <span class="metric-icon">📚</span>
+            <div class="metric-icon-box indigo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    <line x1="9" y1="7" x2="15" y2="7"/>
+                    <line x1="9" y1="11" x2="13" y2="11"/>
+                </svg>
+            </div>
             <div class="metric-data">
-                <strong class="metric-val">{{ total_modules|default:"18" }}</strong>
-                <span class="metric-lbl">{% if lang == 'en' %}Learning Modules{% else %}Učebných modulov{% endif %}</span>
+                <div class="metric-val-row">
+                    <strong class="metric-val counter-val" data-target="{{ total_modules|default:'18' }}">0</strong>
+                </div>
+                <span class="metric-lbl">{% if lang == 'en' %}Learning Modules{% else %}Učebných modulov kurikula{% endif %}</span>
             </div>
         </div>
         <div class="metric-ribbon-item">
-            <span class="metric-icon">⏱️</span>
+            <div class="metric-icon-box cyan">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
             <div class="metric-data">
-                <strong class="metric-val">{{ total_hours|default:"220" }}+</strong>
+                <div class="metric-val-row">
+                    <strong class="metric-val counter-val" data-target="{{ total_hours|default:'220' }}">0</strong>
+                    <span class="metric-suffix">+</span>
+                </div>
                 <span class="metric-lbl">{% if lang == 'en' %}Hours of Curriculum{% else %}Hodín študijného materiálu{% endif %}</span>
             </div>
         </div>
         <div class="metric-ribbon-item">
-            <span class="metric-icon">⚡</span>
+            <div class="metric-icon-box emerald">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="16 12 12 8 8 12"/>
+                    <line x1="12" y1="16" x2="12" y2="8"/>
+                </svg>
+            </div>
             <div class="metric-data">
-                <strong class="metric-val">{{ total_exercises|default:"250" }}+</strong>
-                <span class="metric-lbl">{% if lang == 'en' %}Interactive Exercises{% else %}Praktických úloh a testov{% endif %}</span>
+                <div class="metric-val-row">
+                    <strong class="metric-val counter-val" data-target="{{ total_exercises|default:'250' }}">0</strong>
+                    <span class="metric-suffix">+</span>
+                </div>
+                <span class="metric-lbl">{% if lang == 'en' %}Interactive Exercises{% else %}Praktických úloh a unit testov{% endif %}</span>
             </div>
         </div>
         <div class="metric-ribbon-item">
-            <span class="metric-icon">🤖</span>
+            <div class="metric-icon-box gold">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                    <path d="M12 2a10 10 0 0 1 10 10h-10V2z"/>
+                    <circle cx="12" cy="12" r="4"/>
+                </svg>
+            </div>
             <div class="metric-data">
-                <strong class="metric-val">100%</strong>
+                <div class="metric-val-row">
+                    <strong class="metric-val counter-val" data-target="100">0</strong>
+                    <span class="metric-suffix">%</span>
+                </div>
                 <span class="metric-lbl">{% if lang == 'en' %}Socratic AI Feedback{% else %}Sokratovské navádzanie AI{% endif %}</span>
             </div>
         </div>
@@ -205,7 +272,7 @@
 
     <!-- 4 HLAVNÉ PILIERE - PREČO CODORO (SEKCIA #pillars) -->
     <section class="landing-section" id="pillars">
-        <div class="section-header text-center">
+        <div class="section-header text-center reveal-on-scroll">
             <span class="section-kicker">{% if lang == 'en' %}COMPETITIVE ADVANTAGE{% else %}UNIKÁTNA HODNOTA PRE VÝUČBU{% endif %}</span>
             <h2 class="section-title">
                 {% if lang == 'en' %}
@@ -225,7 +292,7 @@
 
         <div class="pillars-grid">
             <!-- PILIER 1: SOKRATOVSKÉ AI -->
-            <div class="pillar-card card-surface" id="codo-ai">
+            <div class="pillar-card card-surface spotlight-card reveal-on-scroll" id="codo-ai">
                 <div class="pillar-icon-box cyan">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"/>
@@ -254,7 +321,7 @@
             </div>
 
             <!-- PILIER 2: TRIEDNY EKOSYSTÉM -->
-            <div class="pillar-card card-surface">
+            <div class="pillar-card card-surface spotlight-card reveal-on-scroll">
                 <div class="pillar-icon-box indigo">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -281,7 +348,7 @@
             </div>
 
             <!-- PILIER 3: REÁLNA ŠKOLSKÁ EKONOMIKA -->
-            <div class="pillar-card card-surface">
+            <div class="pillar-card card-surface spotlight-card reveal-on-scroll">
                 <div class="pillar-icon-box gold">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="9"/>
@@ -306,7 +373,7 @@
             </div>
 
             <!-- PILIER 4: MATURITNÝ ŠPECIÁL A DVOJJAZYČNOSŤ -->
-            <div class="pillar-card card-surface">
+            <div class="pillar-card card-surface spotlight-card reveal-on-scroll">
                 <div class="pillar-icon-box emerald">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -334,7 +401,7 @@
 
     <!-- UČEBNÉ CESTY A KURIKULUM (SEKCIA #curriculum) -->
     <section class="landing-section" id="curriculum">
-        <div class="section-header text-center">
+        <div class="section-header text-center reveal-on-scroll">
             <span class="section-kicker">{% if lang == 'en' %}COMPREHENSIVE SYLLABUS{% else %}ŠTRUKTÚROVANÉ UČIVO PRE STREDNÉ ŠKOLY{% endif %}</span>
             <h2 class="section-title">
                 {% if lang == 'en' %}
@@ -352,12 +419,24 @@
             </p>
         </div>
 
-        <!-- SEGMENTED TABS PRE 5 CIEST -->
-        <div class="track-tab-container">
+        <!-- SEGMENTED TABS PRE 5 CIEST S ČISTÝMI SVG IKONAMI -->
+        <div class="track-tab-container reveal-on-scroll">
             <div class="track-segmented-bar">
                 {% for track in tracks_data %}
                 <button type="button" class="track-pill-btn {% if forloop.first %}active{% endif %}" onclick="switchLandingTrack('{{ track.key }}', this)">
-                    <span class="track-pill-icon">{{ track.icon }}</span>
+                    <span class="track-pill-svg">
+                        {% if track.icon == 'zap' %}
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        {% elif track.icon == 'layers' %}
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        {% elif track.icon == 'box' %}
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        {% elif track.icon == 'cpu' %}
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                        {% else %}
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                        {% endif %}
+                    </span>
                     <span class="track-pill-text">{% if lang == 'en' %}{{ track.label_en }}{% else %}Track {{ forloop.counter }}: {{ track.label_sk }}{% endif %}</span>
                 </button>
                 {% endfor %}
@@ -368,11 +447,11 @@
         <div class="track-content-panels">
             {% for track in tracks_data %}
             <div class="track-panel {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}">
-                <div class="track-panel-banner card-surface">
+                <div class="track-panel-banner card-surface spotlight-card">
                     <div class="track-banner-info">
                         <span class="track-badge-pill">{{ track.badge }}</span>
                         <h3 class="track-panel-title">
-                            {{ track.icon }} {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
+                            {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
                         </h3>
                         <p class="track-panel-desc">
                             {% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}
@@ -385,9 +464,9 @@
 
                 <div class="modules-compact-grid">
                     {% for mod in track.modules %}
-                    <div class="module-mini-card card-surface">
+                    <div class="module-mini-card card-surface spotlight-card reveal-on-scroll">
                         <div class="module-mini-header">
-                            <span class="module-num-chip">#{{ mod.order }}</span>
+                            <span class="module-num-chip">#{{ mod.order|stringformat:"02d" }}</span>
                             <div class="module-tier-badges">
                                 {% if mod.is_pro_only %}
                                 <span class="badge-pro">PRO / EDU</span>
@@ -429,7 +508,7 @@
 
     <!-- PRE ŠKOLY A PEDAGÓGOV (SEKCIA #schools) -->
     <section class="landing-section" id="schools">
-        <div class="schools-showcase-box card-surface">
+        <div class="schools-showcase-box card-surface spotlight-card reveal-on-scroll">
             <div class="schools-left-content">
                 <span class="section-kicker">{% if lang == 'en' %}FOR EDUCATORS & HIGH SCHOOLS{% else %}PRE STREDNÉ ŠKOLY A UČITEĽOV INFORMATIKY{% endif %}</span>
                 <h2 class="schools-headline">
@@ -472,7 +551,7 @@
                 </div>
 
                 <div class="schools-cta-row">
-                    <a href="{% url 'get_license' %}" class="btn btn-primary btn-lg">
+                    <a href="{% url 'get_license' %}" class="btn btn-primary btn-lg glow-effect">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                         {% if lang == 'en' %}Request Free School License{% else %}Požiadať o školskú pilotnú licenciu{% endif %}
                     </a>
@@ -486,7 +565,10 @@
                 <div class="teacher-preview-card">
                     <div class="preview-card-header">
                         <div class="teacher-avatar-mock">
-                            <span>👨‍🏫</span>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
                         </div>
                         <div>
                             <strong>Mgr. Markéta Brišová</strong>
@@ -512,7 +594,10 @@
 
                     <div class="preview-class-quest">
                         <div class="preview-quest-header">
-                            <strong>🤝 {% if lang == 'en' %}Class Quest: 100 Solved Exercises{% else %}Triedny Quest: 100 Vyriešených úloh{% endif %}</strong>
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                <strong>{% if lang == 'en' %}Class Quest: 100 Solved Tasks{% else %}Triedny Quest: 100 Vyriešených úloh{% endif %}</strong>
+                            </div>
                             <span class="quest-pct">78%</span>
                         </div>
                         <div class="progress-track" style="height: 8px;">
@@ -535,8 +620,8 @@
     </section>
 
     <!-- POROVNÁVACIA TABUĽKA (CODORO VS OSTATNÉ) -->
-    <section class="landing-section">
-        <div class="section-header text-center">
+    <section class="landing-section" id="compare">
+        <div class="section-header text-center reveal-on-scroll">
             <span class="section-kicker">{% if lang == 'en' %}FEATURE MATRIX{% else %}PREHĽADNÉ POROVNANIE{% endif %}</span>
             <h2 class="section-title">
                 {% if lang == 'en' %}
@@ -547,7 +632,7 @@
             </h2>
         </div>
 
-        <div class="table-responsive card-surface" style="padding: 1.5rem; overflow-x: auto;">
+        <div class="table-responsive card-surface spotlight-card reveal-on-scroll" style="padding: 1.5rem; overflow-x: auto;">
             <table class="landing-compare-table">
                 <thead>
                     <tr>
@@ -560,39 +645,93 @@
                 <tbody>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Socratic AI Guidance (No full code leaks){% else %}Sokratovský AI Tútor (Nikdy neprezradí riešenie){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Yes (Pedagogical prompt){% else %}Áno (Pedagogický filter){% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}No (Gives answers directly){% else %}Nie (Generuje hotový kód){% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}No AI{% else %}Žiadne AI{% endif %}</td>
+                        <td class="highlight-col check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Yes (Pedagogical prompt){% else %}Áno (Pedagogický filter){% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}No (Gives answers directly){% else %}Nie (Generuje hotový kód){% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}No AI{% else %}Žiadne AI{% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Real Classroom Ecosystem & Teacher Studio{% else %}Triedny ekosystém a Učiteľské štúdio (CMS){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Full Teacher CRUD{% else %}Kompletný CMS pre učiteľa{% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}Only individual users{% else %}Iba pre samoukov{% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}No classroom support{% else %}Žiadna správa triedy{% endif %}</td>
+                        <td class="highlight-col check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Full Teacher CRUD{% else %}Kompletný CMS pre učiteľa{% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}Only individual users{% else %}Iba pre samoukov{% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}No classroom support{% else %}Žiadna správa triedy{% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}School Marketplace with Stock Controls{% else %}Školský obchod so zásobami (Odpustenie úloh){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Yes (Managed quotas){% else %}Áno (Riadené týždenné kvóty){% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}Virtual cosmetic points{% else %}Iba virtuálne body{% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}None{% else %}Žiadne{% endif %}</td>
+                        <td class="highlight-col check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Yes (Managed quotas){% else %}Áno (Riadené týždenné kvóty){% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}Virtual cosmetic points{% else %}Iba virtuálne body{% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}None{% else %}Žiadne{% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}100% Slovak & English Localization{% else %}100% Slovenská a anglická lokalizácia{% endif %}</strong></td>
-                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Native SK & EN{% else %}Plná slovenčina i angličtina{% endif %}</td>
-                        <td class="check-partial">~ {% if lang == 'en' %}Partial machine translation{% else %}Len strojový preklad{% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}English only{% else %}Väčšinou iba anglicky{% endif %}</td>
+                        <td class="highlight-col check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Native SK & EN{% else %}Plná slovenčina i angličtina{% endif %}
+                        </td>
+                        <td class="check-partial">
+                            <span class="matrix-icon partial">~</span>
+                            {% if lang == 'en' %}Partial machine translation{% else %}Len strojový preklad{% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}English only{% else %}Väčšinou iba anglicky{% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Tailored for High School Matura (PČOZ MS){% else %}Príprava na slovenskú maturitu (PČOZ MS){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Dedicated Track 5{% else %}Vyhradená Kariérna cesta 5{% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}Generic curriculum{% else %}Všeobecné kurikulum{% endif %}</td>
-                        <td class="check-no">✕ {% if lang == 'en' %}Generic tutorials{% else %}Všeobecné návody{% endif %}</td>
+                        <td class="highlight-col check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Dedicated Track 5{% else %}Vyhradená Kariérna cesta 5{% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}Generic curriculum{% else %}Všeobecné kurikulum{% endif %}
+                        </td>
+                        <td class="check-no">
+                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                            {% if lang == 'en' %}Generic tutorials{% else %}Všeobecné návody{% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Zero Installation Browser Python Sandbox{% else %}Prehliadačový Python sandbox bez inštalácie{% endif %}</strong></td>
-                        <td class="highlight-col check-yes">✓ {% if lang == 'en' %}Yes (AST Security){% else %}Áno (Bezpečný AST sandbox){% endif %}</td>
-                        <td class="check-yes">✓ {% if lang == 'en' %}Yes{% else %}Áno{% endif %}</td>
-                        <td class="check-partial">~ {% if lang == 'en' %}Limited Try-It{% else %}Iba obmedzené ukážky{% endif %}</td>
+                        <td class="highlight-col check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Yes (AST Security){% else %}Áno (Bezpečný AST sandbox){% endif %}
+                        </td>
+                        <td class="check-yes">
+                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            {% if lang == 'en' %}Yes{% else %}Áno{% endif %}
+                        </td>
+                        <td class="check-partial">
+                            <span class="matrix-icon partial">~</span>
+                            {% if lang == 'en' %}Limited Try-It{% else %}Iba obmedzené ukážky{% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -600,19 +739,21 @@
     </section>
 
     <!-- FAQ AKORDEÓN -->
-    <section class="landing-section">
-        <div class="section-header text-center">
+    <section class="landing-section" id="faq">
+        <div class="section-header text-center reveal-on-scroll">
             <span class="section-kicker">{% if lang == 'en' %}FAQ{% else %}ČASTÉ OTÁZKY{% endif %}</span>
             <h2 class="section-title">
                 {% if lang == 'en' %}Frequently Asked Questions{% else %}Všetko, čo potrebujete vedieť{% endif %}
             </h2>
         </div>
 
-        <div class="landing-faq-accordion">
-            <details class="faq-item card-surface">
+        <div class="landing-faq-accordion reveal-on-scroll">
+            <details class="faq-item card-surface spotlight-card">
                 <summary class="faq-question">
                     <span>{% if lang == 'en' %}Is Codoro free for high school students?{% else %}Je Codoro bezplatné pre študentov a školy?{% endif %}</span>
-                    <span class="faq-arrow">▼</span>
+                    <span class="faq-arrow-svg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
                 </summary>
                 <div class="faq-answer">
                     <p>
@@ -625,10 +766,12 @@
                 </div>
             </details>
 
-            <details class="faq-item card-surface">
+            <details class="faq-item card-surface spotlight-card">
                 <summary class="faq-question">
                     <span>{% if lang == 'en' %}Do students need to install Python or Visual Studio Code?{% else %}Je potrebné na počítače inštalovať Python alebo VS Code?{% endif %}</span>
-                    <span class="faq-arrow">▼</span>
+                    <span class="faq-arrow-svg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
                 </summary>
                 <div class="faq-answer">
                     <p>
@@ -641,10 +784,12 @@
                 </div>
             </details>
 
-            <details class="faq-item card-surface">
+            <details class="faq-item card-surface spotlight-card">
                 <summary class="faq-question">
                     <span>{% if lang == 'en' %}How does Codo prevent students from cheating?{% else %}Ako Codo zabraňuje podvádzaniu pri písomkách?{% endif %}</span>
-                    <span class="faq-arrow">▼</span>
+                    <span class="faq-arrow-svg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
                 </summary>
                 <div class="faq-answer">
                     <p>
@@ -657,10 +802,12 @@
                 </div>
             </details>
 
-            <details class="faq-item card-surface">
+            <details class="faq-item card-surface spotlight-card">
                 <summary class="faq-question">
                     <span>{% if lang == 'en' %}What is the Doros currency and how does the shop work?{% else %}Čo je mena Doros a ako funguje školský obchod?{% endif %}</span>
-                    <span class="faq-arrow">▼</span>
+                    <span class="faq-arrow-svg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
                 </summary>
                 <div class="faq-answer">
                     <p>
@@ -676,9 +823,12 @@
     </section>
 
     <!-- ZÁVEREČNÝ HIGH-CONVERSION CTA BANNER -->
-    <section class="landing-cta-banner card-surface">
+    <section class="landing-cta-banner card-surface spotlight-card reveal-on-scroll">
         <div class="cta-banner-content text-center">
-            <span class="cta-pill">🚀 {% if lang == 'en' %}START YOUR JOURNEY TODAY{% else %}ZAČNITE UŽ DNES{% endif %}</span>
+            <span class="cta-pill">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                {% if lang == 'en' %}START YOUR JOURNEY TODAY{% else %}ZAČNITE UŽ DNES{% endif %}
+            </span>
             <h2 class="cta-title">
                 {% if lang == 'en' %}
                 Ready to Master Python the Smart Way?
@@ -694,8 +844,9 @@
                 {% endif %}
             </p>
             <div class="cta-buttons-row">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary glow-effect">
                     {% if lang == 'en' %}Create Free Account{% else %}Vytvoriť bezplatný účet{% endif %}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
                 <a href="{% url 'login' %}" class="btn btn-secondary btn-hero-secondary">
                     {% if lang == 'en' %}Sign In to Classroom{% else %}Prihlásiť sa do triedy{% endif %}
@@ -705,7 +856,7 @@
     </section>
 
     <!-- FOOTER S IDENTIFIKÁCIOU MATURITNEJ PRÁCE -->
-    <footer class="landing-footer">
+    <footer class="landing-footer reveal-on-scroll">
         <div class="footer-grid">
             <div class="footer-col brand-col">
                 <a href="{% url 'dashboard' %}" class="sidebar-brand">
@@ -719,7 +870,10 @@
                     Gamifikovaný vzdelávací systém na výučbu programovania v jazyku Python určený pre stredné odborné školy a prípravu na maturitnú skúšku.
                     {% endif %}
                 </p>
-                <span class="footer-patent-tag">TMview Verified Brand • Codoro™</span>
+                <div class="footer-patent-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>TMview Verified Brand • Codoro™</span>
+                </div>
             </div>
 
             <div class="footer-col">
@@ -746,7 +900,10 @@
         <div class="footer-bottom-bar">
             <span>&copy; 2026/2027 Juraj Volf • Codoro Education System. Všetky práva vyhradené.</span>
             <div class="footer-bottom-links">
-                <a href="https://github.com/jurajvolf/codoro.git" target="_blank" rel="noopener">GitHub Repozitár</a>
+                <a href="https://github.com/jurajvolf/codoro.git" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    GitHub Repozitár
+                </a>
                 <span>•</span>
                 <a href="{% url 'get_license' %}">{% if lang == 'en' %}School License{% else %}Školská licencia{% endif %}</a>
             </div>
@@ -757,13 +914,133 @@
 
 <style>
 /* ==========================================================================
+   REAKTÍVNE POHYBLIVÉ POZADIE S CYBERNETICKÝM KANVASOM
+   ========================================================================== */
+.landing-canvas-wrapper {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.hero-interactive-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+.landing-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(to right, rgba(70, 54, 245, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(70, 54, 245, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 25%, black 40%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 25%, black 40%, transparent 85%);
+}
+
+html[data-theme="dark"] .landing-grid-overlay {
+    background-image:
+        linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+}
+
+.aurora-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.45;
+    animation: auroraDrift 16s infinite alternate ease-in-out;
+}
+
+.aurora-orb-1 {
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(70, 54, 245, 0.35) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+}
+
+.aurora-orb-2 {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(92, 225, 230, 0.25) 0%, transparent 70%);
+    top: 15%;
+    right: -80px;
+    animation-duration: 20s;
+    animation-delay: -5s;
+}
+
+.aurora-orb-3 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, transparent 70%);
+    bottom: 5%;
+    left: 25%;
+    animation-duration: 24s;
+    animation-delay: -10s;
+}
+
+@keyframes auroraDrift {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(60px, 40px) scale(1.12); }
+    100% { transform: translate(-40px, 70px) scale(0.92); }
+}
+
+/* ==========================================================================
+   SCROLL REVEAL ANIMÁCIE & SPOTLIGHT HOVER EFEKTY
+   ========================================================================== */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
+    will-change: opacity, transform;
+}
+
+.reveal-on-scroll.reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* SPOTLIGHT GLOW ON CARD HOVER (Cursor tracking) */
+.spotlight-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.spotlight-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: radial-gradient(350px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(99, 102, 241, 0.45), transparent 75%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.spotlight-card:hover::before {
+    opacity: 1;
+}
+
+/* ==========================================================================
    LANDING PAGE BESPOKE DESIGN SYSTEM
    ========================================================================== */
 .landing-page-root {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 4.5rem;
+    gap: 5rem;
+    position: relative;
+    z-index: 1;
 }
 
 /* HERO SECTION */
@@ -772,13 +1049,14 @@
     grid-template-columns: 1.05fr 0.95fr;
     gap: 3.5rem;
     align-items: center;
-    padding: 2.5rem 0 1rem;
+    padding: 2rem 0 1rem;
+    position: relative;
 }
 
 @media (max-width: 1080px) {
     .landing-hero-section {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        gap: 3rem;
     }
 }
 
@@ -791,12 +1069,12 @@
     background: var(--ro-indigo-subtle);
     border: 1px solid var(--ro-indigo-border);
     color: var(--ro-indigo);
-    font-size: 0.76rem;
+    font-size: 0.75rem;
     font-weight: 800;
     font-family: var(--font-mono);
     margin-bottom: 1.5rem;
     letter-spacing: 0.04em;
-    box-shadow: 0 2px 8px rgba(70, 54, 245, 0.15);
+    box-shadow: 0 4px 12px rgba(70, 54, 245, 0.15);
 }
 
 .pulse-dot {
@@ -815,17 +1093,17 @@
 
 .hero-headline {
     font-family: var(--font-display);
-    font-size: 2.85rem;
+    font-size: 3rem;
     font-weight: 800;
-    line-height: 1.15;
+    line-height: 1.14;
     letter-spacing: -0.03em;
     color: var(--text-primary);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.35rem;
 }
 
 @media (max-width: 640px) {
     .hero-headline {
-        font-size: 2.15rem;
+        font-size: 2.2rem;
     }
 }
 
@@ -838,7 +1116,7 @@
 }
 
 .hero-subhead {
-    font-size: 1.12rem;
+    font-size: 1.14rem;
     color: var(--text-secondary);
     line-height: 1.68;
     margin-bottom: 2rem;
@@ -850,28 +1128,42 @@
     align-items: center;
     gap: 1.15rem;
     flex-wrap: wrap;
-    margin-bottom: 2rem;
+    margin-bottom: 2.25rem;
 }
 
 .btn-hero-primary {
-    padding: 0.85rem 1.75rem;
+    padding: 0.9rem 1.85rem;
     font-size: 1.02rem;
     font-weight: 700;
     border-radius: var(--radius-md);
-    box-shadow: 0 8px 24px -4px rgba(70, 54, 245, 0.45);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 24px -4px rgba(70, 54, 245, 0.5);
+    transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
 }
 
 .btn-hero-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px -4px rgba(70, 54, 245, 0.6);
+    box-shadow: 0 14px 32px -4px rgba(70, 54, 245, 0.65);
+}
+
+.cta-arrow-icon {
+    transition: transform 0.2s ease;
+}
+
+.btn-hero-primary:hover .cta-arrow-icon {
+    transform: translateX(3px);
 }
 
 .btn-hero-secondary {
-    padding: 0.85rem 1.5rem;
+    padding: 0.9rem 1.6rem;
     font-size: 1.02rem;
     font-weight: 600;
     border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
 }
 
 .hero-trust-row {
@@ -890,47 +1182,135 @@
     color: var(--text-secondary);
 }
 
-/* IDE WINDOW SIMULATION */
+/* ==========================================================================
+   PLÁVAJÚCE PARALAX WIDGETY V HERO SEKCII
+   ========================================================================== */
 .hero-ide-preview {
     position: relative;
 }
 
-.hero-ide-preview::before {
-    content: '';
+.floating-widget {
     position: absolute;
-    inset: -20px;
-    background: radial-gradient(circle at 60% 40%, rgba(70, 54, 245, 0.2), rgba(92, 225, 230, 0.12), transparent 70%);
-    filter: blur(40px);
-    z-index: -1;
+    z-index: 15;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.65rem 0.95rem;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    animation: floatWidget 6s infinite ease-in-out;
     pointer-events: none;
 }
 
+.widget-top-right {
+    top: -24px;
+    right: 20px;
+    animation-delay: -1s;
+}
+
+.widget-bottom-left {
+    bottom: 45px;
+    left: -28px;
+    animation-delay: -3s;
+}
+
+.widget-bottom-right {
+    bottom: -22px;
+    right: 35px;
+    animation-delay: -4.5s;
+}
+
+@keyframes floatWidget {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@media (max-width: 768px) {
+    .floating-widget {
+        display: none;
+    }
+}
+
+.widget-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.widget-icon.cyan {
+    background: var(--visor-cyan-bg);
+    color: var(--visor-cyan);
+    border: 1px solid var(--visor-cyan-border);
+}
+
+.widget-icon.gold {
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--amber);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.widget-icon.red {
+    background: rgba(239, 68, 68, 0.12);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.widget-sub {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+.widget-main {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   IDE WINDOW SHOWCASE
+   ========================================================================== */
 .ide-window {
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
     border: 1px solid var(--border-subtle);
     background: var(--bg-surface);
+    position: relative;
 }
 
 .ide-window-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1.15rem;
+    padding: 0.65rem 1rem;
     background: var(--bg-subtle);
     border-bottom: 1px solid var(--border-hairline);
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .ide-window-dots {
     display: flex;
     align-items: center;
     gap: 0.45rem;
+    flex-shrink: 0;
 }
 
 .ide-window-dots span {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
 }
 
@@ -938,18 +1318,41 @@
 .dot-yellow { background: #F59E0B; }
 .dot-green { background: #10B981; }
 
-.ide-window-tab {
+.ide-file-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 1;
+    overflow-x: auto;
+}
+
+.ide-tab-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    background: var(--bg-surface);
-    padding: 0.35rem 0.85rem;
+    gap: 0.4rem;
+    background: transparent;
+    padding: 0.3rem 0.65rem;
     border-radius: 6px;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    border: 1px solid var(--border-hairline);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.ide-tab-btn:hover {
     color: var(--text-primary);
+    background: var(--bg-surface);
+}
+
+.ide-tab-btn.active {
+    background: var(--bg-surface);
+    color: var(--ro-indigo);
+    border-color: var(--border-hairline);
+    box-shadow: var(--shadow-xs);
 }
 
 .sandbox-badge {
@@ -960,10 +1363,11 @@
     font-size: 0.72rem;
     color: var(--visor-cyan);
     background: var(--visor-cyan-bg);
-    padding: 0.25rem 0.6rem;
+    padding: 0.22rem 0.55rem;
     border-radius: 6px;
     border: 1px solid var(--visor-cyan-border);
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .dot-pulse {
@@ -979,9 +1383,10 @@
     background: var(--code-bg);
     color: var(--code-text);
     font-family: var(--font-mono);
-    font-size: 0.88rem;
-    line-height: 1.7;
+    font-size: 0.86rem;
+    line-height: 1.68;
     border-bottom: 1px solid var(--border-hairline);
+    min-height: 140px;
 }
 
 .code-lines {
@@ -996,10 +1401,10 @@
 
 .line-num {
     display: inline-block;
-    width: 24px;
+    width: 26px;
     color: #64748B;
     user-select: none;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
 }
 
 .code-kw { color: #F43F5E; font-weight: 700; }
@@ -1007,6 +1412,7 @@
 .code-type { color: #38BDF8; }
 .code-doc { color: #94A3B8; font-style: italic; }
 .code-num { color: #F59E0B; }
+.code-str { color: #10B981; }
 
 .ide-toolbar {
     display: flex;
@@ -1015,6 +1421,8 @@
     padding: 0.65rem 1.15rem;
     background: var(--bg-subtle);
     border-bottom: 1px solid var(--border-hairline);
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .ide-toolbar-left {
@@ -1026,9 +1434,9 @@
 .ide-reward-tag {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: var(--amber);
 }
@@ -1051,6 +1459,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    transition: opacity 0.2s ease;
 }
 
 .test-item {
@@ -1069,10 +1478,12 @@
     border-left: 3px solid var(--emerald);
 }
 
-.test-icon {
-    font-weight: 800;
+.test-icon-svg {
+    width: 14px;
+    height: 14px;
     color: var(--emerald);
     margin-right: 0.4rem;
+    flex-shrink: 0;
 }
 
 .test-name {
@@ -1142,20 +1553,22 @@
 
 .codo-ai-text {
     font-size: 0.86rem;
-    line-height: 1.5;
+    line-height: 1.55;
     color: var(--text-secondary);
 }
 
-/* METRICS RIBBON */
+/* ==========================================================================
+   METRICS RIBBON WITH COUNTER ROW
+   ========================================================================== */
 .landing-metrics-ribbon {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-    padding: 1.75rem 2rem;
+    padding: 2rem 2.25rem;
     box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
     .landing-metrics-ribbon {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1173,9 +1586,38 @@
     gap: 1.15rem;
 }
 
-.metric-icon {
-    font-size: 2.1rem;
-    line-height: 1;
+.metric-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.metric-icon-box.indigo {
+    background: var(--ro-indigo-subtle);
+    color: var(--ro-indigo);
+    border: 1px solid var(--ro-indigo-border);
+}
+
+.metric-icon-box.cyan {
+    background: var(--visor-cyan-bg);
+    color: var(--visor-cyan);
+    border: 1px solid var(--visor-cyan-border);
+}
+
+.metric-icon-box.emerald {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--emerald);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.metric-icon-box.gold {
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--amber);
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .metric-data {
@@ -1183,12 +1625,25 @@
     flex-direction: column;
 }
 
+.metric-val-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.15rem;
+}
+
 .metric-val {
     font-family: var(--font-display);
-    font-size: 1.85rem;
+    font-size: 2.1rem;
     font-weight: 800;
     color: var(--text-primary);
     line-height: 1.1;
+}
+
+.metric-suffix {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ro-indigo);
 }
 
 .metric-lbl {
@@ -1197,11 +1652,13 @@
     font-weight: 600;
 }
 
-/* LANDING SECTION GENERAL */
+/* ==========================================================================
+   LANDING SECTION GENERAL
+   ========================================================================== */
 .landing-section {
     display: flex;
     flex-direction: column;
-    gap: 2.25rem;
+    gap: 2.5rem;
 }
 
 .section-header.text-center {
@@ -1223,7 +1680,7 @@
 
 .section-title {
     font-family: var(--font-display);
-    font-size: 2.25rem;
+    font-size: 2.35rem;
     font-weight: 800;
     color: var(--text-primary);
     line-height: 1.25;
@@ -1233,17 +1690,19 @@
 
 @media (max-width: 640px) {
     .section-title {
-        font-size: 1.75rem;
+        font-size: 1.85rem;
     }
 }
 
 .section-lead {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     color: var(--text-secondary);
     line-height: 1.65;
 }
 
-/* PILLARS GRID */
+/* ==========================================================================
+   PILLARS GRID (4 HLAVNÉ PILIERE)
+   ========================================================================== */
 .pillars-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1257,15 +1716,15 @@
 }
 
 .pillar-card {
-    padding: 2.25rem;
+    padding: 2.35rem;
     display: flex;
     flex-direction: column;
     gap: 1.15rem;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.28s var(--ease-out), box-shadow 0.28s var(--ease-out);
 }
 
 .pillar-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-md);
 }
 
@@ -1334,7 +1793,9 @@
     border: 1px solid var(--border-hairline);
 }
 
-/* TRACK SEGMENTED TABS */
+/* ==========================================================================
+   TRACK SEGMENTED TABS & CURRICULUM
+   ========================================================================== */
 .track-tab-container {
     display: flex;
     justify-content: center;
@@ -1355,8 +1816,8 @@
 .track-pill-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1rem;
+    gap: 0.55rem;
+    padding: 0.55rem 1.05rem;
     border-radius: var(--radius-sm);
     background: transparent;
     border: none;
@@ -1364,7 +1825,7 @@
     font-weight: 700;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.18s ease;
+    transition: all 0.2s ease;
 }
 
 .track-pill-btn:hover {
@@ -1375,6 +1836,12 @@
     background: var(--bg-surface);
     color: var(--ro-indigo);
     box-shadow: var(--shadow-xs);
+}
+
+.track-pill-svg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .track-panel {
@@ -1388,7 +1855,7 @@
 }
 
 .track-panel-banner {
-    padding: 1.75rem 2rem;
+    padding: 1.85rem 2.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1417,7 +1884,7 @@
 
 .track-panel-title {
     font-family: var(--font-display);
-    font-size: 1.55rem;
+    font-size: 1.6rem;
     font-weight: 800;
     color: var(--text-primary);
     margin-bottom: 0.35rem;
@@ -1425,7 +1892,7 @@
 
 .track-panel-desc {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.96rem;
     max-width: 780px;
 }
 
@@ -1435,7 +1902,7 @@
     font-weight: 800;
     color: var(--text-primary);
     background: var(--bg-subtle);
-    padding: 0.45rem 0.9rem;
+    padding: 0.45rem 0.95rem;
     border-radius: 999px;
     border: 1px solid var(--border-hairline);
     white-space: nowrap;
@@ -1452,11 +1919,11 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.22s var(--ease-out), border-color 0.22s ease;
 }
 
 .module-mini-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     border-color: var(--ro-indigo);
 }
 
@@ -1551,9 +2018,11 @@
 .diff-intermediate { color: var(--amber); }
 .diff-advanced { color: #EF4444; }
 
-/* SCHOOLS SHOWCASE */
+/* ==========================================================================
+   SCHOOLS SHOWCASE & TEACHER HUD
+   ========================================================================== */
 .schools-showcase-box {
-    padding: 3rem;
+    padding: 3.25rem;
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: 3.5rem;
@@ -1563,13 +2032,13 @@
 @media (max-width: 1024px) {
     .schools-showcase-box {
         grid-template-columns: 1fr;
-        padding: 2rem;
+        padding: 2.25rem;
     }
 }
 
 .schools-headline {
     font-family: var(--font-display);
-    font-size: 2.1rem;
+    font-size: 2.2rem;
     font-weight: 800;
     color: var(--text-primary);
     margin-bottom: 0.85rem;
@@ -1577,7 +2046,7 @@
 }
 
 .schools-subhead {
-    font-size: 1.05rem;
+    font-size: 1.06rem;
     color: var(--text-secondary);
     line-height: 1.65;
     margin-bottom: 2rem;
@@ -1609,7 +2078,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(70, 54, 245, 0.35);
+    box-shadow: 0 4px 12px rgba(70, 54, 245, 0.4);
 }
 
 .step-body strong {
@@ -1637,7 +2106,7 @@
     background: var(--bg-subtle);
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-lg);
-    padding: 1.75rem;
+    padding: 1.85rem;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -1659,7 +2128,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
 }
 
 .preview-school-sub {
@@ -1674,7 +2142,7 @@
     font-size: 0.72rem;
     color: var(--emerald);
     background: rgba(16, 185, 129, 0.12);
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: 999px;
     font-weight: 700;
 }
@@ -1697,7 +2165,7 @@
 
 .stat-number {
     font-family: var(--font-display);
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 800;
     color: var(--ro-indigo);
 }
@@ -1739,7 +2207,9 @@
     padding-left: 0.85rem;
 }
 
-/* COMPARISON TABLE */
+/* ==========================================================================
+   COMPARISON TABLE S ČISTÝMI VEKTOROVÝMI IKONAMI
+   ========================================================================== */
 .landing-compare-table {
     width: 100%;
     border-collapse: collapse;
@@ -1769,6 +2239,34 @@
     color: var(--ro-indigo);
 }
 
+.matrix-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    margin-right: 0.45rem;
+    vertical-align: middle;
+    font-weight: 800;
+    font-size: 0.76rem;
+}
+
+.matrix-icon.yes {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--emerald);
+}
+
+.matrix-icon.no {
+    background: rgba(239, 68, 68, 0.12);
+    color: #EF4444;
+}
+
+.matrix-icon.partial {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--amber);
+}
+
 .check-yes {
     color: var(--emerald) !important;
     font-weight: 700;
@@ -1782,7 +2280,9 @@
     color: var(--amber) !important;
 }
 
-/* FAQ ACCORDION */
+/* ==========================================================================
+   FAQ ACCORDION
+   ========================================================================== */
 .landing-faq-accordion {
     display: flex;
     flex-direction: column;
@@ -1808,19 +2308,23 @@
     justify-content: space-between;
     list-style: none;
     user-select: none;
+    gap: 1rem;
 }
 
 .faq-question::-webkit-details-marker {
     display: none;
 }
 
-.faq-arrow {
-    font-size: 0.74rem;
+.faq-arrow-svg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-muted);
-    transition: transform 0.2s ease;
+    transition: transform 0.25s var(--ease-out);
+    flex-shrink: 0;
 }
 
-.faq-item[open] .faq-arrow {
+.faq-item[open] .faq-arrow-svg {
     transform: rotate(180deg);
     color: var(--ro-indigo);
 }
@@ -1832,13 +2336,16 @@
     line-height: 1.65;
 }
 
-/* FINAL CTA BANNER */
+/* ==========================================================================
+   FINAL HIGH-CONVERSION CTA BANNER
+   ========================================================================== */
 .landing-cta-banner {
-    padding: 4rem 2rem;
-    background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, rgba(92, 225, 230, 0.08) 100%), var(--bg-surface);
+    padding: 4.5rem 2rem;
+    background: linear-gradient(135deg, rgba(70, 54, 245, 0.1) 0%, rgba(92, 225, 230, 0.1) 100%), var(--bg-surface);
     border: 1px solid var(--ro-indigo-border);
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-indigo);
 }
 
 .cta-banner-content {
@@ -1851,6 +2358,9 @@
 }
 
 .cta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     font-family: var(--font-mono);
     font-size: 0.76rem;
     font-weight: 800;
@@ -1863,14 +2373,14 @@
 
 .cta-title {
     font-family: var(--font-display);
-    font-size: 2.35rem;
+    font-size: 2.4rem;
     font-weight: 800;
     color: var(--text-primary);
     line-height: 1.2;
 }
 
 .cta-desc {
-    font-size: 1.08rem;
+    font-size: 1.1rem;
     color: var(--text-secondary);
     line-height: 1.65;
 }
@@ -1884,7 +2394,9 @@
     margin-top: 0.5rem;
 }
 
-/* FOOTER */
+/* ==========================================================================
+   PROJECT FOOTER
+   ========================================================================== */
 .landing-footer {
     padding-top: 3.5rem;
     border-top: 1px solid var(--border-hairline);
@@ -1920,6 +2432,9 @@
 }
 
 .footer-patent-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--text-muted);
@@ -1994,6 +2509,357 @@
 </style>
 
 <script>
+// ==========================================================================
+// 1. DYNAMICKÝ PYTHON SNIPPET RUNNER SHOWCASE
+// ==========================================================================
+const SNIPPETS = [
+    {
+        filename: "priemer_znamok.py",
+        reward: "+35 XP • +10 Doros",
+        code: [
+            '<span class="code-kw">def</span> <span class="code-fn">vypocitaj_priemer</span>(znamky: <span class="code-type">list</span>[<span class="code-type">int</span>]) -&gt; <span class="code-type">float</span>:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Vráti vážený študijný priemer zo známok 1 až 5."""</span>',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if not</span> znamky:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-num">0.0</span>',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-fn">round</span>(<span class="code-fn">sum</span>(znamky) / <span class="code-fn">len</span>(znamky), <span class="code-num">2</span>)'
+        ],
+        tests: [
+            { name: "Test #1: [1, 2, 1, 3]", res: "== 1.75", ms: "0.29ms" },
+            { name: "Test #2: Prázdny zoznam []", res: "== 0.0", ms: "0.21ms" },
+            { name: "Test #3: Hraničné hodnoty", res: "PASSED", ms: "0.38ms" }
+        ],
+        codo_init_sk: "<em>Codo analyzuje kód:</em> Výborne! Ošetril si delenie nulou. Vieš, ako by sa funkcia správala pri neplatnej známke mimo rozsahu 1 až 5?",
+        codo_init_en: "<em>Codo analyzing code:</em> Great work! You guarded against division by zero. How would the function handle values outside the 1 to 5 grade range?",
+        codo_run_sk: "<strong>Všetky 3 testovacie prípady úspešne prešli za 0.38ms!</strong><br><em>Codo radí:</em> AST kontrola potvrdila O(1) pamäťový strop. Skús sa zamyslieť, či by si vedel použiť modul <code>statistics.mean</code>.",
+        codo_run_en: "<strong>All 3 test cases passed in 0.38ms!</strong><br><em>Codo tip:</em> AST checks verified O(1) memory bound. Could you solve this using the standard <code>statistics.mean</code> function?"
+    },
+    {
+        filename: "02_caesar_sifra.py",
+        reward: "+50 XP • +15 Doros",
+        code: [
+            '<span class="code-kw">def</span> <span class="code-fn">caesar_sifra</span>(text: <span class="code-type">str</span>, posun: <span class="code-type">int</span>) -&gt; <span class="code-type">str</span>:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Zašifruje abecedné znaky pomocou posunu mod 26."""</span>',
+            '&nbsp;&nbsp;&nbsp;&nbsp;vysledok = []',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">for</span> znak <span class="code-kw">in</span> text:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if</span> znak.<span class="code-fn">isalpha</span>():',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;zaklad = <span class="code-fn">ord</span>(<span class="code-str">\'A\'</span>) <span class="code-kw">if</span> znak.<span class="code-fn">isupper</span>() <span class="code-kw">else</span> <span class="code-fn">ord</span>(<span class="code-str">\'a\'</span>)',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(<span class="code-fn">chr</span>((<span class="code-fn">ord</span>(znak) - zaklad + posun) % <span class="code-num">26</span> + zaklad))',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">else</span>:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(znak)',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-str">""</span>.<span class="code-fn">join</span>(vysledok)'
+        ],
+        tests: [
+            { name: "Test #1: ('PYTHON', 3)", res: "== 'SBWKRQ'", ms: "0.33ms" },
+            { name: "Test #2: Zachovanie medzier a čísiel", res: "PASSED", ms: "0.27ms" },
+            { name: "Test #3: Záporný posun (mod 26)", res: "PASSED", ms: "0.41ms" }
+        ],
+        codo_init_sk: "<em>Codo analyzuje kód:</em> Skvelé použitie funkcie <code>ord()</code> a <code>chr()</code> s modulárnou aritmetikou. Aká je časová zložitosť tohto algoritmu?",
+        codo_init_en: "<em>Codo analyzing code:</em> Elegant use of <code>ord()</code> and <code>chr()</code> with modular arithmetic. What is the time complexity with respect to text length?",
+        codo_run_sk: "<strong>Kryptografické testy úspešne overené (0.41ms)!</strong><br><em>Codo radí:</em> Algoritmus beží v čase O(n). Vieš, prečo je v Pythone lepšie použiť <code>"".join()</code> namiesto opakovaného sčítavania reťazcov <code>+</code>?",
+        codo_run_en: "<strong>Cryptographic tests verified (0.41ms)!</strong><br><em>Codo tip:</em> The algorithm runs in linear O(n) time. Why is <code>"".join()</code> vastly faster in Python than repeated string concatenation <code>+</code>?"
+    },
+    {
+        filename: "03_fibonacci.py",
+        reward: "+45 XP • +12 Doros",
+        code: [
+            '<span class="code-kw">from</span> functools <span class="code-kw">import</span> lru_cache',
+            '',
+            '<span class="code-fn">@lru_cache</span>(maxsize=<span class="code-num">128</span>)',
+            '<span class="code-kw">def</span> <span class="code-fn">fibonacci</span>(n: <span class="code-type">int</span>) -&gt; <span class="code-type">int</span>:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Vypočíta n-té Fibonacciho číslo v O(n) čase vďaka cache."""</span>',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if</span> n &lt; <span class="code-num">2</span>:',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> n',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-fn">fibonacci</span>(n - <span class="code-num">1</span>) + <span class="code-fn">fibonacci</span>(n - <span class="code-num">2</span>)'
+        ],
+        tests: [
+            { name: "Test #1: fibonacci(10)", res: "== 55", ms: "0.22ms" },
+            { name: "Test #2: fibonacci(50) memoization", res: "== 12586269025", ms: "0.26ms" },
+            { name: "Test #3: Hraničné n=0 a n=1", res: "PASSED", ms: "0.19ms" }
+        ],
+        codo_init_sk: "<em>Codo analyzuje kód:</em> Použitie dekorátora <code>@lru_cache</code> mení časovú zložitosť z exponenciálnej O(2^n) na lineárnu O(n).",
+        codo_init_en: "<em>Codo analyzing code:</em> Applying <code>@lru_cache</code> transforms exponential O(2^n) complexity into linear O(n).",
+        codo_run_sk: "<strong>Fibonacci(50) vypočítaný za 0.26ms!</strong><br><em>Codo radí:</em> Bez memoizácie by tento výpočet trval miliardy operácií. Vieš, ako by si rovnaký výsledok dosiahol iteratívne pomocou dvoch premenných a O(1) pamäte?",
+        codo_run_en: "<strong>Fibonacci(50) computed in 0.26ms!</strong><br><em>Codo tip:</em> Without caching this would take billions of recursion steps. How could you achieve the same result iteratively with O(1) auxiliary space?"
+    }
+];
+
+let activeSnippetIdx = 0;
+const currentLang = "{{ lang }}";
+
+function renderSnippet(idx) {
+    const s = SNIPPETS[idx];
+    const linesEl = document.getElementById('editorCodeLines');
+    const rewardEl = document.getElementById('demoRewardTag');
+    const codoEl = document.getElementById('demoCodoText');
+    const testsEl = document.getElementById('demoTestCases');
+    
+    // Render lines with line numbers
+    linesEl.innerHTML = s.code.map((line, i) => 
+        `<div class="code-row"><span class="line-num">${i + 1}</span>${line}</div>`
+    ).join('');
+
+    // Reward tag
+    rewardEl.innerHTML = `
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/></svg>
+        ${s.reward}
+    `;
+
+    // Initial tests display
+    testsEl.innerHTML = s.tests.map(t => `
+        <div class="test-item pass">
+            <svg class="test-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="test-name">${t.name}</span>
+            <span class="test-expected">${t.res}</span>
+            <span class="test-ms">${t.ms}</span>
+        </div>
+    `).join('');
+
+    // Codo text
+    codoEl.innerHTML = (currentLang === 'en') ? s.codo_init_en : s.codo_init_sk;
+}
+
+function switchSnippet(idx, btnEl) {
+    activeSnippetIdx = idx;
+    document.querySelectorAll('.ide-tab-btn').forEach(b => b.classList.remove('active'));
+    btnEl.classList.add('active');
+    renderSnippet(idx);
+}
+
+function runInteractiveDemo() {
+    const s = SNIPPETS[activeSnippetIdx];
+    const btn = document.getElementById('demoRunBtn');
+    const btnText = document.getElementById('demoRunBtnText');
+    const timerTag = document.getElementById('demoTimerTag');
+    const testCases = document.getElementById('demoTestCases');
+    const codoText = document.getElementById('demoCodoText');
+    
+    btn.disabled = true;
+    btnText.textContent = (currentLang === 'en') ? "Compiling AST & Executing..." : "Kompilujem AST & Spúšťam...";
+    testCases.style.opacity = '0.35';
+    timerTag.textContent = "Sandbox AST Verification...";
+
+    setTimeout(() => {
+        btn.disabled = false;
+        btnText.textContent = (currentLang === 'en') ? "Run Sandbox Tests" : "Spustiť a otestovať kód";
+        testCases.style.opacity = '1';
+        timerTag.textContent = "0.38 ms AST execution";
+        codoText.innerHTML = (currentLang === 'en') ? s.codo_run_en : s.codo_run_sk;
+    }, 480);
+}
+
+// Initial render of first snippet
+renderSnippet(0);
+
+// ==========================================================================
+// 2. REAKTÍVNA NAVIGÁCIA PRI SCROLLOVANÍ & SCROLL PROGRESS BAR
+// ==========================================================================
+const scrollProgress = document.getElementById('scrollProgressBar');
+const publicNav = document.querySelector('.public-navbar');
+const navLinks = document.querySelectorAll('.public-nav-links a[href^="/#"]');
+
+window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    
+    if (scrollProgress) {
+        scrollProgress.style.width = pct + '%';
+    }
+
+    if (publicNav) {
+        if (scrollTop > 20) {
+            publicNav.classList.add('scrolled');
+        } else {
+            publicNav.classList.remove('scrolled');
+        }
+    }
+
+    // Scroll spy for active link
+    const sections = ['curriculum', 'pillars', 'codo-ai', 'schools', 'compare', 'faq'];
+    let activeFound = false;
+    for (let i = sections.length - 1; i >= 0; i--) {
+        const sec = document.getElementById(sections[i]);
+        if (sec) {
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= 160) {
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href === '/#' + sections[i] || href.endsWith('#' + sections[i])) {
+                        link.classList.add('active');
+                        activeFound = true;
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                break;
+            }
+        }
+    }
+    if (!activeFound && scrollTop < 200) {
+        navLinks.forEach(l => l.classList.remove('active'));
+    }
+}, { passive: true });
+
+// ==========================================================================
+// 3. INTERSECTION OBSERVER PRE SCROLL REVEAL & ANIMOVANÉ POČÍTADLÁ
+// ==========================================================================
+const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-visible');
+            
+            // Check if counters are inside this element
+            const counters = entry.target.querySelectorAll('.counter-val');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'), 10);
+                if (target && !counter.dataset.counted) {
+                    counter.dataset.counted = "true";
+                    animateCounter(counter, target, 1200);
+                }
+            });
+        }
+    });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
+
+function animateCounter(el, target, duration) {
+    let start = 0;
+    const stepTime = 16;
+    const steps = duration / stepTime;
+    const increment = target / steps;
+    
+    const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+            el.textContent = target;
+            clearInterval(timer);
+        } else {
+            el.textContent = Math.floor(start);
+        }
+    }, stepTime);
+}
+
+// ==========================================================================
+// 4. SPOTLIGHT BORDER GLOW EFECT NA POHYB MYŠI
+// ==========================================================================
+document.querySelectorAll('.spotlight-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+    });
+});
+
+// ==========================================================================
+// 5. INTERAKTÍVNE CYBERNETICKÉ KANVAS POZADIE (CONSTELLATION NODES)
+// ==========================================================================
+(function initConstellationCanvas() {
+    const canvas = document.getElementById('heroBackgroundCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    let width = 0, height = 0;
+    let particles = [];
+    const particleCount = 42;
+    const maxDistance = 125;
+    let mouse = { x: null, y: null, radius: 140 };
+
+    function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        initParticles();
+    }
+
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.6,
+                vy: (Math.random() - 0.5) * 0.6,
+                radius: Math.random() * 2 + 1.5,
+                color: (i % 3 === 0) ? '#5CE1E6' : '#6366F1'
+            });
+        }
+    }
+
+    window.addEventListener('mousemove', e => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Update & draw particles
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Bounce on borders
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
+
+            // Mouse interaction (soft attraction / repellent wave)
+            if (mouse.x !== null && mouse.y !== null) {
+                const dx = mouse.x - p.x;
+                const dy = mouse.y - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouse.radius) {
+                    const force = (mouse.radius - dist) / mouse.radius;
+                    p.x -= (dx / dist) * force * 1.8;
+                    p.y -= (dy / dist) * force * 1.8;
+                }
+            }
+
+            // Draw particle dot
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = 0.55;
+            ctx.fill();
+
+            // Connect nearby particles
+            for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const dx = p.x - p2.x;
+                const dy = p.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < maxDistance) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = '#6366F1';
+                    ctx.globalAlpha = (1 - dist / maxDistance) * 0.22;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+        }
+        ctx.globalAlpha = 1.0;
+        requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    draw();
+})();
+
 // Prepínanie kariérnych ciest (Tracks)
 function switchLandingTrack(trackKey, btnEl) {
     document.querySelectorAll('.track-pill-btn').forEach(b => b.classList.remove('active'));
@@ -2004,36 +2870,6 @@ function switchLandingTrack(trackKey, btnEl) {
     if (targetPanel) {
         targetPanel.classList.add('active');
     }
-}
-
-// Interaktívna simulácia spustenia sandboxu v Hero okne
-function runInteractiveDemo() {
-    const btn = document.getElementById('demoRunBtn');
-    const btnText = document.getElementById('demoRunBtnText');
-    const timerTag = document.getElementById('demoTimerTag');
-    const testCases = document.getElementById('demoTestCases');
-    const codoText = document.getElementById('demoCodoText');
-    
-    btn.disabled = true;
-    btnText.textContent = "{% if lang == 'en' %}Executing Sandbox...{% else %}Vyhodnocujem v sandboxe...{% endif %}";
-    testCases.style.opacity = '0.35';
-    
-    setTimeout(() => {
-        btn.disabled = false;
-        btnText.textContent = "{% if lang == 'en' %}Run Sandbox Tests{% else %}Spustiť a otestovať kód{% endif %}";
-        testCases.style.opacity = '1';
-        timerTag.textContent = "0.38 ms AST exec";
-        
-        codoText.innerHTML = `
-            {% if lang == 'en' %}
-            ✨ <strong>All 3 Unit Tests Passed in 0.38ms!</strong><br>
-            <em>"Great work! The AST safety checks confirmed clean code with O(1) memory overhead. What if input was an iterator instead of a list?"</em>
-            {% else %}
-            ✨ <strong>Všetky 3 testovacie prípady úspešne prešli za 0.38ms!</strong><br>
-            <em>"Skvelá práca! AST bezpečnostná kontrola overila čistý kód s pamäťovou náročnosťou O(1). Ako by si funkciu upravil, ak by vstupom bol generátor namiesto zoznamu?"</em>
-            {% endif %}
-        `;
-    }, 450);
 }
 </script>
 {% endblock %}

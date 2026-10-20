@@ -40,7 +40,7 @@ def landing_page(request):
         Module.Track.FUNDAMENTALS: {
             'sk': '1. Základy a Logika',
             'en': '1. Fundamentals & Logic',
-            'icon': '⚡',
+            'icon': 'zap',
             'badge': '4 Moduly • 46h',
             'desc_sk': 'Úvod do algoritmizácie, premenné, dátové typy, operátory, podmienky if/else a 2D cykly.',
             'desc_en': 'Algorithmics intro, variables, data types, logic operators, conditions and 2D loops.',
@@ -48,7 +48,7 @@ def landing_page(request):
         Module.Track.DATA_STRUCTURES: {
             'sk': '2. Funkcie a Dátové štruktúry',
             'en': '2. Functions & Data Structures',
-            'icon': '🧩',
+            'icon': 'layers',
             'badge': '4 Moduly • 50h',
             'desc_sk': 'Definície funkcií, scope, rekurzia, zoznamy, slovníky, množiny a ošetrovanie výnimiek.',
             'desc_en': 'Function scopes, recursion, lists, dicts, sets, comprehensions and exception handling.',
@@ -56,7 +56,7 @@ def landing_page(request):
         Module.Track.OOP: {
             'sk': '3. OOP a Softvérové inžinierstvo',
             'en': '3. OOP & Software Engineering',
-            'icon': '🏛️',
+            'icon': 'box',
             'badge': '2 Moduly • 24h',
             'desc_sk': 'Triedy, inštancie, konštruktor __init__, dedičnosť, polymorfizmus a magické dunder metódy.',
             'desc_en': 'Classes, instances, constructor __init__, inheritance, polymorphism and dunder methods.',
@@ -64,7 +64,7 @@ def landing_page(request):
         Module.Track.ALGORITHMS_AND_DATA: {
             'sk': '4. Algoritmy, Dáta a Bezpečnosť',
             'en': '4. Algorithms, Data & Security',
-            'icon': '🔬',
+            'icon': 'cpu',
             'badge': '5 Modulov • 60h',
             'desc_sk': 'Big-O zložitosť, binárne vyhľadávanie, Regex, SQL v pamäti (sqlite3), REST API a TDD testy.',
             'desc_en': 'Big-O notation, binary search, Regex parsing, SQLite in-memory, REST APIs and TDD.',
@@ -72,7 +72,7 @@ def landing_page(request):
         Module.Track.MATURITA_PREP: {
             'sk': '5. Maturitný špeciál a Projekty',
             'en': '5. Maturita Special & Projects',
-            'icon': '🎓',
+            'icon': 'award',
             'badge': '3 Moduly • 42h',
             'desc_sk': 'Kryptografia, praktické úlohy PČOZ z elektrotechniky/IMT a záverečné certifikačné projekty.',
             'desc_en': 'Applied cryptography, vocational matura exam tasks, and graduation boss projects.',

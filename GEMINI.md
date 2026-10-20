@@ -270,24 +270,43 @@ Cieľ: Vybudovať ucelený a jednoduchý onboardingový systém pre školy a ped
     - Okamžitý náhľad, generovanie tlačiteľných kartičiek s prihlasovacími údajmi pre žiakov do lavice a CSV export.
 
 --------------------------------------------------------------------------------
-FÁZA 14: VEREJNÁ PREZENTÁCIA A LANDING PAGE (`/` A `/welcome/`)
+FÁZA 14: VEREJNÁ PREZENTÁCIA A LANDING PAGE (`/` A `/welcome/`) [DOKONČENÉ]
 --------------------------------------------------------------------------------
-Cieľ: Vytvoriť špičkovú, vizuálne pôsobivú a modernú vstupnú stránku (Landing Page) Codoro pre verejnosť, potenciálne školy a komisiu maturitnej skúšky.
+Cieľ: Vytvoriť špičkovú, technologicky a vizuálne prepracovanú vstupnú stránku (Landing Page) platformy Codoro s plnou podporou Light/Dark režimu, 100% dvojjazyčnosťou (SK/EN) a nulovou závislosťou na externých CSS knižniciach.
 - 14.1 Inteligentné smerovanie (`courses/views.py`):
-  * Neprihlásený návštevník smerujúci na koreňovú adresu `/` vidí modernú Landing Page (`templates/landing.html`).
-  * Prihlásený študent smerujúci na `/` je priamo presmerovaný na svoj študentský Dashboard.
-  * Trvalá priama adresa `/welcome/` umožňuje zobraziť verejnú prezentáciu kedykoľvek.
-- 14.2 Komponenty a sekcie Landing Page (`templates/landing.html`):
-  1. Hero sekcia s aurora efektom, dynamickým odznakom maturitného projektu a úderným nadpisom ("Od prvej premennej po maturitu") s CTA tlačidlami pre študentov a pedagógov.
-  2. Živé interaktívne IDE & Sokratovský Codo showcase:
-     - Realistické okno editora kódu (Python 3.12 sandbox) s funkciou na výpočet študijného priemeru,
-     - Tlačidlo na interaktívne spustenie unit testov s animáciou odozvy v milisekundách,
-     - Bublina Sokratovského AI tútora Codo (Gemini 2.5 Flash), ktorá demonštruje princíp navádzania bez prezradenia riešenia.
-  3. Lišta metrík (Metrics Ribbon): 18 Modulov, 220+ Hodín výučby, 250+ Cvičení, 100% Sokratovské AI.
-  4. 4 Strategické piliere Codoro: Detailné porovnanie s bežnými platformami (Sokratovské AI, Triedny ekosystém, Skladový obchod Doros, 100% SK/EN s maturitným zameraním).
-  5. Interaktívny prehliadač 5 kariérnych ciest a 18 modulov kurikula so záložkami bez znovunačítania stránky.
-  6. Sprievodca pre stredné školy a učiteľov: 3 jednoduché kroky nasadenia a živý náhľad Učiteľského štúdia.
-  7. Porovnávacia tabuľka: Codoro vs. Duolingo vs. W3Schools vs. Školská tabuľa.
-  8. FAQ akordeón s najčastejšími otázkami k inštalácii, bezpečnosti a licenciám.
-  9. Záverečný konverzný banner a oficiálna maturitná pätička (Spojená škola Nižná, Téma č. 22, Juraj Volf, Mgr. Markéta Brišová, TMview ochranná známka a GitHub).
+  * Neprihlásený návštevník smerujúci na koreňovú adresu `/` vidí reprezentatívnu Landing Page (`templates/landing.html`).
+  * Prihlásený študent smerujúci na `/` je priamo a plynule presmerovaný na svoj študentský Dashboard (`/dashboard/`).
+  * Trvalá priama adresa `/welcome/` umožňuje zobraziť verejnú prezentáciu kedykoľvek bez nutnosti odhlásenia.
+- 14.2 Profesionálny vizuálny a animačný engine (Advanced Visual Engine):
+  * Kompletné nahradenie neformálnych emoji čistými vektorovými SVG ikonami s precíznym zarovnaním, CSS premennými a responzívnou farebnosťou (`currentColor`).
+  * Živé reaktívne hviezdicové pozadie (`#heroBackgroundCanvas`):
+    - Matematická simulácia konštelácie 42 svietiacich uzlov v HTML5 Canvas s dynamickým výpočtom vzdialeností a prepojovacích lúčov (vzdialenostný cutoff < 125 px),
+    - Plynulý ambientný drift s periódou a reaktivita na pohyb kurzora myši cez odpudivé tlmiace sily (Spring-Damper Physics),
+    - Optimalizácia pre Retina a HiDPI displeje cez `window.devicePixelRatio` a stabilných 60 FPS s nulovým zaťažením DOM stromu.
+  * Reaktívna navigácia pri scrollovaní:
+    - Horný indikátor priebehu čítania (`#scrollProgressBar`) s lineárnym gradientom [0 % až 100 %],
+    - Dynamická zmena stavu navigácie (`.public-navbar.scrolled`) s aplikáciou hĺbkového skleneného rozostrenia (`backdrop-filter: blur(16px)`),
+    - Scroll-Spy engine: Automatické zvýrazňovanie aktívneho odkazu v hornom menu podľa skutočnej polohy používateľa na obrazovke.
+  * Svetelný efekt kurzora na kartách (Mouse-Follow Spotlight Glow):
+    - Trieda `.spotlight-card` dynamicky prepočítava lokálne súradnice `--mouse-x` a `--mouse-y` a vykresľuje jemný radiálny kužeľ svetla na okrajoch kariet.
+  * Animované číselné počítadlá (Smooth Counter Animation):
+    - `IntersectionObserver` aktivuje plynulý nábeh číselných hodnôt pri vstupe do zorného poľa (18 Modulov, 220+ Hodín, 250+ Úloh, 100% AI).
+- 14.3 Živé multi-snippet Python IDE & Sokratovský Codo showcase:
+  * Prepínač 3 reálnych programátorských úloh priamo v Hero sekcii:
+    1. `01_priemer.py`: Výpočet váženého priemeru známok maturanta,
+    2. `02_caesar_sifra.py`: Šifrovanie textu Caesarovým algoritmom,
+    3. `03_fibonacci.py`: Generovanie Fibonacciho postupnosti s kontrolou limitov.
+  * Interaktívna simulácia AST syntaktickej analýzy, kompilácie a okamžitého testovania:
+    - Kroková animácia terminálu s odozvou v milisekundách (napr. 14 ms),
+    - Streamovaný výpis úspešných unit testov so zelenými indikátormi,
+    - Interaktívna bublina Sokratovského AI tútora Codo, ktorá demonštruje princíp navádzania študenta k riešeniu bez vyzradenia kódu.
+  * Vznášajúce sa paralaxové widgety okolo IDE (AST izolovaný proces, Top 5% umiestnenie v triede IV.C, 14-dňový Streak).
+- 14.4 Špičková štruktúra informačnej architektúry:
+  * Lišta metrík (Metrics Ribbon) s animovanými číselníkmi a SVG symbolmi,
+  * 4 Strategické piliere Codoro v prehľadných kartách s porovnaním voči konkurencii,
+  * Interaktívny prehliadač 5 kariérnych ciest a 18 modulov kurikula so záložkami bez znovunačítania stránky,
+  * Sprievodca pre stredné školy a učiteľov: 3 jednoduché kroky nasadenia a živý náhľad Učiteľského štúdia,
+  * Transparentná porovnávacia tabuľka: Codoro vs. Duolingo vs. W3Schools vs. Tradičná výučba,
+  * Responzívny FAQ akordeón s plynulým rozbaľovaním a SVG rotáciou šípok,
+  * Konverzný CTA banner a oficiálna maturitná pätička (Spojená škola Nižná, Téma č. 22, Juraj Volf, Mgr. Markéta Brišová, TMview ochranná známka a odkaz na GitHub).
 ================================================================================

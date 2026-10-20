@@ -683,12 +683,30 @@
             padding: 0 2rem;
             justify-content: space-between;
             gap: 1.5rem;
+            transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .public-navbar.scrolled {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+            border-bottom-color: var(--border-subtle);
+        }
+
+        .scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ro-indigo) 0%, var(--visor-cyan) 100%);
+            z-index: 1000;
+            transition: width 0.08s ease-out;
+            box-shadow: 0 0 10px rgba(70, 54, 245, 0.6);
         }
 
         .public-nav-links {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.15rem;
         }
 
         .public-nav-links a {
@@ -696,11 +714,19 @@
             text-decoration: none;
             font-size: 0.88rem;
             font-weight: 600;
-            transition: color 0.15s ease;
+            padding: 0.32rem 0.65rem;
+            border-radius: var(--radius-sm);
+            transition: all 0.18s ease;
         }
 
         .public-nav-links a:hover {
+            color: var(--text-primary);
+            background: var(--bg-subtle);
+        }
+
+        .public-nav-links a.active {
             color: var(--ro-indigo);
+            background: var(--ro-indigo-subtle);
         }
 
         @media (max-width: 960px) {
@@ -1151,6 +1177,7 @@
 </head>
 
 <body class="{% if user.is_authenticated %}has-auth-sidebar{% endif %} {% block body_class %}{% endblock %}">
+    <div id="scrollProgressBar" class="scroll-progress-bar"></div>
     {% if user.is_authenticated %}
     <!-- Mobilná horná lišta (viditeľná iba na obrazovkách < 1024px) -->
     <header class="mobile-topbar">
