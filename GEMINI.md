@@ -309,4 +309,38 @@ Cieľ: Vytvoriť špičkovú, technologicky a vizuálne prepracovanú vstupnú s
   * Transparentná porovnávacia tabuľka: Codoro vs. Duolingo vs. W3Schools vs. Tradičná výučba,
   * Responzívny FAQ akordeón s plynulým rozbaľovaním a SVG rotáciou šípok,
   * Konverzný CTA banner a oficiálna maturitná pätička (Spojená škola Nižná, Téma č. 22, Juraj Volf, Mgr. Markéta Brišová, TMview ochranná známka a odkaz na GitHub).
+
+--------------------------------------------------------------------------------
+FÁZA 15: KOMPLETNÝ UI/UX OVERHAUL A INTEGRÁCIA SKILLOV (IMPECCABLE, TRANSITIONS.DEV, GSAP, MAKE-INTERFACES-FEEL-BETTER) [DOKONČENÉ]
+--------------------------------------------------------------------------------
+Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň špičkových svetových digitálnych produktov (Linear, Stripe, Vercel) prostredníctvom prísnych princípov štyroch odborných dizajnových a animačných skillov.
+- 15.1 Dizajnová filozofia Impeccable (Craft & Hierarchy):
+  * Dôsledné uplatnenie módu povrchu: Mód *Persuade* pre verejnú prezentáciu (Landing Page) s vysokou vizuálnou ambíciou a mód *Operate* pre študentský Dashboard, Učiteľské štúdio a Python IDE s dôrazom na čitateľnosť, ergonómiu a rýchlu orientáciu.
+  * Harmonická farebná paleta odvodená od loga Codoro bez generických plochých odtieňov, s dokonalou koexistenciou v Light aj Dark režime.
+- 15.2 Princípy Make-Interfaces-Feel-Better (Hmatová odozva a optická precíznosť):
+  * **Globálne vyhladzovanie písma (Font Smoothing):** Aplikácia `-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;` pre maximálnu ostrosť typografie na displejoch všetkých platforiem (macOS, Windows, iOS, Android).
+  * **Tabulárne čísla bez posunu layoutu (Tabular Numbers):** Nasadenie `font-variant-numeric: tabular-nums;` na všetky počítadlá, stopky, časy unit testov, indikátory XP, mincí Doros a štatistické widgety (`.counter-val`, `.metric-val`, `.ide-time-tag`, `.sidebar-stat-pill`), čím sa eliminuje nepríjemné trasenie prvkov pri zmene čísel.
+  * **Optické vyváženie textu (Text Wrapping):** Aplikácia `text-wrap: balance;` na všetky hlavné nadpisy (`h1, h2, h3, h4`, `.hero-headline`, `.section-title`) a `text-wrap: pretty;` na odseky a vysvetlenia, čo odstraňuje nevzhľadné osirotené slová na koncoch riadkov.
+  * **Hmatový fyzikálny klik (Tactile Scale-On-Press):** Presne kalibrovaná hodnota `transform: scale(0.96) !important;` pri stlačení tlačidiel a interaktívnych prvkov (`.btn:active:not(:disabled)`). Striktný zákaz hodnôt pod 0.95, ktoré pôsobia prehnane a neprirodzene.
+  * **Striktná eliminácia `transition: all`:** Každé prechodové pravidlo explicitne vymenúva cieľové vlastnosti (`transition-property: transform, background, border-color, box-shadow, color, opacity;`), čo zabraňuje náhodným a trhavým prechodom pri zmene nezaradených štýlov.
+  * **Koncentrické zaoblenie rohov (Concentric Border Radius):** Matematické pravidlo `outerRadius = innerRadius + padding` (vonkajšie karty `--radius-outer: 18px`, vnútorné tlačidlá a elementy `--radius-inner: 12px`, vnorené čipy 8px), vďaka čomu vnútorné prvky v kartách nepôsobia opticky "priškripnuto".
+  * **Vrstvené tiene a jemný obrys (Layered Elevation & Outlines):** Dvojvrstvové tiene kombinujúce jemný 1-2px kontaktný tieň, hĺbkový mäkký rozptyl a 1px jemný kontrastný obrys (`rgba(15, 23, 42, 0.06)` v svetlom a `rgba(255, 255, 255, 0.08)` v tmavom režime) pre špičkovú separáciu povrchov.
+  * **Ergonomická veľkosť dotykových plôch:** Minimálna výška ovládacích prvkov 42px pre pohodlné ovládanie na dotykových aj desktopových zariadeniach.
+- 15.3 Pohybový slovník Transitions.dev (Micro-Interactions):
+  * **Univerzálne Bezierové krivky:** Import vyladených pohybových kriviek (`--ease-out-expo`, `--ease-out-back`, `--ease-out-quart`, `--ease-in-out-cubic`, `--ease-spring`) zjednotených s modernými animačnými štandardmi.
+  * **Svetelný tok textu (Shimmer Text - `15-shimmer-text`):** Čistá CSS animácia plynulého prechodu svetelného odlesku cez text odznakov maturitného projektu a konverzných bannerov (`.t-shimmer`).
+  * **Animované kreslenie úspešných fajok (Success Checkmark - `10-success-check`):** Dynamické kreslenie ťahu SVG fajky (`stroke-dasharray: 25`, `stroke-dashoffset: 25`) s postupným oneskorením po dokončení unit testov v sandboxe.
+  * **Trojrozmerný náklon kariet (3D Card Tilt - `19-card-tilt`):** Fyzikálny výpočet relatívneho posunu kurzora voči stredu karty `(dx, dy)` s plynulou rotáciou `rotationX` a `rotationY` v perspektíve 1000px a pružným návratom do pokojového stavu pri opustení myšou.
+  * **Rešpektovanie prístupnosti:** Plná podpora používateľského nastavenia `@media (prefers-reduced-motion: reduce)`, kedy sa všetky animácie a prechody okamžite skrátia na 0 ms pre používateľov s vestibulárnymi poruchami.
+- 15.4 Orchestrácia GSAP 3.12 a ScrollTrigger (gsap-skills):
+  * **Hero Stagger Timeline:** Využitie `gsap.timeline()` s predvoleným `power3.out` pre precízne načasovaný nábeh Hero sekcie:
+    - Odznak maturitného projektu: `scale: 0.88`, `opacity: 0`, `ease: "back.out(1.8)"`,
+    - Hlavný nadpis a podnadpis: plynulý posun `y: 35`,
+    - CTA tlačidlá: sekvenčný nábeh so staggerom 0.1s a odrazom `back.out(1.5)`,
+    - Okno Python IDE: hĺbkový 3D nábeh s rotáciou `rotationX: 4` a `y: 45`,
+    - Vznášajúce sa widgety: sekvenčný pop-in so staggerom 0.12s.
+  * **Kontinuálne sínusové vznášanie (Ambient Floating Loop):** Trojica paralaxových widgetov okolo IDE vykonáva plynulý zvislý pohyb v protifáze s rôznou periódou (2.8s až 3.6s, `ease: "sine.inOut"`, `yoyo: true`).
+  * **ScrollTrigger Batch Reveals:** Automatická aktivácia sekcií a prvkov pri dosiahnutí 85% výšky viewportu (`ScrollTrigger.batch()`) s plynulým kaskádovým nábehom.
+  * **Numerické počítadlá cez GSAP Tweening:** Plynulá matematická interpolácia číselných hodnôt na lište metrík s automatickým zaokrúhľovaním bez zaťaženia pamäte.
+  * **Deterministický Vanilla Fallback:** V prípade nedostupnosti externých CDN skriptov je celý systém postavený na automatickom záložnom režime (vstavaný `IntersectionObserver` a natívne CSS prechody), takže platforma funguje 100% autonómne aj pri offline prezentácii.
 ================================================================================

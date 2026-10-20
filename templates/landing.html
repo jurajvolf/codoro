@@ -30,7 +30,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ro-indigo); flex-shrink: 0;">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
-                <span>
+                <span class="t-shimmer">
                     {% if lang == 'en' %}
                     MATURA GRADUATION PROJECT 2026/2027 • THEME #22 • SOŠ TECHNICKÁ NIŽNÁ
                     {% else %}
@@ -827,7 +827,7 @@
         <div class="cta-banner-content text-center">
             <span class="cta-pill">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                {% if lang == 'en' %}START YOUR JOURNEY TODAY{% else %}ZAČNITE UŽ DNES{% endif %}
+                <span class="t-shimmer">{% if lang == 'en' %}START YOUR JOURNEY TODAY{% else %}ZAČNITE UŽ DNES{% endif %}</span>
             </span>
             <h2 class="cta-title">
                 {% if lang == 'en' %}
@@ -1006,10 +1006,20 @@ html[data-theme="dark"] .landing-grid-overlay {
     transform: translateY(0);
 }
 
-/* SPOTLIGHT GLOW ON CARD HOVER (Cursor tracking) */
+/* Hero elements handled by GSAP staggered entrance */
+#hero .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+}
+
+/* SPOTLIGHT GLOW ON CARD HOVER (Cursor tracking) & 3D TILT (transitions.dev & gsap-skills) */
 .spotlight-card {
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    transition-property: transform, box-shadow, border-color;
+    transition-duration: 0.28s;
+    transition-timing-function: var(--ease-out-expo);
 }
 
 .spotlight-card::before {
@@ -1030,6 +1040,19 @@ html[data-theme="dark"] .landing-grid-overlay {
 
 .spotlight-card:hover::before {
     opacity: 1;
+}
+
+/* Animated SVG Success Checkmark (transitions.dev 10-success-check) */
+.test-icon-svg.t-success-check polyline {
+    stroke-dasharray: 25;
+    stroke-dashoffset: 25;
+    animation: drawCheckSvg 0.38s var(--ease-out-back) forwards;
+}
+
+@keyframes drawCheckSvg {
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 
 /* ==========================================================================
@@ -2605,10 +2628,10 @@ function renderSnippet(idx) {
         ${s.reward}
     `;
 
-    // Initial tests display
-    testsEl.innerHTML = s.tests.map(t => `
+    // Initial tests display with animated SVG checkmarks
+    testsEl.innerHTML = s.tests.map((t, i) => `
         <div class="test-item pass">
-            <svg class="test-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            <svg class="test-icon-svg t-success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation-delay: ${i * 0.08}s"><polyline points="20 6 9 17 4 12"/></svg>
             <span class="test-name">${t.name}</span>
             <span class="test-expected">${t.res}</span>
             <span class="test-ms">${t.ms}</span>
@@ -2644,6 +2667,17 @@ function runInteractiveDemo() {
         btnText.textContent = (currentLang === 'en') ? "Run Sandbox Tests" : "Spustiť a otestovať kód";
         testCases.style.opacity = '1';
         timerTag.textContent = "0.38 ms AST execution";
+
+        // Re-render tests with dynamic draw animation (transitions.dev 10-success-check)
+        testCases.innerHTML = s.tests.map((t, i) => `
+            <div class="test-item pass">
+                <svg class="test-icon-svg t-success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation-delay: ${i * 0.08}s"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="test-name">${t.name}</span>
+                <span class="test-expected">${t.res}</span>
+                <span class="test-ms">${t.ms}</span>
+            </div>
+        `).join('');
+
         codoText.innerHTML = (currentLang === 'en') ? s.codo_run_en : s.codo_run_sk;
     }, 480);
 }
@@ -2871,6 +2905,104 @@ function switchLandingTrack(trackKey, btnEl) {
     if (targetPanel) {
         targetPanel.classList.add('active');
     }
+}
+
+// ==========================================================================
+// 6. GSAP 3 & SCROLLTRIGGER ORCHESTRATION (gsap-skills, transitions.dev, impeccable)
+// ==========================================================================
+function initGsapLandingAnimation() {
+    if (!window.gsap) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    if (window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+    }
+
+    // Hero Stagger Timeline
+    const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    heroTl
+        .from('.hero-badge-pill', { scale: 0.88, opacity: 0, duration: 0.55, ease: "back.out(1.8)" })
+        .from('.hero-headline', { y: 35, opacity: 0, duration: 0.75 }, "-=0.35")
+        .from('.hero-subhead', { y: 22, opacity: 0, duration: 0.65 }, "-=0.5")
+        .from('.hero-cta-group .btn', { y: 15, scale: 0.95, opacity: 0, stagger: 0.1, duration: 0.5, ease: "back.out(1.5)" }, "-=0.4")
+        .from('.trust-chip', { y: 10, opacity: 0, stagger: 0.06, duration: 0.4 }, "-=0.3")
+        .from('.hero-ide-preview .ide-window', { y: 45, rotationX: 4, opacity: 0, duration: 0.95, ease: "power3.out" }, "-=0.6")
+        .from('.floating-widget', { scale: 0.75, opacity: 0, stagger: 0.12, duration: 0.6, ease: "back.out(1.7)" }, "-=0.5");
+
+    // Continuous ambient floating loop for widgets
+    gsap.to('.widget-top-right', { y: "-=8", duration: 3.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    gsap.to('.widget-bottom-left', { y: "+=7", duration: 2.8, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.4 });
+    gsap.to('.widget-bottom-right', { y: "-=6", duration: 3.6, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.8 });
+
+    // 3D Card Hover Tilt with GSAP (transitions.dev 19-card-tilt)
+    document.querySelectorAll('.spotlight-card, .ide-window').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            gsap.to(card, {
+                rotationY: x * 7,
+                rotationX: -y * 7,
+                transformPerspective: 1000,
+                duration: 0.35,
+                ease: "power1.out"
+            });
+        });
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                rotationY: 0,
+                rotationX: 0,
+                duration: 0.65,
+                ease: "power2.out"
+            });
+        });
+    });
+
+    // ScrollTrigger batch reveals on sections
+    if (window.ScrollTrigger) {
+        ScrollTrigger.batch('.landing-section .reveal-on-scroll, .landing-metrics-ribbon, .landing-cta-banner', {
+            start: "top 85%",
+            once: true,
+            onEnter: batch => {
+                gsap.to(batch, {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.12,
+                    duration: 0.75,
+                    ease: "power2.out",
+                    overwrite: true
+                });
+
+                // Trigger counters
+                batch.forEach(container => {
+                    container.querySelectorAll('.counter-val').forEach(counter => {
+                        const target = parseInt(counter.getAttribute('data-target'), 10);
+                        if (target && !counter.dataset.counted) {
+                            counter.dataset.counted = "true";
+                            let obj = { val: 0 };
+                            gsap.to(obj, {
+                                val: target,
+                                duration: 1.4,
+                                ease: "power2.out",
+                                onUpdate: () => {
+                                    counter.textContent = Math.floor(obj.val);
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+}
+
+// Call on load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGsapLandingAnimation);
+} else {
+    initGsapLandingAnimation();
 }
 </script>
 {% endblock %}
