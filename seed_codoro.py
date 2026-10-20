@@ -27,7 +27,33 @@ def run_seed():
     ensure_badges_exist()
     print("🎖️ Štandardné odznaky vytvorené.")
 
-    # 2. Vytvorenie učiteľa a študentov
+    # 2. Vytvorenie administrátora, učiteľa a študentov
+    admin_user, admin_created = User.objects.get_or_create(
+        username='admin',
+        defaults={
+            'first_name': 'Codoro',
+            'last_name': 'Admin',
+            'email': 'admin@codoro.sk',
+            'role': User.Role.ADMIN,
+            'is_staff': True,
+            'is_superuser': True,
+            'subscription_tier': User.SubscriptionTier.PRO,
+            'doros': 99999,
+            'level': 50,
+            'xp': 100000,
+            'avatar': 'ninja',
+            'avatar_color': 'violet',
+        }
+    )
+    if admin_created:
+        admin_user.set_password('heslo123')
+        admin_user.save()
+    else:
+        admin_user.role = User.Role.ADMIN
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.save()
+
     teacher, _ = User.objects.get_or_create(
         username='ucitel',
         defaults={

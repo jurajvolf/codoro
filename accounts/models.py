@@ -29,6 +29,7 @@ class User(AbstractUser):
     class Role(models.TextChoices):
         STUDENT = 'STUDENT', 'Študent'
         TEACHER = 'TEACHER', 'Učiteľ'
+        ADMIN = 'ADMIN', 'Administrátor'
 
     class Language(models.TextChoices):
         SK = 'sk', 'Slovenčina'
@@ -244,10 +245,13 @@ class User(AbstractUser):
         return self.get_full_name() or self.username
 
     def is_teacher(self):
-        return self.role == self.Role.TEACHER or self.is_superuser
+        return self.role in [self.Role.TEACHER, self.Role.ADMIN] or self.is_superuser or self.is_staff
+
+    def is_admin(self):
+        return self.role == self.Role.ADMIN or self.is_superuser or self.is_staff
 
     def has_pro_access(self):
-        return self.subscription_tier in [self.SubscriptionTier.PRO, self.SubscriptionTier.EDU] or self.is_teacher()
+        return self.subscription_tier in [self.SubscriptionTier.PRO, self.SubscriptionTier.EDU] or self.is_teacher() or self.is_admin()
 
     def __str__(self):
         return f"{self.username} ({self.get_role_display()} - Lvl {self.level})"

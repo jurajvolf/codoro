@@ -1,0 +1,942 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if lang == 'en' %}SuperAdmin Portal & Live Support Desk — Codoro{% else %}SuperAdmin Rozhranie & Podpora — Codoro{% endif %}
+{% endblock %}
+
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="admin-wrapper" style="max-width: 1280px; margin: 0 auto; padding-bottom: 3rem;">
+
+    <!-- ========================================================================
+         1. HERO HEADER: CODORO SUPERADMIN PORTAL & SYSTEM STATS
+         ======================================================================== -->
+    <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(70, 54, 245, 0.06) 100%);
+                border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;
+                display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+                <span style="background: #EF4444; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.55rem; border-radius: 6px; letter-spacing: 0.04em;">
+                    SUPERADMIN
+                </span>
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+                    Python 3.12 · Django 6.1 · DB: {{ db_stats.db_engine }} ({{ db_stats.db_size_mb }} MB)
+                </span>
+            </div>
+            <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                {% if lang == 'en' %}Platform Control Center & Support Desk{% else %}Centrálna administrácia & Riešenie podpory{% endif %}
+            </h1>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.2rem; margin-bottom: 0;">
+                {% if lang == 'en' %}Manage users, licenses, global curriculum, database maintenance, and resolve support requests directly without IDE.{% else %}Správa používateľov, licencií, globálneho kurikula, databázy a okamžité riešenie problémov podpory bez nutnosti IDE.{% endif %}
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <a href="{% url 'admin_export_backup_json' %}" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 700;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                {% if lang == 'en' %}Export JSON Backup{% else %}Záloha dát (JSON){% endif %}
+            </a>
+            <a href="/admin/" target="_blank" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 700; border-color: rgba(239, 68, 68, 0.4); color: #EF4444;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Django ORM Admin ↗
+            </a>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         2. KPI STATUS CARDS (RÝCHLE METRIKY SYSTÉMU)
+         ======================================================================== -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                {% if lang == 'en' %}TOTAL USERS{% else %}POUŽÍVATELIA CELKOM{% endif %}
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0;">
+                {{ db_stats.total_users }}
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+                {{ db_stats.students_count }} {% if lang == 'en' %}students{% else %}žiakov{% endif %} · {{ db_stats.teachers_count }} {% if lang == 'en' %}teachers{% else %}učiteľov{% endif %}
+            </div>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                {% if lang == 'en' %}CURRICULUM CONTENT{% else %}OBSAH KURIKULA{% endif %}
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--ro-indigo); margin: 0.2rem 0;">
+                18 {% if lang == 'en' %}Modules{% else %}Modulov{% endif %}
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+                {{ db_stats.lessons_count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %} · {{ db_stats.exercises_count }} {% if lang == 'en' %}exercises{% else %}cvičení{% endif %}
+            </div>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                {% if lang == 'en' %}CODE SUBMISSIONS{% else %}ODOVZDané RIEŠENIA{% endif %}
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #10B981; margin: 0.2rem 0;">
+                {{ db_stats.passed_submissions }} <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">/ {{ db_stats.submissions_count }}</span>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+                {% if db_stats.submissions_count > 0 %}
+                {{ db_stats.passed_submissions|stringformat:"d" }} {% if lang == 'en' %}passed unit tests{% else %}úspešných unit testov{% endif %}
+                {% else %}
+                0% pass rate
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+                {% if lang == 'en' %}DOROS IN CIRCULATION{% else %}DOROS V OBEHU{% endif %}
+            </div>
+            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--gold-text); margin: 0.2rem 0;">
+                {{ db_stats.total_doros_circulation }} 🪙
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+                {{ db_stats.total_xp }} {% if lang == 'en' %}total XP gained{% else %}získaných XP bodov{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         3. SEGMENTED NAVIGATION TABS (5 SEKCIE PREHĽADU BEZ SCROLLOVANIA)
+         ======================================================================== -->
+    <div style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border-hairline); margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.25rem;">
+        <button type="button" class="admin-tab-btn" id="tab-btn-users" onclick="switchAdminTab('users')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            {% if lang == 'en' %}Users & Support Desk{% else %}Používatelia & Podpora{% endif %} ({{ total_users_count }})
+        </button>
+        <button type="button" class="admin-tab-btn" id="tab-btn-licenses" onclick="switchAdminTab('licenses')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            {% if lang == 'en' %}Licenses & Keys{% else %}Licencie & Kľúče{% endif %} ({{ licenses.count }})
+        </button>
+        <button type="button" class="admin-tab-btn" id="tab-btn-curriculum" onclick="switchAdminTab('curriculum')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            {% if lang == 'en' %}Global Curriculum (18 Modules){% else %}Globálne kurikulum (18 Modulov){% endif %}
+        </button>
+        <button type="button" class="admin-tab-btn" id="tab-btn-database" onclick="switchAdminTab('database')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            {% if lang == 'en' %}Database & Maintenance{% else %}Databáza & Údržba{% endif %}
+        </button>
+        <button type="button" class="admin-tab-btn" id="tab-btn-logs" onclick="switchAdminTab('logs')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            {% if lang == 'en' %}Live Code Monitor{% else %}Živý monitor riešení{% endif %}
+        </button>
+    </div>
+
+    <!-- ========================================================================
+         TAB 1: USERS & LIVE SUPPORT DESK (RIEŠENIE PROBLÉMOV POUŽÍVATEĽOV)
+         ======================================================================== -->
+    <div class="admin-tab-content" id="tab-content-users">
+        <!-- Vyhľadávanie a filtre -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <form method="get" action="{% url 'admin_dashboard' %}" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                <input type="hidden" name="tab" value="users">
+                <div style="flex: 1; min-width: 240px; position: relative;">
+                    <input type="text" name="q" value="{{ search_q }}" class="form-input"
+                           placeholder="{% if lang == 'en' %}Search by username, full name, or email...{% else %}Hľadať podľa mena, e-mailu alebo username...{% endif %}"
+                           style="width: 100%; padding-left: 2.2rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+
+                <select name="role" class="form-input" style="width: auto; min-width: 150px;">
+                    <option value="">{% if lang == 'en' %}All roles{% else %}Všetky roly{% endif %}</option>
+                    {% for r_val, r_label in roles %}
+                    <option value="{{ r_val }}" {% if role_filter == r_val %}selected{% endif %}>{{ r_label }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">
+                    {% if lang == 'en' %}Search{% else %}Filtrovať{% endif %}
+                </button>
+                {% if search_q or role_filter %}
+                <a href="{% url 'admin_dashboard' %}?tab=users" class="btn btn-secondary btn-sm">
+                    {% if lang == 'en' %}Clear{% else %}Zrušiť filter{% endif %}
+                </a>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Zoznam používateľov -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                    <thead>
+                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}User / Email{% else %}Používateľ / E-mail{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Role & Tier{% else %}Rola & Predplatné{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Class{% else %}Trieda{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Level / XP{% else %}Level / XP{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Streak / Doros{% else %}Streak / Doros{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}Support Actions{% else %}Riešenie podpory{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users_list %}
+                        <tr style="border-bottom: 1px solid var(--border-hairline); transition: background 0.15s ease;" class="user-row">
+                            <td style="padding: 0.75rem 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                    <div style="width: 34px; height: 34px; border-radius: 8px; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; border: 1px solid var(--border-hairline);">
+                                        {{ u.avatar_emoji }}
+                                    </div>
+                                    <div>
+                                        <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">
+                                            {{ u.username }}
+                                            {% if u.id == user.id %}
+                                            <span style="font-size: 0.68rem; background: var(--ro-indigo-soft); color: var(--ro-indigo); padding: 0.1rem 0.35rem; border-radius: 4px; font-weight: 800;">{% if lang == 'en' %}YOU{% else %}TY{% endif %}</span>
+                                            {% endif %}
+                                        </strong>
+                                        <span style="font-size: 0.74rem; color: var(--text-muted);">{{ u.email|default:"no-email@codoro" }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+                                    <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800;
+                                        {% if u.role == 'ADMIN' %}color: #EF4444;{% elif u.role == 'TEACHER' %}color: var(--ro-indigo);{% else %}color: var(--text-primary);{% endif %}">
+                                        {{ u.get_role_display }}
+                                    </span>
+                                    <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: var(--visor-cyan);">
+                                        {{ u.get_subscription_tier_display }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                {% if u.school_class %}
+                                <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.45rem; border-radius: 4px;">
+                                    {{ u.school_class.name }}
+                                </span>
+                                {% else %}
+                                <span style="color: var(--text-muted); font-size: 0.76rem;">—</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
+                                    Lvl {{ u.level }}
+                                </div>
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
+                                    {{ u.xp }} XP
+                                </span>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text);">
+                                    🔥 {{ u.current_streak }} d
+                                </div>
+                                <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--gold-text); font-weight: 700;">
+                                    🪙 {{ u.doros }}
+                                </span>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                {% if u.is_active %}
+                                <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.74rem; font-weight: 700; color: #10B981;">
+                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981;"></span>
+                                    {% if lang == 'en' %}Active{% else %}Aktívny{% endif %}
+                                </span>
+                                {% else %}
+                                <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.74rem; font-weight: 700; color: #EF4444;">
+                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #EF4444;"></span>
+                                    {% if lang == 'en' %}Blocked{% else %}Zablokovaný{% endif %}
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.75rem 1rem; text-align: right;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="font-weight: 700;">
+                                    ⚙️ {% if lang == 'en' %}Troubleshoot{% else %}Riešiť problém{% endif %}
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Rozbaliteľný Support Panel pre konkrétneho používateľa -->
+                        <tr id="user-support-drawer-{{ u.id }}" style="display: none; background: var(--bg-subtle);">
+                            <td colspan="7" style="padding: 1.25rem; border-bottom: 2px solid var(--border-hairline);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.5rem;">
+                                    <strong style="color: var(--text-primary); font-size: 0.95rem;">
+                                        🛠️ {% if lang == 'en' %}Live Support Console for{% else %}Zásahová konzola podpory pre{% endif %} <span style="color: var(--ro-indigo);">{{ u.username }}</span> (ID: {{ u.id }})
+                                    </strong>
+                                    <button type="button" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1rem;">✕</button>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+
+                                    <!-- Akcia 1: Zmena alebo vygenerovanie hesla -->
+                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                                            🔑 {% if lang == 'en' %}Password Reset / Change{% else %}Reset alebo zmena hesla{% endif %}
+                                        </div>
+                                        <form method="post" action="{% url 'admin_user_set_password' u.id %}">
+                                            {% csrf_token %}
+                                            <div style="display: flex; gap: 0.4rem; margin-bottom: 0.5rem;">
+                                                <input type="text" name="new_password" placeholder="{% if lang == 'en' %}Enter new password...{% else %}Zadaj nové heslo...{% endif %}" class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <button type="submit" name="action" value="set" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
+                                                    {% if lang == 'en' %}Set{% else %}Nastaviť{% endif %}
+                                                </button>
+                                            </div>
+                                            <button type="submit" name="action" value="generate" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem;">
+                                                ⚡ {% if lang == 'en' %}Auto-generate Strong Password{% else %}Vygenerovať bezpečné heslo{% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Akcia 2: Oprava vyhasnutého Streaku -->
+                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                                            🔥 {% if lang == 'en' %}Streak Rescue & Repair{% else %}Oprava / Obnova dennej série{% endif %}
+                                        </div>
+                                        <form method="post" action="{% url 'admin_user_streak' u.id %}">
+                                            {% csrf_token %}
+                                            <div style="display: flex; gap: 0.4rem;">
+                                                <input type="number" name="streak_value" value="{{ u.current_streak|default:1 }}" min="1" max="999" class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
+                                                    {% if lang == 'en' %}Set Days{% else %}Nastaviť dni{% endif %}
+                                                </button>
+                                            </div>
+                                            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+                                                {% if lang == 'en' %}Clears streak lost state and sets activity date to today.{% else %}Vymaže stav straty a nastaví aktivitu na dnešný deň.{% endif %}
+                                            </span>
+                                        </form>
+                                    </div>
+
+                                    <!-- Akcia 3: Úprava hernej meny Doros & XP -->
+                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                                            🪙 {% if lang == 'en' %}Adjust Doros & XP{% else %}Úprava mincí Doros a XP{% endif %}
+                                        </div>
+                                        <form method="post" action="{% url 'admin_user_economy' u.id %}">
+                                            {% csrf_token %}
+                                            <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
+                                                <input type="number" name="doros_change" placeholder="± Doros" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <input type="number" name="xp_change" placeholder="± XP" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                            </div>
+                                            <div style="display: flex; gap: 0.4rem;">
+                                                <input type="text" name="reason" placeholder="Dôvod zásahu..." class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
+                                                    {% if lang == 'en' %}Apply{% else %}Aplikovať{% endif %}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- Akcia 4: Zmena Roly a Predplatného -->
+                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                                            🎭 {% if lang == 'en' %}Role & Subscription Tier{% else %}Rola a Úroveň predplatného{% endif %}
+                                        </div>
+                                        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
+                                            <form method="post" action="{% url 'admin_user_update_role' u.id %}" style="flex: 1; display: flex; gap: 0.3rem;">
+                                                {% csrf_token %}
+                                                <select name="role" class="form-input" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
+                                                    {% for r_val, r_label in roles %}
+                                                    <option value="{{ r_val }}" {% if u.role == r_val %}selected{% endif %}>{{ r_label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">✓</button>
+                                            </form>
+
+                                            <form method="post" action="{% url 'admin_user_update_tier' u.id %}" style="flex: 1; display: flex; gap: 0.3rem;">
+                                                {% csrf_token %}
+                                                <select name="subscription_tier" class="form-input" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
+                                                    {% for t_val, t_label in tiers %}
+                                                    <option value="{{ t_val }}" {% if u.subscription_tier == t_val %}selected{% endif %}>{{ t_label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">✓</button>
+                                            </form>
+                                        </div>
+
+                                        <!-- Trieda -->
+                                        <form method="post" action="{% url 'admin_user_assign_class' u.id %}" style="display: flex; gap: 0.3rem; margin-top: 0.4rem;">
+                                            {% csrf_token %}
+                                            <select name="school_class_id" class="form-input" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
+                                                <option value="">{% if lang == 'en' %}No school class{% else %}Bez priradenej triedy{% endif %}</option>
+                                                {% for c in all_classes %}
+                                                <option value="{{ c.id }}" {% if u.school_class_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">{% if lang == 'en' %}Assign{% else %}Trieda{% endif %}</button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Akcia 5: Ďalšie rýchle fixy (Reset AI limitu, Ban, Zmazanie) -->
+                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                                            ⚡ {% if lang == 'en' %}AI Limit, Ban & Danger Zone{% else %}AI limit a Správa účtu{% endif %}
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                                            <form method="post" action="{% url 'admin_user_reset_ai' u.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem;">
+                                                    🤖 {% if lang == 'en' %}Reset AI Codo Daily Limit{% else %}Resetovať denný AI limit Codo{% endif %}
+                                                </button>
+                                            </form>
+
+                                            <div style="display: flex; gap: 0.4rem;">
+                                                <form method="post" action="{% url 'admin_user_toggle_active' u.id %}" style="flex: 1;">
+                                                    {% csrf_token %}
+                                                    {% if u.is_active %}
+                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #EF4444;" onclick="return confirm('Naozaj chceš zablokovať tohto používateľa?');">
+                                                        🚫 {% if lang == 'en' %}Block User{% else %}Zablokovať{% endif %}
+                                                    </button>
+                                                    {% else %}
+                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #10B981;">
+                                                        ✓ {% if lang == 'en' %}Activate User{% else %}Aktivovať{% endif %}
+                                                    </button>
+                                                    {% endif %}
+                                                </form>
+
+                                                {% if u.id != user.id %}
+                                                <form method="post" action="{% url 'admin_user_delete' u.id %}" style="flex: 1;" onsubmit="return confirm('POZOR: Trvalo zmazať účet {{ u.username }} a všetky jeho dáta? Táto akcia je nevratná!');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.4);">
+                                                        🗑️ {% if lang == 'en' %}Delete{% else %}Zmazať účet{% endif %}
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                {% if lang == 'en' %}No users found matching your query.{% else %}Nenašli sa žiadni používatelia zodpovedajúci filtru.{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         TAB 2: LICENSES & KEYS MANAGEMENT
+         ======================================================================== -->
+    <div class="admin-tab-content" id="tab-content-licenses" style="display: none;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+
+            <!-- Generátor licenčného kľúča -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+                    🔑 {% if lang == 'en' %}Create New License Key{% else %}Vygenerovať nový licenčný kľúč{% endif %}
+                </h3>
+                <form method="post" action="{% url 'admin_license_create' %}">
+                    {% csrf_token %}
+                    <div style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
+                            {% if lang == 'en' %}Subscription Tier{% else %}Typ predplatného{% endif %}
+                        </label>
+                        <select name="tier" class="form-input" style="width: 100%;">
+                            <option value="EDU">EDU (Školská triedna licencia)</option>
+                            <option value="PRO">PRO (Individuálna Codoro PRO)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
+                            {% if lang == 'en' %}Max Activations (e.g. 30 for class){% else %}Max počet aktivácií (napr. 30 pre triedu){% endif %}
+                        </label>
+                        <input type="number" name="max_uses" value="30" min="1" max="500" class="form-input" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
+                            {% if lang == 'en' %}Custom Key Code (Leave empty to auto-generate){% else %}Vlastný kód (alebo nechaj prázdne pre auto-kód){% endif %}
+                        </label>
+                        <input type="text" name="code" placeholder="EDU-2027-XXXX" class="form-input" style="width: 100%; text-transform: uppercase;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; font-weight: 700;">
+                        {% if lang == 'en' %}Generate License Key{% else %}Vygenerovať licenčný kľúč{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <!-- Rýchla aktivácia pre používateľa -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+                    🎯 {% if lang == 'en' %}Direct License Assignment{% else %}Priame priradenie licencie študentovi{% endif %}
+                </h3>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    {% if lang == 'en' %}Directly unlock PRO or EDU tier for any student by entering their username.{% else %}Priamo odomkni EDU alebo PRO licenciu pre používateľa zadaním jeho prihlasovacieho mena.{% endif %}
+                </p>
+                <form method="post" action="{% url 'admin_license_quick_assign' %}">
+                    {% csrf_token %}
+                    <div style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
+                            {% if lang == 'en' %}Username{% else %}Prihlasovacie meno používateľa{% endif %}
+                        </label>
+                        <input type="text" name="username" placeholder="student..." required class="form-input" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
+                            {% if lang == 'en' %}Select Active License{% else %}Vyber aktívnu licenciu{% endif %}
+                        </label>
+                        <select name="license_id" class="form-input" style="width: 100%;">
+                            {% for lic in licenses %}
+                            {% if lic.is_active and lic.current_uses < lic.max_uses %}
+                            <option value="{{ lic.id }}">{{ lic.code }} ({{ lic.tier }} · {{ lic.current_uses }}/{{ lic.max_uses }} využití)</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-weight: 700;">
+                        {% if lang == 'en' %}Assign & Activate{% else %}Priradiť a aktivovať licenciu{% endif %}
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- Zoznam všetkých licencií -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                    <thead>
+                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}License Code{% else %}Kód licencie{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Tier{% else %}Typ{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Usage{% else %}Využitie{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Created{% else %}Vytvorená{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}Actions{% else %}Akcie{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lic in licenses %}
+                        <tr style="border-bottom: 1px solid var(--border-hairline);">
+                            <td style="padding: 0.75rem 1rem;">
+                                <strong style="font-family: var(--font-mono); font-size: 0.92rem; color: var(--ro-indigo);">
+                                    {{ lic.code }}
+                                </strong>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.15rem 0.45rem; border-radius: 4px;">
+                                    {{ lic.tier }}
+                                </span>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="flex: 1; height: 6px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden; width: 100px;">
+                                        <div style="height: 100%; background: var(--ro-indigo); width: {% widthratio lic.current_uses lic.max_uses 100 %}%;"></div>
+                                    </div>
+                                    <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--text-primary);">
+                                        {{ lic.current_uses }} / {{ lic.max_uses }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="padding: 0.75rem 1rem; font-size: 0.78rem; color: var(--text-muted);">
+                                {{ lic.created_at|date:"d.m.Y H:i" }}
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                {% if lic.is_active and lic.current_uses < lic.max_uses %}
+                                <span style="color: #10B981; font-weight: 700; font-size: 0.76rem;">● {% if lang == 'en' %}Active{% else %}Aktívna{% endif %}</span>
+                                {% elif lic.current_uses >= lic.max_uses %}
+                                <span style="color: var(--gold-text); font-weight: 700; font-size: 0.76rem;">● {% if lang == 'en' %}Exhausted{% else %}Vyčerpaná{% endif %}</span>
+                                {% else %}
+                                <span style="color: #EF4444; font-weight: 700; font-size: 0.76rem;">● {% if lang == 'en' %}Disabled{% else %}Neaktívna{% endif %}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.75rem 1rem; text-align: right;">
+                                <div style="display: flex; justify-content: flex-end; gap: 0.4rem;">
+                                    <form method="post" action="{% url 'admin_license_toggle' lic.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">
+                                            {% if lic.is_active %}{% if lang == 'en' %}Deactivate{% else %}Deaktivovať{% endif %}{% else %}{% if lang == 'en' %}Activate{% else %}Aktivovať{% endif %}{% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'admin_license_delete' lic.id %}" onsubmit="return confirm('Zmazať kľúč {{ lic.code }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; color: #EF4444;">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                {% if lang == 'en' %}No licenses created yet.{% else %}Zatiaľ neboli vytvorené žiadne licenčné kľúče.{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         TAB 3: GLOBAL CURRICULUM (18 MODULOV & RE-SYNC)
+         ======================================================================== -->
+    <div class="admin-tab-content" id="tab-content-curriculum" style="display: none;">
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    📚 {% if lang == 'en' %}Global Curriculum Management (18 Modules, 83 Lessons, 249 Exercises){% else %}Správa globálneho kurikula (18 Modulov, 83 Lekcií, 249 Cvičení){% endif %}
+                </h3>
+                <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
+                    {% if lang == 'en' %}You can toggle PRO / FREE access, hide modules, or re-sync curriculum directly from Python data files.{% else %}Môžeš prepínať prístup PRO / FREE, publikovať moduly alebo ich bezpečne zosynchronizovať zo zdrojových dát.{% endif %}
+                </p>
+            </div>
+
+            <form method="post" action="{% url 'admin_sync_curriculum' %}" onsubmit="return confirm('Zosynchronizovať kurikulum zo šablón (mod01 až mod18)? Všetky teórie, cvičenia a test cases budú aktualizované bez zmazania odovzdaných riešení.');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    {% if lang == 'en' %}Sync Curriculum from Source{% else %}Synchronizovať kurikulum zo šablón{% endif %}
+                </button>
+            </form>
+        </div>
+
+        <!-- Tabuľka 18 modulov -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                    <thead>
+                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
+                            <th style="padding: 0.75rem 1rem;">#</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Module Title{% else %}Názov modulu{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Track{% else %}Kariérna cesta{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Lessons / Tasks{% else %}Lekcie / Úlohy{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Access Tier{% else %}Prístup{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Publish Status{% else %}Publikovanie{% endif %}</th>
+                            <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}CMS Actions{% else %}Akcie v CMS{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mod in modules %}
+                        <tr style="border-bottom: 1px solid var(--border-hairline);">
+                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 800; color: var(--ro-indigo);">
+                                {{ mod.order|stringformat:"02d" }}
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">
+                                    {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
+                                </strong>
+                                <span style="font-size: 0.74rem; color: var(--text-muted);">
+                                    {{ mod.estimated_hours }}h · {{ mod.get_difficulty_level_display }}
+                                </span>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);">
+                                    {{ mod.get_track_display }}
+                                </span>
+                            </td>
+                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-primary);">
+                                {{ mod.lesson_count }} lekcií / {{ mod.exercise_count }} úloh
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <form method="post" action="{% url 'admin_module_toggle_pro' mod.id %}">
+                                    {% csrf_token %}
+                                    {% if mod.is_pro_only %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border-color: var(--gold-border);">
+                                        PRO / EDU
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 800; background: var(--emerald-bg); color: var(--emerald-text); border-color: var(--emerald-border);">
+                                        FREE
+                                    </button>
+                                    {% endif %}
+                                </form>
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <form method="post" action="{% url 'admin_module_toggle_publish' mod.id %}">
+                                    {% csrf_token %}
+                                    {% if mod.is_published %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10B981;">
+                                        ● {% if lang == 'en' %}Published{% else %}Publikovaný{% endif %}
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">
+                                        ○ {% if lang == 'en' %}Draft{% else %}Koncept{% endif %}
+                                    </button>
+                                    {% endif %}
+                                </form>
+                            </td>
+                            <td style="padding: 0.75rem 1rem; text-align: right;">
+                                <a href="{% url 'cms_modules' %}" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700;">
+                                    📝 CMS
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         TAB 4: DATABASE HEALTH & MAINTENANCE TOOLS
+         ======================================================================== -->
+    <div class="admin-tab-content" id="tab-content-database" style="display: none;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+
+            <!-- Karta: Databázové tabuľky a počty záznamov -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+                    💾 {% if lang == 'en' %}Database Table Metrics{% else %}Metriky tabuliek databázy{% endif %}
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.84rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">User accounts</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.total_users }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">School classes</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.classes_count }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">Curriculum modules</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.modules_count }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">Lessons</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.lessons_count }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">Python exercises</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.exercises_count }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">Unit test cases</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.testcases_count }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
+                        <span style="color: var(--text-secondary);">Code submissions</span>
+                        <strong style="font-family: var(--font-mono);">{{ db_stats.submissions_count }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.35rem 0;">
+                        <span style="color: var(--text-secondary);">Database size on disk</span>
+                        <strong style="font-family: var(--font-mono); color: var(--ro-indigo);">{{ db_stats.db_size_mb }} MB</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Karta: Rýchle systémové akcie údržby -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+                    🛠️ {% if lang == 'en' %}System Maintenance Actions{% else %}Systémové úkony údržby{% endif %}
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <form method="post" action="{% url 'admin_recalc_levels' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700;">
+                            📊 {% if lang == 'en' %}Recalculate All User Levels from XP{% else %}Prepočítať levely všetkých používateľov z XP{% endif %}
+                        </button>
+                    </form>
+
+                    <form method="post" action="{% url 'admin_refresh_all_streaks' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700;">
+                            🔥 {% if lang == 'en' %}Run Daily Streak Cron Tick{% else %}Spustiť kontrolu vyhasnutých Streakov{% endif %}
+                        </button>
+                    </form>
+
+                    <form method="post" action="{% url 'admin_clean_submissions' %}" onsubmit="return confirm('Vymazať neúspešné odovzdania staršie ako 30 dní?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700; color: #EF4444;">
+                            🧹 {% if lang == 'en' %}Cleanup Old Failed Submissions (> 30 days){% else %}Prečistiť staré neúspešné odovzdania (> 30 dní){% endif %}
+                        </button>
+                    </form>
+
+                    <a href="{% url 'admin_export_backup_json' %}" class="btn btn-primary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700;">
+                        📥 {% if lang == 'en' %}Download Complete Platform JSON Backup{% else %}Stiahnuť kompletnú JSON zálohu dát{% endif %}
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         TAB 5: LIVE SUBMISSIONS & CODE MONITOR (LOGY RIEŠENÍ A CHÝB)
+         ======================================================================== -->
+    <div class="admin-tab-content" id="tab-content-logs" style="display: none;">
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{% url 'admin_dashboard' %}?tab=logs" class="btn btn-sm {% if not submission_filter %}btn-primary{% else %}btn-secondary{% endif %}" style="font-weight: 700;">
+                    {% if lang == 'en' %}All Submissions{% else %}Všetky odovzdania{% endif %}
+                </a>
+                <a href="{% url 'admin_dashboard' %}?tab=logs&sub_status=FAILED" class="btn btn-sm {% if submission_filter == 'FAILED' %}btn-primary{% else %}btn-secondary{% endif %}" style="font-weight: 700; color: #EF4444;">
+                    {% if lang == 'en' %}Only Errors & Fails{% else %}Iba chyby a zlyhania{% endif %}
+                </a>
+                <a href="{% url 'admin_dashboard' %}?tab=logs&sub_status=PASSED" class="btn btn-sm {% if submission_filter == 'PASSED' %}btn-primary{% else %}btn-secondary{% endif %}" style="font-weight: 700; color: #10B981;">
+                    {% if lang == 'en' %}Only Passed{% else %}Iba úspešné{% endif %}
+                </a>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+                {% if lang == 'en' %}Displaying last 50 submissions{% else %}Zobrazených posledných 50 odovzdaní{% endif %}
+            </span>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.86rem;">
+                    <thead>
+                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;">
+                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Time{% else %}Čas{% endif %}</th>
+                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Student{% else %}Študent{% endif %}</th>
+                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Exercise / Lesson{% else %}Úloha / Lekcia{% endif %}</th>
+                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Runtime{% else %}Doba behu{% endif %}</th>
+                            <th style="padding: 0.65rem 1rem; text-align: right;">{% if lang == 'en' %}Code & Traceback{% else %}Kód a výstup{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in recent_submissions %}
+                        <tr style="border-bottom: 1px solid var(--border-hairline);">
+                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted);">
+                                {{ sub.created_at|date:"d.m.Y H:i:s" }}
+                            </td>
+                            <td style="padding: 0.65rem 1rem;">
+                                <strong style="color: var(--text-primary);">{{ sub.student.username }}</strong>
+                            </td>
+                            <td style="padding: 0.65rem 1rem;">
+                                {% if sub.exercise %}
+                                <span style="color: var(--text-secondary);">{{ sub.exercise.title_sk }}</span>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">Modul {{ sub.exercise.lesson.module.order|stringformat:"02d" }}</span>
+                                {% else %}
+                                <span style="color: var(--text-muted);">—</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.65rem 1rem;">
+                                {% if sub.status == 'PASSED' %}
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #10B981; background: var(--emerald-bg); padding: 0.1rem 0.4rem; border-radius: 4px;">
+                                    PASSED ✓
+                                </span>
+                                {% else %}
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #EF4444; background: var(--flame-bg); padding: 0.1rem 0.4rem; border-radius: 4px;">
+                                    {{ sub.status }} ✗
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                                {{ sub.execution_time_ms }} ms
+                            </td>
+                            <td style="padding: 0.65rem 1rem; text-align: right;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSubmissionTrace('{{ sub.id }}')" style="font-size: 0.74rem; font-weight: 700;">
+                                    👁️ {% if lang == 'en' %}Inspect{% else %}Pozrieť výstup{% endif %}
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Inšpekcia kódu a výstupu unit testov -->
+                        <tr id="sub-trace-{{ sub.id }}" style="display: none; background: #070B14;">
+                            <td colspan="6" style="padding: 1rem 1.25rem;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div>
+                                        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; margin-bottom: 0.35rem;">
+                                            {% if lang == 'en' %}Submitted Python Code:{% else %}Odovzdaný Python kód študenta:{% endif %}
+                                        </div>
+                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: 6px; font-family: var(--font-mono); font-size: 0.78rem; color: #F8FAFC; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.submitted_code }}</pre>
+                                    </div>
+                                    <div>
+                                        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; margin-bottom: 0.35rem;">
+                                            {% if lang == 'en' %}Test Execution Output / Traceback:{% else %}Výstup testovacieho behu / Traceback:{% endif %}
+                                        </div>
+                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: 6px; font-family: var(--font-mono); font-size: 0.78rem; color: {% if sub.status == 'PASSED' %}#34D399{% else %}#FB7185{% endif %}; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.output_log }}</pre>
+                                        {% if sub.ai_tutor_feedback %}
+                                        <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(92, 225, 230, 0.08); border: 1px solid rgba(92, 225, 230, 0.25); border-radius: 6px; font-size: 0.78rem; color: var(--visor-cyan);">
+                                            <strong>🤖 Codo AI Rada:</strong> {{ sub.ai_tutor_feedback }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                {% if lang == 'en' %}No submissions logged yet.{% else %}Zatiaľ neboli zaznamenané žiadne odovzdania.{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .admin-tab-btn {
+        background: none;
+        border: none;
+        padding: 0.7rem 1.1rem;
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: var(--radius-sm);
+        transition: all 0.15s ease;
+        white-space: nowrap;
+    }
+    .admin-tab-btn:hover {
+        color: var(--text-primary);
+        background: var(--bg-subtle);
+    }
+    .admin-tab-btn.active {
+        color: #EF4444;
+        background: rgba(239, 68, 68, 0.1);
+        font-weight: 800;
+    }
+</style>
+
+<script>
+    function switchAdminTab(tabName) {
+        document.querySelectorAll('.admin-tab-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('.admin-tab-content').forEach(function(content) {
+            content.style.display = 'none';
+        });
+
+        var activeBtn = document.getElementById('tab-btn-' + tabName);
+        var activeContent = document.getElementById('tab-content-' + tabName);
+        if (activeBtn) activeBtn.classList.add('active');
+        if (activeContent) activeContent.style.display = 'block';
+
+        // Update URL query string bez reloadu
+        var url = new URL(window.location);
+        url.searchParams.set('tab', tabName);
+        window.history.replaceState({}, '', url);
+    }
+
+    function toggleUserSupportDrawer(userId) {
+        var el = document.getElementById('user-support-drawer-' + userId);
+        if (el) {
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'table-row' : 'none';
+        }
+    }
+
+    function toggleSubmissionTrace(subId) {
+        var el = document.getElementById('sub-trace-' + subId);
+        if (el) {
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'table-row' : 'none';
+        }
+    }
+
+    // Inicializácia aktívnej záložky z URL
+    document.addEventListener('DOMContentLoaded', function() {
+        var activeTab = "{{ active_tab|default:'users' }}";
+        switchAdminTab(activeTab);
+    });
+</script>
+{% endblock %}

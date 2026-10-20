@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from accounts import views as acc_views
 from courses import views as course_views
 from gamification import views as game_views
@@ -7,6 +7,7 @@ from teacher_panel import views as teacher_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('admin-panel/', include('admin_panel.urls')),
 
     # Autentifikácia, jazyk, záchrana Streaku a licencie
     path('login/', acc_views.login_view, name='login'),

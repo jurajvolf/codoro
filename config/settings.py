@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'courses',
     'gamification',
     'teacher_panel',
+    'admin_panel',
 ]
 
 MIDDLEWARE = [

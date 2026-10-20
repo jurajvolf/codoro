@@ -84,12 +84,17 @@ codoro/
 |-- teacher_panel/              # Kompletný CMS a administrátorské rozhranie pre učiteľa (Full CRUD)
 |   |-- views.py
 |   |-- tests.py
+|-- admin_panel/                # SuperAdmin rozhranie, Live Support Helpdesk, správa licencií a údržba DB
+|   |-- views.py
+|   |-- urls.py
+|   |-- tests.py
 |-- templates/                  # HTML šablóny (100 % SK/EN, Light/Dark mode, App Shell architektúra)
 |   |-- base.html
 |   |-- accounts/               # login.html, register.html, profile.html, certificate.html
 |   |-- courses/                # dashboard.html, lesson_detail.html, practice_arena.html, cheat_sheets.html
 |   |-- gamification/           # shop.html
 |   |-- teacher_panel/          # dashboard.html, cms_modules.html, cms_lesson_form.html, cms_exercise_form.html, student_detail.html
+|   |-- admin_panel/            # dashboard.html
 |-- static/img/codoro-logo.jpg
 |-- seed_codoro.py
 |-- manage.py
