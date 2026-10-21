@@ -2,22 +2,6 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-<style>
-    .shop-panel-view {
-        display: none;
-    }
-    .shop-panel-view.active {
-        display: block;
-        animation: fadeIn 0.18s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(3px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .tx-positive { color: #10B981; }
-    .tx-negative { color: #EF4444; }
-</style>
-
 <div class="animate-in">
 
     <!-- Horná lišta: Cockpit Bar s nadpisom a zostatkom Doros -->

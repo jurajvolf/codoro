@@ -3,12 +3,6 @@
 {% block content %}
 {% with lang=user.preferred_language|default:'sk' %}
 
-<style>
-    .teacher-tab.tab-hidden { display: none; }
-    .stock-pill.out-of-stock { color: var(--flame-text); }
-    .stock-pill.in-stock { color: var(--emerald-text); }
-</style>
-
 <div class="cockpit-bar animate-in">
     <div>
         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
@@ -1215,7 +1209,7 @@ function printStudentCredentials() {
     var printContent = document.getElementById('printableBatchStudents');
     if (!printContent) return;
     var win = window.open('', '_blank', 'width=800,height=600');
-    win.document.write('<!DOCTYPE html><html><head><title>Prihlasovacie údaje Codoro</title><style>body{font-family:sans-serif;padding:24px;} table{width:100%;border-collapse:collapse;margin-top:16px;} th,td{border:1px solid #cbd5e1;padding:8px 12px;text-align:left;} th{background:#f1f5f9;font-weight:bold;} code{font-family:monospace;background:#f8fafc;padding:2px 4px;} @media print{button{display:none;}}</style></head><body>');
+    win.document.write('<!DOCTYPE html><html><head><title>Prihlasovacie údaje Codoro</title></head><body>');
     win.document.write('<h2>Prihlasovacie údaje študentov — Codoro EDU</h2>');
     win.document.write('<p>Odovzdajte jednotlivým žiakom ich prihlasovacie údaje na platformu Codoro.</p>');
     win.document.write(printContent.innerHTML);
