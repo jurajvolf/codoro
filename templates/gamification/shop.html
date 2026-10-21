@@ -64,6 +64,8 @@
         from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    .tx-positive { color: var(--emerald-text); }
+    .tx-negative { color: var(--flame-text); }
 </style>
 
 <div class="animate-in">
@@ -252,7 +254,7 @@
                             {{ t.created_at|date:"d.m.Y H:i" }}
                         </span>
                     </div>
-                    <span style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; color:{% if t.amount > 0 %}var(--emerald-text){% else %}var(--flame-text){% endif %};">
+                    <span class="{% if t.amount > 0 %}tx-positive{% else %}tx-negative{% endif %}" style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; font-variant-numeric: tabular-nums;">
                         {% if t.amount > 0 %}+{% endif %}{{ t.amount }} Doros
                     </span>
                 </div>

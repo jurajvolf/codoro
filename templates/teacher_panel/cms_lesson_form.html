@@ -3,6 +3,31 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
+<style>
+    .diff-pill {
+        font-size: 0.72rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 99px;
+        font-weight: 700;
+    }
+    .diff-pill.diff-EASY { background: var(--emerald-bg); color: var(--emerald-text); }
+    .diff-pill.diff-MEDIUM { background: var(--gold-bg); color: var(--gold-text); }
+    .diff-pill.diff-HARD { background: var(--flame-bg); color: var(--flame-text); }
+
+    .quiz-option-pill {
+        padding: 0.45rem 0.65rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-hairline);
+        background: var(--bg-surface);
+    }
+    .quiz-option-pill.correct {
+        background: var(--emerald-bg);
+        color: var(--emerald-text);
+        font-weight: 700;
+        border-color: var(--emerald-border);
+    }
+</style>
+
 <div class="animate-in" style="max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
 
     <!-- Horná navigačná lišta -->
@@ -238,10 +263,7 @@ print(f"The value of x is {x}")
                         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                             <strong style="font-size: 0.95rem; color: var(--text-primary);">{{ ex.title_sk }}</strong>
 
-                            <span style="font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 99px; font-weight: 700;
-                                {% if ex.difficulty == 'EASY' %}background: var(--emerald-bg); color: var(--emerald-text);
-                                {% elif ex.difficulty == 'MEDIUM' %}background: var(--gold-bg); color: var(--gold-text);
-                                {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
+                            <span class="diff-pill diff-{{ ex.difficulty }}">
                                 {{ ex.get_difficulty_display }}
                             </span>
 
@@ -262,7 +284,7 @@ print(f"The value of x is {x}")
                         {% if lang == 'en' %}CodeMirror & Tests{% else %}Editor & Testy{% endif %}
                     </a>
 
-                    <form method="post" action="{% url 'cms_exercise_delete' ex.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete exercise?{% else %}Naozaj vymazať túto úlohu?{% endif %}');">
+                    <form method="post" action="{% url 'cms_exercise_delete' ex.id %}" style="display: inline;" data-confirm="{% if lang == 'en' %}Delete exercise?{% else %}Naozaj vymazať túto úlohu?{% endif %}" onsubmit="return confirm(this.dataset.confirm);">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text);" title="{% if lang == 'en' %}Delete Exercise{% else %}Vymazať cvičenie{% endif %}">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -323,7 +345,7 @@ print(f"The value of x is {x}")
                         <button type="button" class="btn btn-secondary btn-sm" onclick="openEditQuizModal('{{ q.id }}', '{{ q.question_sk|escapejs }}', '{{ q.question_en|escapejs }}', '{{ q.option_a_sk|escapejs }}', '{{ q.option_a_en|escapejs }}', '{{ q.option_b_sk|escapejs }}', '{{ q.option_b_en|escapejs }}', '{{ q.option_c_sk|escapejs }}', '{{ q.option_c_en|escapejs }}', '{{ q.option_d_sk|escapejs }}', '{{ q.option_d_en|escapejs }}', '{{ q.correct_option }}', '{{ q.explanation_sk|escapejs }}', '{{ q.explanation_en|escapejs }}')" style="font-size: 0.78rem;">
                             {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
                         </button>
-                        <form method="post" action="{% url 'cms_quiz_delete' q.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete quiz question?{% else %}Naozaj vymazať túto otázku?{% endif %}');">
+                        <form method="post" action="{% url 'cms_quiz_delete' q.id %}" style="display: inline;" data-confirm="{% if lang == 'en' %}Delete quiz question?{% else %}Naozaj vymazať túto otázku?{% endif %}" onsubmit="return confirm(this.dataset.confirm);">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.78rem;" title="Vymazať">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -333,17 +355,17 @@ print(f"The value of x is {x}")
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; font-size: 0.85rem;">
-                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'A' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                    <div class="quiz-option-pill {% if q.correct_option == 'A' %}correct{% endif %}">
                         <strong>A)</strong> {{ q.option_a_sk }}
                     </div>
-                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'B' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                    <div class="quiz-option-pill {% if q.correct_option == 'B' %}correct{% endif %}">
                         <strong>B)</strong> {{ q.option_b_sk }}
                     </div>
-                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'C' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                    <div class="quiz-option-pill {% if q.correct_option == 'C' %}correct{% endif %}">
                         <strong>C)</strong> {{ q.option_c_sk }}
                     </div>
                     {% if q.option_d_sk %}
-                    <div style="padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid var(--border-hairline); {% if q.correct_option == 'D' %}background: var(--emerald-bg); color: var(--emerald-text); font-weight: 700; border-color: var(--emerald-border);{% else %}background: var(--bg-surface);{% endif %}">
+                    <div class="quiz-option-pill {% if q.correct_option == 'D' %}correct{% endif %}">
                         <strong>D)</strong> {{ q.option_d_sk }}
                     </div>
                     {% endif %}

@@ -276,10 +276,10 @@
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 0.4rem;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditTestCaseModal('{{ tc.id }}', '{{ tc.input_data|escapejs }}', '{{ tc.expected_output|escapejs }}', '{{ tc.test_code|escapejs }}', {{ tc.is_hidden|yesno:'true,false' }}, {{ tc.order }})" style="font-size: 0.78rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" data-id="{{ tc.id }}" data-input="{{ tc.input_data|escapejs }}" data-expected="{{ tc.expected_output|escapejs }}" data-code="{{ tc.test_code|escapejs }}" data-hidden="{% if tc.is_hidden %}1{% else %}0{% endif %}" data-order="{{ tc.order }}" onclick="openEditTestCaseModal(this.dataset.id, this.dataset.input, this.dataset.expected, this.dataset.code, this.dataset.hidden === '1', this.dataset.order)" style="font-size: 0.78rem;">
                         {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
                     </button>
-                    <form method="post" action="{% url 'cms_testcase_delete' tc.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete test case?{% else %}Naozaj vymazať tento test?{% endif %}');">
+                    <form method="post" action="{% url 'cms_testcase_delete' tc.id %}" style="display: inline;" data-confirm="{% if lang == 'en' %}Delete test case?{% else %}Naozaj vymazať tento test?{% endif %}" onsubmit="return confirm(this.dataset.confirm);">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.78rem;" title="Vymazať test">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -511,9 +511,10 @@ function testTeacherSolution() {
 
     var payload = new URLSearchParams();
     payload.append('solution_code', solutionCode);
-    {% if exercise %}
-    payload.append('exercise_id', '{{ exercise.id }}');
-    {% endif %}
+    var currentExerciseId = "{{ exercise.id|default:'' }}";
+    if (currentExerciseId) {
+        payload.append('exercise_id', currentExerciseId);
+    }
 
     fetch('{% url "cms_test_solution" %}', {
         method: 'POST',

@@ -3,6 +3,12 @@
 {% block content %}
 {% with lang=user.preferred_language|default:'sk' %}
 
+<style>
+    .teacher-tab.tab-hidden { display: none; }
+    .stock-pill.out-of-stock { color: var(--flame-text); }
+    .stock-pill.in-stock { color: var(--emerald-text); }
+</style>
+
 <div class="animate-in" style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
     <div>
         <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.04em;">
@@ -41,7 +47,7 @@
 </div>
 
 <!-- ZÁLOŽKA 1: Schvaľovanie kupónov a správa študentov -->
-<div id="tab-students" class="teacher-tab animate-in" style="{% if batch_created_students %}display: none;{% endif %}">
+<div id="tab-students" class="teacher-tab animate-in {% if batch_created_students %}tab-hidden{% endif %}">
 
     <!-- Čakajúce kupóny -->
     <section class="card-surface" style="margin-bottom: 1.75rem; overflow: hidden; border-radius: var(--radius-lg);">
@@ -197,7 +203,7 @@
 </div>
 
 <!-- ZÁLOŽKA 2: Triedy, Prístupové kódy a Hromadná správa žiakov -->
-<div id="tab-classes" class="teacher-tab animate-in" style="{% if not batch_created_students %}display: none;{% endif %}">
+<div id="tab-classes" class="teacher-tab animate-in {% if not batch_created_students %}tab-hidden{% endif %}">
 
     {% if batch_created_students %}
     <!-- BATCH CREATED CREDENTIALS ALERT CARD -->
@@ -384,7 +390,7 @@
                                     <td style="font-family: var(--font-mono);">L{{ st.level }} ({{ st.xp }})</td>
                                     <td style="font-family: var(--font-mono); color: var(--gold-text); font-weight: 700;">{{ st.doros }}</td>
                                     <td style="text-align: right;">
-                                        <form method="post" action="{% url 'cms_class_remove_student' c.id st.id %}" onsubmit="return confirm('{% if lang == 'en' %}Remove {{ st.username }} from this class?{% else %}Odobrať žiaka {{ st.username }} z triedy {{ c.name }}?{% endif %}');" style="display:inline;">
+                                        <form method="post" action="{% url 'cms_class_remove_student' c.id st.id %}" data-confirm="{% if lang == 'en' %}Remove {{ st.username }} from this class?{% else %}Odobrať žiaka {{ st.username }} z triedy {{ c.name }}?{% endif %}" onsubmit="return confirm(this.dataset.confirm);" style="display:inline;">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.7rem; padding: 3px 6px; display: inline-flex; align-items: center; justify-content: center;" title="Odobrať z triedy">
                                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -410,7 +416,7 @@
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     {% if lang == 'en' %}+ Add Batch Students{% else %}+ Pridať hromadne žiakov{% endif %}
                 </button>
-                <form method="post" action="{% url 'cms_class_delete' c.id %}" onsubmit="return confirm('{% if lang == 'en' %}Delete class {{ c.name }}? Students will be unlinked but their accounts remain active.{% else %}Naozaj zmazať triedu {{ c.name }}? Účty žiakov zostanú zachované, len sa odhlásia z triedy.{% endif %}');" style="display:inline;">
+                <form method="post" action="{% url 'cms_class_delete' c.id %}" data-confirm="{% if lang == 'en' %}Delete class {{ c.name }}? Students will be unlinked but their accounts remain active.{% else %}Naozaj zmazať triedu {{ c.name }}? Účty žiakov zostanú zachované, len sa odhlásia z triedy.{% endif %}" onsubmit="return confirm(this.dataset.confirm);" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.78rem;" title="Vymazať triedu">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -805,7 +811,7 @@
                                 <span style="font-family: var(--font-mono); font-weight: 700; color: var(--gold-text);">{{ r.cost_doros }} Doros</span>
                             </td>
                             <td>
-                                <span style="font-family: var(--font-mono); font-weight: 700; {% if r.current_stock == 0 %}color: var(--flame-text);{% else %}color: var(--emerald-text);{% endif %}">
+                                <span class="stock-pill {% if r.current_stock == 0 %}out-of-stock{% else %}in-stock{% endif %}" style="font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums;">
                                     {{ r.current_stock }} / {{ r.max_stock }} ks
                                 </span>
                             </td>

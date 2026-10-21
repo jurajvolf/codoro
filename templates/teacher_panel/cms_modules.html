@@ -89,6 +89,22 @@
         from { opacity: 0; transform: translateY(3px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
+    .mod-diff-pill {
+        font-size: 0.7rem;
+        padding: 0.1rem 0.45rem;
+        border-radius: 99px;
+        font-weight: 700;
+    }
+    .mod-diff-BEGINNER { background: var(--emerald-bg); color: var(--emerald-text); }
+    .mod-diff-INTERMEDIATE { background: var(--gold-bg); color: var(--gold-text); }
+    .mod-diff-ADVANCED { background: var(--flame-bg); color: var(--flame-text); }
+
+    .mod-pro-btn.is-pro { background: var(--ro-indigo-soft); color: var(--ro-indigo); border: 1px solid var(--ro-indigo-border); }
+    .mod-pro-btn.is-free { background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); }
+
+    .mod-pub-btn.is-published { background: var(--emerald-bg); color: var(--emerald-text); border: 1px solid var(--emerald-border); }
+    .mod-pub-btn.is-draft { background: var(--flame-bg); color: var(--flame-text); border: 1px solid var(--flame-border); }
 </style>
 
 <div class="animate-in" style="margin-bottom: 2rem;">
@@ -188,10 +204,7 @@
                                 {{ module.programming_language|upper }}
                             </span>
 
-                            <span style="font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 99px; font-weight: 700;
-                                {% if module.difficulty_level == 'BEGINNER' %}background: var(--emerald-bg); color: var(--emerald-text);
-                                {% elif module.difficulty_level == 'INTERMEDIATE' %}background: var(--gold-bg); color: var(--gold-text);
-                                {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
+                            <span class="mod-diff-pill mod-diff-{{ module.difficulty_level }}">
                                 {{ module.get_difficulty_level_display }}
                             </span>
 
@@ -209,21 +222,17 @@
                 <!-- Tlačidlá stavu, akcií a šípka rozbalenia -->
                 <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;" onclick="event.stopPropagation();">
                     <!-- FREE / PRO toggle -->
-                    <a href="{% url 'cms_module_toggle_pro' module.id %}" class="btn btn-sm" style="font-size: 0.74rem; font-weight: 700;
-                        {% if module.is_pro_only %}background: var(--ro-indigo-soft); color: var(--ro-indigo); border: 1px solid var(--ro-indigo-border);
-                        {% else %}background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline);{% endif %}">
+                    <a href="{% url 'cms_module_toggle_pro' module.id %}" class="btn btn-sm mod-pro-btn {% if module.is_pro_only %}is-pro{% else %}is-free{% endif %}" style="font-size: 0.74rem; font-weight: 700;">
                         {% if module.is_pro_only %}<span style="display:inline-flex; align-items:center; gap:0.25rem;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> PRO / EDU</span>{% else %}FREE{% endif %}
                     </a>
 
                     <!-- Publikované toggle -->
-                    <a href="{% url 'cms_module_toggle_publish' module.id %}" class="btn btn-sm" style="font-size: 0.74rem; font-weight: 700;
-                        {% if module.is_published %}background: var(--emerald-bg); color: var(--emerald-text); border: 1px solid var(--emerald-border);
-                        {% else %}background: var(--flame-bg); color: var(--flame-text); border: 1px solid var(--flame-border);{% endif %}">
+                    <a href="{% url 'cms_module_toggle_publish' module.id %}" class="btn btn-sm mod-pub-btn {% if module.is_published %}is-published{% else %}is-draft{% endif %}" style="font-size: 0.74rem; font-weight: 700;">
                         <span style="display:inline-flex; align-items:center; gap:0.3rem;"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> {% if module.is_published %}{% if lang == 'en' %}Pub{% else %}Publikovaný{% endif %}{% else %}{% if lang == 'en' %}Hidden{% else %}Skrytý{% endif %}{% endif %}</span>
                     </a>
 
                     <!-- Upraviť modul modal button -->
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditModuleModal('{{ module.id }}', '{{ module.title_sk|escapejs }}', '{{ module.title_en|escapejs }}', '{{ module.description_sk|escapejs }}', '{{ module.description_en|escapejs }}', '{{ module.programming_language }}', '{{ module.estimated_hours }}', '{{ module.difficulty_level }}', '{{ module.icon_name }}', {{ module.is_pro_only|yesno:'true,false' }}, {{ module.is_published|yesno:'true,false' }})" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditModuleModal('{{ module.id }}', '{{ module.title_sk|escapejs }}', '{{ module.title_en|escapejs }}', '{{ module.description_sk|escapejs }}', '{{ module.description_en|escapejs }}', '{{ module.programming_language }}', '{{ module.estimated_hours }}', '{{ module.difficulty_level }}', '{{ module.icon_name }}', {% if module.is_pro_only %}true{% else %}false{% endif %}, {% if module.is_published %}true{% else %}false{% endif %})" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
                     </button>
@@ -235,7 +244,7 @@
                     </a>
 
                     <!-- Vymazať modul -->
-                    <form method="post" action="{% url 'cms_module_delete' module.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete module and all its lessons?{% else %}Naozaj vymazať modul aj všetky jeho lekcie?{% endif %}');">
+                    <form method="post" action="{% url 'cms_module_delete' module.id %}" style="display: inline;" data-confirm="{% if lang == 'en' %}Delete module and all its lessons?{% else %}Naozaj vymazať modul aj všetky jeho lekcie?{% endif %}" onsubmit="return confirm(this.dataset.confirm);">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); padding: 0.35rem 0.55rem;" title="{% if lang == 'en' %}Delete Module{% else %}Vymazať modul{% endif %}">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -299,7 +308,7 @@
                                     </button>
                                 </form>
 
-                                <form method="post" action="{% url 'cms_lesson_delete' lesson.id %}" style="display: inline;" onsubmit="return confirm('{% if lang == 'en' %}Delete lesson?{% else %}Naozaj vymazať túto lekciu?{% endif %}');">
+                                <form method="post" action="{% url 'cms_lesson_delete' lesson.id %}" style="display: inline;" data-confirm="{% if lang == 'en' %}Delete lesson?{% else %}Naozaj vymazať túto lekciu?{% endif %}" onsubmit="return confirm(this.dataset.confirm);">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--flame-text); font-size: 0.76rem; padding: 0.3rem 0.5rem;" title="{% if lang == 'en' %}Delete Lesson{% else %}Vymazať lekciu{% endif %}">
                                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

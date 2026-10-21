@@ -3,6 +3,19 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
+<style>
+    .sub-status-pill {
+        font-family: var(--font-mono);
+        font-size: 0.74rem;
+        font-weight: 800;
+        padding: 0.15rem 0.55rem;
+        border-radius: 99px;
+    }
+    .sub-status-pill.status-PASSED { background: var(--emerald-bg); color: var(--emerald-text); }
+    .sub-status-pill.status-FAILED { background: var(--gold-bg); color: var(--gold-text); }
+    .sub-status-pill.status-ERROR { background: var(--flame-bg); color: var(--flame-text); }
+</style>
+
 <div class="animate-in" style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
 
     <!-- Horná navigačná lišta -->
@@ -178,10 +191,7 @@
                             <strong style="font-size: 1rem; color: var(--text-primary);">{{ sub.exercise.title_sk }}</strong>
                             <span style="font-size: 0.78rem; color: var(--text-muted);">({{ sub.exercise.lesson.module.title_sk }} • {{ sub.exercise.lesson.title_sk }})</span>
 
-                            <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; padding: 0.15rem 0.55rem; border-radius: 99px;
-                                {% if sub.status == 'PASSED' %}background: var(--emerald-bg); color: var(--emerald-text);
-                                {% elif sub.status == 'FAILED' %}background: var(--gold-bg); color: var(--gold-text);
-                                {% else %}background: var(--flame-bg); color: var(--flame-text);{% endif %}">
+                            <span class="sub-status-pill status-{{ sub.status }}">
                                 {{ sub.status }}
                             </span>
 
