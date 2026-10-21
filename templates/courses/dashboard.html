@@ -77,18 +77,6 @@
     .hero-meta {
         flex: 1;
     }
-    .hero-eyebrow {
-        font-family: var(--font-mono);
-        font-size: 0.72rem;
-        font-weight: 800;
-        color: var(--ro-indigo);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        margin-bottom: 0.2rem;
-    }
     .hero-title {
         font-family: var(--font-display);
         font-size: 1.45rem;
@@ -486,22 +474,26 @@
         </div>
 
         <div class="hero-meta">
-            <div class="hero-eyebrow">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                {% if lang == 'en' %}CONTINUE LEARNING{% else %}POKRAČOVAŤ V ŠTÚDIU{% endif %}
-                <span style="color:var(--text-muted);">·</span>
-                <span style="color:var(--text-secondary);">{{ user.subscription_tier }}</span>
-            </div>
-
             {% if next_lesson %}
             <h1 class="hero-title">
                 {% if lang == 'en' %}Lesson 0{{ next_lesson.order }}: {{ next_lesson.title_en }}{% else %}Lekcia 0{{ next_lesson.order }}: {{ next_lesson.title_sk }}{% endif %}
             </h1>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem; flex-wrap: wrap;">
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.55rem; border-radius: 6px; border: 1px solid var(--ro-indigo-border); text-transform: uppercase;">
+                    {% if lang == 'en' %}RECOMMENDED LESSON{% else %}ODPORÚČANÁ LEKCIA{% endif %}
+                </span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.55rem; border-radius: 6px; font-weight: 600;">
+                    {{ user.subscription_tier }}
+                </span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                    +{{ next_lesson.xp_reward }} XP · {{ next_lesson.estimated_minutes }} min
+                </span>
+            </div>
             <div class="hero-progress-box">
                 <div class="progress-track" style="height: 7px; flex: 1;">
                     <div class="progress-fill" data-progress="{{ overall_progress_pct }}"></div>
                 </div>
-                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--ro-indigo); white-space: nowrap;">
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--ro-indigo); white-space: nowrap; font-variant-numeric: tabular-nums;">
                     {{ overall_progress_pct }}% ({% if lang == 'en' %}{{ total_completed }}/{{ total_lessons }} done{% else %}{{ total_completed }}/{{ total_lessons }} hotovo{% endif %})
                 </span>
             </div>

@@ -12,14 +12,16 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
     <!-- Horná Hero hlavička -->
     <div class="hero-cheatsheet card-surface">
         <div class="hero-cheatsheet-content">
-            <div class="hero-cheatsheet-badge">
-                <span class="badge-dot"></span>
-                <span>{% if lang == 'en' %}Interactive Reference & Syntax Guide{% else %}Interaktívna referenčná príručka & syntax{% endif %}</span>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.45rem; flex-wrap: wrap;">
+                <h1 class="hero-cheatsheet-title" style="margin: 0; display: flex; align-items: center; gap: 0.65rem;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+                    <span>{% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python Ťaháky & Slovník pojmov{% endif %}</span>
+                </h1>
+                <span class="hero-cheatsheet-badge">
+                    <span class="badge-dot"></span>
+                    <span>{% if lang == 'en' %}Interactive Reference{% else %}Interaktívna príručka{% endif %}</span>
+                </span>
             </div>
-            <h1 class="hero-cheatsheet-title" style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
-                <span>{% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python Ťaháky & Slovník pojmov{% endif %}</span>
-            </h1>
             <p class="hero-cheatsheet-subtitle">
                 {% if lang == 'en' %}
                 Quick interactive reference with executable code snippets, return types, and Big-O complexities for maturitná exam and real-world development.

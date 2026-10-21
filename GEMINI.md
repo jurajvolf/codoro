@@ -395,4 +395,21 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
     - SuperAdmin centrum a Live Support Desk s 5 prepínacími záložkami,
     - Všetky akcie (reset hesla, oprava streaku, úprava Doros peňaženky, generovanie kľúčov, inšpekcia kódov) kompletne prevedené na vektorové SVG ikony,
     - Odstránené `transition: all`, tabulárne čísla na všetkých 50 odovzdaniach, dobách behu a systémových metrikách.
+
+- FÁZA 16: KOMPLETNÝ ARCHITEKTONICKÝ A DIZAJNOVÝ OVERHAUL CELEJ PLATFORMY [DOKONČENÉ]
+  * Oprava všetkých 41 IDE syntaktických chýb (`@[current_problems]`):
+    - Konverzia inline Django interpolácií v `onclick="..."` (`{{ module.id }}`, `{{ c.id }}`) na štandardné HTML5 `data-*` atribúty a `this.dataset.*`,
+    - Plne validná JS syntax v šablónach bez konfliktov s HTML/JS jazykovými servermi.
+  * Nový Desktop App Header (`.app-desktop-header`) pre prihlásených používateľov (Linear / Vercel style):
+    - Sticky navigačný pás s hĺbkovým blur efektom (`backdrop-filter: blur(16px)`),
+    - Kontextové omrvinky (Breadcrumbs) pre aktuálnu polohu študenta a učiteľa,
+    - Živé HUD odznaky pre sériu (Streak flame), Doros peňaženku (Gold coin), triedu (School class), prepínač jazyka (SK/EN), plynulý prepínač témy (Sun/Moon SVG) a profilový avatar.
+  * Zavedenie globálnych pravidiel zručnosti Impeccable & Craft Floor:
+    - 0 surových emoji v celom projekte (100% SVG vektorové ikony s jednotnou hrúbkou a štýlom),
+    - 0 výskytov `transition: all` (všetky animácie cielia explicitné CSS vlastnosti),
+    - Zákaz kickers/eyebrows nad hlavnými nadpismi (odstránené nadbytočné texty, nadpisy hovoria samy za seba),
+    - Zákaz hrubých `border-left` na kartách a calloutoch (nahradené jemnými 1px hairline kontúrami a badge štítkami),
+    - Vlastný dizajn systémových prvkov prehliadača: `::selection` vo farbe Ro-Indigo, vlastné zaoblené 6px posuvníky (Scrollbars), zjednotené `focus-visible` a vlastný kurzor (`caret-color`).
+  * Klávesové skratky pre profesionálny vývoj:
+    - `Ctrl + Enter` (alebo `Cmd + Enter`) v CodeMirror editore pre okamžité spustenie a otestovanie kódu v Python sandboxe s AST kontrolou.
 ================================================================================

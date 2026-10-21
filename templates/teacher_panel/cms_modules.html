@@ -185,7 +185,7 @@
         <div class="cms-tree-module {% if forloop.first %}open{% endif %}" id="cms-mod-{{ module.id }}">
 
             <!-- Hlavička karty modulu -->
-            <div class="cms-tree-module-header" onclick="toggleCmsModule({{ module.id }})">
+            <div class="cms-tree-module-header" data-id="{{ module.id }}" onclick="toggleCmsModule(this.dataset.id)">
                 <div style="display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 280px;">
                     <!-- Ovládanie poradia (Up / Down) -->
                     <div style="display: flex; flex-direction: column; gap: 2px;" onclick="event.stopPropagation();">
@@ -232,7 +232,19 @@
                     </a>
 
                     <!-- Upraviť modul modal button -->
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="openEditModuleModal('{{ module.id }}', '{{ module.title_sk|escapejs }}', '{{ module.title_en|escapejs }}', '{{ module.description_sk|escapejs }}', '{{ module.description_en|escapejs }}', '{{ module.programming_language }}', '{{ module.estimated_hours }}', '{{ module.difficulty_level }}', '{{ module.icon_name }}', {% if module.is_pro_only %}true{% else %}false{% endif %}, {% if module.is_published %}true{% else %}false{% endif %})" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem;">
+                    <button type="button" class="btn btn-secondary btn-sm"
+                        data-id="{{ module.id }}"
+                        data-title-sk="{{ module.title_sk|escape }}"
+                        data-title-en="{{ module.title_en|escape }}"
+                        data-desc-sk="{{ module.description_sk|escape }}"
+                        data-desc-en="{{ module.description_en|escape }}"
+                        data-lang="{{ module.programming_language }}"
+                        data-hours="{{ module.estimated_hours }}"
+                        data-diff="{{ module.difficulty_level }}"
+                        data-pro="{% if module.is_pro_only %}1{% else %}0{% endif %}"
+                        data-pub="{% if module.is_published %}1{% else %}0{% endif %}"
+                        onclick="openEditModuleModalFromBtn(this)"
+                        style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         {% if lang == 'en' %}Edit{% else %}Upraviť{% endif %}
                     </button>
@@ -252,7 +264,7 @@
                     </form>
 
                     <!-- Chevron rozbalenia stromu -->
-                    <span class="cms-module-chevron" onclick="toggleCmsModule({{ module.id }}); event.stopPropagation();">
+                    <span class="cms-module-chevron" data-id="{{ module.id }}" onclick="toggleCmsModule(this.dataset.id); event.stopPropagation();">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                     </span>
                 </div>
@@ -284,7 +296,7 @@
                                         <span>&bull;</span>
                                         <span style="display:inline-flex; align-items:center; gap:0.25rem;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> +{{ lesson.xp_reward }} XP</span>
                                         <span>&bull;</span>
-                                        <button type="button" onclick="toggleCmsLessonChildren({{ lesson.id }})" style="border:none; background:none; color:var(--ro-indigo); font-weight:700; cursor:pointer; font-size:0.74rem; padding:0; display:inline-flex; align-items:center; gap:0.35rem;">
+                                        <button type="button" data-id="{{ lesson.id }}" onclick="toggleCmsLessonChildren(this.dataset.id)" style="border:none; background:none; color:var(--ro-indigo); font-weight:700; cursor:pointer; font-size:0.74rem; padding:0; display:inline-flex; align-items:center; gap:0.35rem;">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
                                             {{ lesson.exercises.count }} {% if lang == 'en' %}exercises{% else %}úloh{% endif %} &
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
@@ -545,6 +557,21 @@ function toggleCmsLessonChildren(lessonId) {
     if (lessonEl) {
         lessonEl.classList.toggle('open');
     }
+}
+
+function openEditModuleModalFromBtn(btn) {
+    var form = document.getElementById('form-edit-module');
+    form.action = '/teacher/module/' + btn.dataset.id + '/edit/';
+    document.getElementById('edit-title-sk').value = btn.dataset.titleSk || '';
+    document.getElementById('edit-title-en').value = btn.dataset.titleEn || '';
+    document.getElementById('edit-desc-sk').value = btn.dataset.descSk || '';
+    document.getElementById('edit-desc-en').value = btn.dataset.descEn || '';
+    document.getElementById('edit-lang').value = btn.dataset.lang || 'python';
+    document.getElementById('edit-hours').value = btn.dataset.hours || '10';
+    document.getElementById('edit-diff').value = btn.dataset.diff || 'BEGINNER';
+    document.getElementById('edit-pro').checked = (btn.dataset.pro === '1');
+    document.getElementById('edit-published').checked = (btn.dataset.pub === '1');
+    document.getElementById('modal-edit-module').style.display = 'flex';
 }
 
 function openEditModuleModal(id, titleSk, titleEn, descSk, descEn, lang, hours, diff, icon, isPro, isPub) {
