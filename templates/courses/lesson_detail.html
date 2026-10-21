@@ -51,7 +51,10 @@
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        transition: all 0.15s ease;
+        transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .module-jump-btn:active {
+        transform: scale(0.96) !important;
     }
     .module-jump-btn:hover {
         background: var(--bg-surface);
@@ -141,7 +144,10 @@
         align-items: center;
         gap: 0.45rem;
         border-bottom: 2px solid transparent;
-        transition: all 0.15s ease;
+        transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .panel-tab-btn:active {
+        transform: scale(0.96) !important;
     }
     .panel-tab-btn:hover {
         color: var(--text-primary);
@@ -190,8 +196,12 @@
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        transition: all 0.15s ease;
+        transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
         white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+    .exercise-pill-btn:active {
+        transform: scale(0.96) !important;
     }
     .exercise-pill-btn:hover {
         border-color: var(--ro-indigo-border);
@@ -236,7 +246,10 @@
         display: inline-flex;
         align-items: center;
         gap: 0.35rem;
-        transition: all 0.12s ease;
+        transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s var(--ease-out-back), box-shadow 0.15s ease;
+    }
+    .editor-btn:active {
+        transform: scale(0.96) !important;
     }
     .editor-btn.reset {
         background: rgba(255, 255, 255, 0.08);
@@ -280,7 +293,10 @@
         align-items: center;
         gap: 0.4rem;
         border-bottom: 2px solid transparent;
-        transition: all 0.12s ease;
+        transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .console-tab-btn:active {
+        transform: scale(0.96) !important;
     }
     .console-tab-btn:hover {
         color: #F8FAFC;
@@ -329,7 +345,9 @@
                         {% if lang == 'en' %}{{ ml.title_en }}{% else %}{{ ml.title_sk }}{% endif %}
                     </span>
                     {% if ml.id in completed_lesson_ids %}
-                    <span style="color: var(--emerald-text); font-weight: 800;">✓</span>
+                    <span style="color: var(--emerald-text); display: inline-flex; align-items: center;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
                     {% endif %}
                 </a>
                 {% endfor %}
@@ -383,7 +401,9 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
                 {% if lang == 'en' %}Quiz (+20 XP){% else %}Overovací kvíz (+20 XP){% endif %}
                 {% if quiz_passed %}
-                <span style="color: var(--emerald-text); font-weight: 800;">✓</span>
+                <span style="color: var(--emerald-text); display: inline-flex; align-items: center;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
                 {% endif %}
             </button>
             {% endif %}
@@ -437,8 +457,9 @@
                     </span>
                 </div>
                 {% if quiz_passed %}
-                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--emerald-text); background: var(--emerald-bg); padding: 0.25rem 0.7rem; border-radius: 999px;">
-                    ✓ {% if lang == 'en' %}Passed{% else %}Zvládnuté{% endif %}
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--emerald-text); background: var(--emerald-bg); padding: 0.25rem 0.7rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    {% if lang == 'en' %}Passed{% else %}Zvládnuté{% endif %}
                 </span>
                 {% endif %}
             </div>
@@ -517,7 +538,9 @@
             {% if is_current_passed and current_exercise.explanation_sk %}
             <div style="padding: 1.15rem; border-radius: var(--radius-md); background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, var(--bg-surface) 100%); border: 1.5px solid var(--emerald-border);">
                 <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem;">
-                    <span style="color: var(--emerald-text); font-weight: 800;">✓</span>
+                    <span style="color: var(--emerald-text); display: inline-flex; align-items: center;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
                     <strong style="font-size: 0.92rem; color: var(--emerald-text);">
                         {% if lang == 'en' %}Official Model Solution Breakdown{% else %}Rozbor a vysvetlenie vzorového riešenia{% endif %}
                     </strong>
@@ -548,7 +571,9 @@
                 {% for ex in exercises %}
                 <a href="?exercise={{ ex.id }}#workbench" class="exercise-pill-btn {% if ex.id == current_exercise.id %}active{% endif %}">
                     {% if ex.id in solved_ids %}
-                    <span style="color: #10B981; font-weight: 800;">✓</span>
+                    <span style="color: #10B981; display: inline-flex; align-items: center;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
                     {% endif %}
                     <span>{% if lang == 'en' %}Task {{ forloop.counter }}{% else %}Úloha {{ forloop.counter }}{% endif %}</span>
                     {% if ex.difficulty == 'HARD' %}
@@ -709,10 +734,13 @@
                         {% endif %}
                         <span style="color: #94A3B8;">{{ sub.created_at|date:"d.m.Y H:i" }}</span>
                         {% if sub.teacher_comment %}
-                        <span style="color: var(--ro-indigo); font-weight: 700; margin-left: 0.4rem;">💬 Review</span>
+                        <span style="color: var(--ro-indigo); font-weight: 700; margin-left: 0.4rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Review
+                        </span>
                         {% endif %}
                     </div>
-                    <span style="color: #64748B;">{{ sub.execution_time_ms }} ms</span>
+                    <span style="color: #64748B; font-variant-numeric: tabular-nums;">{{ sub.execution_time_ms }} ms</span>
                 </div>
                 {% empty %}
                 <p style="color: #64748B; margin: 0;">

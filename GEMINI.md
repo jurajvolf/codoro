@@ -343,4 +343,56 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
   * **ScrollTrigger Batch Reveals:** Automatická aktivácia sekcií a prvkov pri dosiahnutí 85% výšky viewportu (`ScrollTrigger.batch()`) s plynulým kaskádovým nábehom.
   * **Numerické počítadlá cez GSAP Tweening:** Plynulá matematická interpolácia číselných hodnôt na lište metrík s automatickým zaokrúhľovaním bez zaťaženia pamäte.
   * **Deterministický Vanilla Fallback:** V prípade nedostupnosti externých CDN skriptov je celý systém postavený na automatickom záložnom režime (vstavaný `IntersectionObserver` a natívne CSS prechody), takže platforma funguje 100% autonómne aj pri offline prezentácii.
+
+- 15.5 Kompletný zoznam prepracovaných šablón a komponentov v rámci celoplatformového UI overhaulu:
+  * `templates/base.html`:
+    - Odstránené globálne `transition: all`, zavedené striktne explicitné prechodové vlastnosti (`transition: color, background-color, border-color, box-shadow, transform`),
+    - Globálne CSS tokeny pre motion (`--ease-out-expo`, `--ease-out-back`, `--ease-spring`), koncentrické rádiusy (`--radius-outer`, `--radius-inner`, `--radius-sm`, `--radius-pill`),
+    - Globálne vyhladzovanie písma (`-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`),
+    - Hmatová kalibrácia stlačenia tlačidiel (`.btn:active:not(:disabled) { transform: scale(0.96) !important; }`),
+    - Globálna integrácia knižníc GSAP 3.12.5 + ScrollTrigger s deterministickým vanilla fallbackom.
+  * `templates/landing.html`:
+    - Živé reaktívne hviezdicové pozadie (`#heroBackgroundCanvas`) so spring-damper časticovou fyzikou a interakciou na kurzor,
+    - Interaktívne multi-snippet Python IDE (3 reálne maturitné úlohy, AST syntaktická analýza, kroková simulácia behu v ms),
+    - 100% eliminácia surových emoji a ich nahradenie vektorovými SVG ikonami (`currentColor`, konzistentná hrúbka ťahu `2.2`),
+    - GSAP staggered Hero timeline, ScrollTrigger batch kaskády, 3D tilt kariet, animované SVG fajky úspechu,
+    - Striktná eliminácia `transition: all`, tabulárne čísla na všetkých metrikách a časomeroch.
+  * `templates/courses/dashboard.html`:
+    - Kompaktný Hero Card "Pokračovať v štúdiu" s lineárnym progress barom a záchranou streaku,
+    - Horizontálne prepínanie 5 kariérnych ciest s real-time vyhľadávaním bez obnovy stránky,
+    - Zbaliteľné akordeóny modulov (moduly 01 až 18) s progresom a badge-mi,
+    - Pravý bočný panel s 3 prepínacími kartami (Osobné výzvy, Triedny Quest, Rebríček),
+    - 100% vektorové SVG ikony (odznaky, mince Doros, oheň streaku, fajky úspechu), tabulárne čísla, hmatová odozva.
+  * `templates/courses/lesson_detail.html`:
+    - Profesionálne Split-Screen IDE pracovisko bez nežiaduceho scrollovania celej stránky,
+    - Ľavý panel: 3 vnútorné záložky (Teoretický výklad v Markdown, Overovací kvíz, Vzorové riešenie),
+    - Pravý panel: Prepínač úloh lekcie, CodeMirror editor (Python), konzolové záložky (Unit testy, Codo AI rada, Moje odovzdania),
+    - 100% SVG ikony, tabulárne čísla na časovačoch a XP, explicitné prechody a hmatová odozva.
+  * `templates/gamification/shop.html`:
+    - Horné prepínacie záložky (Ponuka odmien, Moje kupóny, Licencia PRO/EDU, História peňaženky),
+    - Nahradenie všetkých emoji čistými vektorovými SVG ikonami,
+    - Tabulárne čísla pre zostatok mincí Doros, počítadlá zásob a ceny odmien, hmatový klik.
+  * `templates/courses/cheat_sheets.html` & `courses/curriculum/cheatsheets_data.py`:
+    - Interaktívny slovník pojmov a Python ťahákov so živým vyhľadávaním a filtrovaním v JS,
+    - 6 tematických záložiek, každá s vlastnou SVG ikonou namiesto emoji,
+    - Kopírovanie kódu do schránky jedným klikom s okamžitou vizuálnou odozvou, tabulárne čísla, explicitné prechody.
+  * `templates/courses/practice_arena.html`:
+    - Generovanie neobmedzených AI cvičení a okamžité precvičovanie v sandboxe,
+    - SVG ikony, tabulárne čísla, hmatový scale a vyladené tiene kariet.
+  * `templates/accounts/profile.html` & `certificate.html`:
+    - Profil študenta: vizuálny celoročný Streak kalendár, záchrana streaku, história odznakov a certifikátov,
+    - Oficiálny overiteľný certifikát absolventa s QR kódom, SVG hviezdami a pečaťou Codoro,
+    - Odstránené všetky `transition: all`, tabulárne čísla na bodoch XP a koncentrické rádiusy.
+  * `templates/accounts/register.html`, `login.html` & `get_license.html`:
+    - Profesionálna Persuade / Auth typografia a architektúra kariet,
+    - SVG ikony pre roly (Študent vs. Učiteľ/Škola), licenčné kľúče a benefity,
+    - Explicitné prechody, tabulárne počítadlá žiackych slotov.
+  * `templates/teacher_panel/` (`dashboard.html`, `cms_modules.html`, `cms_lesson_form.html`, `cms_exercise_form.html`, `student_detail.html`):
+    - Kompletný stromový akordeón kurikula (Modul -> Lekcia -> Úlohy & Kvízy),
+    - Všetky akčné tlačidlá (editácia, tvorba, publikovanie, AI preklad do EN, unit testy) vybavené čistými SVG ikonami,
+    - Tabulárne čísla na metrikách triedy a odovzdaných kódoch, hmatová odozva tlačidiel.
+  * `templates/admin_panel/dashboard.html`:
+    - SuperAdmin centrum a Live Support Desk s 5 prepínacími záložkami,
+    - Všetky akcie (reset hesla, oprava streaku, úprava Doros peňaženky, generovanie kľúčov, inšpekcia kódov) kompletne prevedené na vektorové SVG ikony,
+    - Odstránené `transition: all`, tabulárne čísla na všetkých 50 odovzdaniach, dobách behu a systémových metrikách.
 ================================================================================

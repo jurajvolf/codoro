@@ -40,7 +40,8 @@
             </a>
             <a href="/admin/" target="_blank" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 700; border-color: rgba(239, 68, 68, 0.4); color: #EF4444;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                Django ORM Admin ↗
+                <span>Django ORM Admin</span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
             </a>
         </div>
     </div>
@@ -93,8 +94,9 @@
             <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
                 {% if lang == 'en' %}DOROS IN CIRCULATION{% else %}DOROS V OBEHU{% endif %}
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--gold-text); margin: 0.2rem 0;">
-                {{ db_stats.total_doros_circulation }} 🪙
+            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--gold-text); margin: 0.2rem 0; display: flex; align-items: center; gap: 0.4rem; font-variant-numeric: tabular-nums;">
+                {{ db_stats.total_doros_circulation }}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
             </div>
             <div style="font-size: 0.78rem; color: var(--text-muted);">
                 {{ db_stats.total_xp }} {% if lang == 'en' %}total XP gained{% else %}získaných XP bodov{% endif %}
@@ -224,11 +226,13 @@
                                 </span>
                             </td>
                             <td style="padding: 0.75rem 1rem;">
-                                <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text);">
-                                    🔥 {{ u.current_streak }} d
+                                <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text); display: flex; align-items: center; gap: 0.3rem; font-variant-numeric: tabular-nums;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
+                                    {{ u.current_streak }} d
                                 </div>
-                                <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--gold-text); font-weight: 700;">
-                                    🪙 {{ u.doros }}
+                                <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--gold-text); font-weight: 700; display: flex; align-items: center; gap: 0.25rem; font-variant-numeric: tabular-nums;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+                                    {{ u.doros }}
                                 </span>
                             </td>
                             <td style="padding: 0.75rem 1rem;">
@@ -245,8 +249,9 @@
                                 {% endif %}
                             </td>
                             <td style="padding: 0.75rem 1rem; text-align: right;">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="font-weight: 700;">
-                                    ⚙️ {% if lang == 'en' %}Troubleshoot{% else %}Riešiť problém{% endif %}
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                    {% if lang == 'en' %}Troubleshoot{% else %}Riešiť problém{% endif %}
                                 </button>
                             </td>
                         </tr>
@@ -255,18 +260,22 @@
                         <tr id="user-support-drawer-{{ u.id }}" style="display: none; background: var(--bg-subtle);">
                             <td colspan="7" style="padding: 1.25rem; border-bottom: 2px solid var(--border-hairline);">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.5rem;">
-                                    <strong style="color: var(--text-primary); font-size: 0.95rem;">
-                                        🛠️ {% if lang == 'en' %}Live Support Console for{% else %}Zásahová konzola podpory pre{% endif %} <span style="color: var(--ro-indigo);">{{ u.username }}</span> (ID: {{ u.id }})
+                                    <strong style="color: var(--text-primary); font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                        {% if lang == 'en' %}Live Support Console for{% else %}Zásahová konzola podpory pre{% endif %} <span style="color: var(--ro-indigo);">{{ u.username }}</span> (ID: {{ u.id }})
                                     </strong>
-                                    <button type="button" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1rem;">✕</button>
+                                    <button type="button" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    </button>
                                 </div>
 
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
 
                                     <!-- Akcia 1: Zmena alebo vygenerovanie hesla -->
                                     <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                                            🔑 {% if lang == 'en' %}Password Reset / Change{% else %}Reset alebo zmena hesla{% endif %}
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+                                            {% if lang == 'en' %}Password Reset / Change{% else %}Reset alebo zmena hesla{% endif %}
                                         </div>
                                         <form method="post" action="{% url 'admin_user_set_password' u.id %}">
                                             {% csrf_token %}
@@ -276,21 +285,23 @@
                                                     {% if lang == 'en' %}Set{% else %}Nastaviť{% endif %}
                                                 </button>
                                             </div>
-                                            <button type="submit" name="action" value="generate" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem;">
-                                                ⚡ {% if lang == 'en' %}Auto-generate Strong Password{% else %}Vygenerovať bezpečné heslo{% endif %}
+                                            <button type="submit" name="action" value="generate" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem;">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                                {% if lang == 'en' %}Auto-generate Strong Password{% else %}Vygenerovať bezpečné heslo{% endif %}
                                             </button>
                                         </form>
                                     </div>
 
                                     <!-- Akcia 2: Oprava vyhasnutého Streaku -->
                                     <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                                            🔥 {% if lang == 'en' %}Streak Rescue & Repair{% else %}Oprava / Obnova dennej série{% endif %}
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="color:var(--flame-text);"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
+                                            {% if lang == 'en' %}Streak Rescue & Repair{% else %}Oprava / Obnova dennej série{% endif %}
                                         </div>
                                         <form method="post" action="{% url 'admin_user_streak' u.id %}">
                                             {% csrf_token %}
                                             <div style="display: flex; gap: 0.4rem;">
-                                                <input type="number" name="streak_value" value="{{ u.current_streak|default:1 }}" min="1" max="999" class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <input type="number" name="streak_value" value="{{ u.current_streak|default:1 }}" min="1" max="999" class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
                                                 <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
                                                     {% if lang == 'en' %}Set Days{% else %}Nastaviť dni{% endif %}
                                                 </button>
@@ -303,14 +314,15 @@
 
                                     <!-- Akcia 3: Úprava hernej meny Doros & XP -->
                                     <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                                            🪙 {% if lang == 'en' %}Adjust Doros & XP{% else %}Úprava mincí Doros a XP{% endif %}
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+                                            {% if lang == 'en' %}Adjust Doros & XP{% else %}Úprava mincí Doros a XP{% endif %}
                                         </div>
                                         <form method="post" action="{% url 'admin_user_economy' u.id %}">
                                             {% csrf_token %}
                                             <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
-                                                <input type="number" name="doros_change" placeholder="± Doros" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
-                                                <input type="number" name="xp_change" placeholder="± XP" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <input type="number" name="doros_change" placeholder="± Doros" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
+                                                <input type="number" name="xp_change" placeholder="± XP" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
                                             </div>
                                             <div style="display: flex; gap: 0.4rem;">
                                                 <input type="text" name="reason" placeholder="Dôvod zásahu..." class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
@@ -323,8 +335,9 @@
 
                                     <!-- Akcia 4: Zmena Roly a Predplatného -->
                                     <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                                            🎭 {% if lang == 'en' %}Role & Subscription Tier{% else %}Rola a Úroveň predplatného{% endif %}
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+                                            {% if lang == 'en' %}Role & Subscription Tier{% else %}Rola a Úroveň predplatného{% endif %}
                                         </div>
                                         <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
                                             <form method="post" action="{% url 'admin_user_update_role' u.id %}" style="flex: 1; display: flex; gap: 0.3rem;">
@@ -334,7 +347,9 @@
                                                     <option value="{{ r_val }}" {% if u.role == r_val %}selected{% endif %}>{{ r_label }}</option>
                                                     {% endfor %}
                                                 </select>
-                                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">✓</button>
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; display: flex; align-items: center; justify-content: center; padding: 0 0.5rem;">
+                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                </button>
                                             </form>
 
                                             <form method="post" action="{% url 'admin_user_update_tier' u.id %}" style="flex: 1; display: flex; gap: 0.3rem;">
@@ -344,7 +359,9 @@
                                                     <option value="{{ t_val }}" {% if u.subscription_tier == t_val %}selected{% endif %}>{{ t_label }}</option>
                                                     {% endfor %}
                                                 </select>
-                                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">✓</button>
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; display: flex; align-items: center; justify-content: center; padding: 0 0.5rem;">
+                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                </button>
                                             </form>
                                         </div>
 
@@ -363,14 +380,16 @@
 
                                     <!-- Akcia 5: Ďalšie rýchle fixy (Reset AI limitu, Ban, Zmazanie) -->
                                     <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); display: flex; flex-direction: column; justify-content: space-between;">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                                            ⚡ {% if lang == 'en' %}AI Limit, Ban & Danger Zone{% else %}AI limit a Správa účtu{% endif %}
+                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                            {% if lang == 'en' %}AI Limit, Ban & Danger Zone{% else %}AI limit a Správa účtu{% endif %}
                                         </div>
                                         <div style="display: flex; flex-direction: column; gap: 0.4rem;">
                                             <form method="post" action="{% url 'admin_user_reset_ai' u.id %}">
                                                 {% csrf_token %}
-                                                <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem;">
-                                                    🤖 {% if lang == 'en' %}Reset AI Codo Daily Limit{% else %}Resetovať denný AI limit Codo{% endif %}
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="12" x="3" y="6" rx="2"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M12 2v4M8 2h8"/></svg>
+                                                    {% if lang == 'en' %}Reset AI Codo Daily Limit{% else %}Resetovať denný AI limit Codo{% endif %}
                                                 </button>
                                             </form>
 
@@ -378,12 +397,14 @@
                                                 <form method="post" action="{% url 'admin_user_toggle_active' u.id %}" style="flex: 1;">
                                                     {% csrf_token %}
                                                     {% if u.is_active %}
-                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #EF4444;" onclick="return confirm('Naozaj chceš zablokovať tohto používateľa?');">
-                                                        🚫 {% if lang == 'en' %}Block User{% else %}Zablokovať{% endif %}
+                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #EF4444; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem;" onclick="return confirm('Naozaj chceš zablokovať tohto používateľa?');">
+                                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                                                        {% if lang == 'en' %}Block User{% else %}Zablokovať{% endif %}
                                                     </button>
                                                     {% else %}
-                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #10B981;">
-                                                        ✓ {% if lang == 'en' %}Activate User{% else %}Aktivovať{% endif %}
+                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #10B981; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem;">
+                                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                                        {% if lang == 'en' %}Activate User{% else %}Aktivovať{% endif %}
                                                     </button>
                                                     {% endif %}
                                                 </form>
@@ -391,8 +412,9 @@
                                                 {% if u.id != user.id %}
                                                 <form method="post" action="{% url 'admin_user_delete' u.id %}" style="flex: 1;" onsubmit="return confirm('POZOR: Trvalo zmazať účet {{ u.username }} a všetky jeho dáta? Táto akcia je nevratná!');">
                                                     {% csrf_token %}
-                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.4);">
-                                                        🗑️ {% if lang == 'en' %}Delete{% else %}Zmazať účet{% endif %}
+                                                    <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.4); display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem;">
+                                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                                        {% if lang == 'en' %}Delete{% else %}Zmazať účet{% endif %}
                                                     </button>
                                                 </form>
                                                 {% endif %}
@@ -424,8 +446,9 @@
 
             <!-- Generátor licenčného kľúča -->
             <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-                    🔑 {% if lang == 'en' %}Create New License Key{% else %}Vygenerovať nový licenčný kľúč{% endif %}
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3M18.5 4.5l3 3"/></svg>
+                    {% if lang == 'en' %}Create New License Key{% else %}Vygenerovať nový licenčný kľúč{% endif %}
                 </h3>
                 <form method="post" action="{% url 'admin_license_create' %}">
                     {% csrf_token %}
@@ -443,14 +466,14 @@
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Max Activations (e.g. 30 for class){% else %}Max počet aktivácií (napr. 30 pre triedu){% endif %}
                         </label>
-                        <input type="number" name="max_uses" value="30" min="1" max="500" class="form-input" style="width: 100%;">
+                        <input type="number" name="max_uses" value="30" min="1" max="500" class="form-input" style="width: 100%; font-variant-numeric: tabular-nums;">
                     </div>
 
                     <div style="margin-bottom: 1rem;">
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Custom Key Code (Leave empty to auto-generate){% else %}Vlastný kód (alebo nechaj prázdne pre auto-kód){% endif %}
                         </label>
-                        <input type="text" name="code" placeholder="EDU-2027-XXXX" class="form-input" style="width: 100%; text-transform: uppercase;">
+                        <input type="text" name="code" placeholder="EDU-2027-XXXX" class="form-input" style="width: 100%; text-transform: uppercase; font-family: var(--font-mono);">
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; font-weight: 700;">
@@ -461,8 +484,9 @@
 
             <!-- Rýchla aktivácia pre používateľa -->
             <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-                    🎯 {% if lang == 'en' %}Direct License Assignment{% else %}Priame priradenie licencie študentovi{% endif %}
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--visor-cyan);"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    {% if lang == 'en' %}Direct License Assignment{% else %}Priame priradenie licencie študentovi{% endif %}
                 </h3>
                 <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
                     {% if lang == 'en' %}Directly unlock PRO or EDU tier for any student by entering their username.{% else %}Priamo odomkni EDU alebo PRO licenciu pre používateľa zadaním jeho prihlasovacieho mena.{% endif %}
@@ -520,30 +544,39 @@
                                 </strong>
                             </td>
                             <td style="padding: 0.75rem 1rem;">
-                                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.15rem 0.45rem; border-radius: 4px;">
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs);">
                                     {{ lic.tier }}
                                 </span>
                             </td>
                             <td style="padding: 0.75rem 1rem;">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <div style="flex: 1; height: 6px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden; width: 100px;">
+                                    <div style="flex: 1; height: 6px; background: var(--bg-subtle); border-radius: var(--radius-pill); overflow: hidden; width: 100px;">
                                         <div style="height: 100%; background: var(--ro-indigo); width: {% widthratio lic.current_uses lic.max_uses 100 %}%;"></div>
                                     </div>
-                                    <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--text-primary);">
+                                    <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
                                         {{ lic.current_uses }} / {{ lic.max_uses }}
                                     </span>
                                 </div>
                             </td>
-                            <td style="padding: 0.75rem 1rem; font-size: 0.78rem; color: var(--text-muted);">
+                            <td style="padding: 0.75rem 1rem; font-size: 0.78rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                 {{ lic.created_at|date:"d.m.Y H:i" }}
                             </td>
                             <td style="padding: 0.75rem 1rem;">
                                 {% if lic.is_active and lic.current_uses < lic.max_uses %}
-                                <span style="color: #10B981; font-weight: 700; font-size: 0.76rem;">● {% if lang == 'en' %}Active{% else %}Aktívna{% endif %}</span>
+                                <span style="color: #10B981; font-weight: 700; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                                    {% if lang == 'en' %}Active{% else %}Aktívna{% endif %}
+                                </span>
                                 {% elif lic.current_uses >= lic.max_uses %}
-                                <span style="color: var(--gold-text); font-weight: 700; font-size: 0.76rem;">● {% if lang == 'en' %}Exhausted{% else %}Vyčerpaná{% endif %}</span>
+                                <span style="color: var(--gold-text); font-weight: 700; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--gold-text); display: inline-block;"></span>
+                                    {% if lang == 'en' %}Exhausted{% else %}Vyčerpaná{% endif %}
+                                </span>
                                 {% else %}
-                                <span style="color: #EF4444; font-weight: 700; font-size: 0.76rem;">● {% if lang == 'en' %}Disabled{% else %}Neaktívna{% endif %}</span>
+                                <span style="color: #EF4444; font-weight: 700; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #EF4444; display: inline-block;"></span>
+                                    {% if lang == 'en' %}Disabled{% else %}Neaktívna{% endif %}
+                                </span>
                                 {% endif %}
                             </td>
                             <td style="padding: 0.75rem 1rem; text-align: right;">
@@ -556,8 +589,8 @@
                                     </form>
                                     <form method="post" action="{% url 'admin_license_delete' lic.id %}" onsubmit="return confirm('Zmazať kľúč {{ lic.code }}?');">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; color: #EF4444;">
-                                            🗑️
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; color: #EF4444; padding: 0.3rem 0.5rem;" title="{% if lang == 'en' %}Delete key{% else %}Zmazať kľúč{% endif %}">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                         </button>
                                     </form>
                                 </div>
@@ -578,11 +611,13 @@
         <!-- ŽIADOSTI ŠKÔL O LICENCIE (SCHOOL INQUIRIES & PILOT REQUESTS) -->
         <div style="margin-top: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                    🏫 {% if lang == 'en' %}School License Inquiries & Pilot Requests{% else %}Žiadosti škôl o licencie a pilotné kľúče{% endif %} ({{ school_requests.count }})
+                <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11M8 14v3m4-3v3m4-3v3"/></svg>
+                    {% if lang == 'en' %}School License Inquiries & Pilot Requests{% else %}Žiadosti škôl o licencie a pilotné kľúče{% endif %} <span style="font-variant-numeric: tabular-nums;">({{ school_requests.count }})</span>
                 </h3>
-                <a href="{% url 'get_license' %}" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700;">
-                    🔗 {% if lang == 'en' %}Open Public Request Portal ↗{% else %}Verejný portál žiadostí ↗{% endif %}
+                <a href="{% url 'get_license' %}" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    {% if lang == 'en' %}Open Public Request Portal ↗{% else %}Verejný portál žiadostí ↗{% endif %}
                 </a>
             </div>
 
@@ -603,7 +638,7 @@
                         <tbody>
                             {% for req in school_requests %}
                             <tr style="border-bottom: 1px solid var(--border-hairline);">
-                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted);">
+                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                     {{ req.created_at|date:"d.m.Y H:i" }}
                                 </td>
                                 <td style="padding: 0.75rem 1rem;">
@@ -616,32 +651,35 @@
                                 <td style="padding: 0.75rem 1rem; font-size: 0.78rem;">
                                     <a href="mailto:{{ req.email }}" style="color: var(--ro-indigo); font-weight: 600; display: block;">{{ req.email }}</a>
                                     {% if req.phone %}
-                                    <span style="color: var(--text-muted);">{{ req.phone }}</span>
+                                    <span style="color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ req.phone }}</span>
                                     {% endif %}
                                 </td>
-                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 700; color: var(--text-primary);">
+                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
                                     {{ req.estimated_students }}
                                 </td>
                                 <td style="padding: 0.75rem 1rem;">
                                     {% if req.generated_license %}
                                     <code style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; color: var(--ro-indigo);">{{ req.generated_license.code }}</code>
-                                    <span style="display: block; font-size: 0.7rem; color: var(--text-muted);">{{ req.generated_license.current_uses }}/{{ req.generated_license.max_uses }} využití</span>
+                                    <span style="display: block; font-size: 0.7rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ req.generated_license.current_uses }}/{{ req.generated_license.max_uses }} využití</span>
                                     {% else %}
                                     <span style="color: var(--text-muted); font-size: 0.78rem;">—</span>
                                     {% endif %}
                                 </td>
                                 <td style="padding: 0.75rem 1rem;">
                                     {% if req.status == 'APPROVED' %}
-                                    <span style="color: #10B981; font-weight: 800; font-size: 0.76rem; background: var(--emerald-bg); padding: 0.15rem 0.45rem; border-radius: 4px;">
-                                        ✓ {{ req.get_status_display }}
+                                    <span style="color: #10B981; font-weight: 800; font-size: 0.76rem; background: var(--emerald-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                        {{ req.get_status_display }}
                                     </span>
                                     {% elif req.status == 'REJECTED' %}
-                                    <span style="color: #EF4444; font-weight: 800; font-size: 0.76rem; background: var(--flame-bg); padding: 0.15rem 0.45rem; border-radius: 4px;">
-                                        ✗ {{ req.get_status_display }}
+                                    <span style="color: #EF4444; font-weight: 800; font-size: 0.76rem; background: var(--flame-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                        {{ req.get_status_display }}
                                     </span>
                                     {% else %}
-                                    <span style="color: var(--gold-text); font-weight: 800; font-size: 0.76rem; background: var(--gold-bg); padding: 0.15rem 0.45rem; border-radius: 4px;">
-                                        ⏳ {{ req.get_status_display }}
+                                    <span style="color: var(--gold-text); font-weight: 800; font-size: 0.76rem; background: var(--gold-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        {{ req.get_status_display }}
                                     </span>
                                     {% endif %}
                                 </td>
@@ -688,8 +726,9 @@
     <div class="admin-tab-content" id="tab-content-curriculum" style="display: none;">
         <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                    📚 {% if lang == 'en' %}Global Curriculum Management (18 Modules, 83 Lessons, 249 Exercises){% else %}Správa globálneho kurikula (18 Modulov, 83 Lekcií, 249 Cvičení){% endif %}
+                <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    {% if lang == 'en' %}Global Curriculum Management (18 Modules, 83 Lessons, 249 Exercises){% else %}Správa globálneho kurikula (18 Modulov, 83 Lekcií, 249 Cvičení){% endif %}
                 </h3>
                 <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
                     {% if lang == 'en' %}You can toggle PRO / FREE access, hide modules, or re-sync curriculum directly from Python data files.{% else %}Môžeš prepínať prístup PRO / FREE, publikovať moduly alebo ich bezpečne zosynchronizovať zo zdrojových dát.{% endif %}
@@ -723,14 +762,14 @@
                     <tbody>
                         {% for mod in modules %}
                         <tr style="border-bottom: 1px solid var(--border-hairline);">
-                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 800; color: var(--ro-indigo);">
+                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 800; color: var(--ro-indigo); font-variant-numeric: tabular-nums;">
                                 {{ mod.order|stringformat:"02d" }}
                             </td>
                             <td style="padding: 0.75rem 1rem;">
                                 <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">
                                     {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
                                 </strong>
-                                <span style="font-size: 0.74rem; color: var(--text-muted);">
+                                <span style="font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                     {{ mod.estimated_hours }}h · {{ mod.get_difficulty_level_display }}
                                 </span>
                             </td>
@@ -739,7 +778,7 @@
                                     {{ mod.get_track_display }}
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-primary);">
+                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
                                 {{ mod.lesson_count }} lekcií / {{ mod.exercise_count }} úloh
                             </td>
                             <td style="padding: 0.75rem 1rem;">
@@ -760,19 +799,22 @@
                                 <form method="post" action="{% url 'admin_module_toggle_publish' mod.id %}">
                                     {% csrf_token %}
                                     {% if mod.is_published %}
-                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10B981;">
-                                        ● {% if lang == 'en' %}Published{% else %}Publikovaný{% endif %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10B981; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                        <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                                        {% if lang == 'en' %}Published{% else %}Publikovaný{% endif %}
                                     </button>
                                     {% else %}
-                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">
-                                        ○ {% if lang == 'en' %}Draft{% else %}Koncept{% endif %}
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem;">
+                                        <span style="width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--text-muted); display: inline-block;"></span>
+                                        {% if lang == 'en' %}Draft{% else %}Koncept{% endif %}
                                     </button>
                                     {% endif %}
                                 </form>
                             </td>
                             <td style="padding: 0.75rem 1rem; text-align: right;">
-                                <a href="{% url 'cms_modules' %}" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700;">
-                                    📝 CMS
+                                <a href="{% url 'cms_modules' %}" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                    CMS
                                 </a>
                             </td>
                         </tr>
@@ -791,74 +833,80 @@
 
             <!-- Karta: Databázové tabuľky a počty záznamov -->
             <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-                    💾 {% if lang == 'en' %}Database Table Metrics{% else %}Metriky tabuliek databázy{% endif %}
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                    {% if lang == 'en' %}Database Table Metrics{% else %}Metriky tabuliek databázy{% endif %}
                 </h3>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.84rem;">
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">User accounts</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.total_users }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.total_users }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">School classes</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.classes_count }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.classes_count }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">Curriculum modules</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.modules_count }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.modules_count }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">Lessons</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.lessons_count }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.lessons_count }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">Python exercises</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.exercises_count }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.exercises_count }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">Unit test cases</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.testcases_count }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.testcases_count }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--border-hairline);">
                         <span style="color: var(--text-secondary);">Code submissions</span>
-                        <strong style="font-family: var(--font-mono);">{{ db_stats.submissions_count }}</strong>
+                        <strong style="font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ db_stats.submissions_count }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding: 0.35rem 0;">
                         <span style="color: var(--text-secondary);">Database size on disk</span>
-                        <strong style="font-family: var(--font-mono); color: var(--ro-indigo);">{{ db_stats.db_size_mb }} MB</strong>
+                        <strong style="font-family: var(--font-mono); color: var(--ro-indigo); font-variant-numeric: tabular-nums;">{{ db_stats.db_size_mb }} MB</strong>
                     </div>
                 </div>
             </div>
 
             <!-- Karta: Rýchle systémové akcie údržby -->
             <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-                    🛠️ {% if lang == 'en' %}System Maintenance Actions{% else %}Systémové úkony údržby{% endif %}
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--gold-text);"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    {% if lang == 'en' %}System Maintenance Actions{% else %}Systémové úkony údržby{% endif %}
                 </h3>
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <form method="post" action="{% url 'admin_recalc_levels' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700;">
-                            📊 {% if lang == 'en' %}Recalculate All User Levels from XP{% else %}Prepočítať levely všetkých používateľov z XP{% endif %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700; display: inline-flex; align-items: center;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            {% if lang == 'en' %}Recalculate All User Levels from XP{% else %}Prepočítať levely všetkých používateľov z XP{% endif %}
                         </button>
                     </form>
 
                     <form method="post" action="{% url 'admin_refresh_all_streaks' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700;">
-                            🔥 {% if lang == 'en' %}Run Daily Streak Cron Tick{% else %}Spustiť kontrolu vyhasnutých Streakov{% endif %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700; display: inline-flex; align-items: center;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: #F97316;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z"/></svg>
+                            {% if lang == 'en' %}Run Daily Streak Cron Tick{% else %}Spustiť kontrolu vyhasnutých Streakov{% endif %}
                         </button>
                     </form>
 
                     <form method="post" action="{% url 'admin_clean_submissions' %}" onsubmit="return confirm('Vymazať neúspešné odovzdania staršie ako 30 dní?');">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700; color: #EF4444;">
-                            🧹 {% if lang == 'en' %}Cleanup Old Failed Submissions (> 30 days){% else %}Prečistiť staré neúspešné odovzdania (> 30 dní){% endif %}
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700; color: #EF4444; display: inline-flex; align-items: center;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            {% if lang == 'en' %}Cleanup Old Failed Submissions (> 30 days){% else %}Prečistiť staré neúspešné odovzdania (> 30 dní){% endif %}
                         </button>
                     </form>
 
-                    <a href="{% url 'admin_export_backup_json' %}" class="btn btn-primary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700;">
-                        📥 {% if lang == 'en' %}Download Complete Platform JSON Backup{% else %}Stiahnuť kompletnú JSON zálohu dát{% endif %}
+                    <a href="{% url 'admin_export_backup_json' %}" class="btn btn-primary btn-sm" style="width: 100%; text-align: left; justify-content: flex-start; gap: 0.5rem; font-weight: 700; display: inline-flex; align-items: center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        {% if lang == 'en' %}Download Complete Platform JSON Backup{% else %}Stiahnuť kompletnú JSON zálohu dát{% endif %}
                     </a>
                 </div>
             </div>
@@ -882,7 +930,7 @@
                     {% if lang == 'en' %}Only Passed{% else %}Iba úspešné{% endif %}
                 </a>
             </div>
-            <span style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); font-variant-numeric: tabular-nums;">
                 {% if lang == 'en' %}Displaying last 50 submissions{% else %}Zobrazených posledných 50 odovzdaní{% endif %}
             </span>
         </div>
@@ -903,7 +951,7 @@
                     <tbody>
                         {% for sub in recent_submissions %}
                         <tr style="border-bottom: 1px solid var(--border-hairline);">
-                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted);">
+                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                 {{ sub.created_at|date:"d.m.Y H:i:s" }}
                             </td>
                             <td style="padding: 0.65rem 1rem;">
@@ -912,28 +960,31 @@
                             <td style="padding: 0.65rem 1rem;">
                                 {% if sub.exercise %}
                                 <span style="color: var(--text-secondary);">{{ sub.exercise.title_sk }}</span>
-                                <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">Modul {{ sub.exercise.lesson.module.order|stringformat:"02d" }}</span>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); display: block; font-variant-numeric: tabular-nums;">Modul {{ sub.exercise.lesson.module.order|stringformat:"02d" }}</span>
                                 {% else %}
                                 <span style="color: var(--text-muted);">—</span>
                                 {% endif %}
                             </td>
                             <td style="padding: 0.65rem 1rem;">
                                 {% if sub.status == 'PASSED' %}
-                                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #10B981; background: var(--emerald-bg); padding: 0.1rem 0.4rem; border-radius: 4px;">
-                                    PASSED ✓
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #10B981; background: var(--emerald-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    PASSED
                                 </span>
                                 {% else %}
-                                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #EF4444; background: var(--flame-bg); padding: 0.1rem 0.4rem; border-radius: 4px;">
-                                    {{ sub.status }} ✗
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #EF4444; background: var(--flame-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    {{ sub.status }}
                                 </span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                 {{ sub.execution_time_ms }} ms
                             </td>
                             <td style="padding: 0.65rem 1rem; text-align: right;">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSubmissionTrace('{{ sub.id }}')" style="font-size: 0.74rem; font-weight: 700;">
-                                    👁️ {% if lang == 'en' %}Inspect{% else %}Pozrieť výstup{% endif %}
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSubmissionTrace('{{ sub.id }}')" style="font-size: 0.74rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    {% if lang == 'en' %}Inspect{% else %}Pozrieť výstup{% endif %}
                                 </button>
                             </td>
                         </tr>
@@ -946,16 +997,17 @@
                                         <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; margin-bottom: 0.35rem;">
                                             {% if lang == 'en' %}Submitted Python Code:{% else %}Odovzdaný Python kód študenta:{% endif %}
                                         </div>
-                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: 6px; font-family: var(--font-mono); font-size: 0.78rem; color: #F8FAFC; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.submitted_code }}</pre>
+                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.78rem; color: #F8FAFC; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.submitted_code }}</pre>
                                     </div>
                                     <div>
                                         <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; margin-bottom: 0.35rem;">
                                             {% if lang == 'en' %}Test Execution Output / Traceback:{% else %}Výstup testovacieho behu / Traceback:{% endif %}
                                         </div>
-                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: 6px; font-family: var(--font-mono); font-size: 0.78rem; color: {% if sub.status == 'PASSED' %}#34D399{% else %}#FB7185{% endif %}; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.output_log }}</pre>
+                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.78rem; color: {% if sub.status == 'PASSED' %}#34D399{% else %}#FB7185{% endif %}; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.output_log }}</pre>
                                         {% if sub.ai_tutor_feedback %}
-                                        <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(92, 225, 230, 0.08); border: 1px solid rgba(92, 225, 230, 0.25); border-radius: 6px; font-size: 0.78rem; color: var(--visor-cyan);">
-                                            <strong>🤖 Codo AI Rada:</strong> {{ sub.ai_tutor_feedback }}
+                                        <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(92, 225, 230, 0.08); border: 1px solid rgba(92, 225, 230, 0.25); border-radius: var(--radius-sm); font-size: 0.78rem; color: var(--visor-cyan); display: flex; align-items: center; gap: 0.4rem;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+                                            <strong>Codo AI:</strong> {{ sub.ai_tutor_feedback }}
                                         </div>
                                         {% endif %}
                                     </div>
@@ -991,12 +1043,15 @@
         align-items: center;
         gap: 0.5rem;
         border-radius: var(--radius-sm);
-        transition: all 0.15s ease;
+        transition: color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
         white-space: nowrap;
     }
     .admin-tab-btn:hover {
         color: var(--text-primary);
         background: var(--bg-subtle);
+    }
+    .admin-tab-btn:active {
+        transform: scale(0.96) !important;
     }
     .admin-tab-btn.active {
         color: #EF4444;

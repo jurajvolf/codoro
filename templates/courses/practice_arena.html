@@ -47,6 +47,7 @@
         font-weight: 800;
         display: block;
         margin-top: 0.15rem;
+        font-variant-numeric: tabular-nums;
     }
 
     .arena-filters-card {
@@ -77,6 +78,9 @@
         transform: translateY(-3px);
         box-shadow: var(--shadow-md);
         border-color: var(--ro-indigo-border);
+    }
+    .arena-card:active {
+        transform: scale(0.985) !important;
     }
 
     .arena-card.is-solved {
@@ -245,8 +249,9 @@
                     {% if lang == 'en' %}Filter{% else %}Filtrovať{% endif %}
                 </button>
                 {% if selected_difficulty or selected_module_id or selected_status or search_query %}
-                <a href="{% url 'practice_arena' %}" class="btn btn-secondary" style="padding: 0.65rem 1rem;">
-                    ✕ {% if lang == 'en' %}Reset{% else %}Zrušiť filter{% endif %}
+                <a href="{% url 'practice_arena' %}" class="btn btn-secondary" style="padding: 0.65rem 1rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    {% if lang == 'en' %}Reset{% else %}Zrušiť filter{% endif %}
                 </a>
                 {% endif %}
             </div>

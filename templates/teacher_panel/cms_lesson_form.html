@@ -350,8 +350,13 @@ print(f"The value of x is {x}")
                 </div>
 
                 {% if q.explanation_sk %}
-                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-surface); padding: 0.4rem 0.65rem; border-radius: 6px;">
-                    💡 <strong>{% if lang == 'en' %}Explanation:{% else %}Vysvetlenie správnej odpovede:{% endif %}</strong> {{ q.explanation_sk }}
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-surface); padding: 0.4rem 0.65rem; border-radius: 6px; display: flex; align-items: flex-start; gap: 0.4rem;">
+                    <span style="display:inline-flex; align-items:center; color: var(--gold-text); flex-shrink: 0; margin-top: 2px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+                    </span>
+                    <div>
+                        <strong>{% if lang == 'en' %}Explanation:{% else %}Vysvetlenie správnej odpovede:{% endif %}</strong> {{ q.explanation_sk }}
+                    </div>
                 </div>
                 {% endif %}
             </div>

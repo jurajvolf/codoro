@@ -91,8 +91,9 @@
 
         <div class="card-surface" style="padding: 1.25rem 1.5rem; border-radius: var(--radius-md);">
             <span style="font-size: 0.76rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">{% if lang == 'en' %}Current Streak{% else %}Denná séria{% endif %}</span>
-            <div style="font-family: var(--font-mono); font-size: 1.6rem; font-weight: 800; color: var(--flame-text); margin-top: 0.25rem;">
-                🔥 {{ student.current_streak }} d
+            <div style="font-family: var(--font-mono); font-size: 1.6rem; font-weight: 800; color: var(--flame-text); margin-top: 0.25rem; display: flex; align-items: center; gap: 0.4rem; font-variant-numeric: tabular-nums;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
+                {{ student.current_streak }} d
             </div>
             <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Rekord: {{ student.longest_streak }} dní</div>
         </div>
@@ -185,8 +186,9 @@
                             </span>
 
                             {% if sub.execution_time_ms %}
-                            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
-                                ⏱ {{ sub.execution_time_ms }} ms
+                            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem; font-variant-numeric: tabular-nums;">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ sub.execution_time_ms }} ms
                             </span>
                             {% endif %}
                         </div>

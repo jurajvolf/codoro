@@ -16,8 +16,9 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
                 <span class="badge-dot"></span>
                 <span>{% if lang == 'en' %}Interactive Reference & Syntax Guide{% else %}Interaktívna referenčná príručka & syntax{% endif %}</span>
             </div>
-            <h1 class="hero-cheatsheet-title">
-                📚 {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python Ťaháky & Slovník pojmov{% endif %}
+            <h1 class="hero-cheatsheet-title" style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+                <span>{% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python Ťaháky & Slovník pojmov{% endif %}</span>
             </h1>
             <p class="hero-cheatsheet-subtitle">
                 {% if lang == 'en' %}
@@ -39,7 +40,7 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
                        placeholder="{% if lang == 'en' %}Search functions, methods, Big-O, keywords (e.g. print, split, lambda, sqlite3)...{% else %}Hľadať funkcie, metódy, Big-O, kľúčové slová (napr. print, split, lambda, sqlite3)...{% endif %}"
                        autocomplete="off" autofocus>
                 <button type="button" id="clearSearchBtn" class="clear-search-btn" style="display: none;" title="{% if lang == 'en' %}Clear search{% else %}Vymazať filter{% endif %}">
-                    ✕
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
             <div class="search-stats-bar">
@@ -52,13 +53,22 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
     <div class="category-tabs-container">
         <div class="category-tabs-scroll" id="categoryTabs">
             <button class="cat-pill active" data-category="all">
-                <span class="cat-pill-icon">✨</span>
+                <span class="cat-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
                 <span>{% if lang == 'en' %}All Categories{% else %}Všetky kategórie{% endif %}</span>
                 <span class="cat-pill-count">{{ total_items_count }}</span>
             </button>
             {% for cat in categories %}
             <button class="cat-pill" data-category="{{ cat.id }}">
-                <span class="cat-pill-icon">{{ cat.icon }}</span>
+                <span class="cat-pill-icon">
+                    {% if cat.id == 'syntax' %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    {% elif cat.id == 'strings' %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                    {% elif cat.id == 'collections' %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
+                    {% elif cat.id == 'functions' %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+                    {% elif cat.id == 'oop' %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.9a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-9.17 4.16a2 2 0 0 1-1.66 0L2 12.5"/><path d="m22 17.5-9.17 4.16a2 2 0 0 1-1.66 0L2 17.5"/></svg>
+                    {% elif cat.id == 'algorithms' %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    {% else %}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/></svg>
+                    {% endif %}
+                </span>
                 <span>{% if lang == 'en' %}{{ cat.name_en }}{% else %}{{ cat.name_sk }}{% endif %}</span>
                 <span class="cat-pill-count">{{ cat.count }}</span>
             </button>
@@ -78,17 +88,18 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
             <div class="cheat-card-header">
                 <div class="cheat-card-badges">
                     <span class="badge-cat badge-cat-{{ item.category }}">
-                        {% if item.category == 'syntax' %}⚡ Syntax
-                        {% elif item.category == 'strings' %}🔤 Strings
-                        {% elif item.category == 'collections' %}📦 Collections
-                        {% elif item.category == 'functions' %}⚙️ Functions
-                        {% elif item.category == 'oop' %}🏗️ OOP
-                        {% elif item.category == 'algorithms' %}🚀 Algorithms
+                        {% if item.category == 'syntax' %}Syntax
+                        {% elif item.category == 'strings' %}Strings
+                        {% elif item.category == 'collections' %}Collections
+                        {% elif item.category == 'functions' %}Functions
+                        {% elif item.category == 'oop' %}OOP
+                        {% elif item.category == 'algorithms' %}Algorithms
                         {% else %}{{ item.category|upper }}
                         {% endif %}
                     </span>
-                    <span class="badge-return" title="{% if lang == 'en' %}Return type / evaluation{% else %}Návratová hodnota / typ{% endif %}">
-                        ↵ {{ item.return_type }}
+                    <span class="badge-return" title="{% if lang == 'en' %}Return type / evaluation{% else %}Návratová hodnota / typ{% endif %}" style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>
+                        {{ item.return_type }}
                     </span>
                 </div>
                 <h2 class="cheat-card-title">
@@ -135,7 +146,9 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
 
     <!-- Žiadne výsledky stav -->
     <div id="noResultsState" class="no-results-box card-surface" style="display: none;">
-        <div class="no-results-icon">🔍</div>
+        <div class="no-results-icon" style="color: var(--text-muted); display: flex; align-items: center; justify-content: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
         <h3>{% if lang == 'en' %}No matching cheat sheets found{% else %}Nenašli sa žiadne zhodné ťaháky{% endif %}</h3>
         <p>{% if lang == 'en' %}Try searching for another keyword, e.g. "print", "list", "lambda", "sqlite3" or clear the filter.{% else %}Skús vyhľadať iné kľúčové slovo, napr. "print", "list", "lambda", "sqlite3" alebo resetuj filter.{% endif %}</p>
         <button class="btn-reset-filter" onclick="resetAllFilters()">
@@ -236,7 +249,7 @@ html[data-theme="dark"] .hero-cheatsheet {
     border: 2px solid var(--border-strong);
     background: var(--bg-canvas);
     color: var(--text-primary);
-    transition: all 0.2s ease;
+    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
     box-shadow: var(--shadow-sm);
 }
 
@@ -261,7 +274,10 @@ html[data-theme="dark"] .hero-cheatsheet {
     color: var(--text-muted);
     cursor: pointer;
     font-size: 0.75rem;
-    transition: all 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+.clear-search-btn:active {
+    transform: scale(0.96) !important;
 }
 
 .clear-search-btn:hover {
@@ -300,9 +316,10 @@ html[data-theme="dark"] .hero-cheatsheet {
     font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s var(--ease-out-back), box-shadow 0.18s ease;
     box-shadow: var(--shadow-xs);
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 .cat-pill:hover {
@@ -310,6 +327,10 @@ html[data-theme="dark"] .hero-cheatsheet {
     color: var(--ro-indigo);
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
+}
+
+.cat-pill:active {
+    transform: scale(0.96) !important;
 }
 
 .cat-pill.active {
@@ -488,7 +509,10 @@ html[data-theme="dark"] .badge-cat-algorithms { background: rgba(190, 24, 93, 0.
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.btn-copy-code:active {
+    transform: scale(0.96) !important;
 }
 
 .btn-copy-code:hover {
@@ -579,7 +603,10 @@ html[data-theme="dark"] .badge-cat-algorithms { background: rgba(190, 24, 93, 0.
     border-radius: var(--radius-md);
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.18s ease, transform 0.18s var(--ease-out-back);
+}
+.btn-reset-filter:active {
+    transform: scale(0.96) !important;
 }
 
 .btn-reset-filter:hover {

@@ -37,8 +37,11 @@
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        transition: all 0.15s ease;
+        transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
         white-space: nowrap;
+    }
+    .shop-tab-btn:active {
+        transform: scale(0.96) !important;
     }
     .shop-tab-btn:hover {
         color: var(--text-primary);
@@ -103,24 +106,24 @@
     <!-- Horné prepínacie záložky (Tabs) na celú šírku obrazovky -->
     <nav class="shop-tabs-nav">
         <button type="button" class="shop-tab-btn active" onclick="switchShopTab('rewards')">
-            <span>🛍️</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span>{% if lang == 'en' %}Rewards Catalog{% else %}Ponuka odmien{% endif %}</span>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle);">{{ rewards|length }}</span>
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle); font-variant-numeric: tabular-nums;">{{ rewards|length }}</span>
         </button>
 
         <button type="button" class="shop-tab-btn" onclick="switchShopTab('coupons')">
-            <span>🎟️</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
             <span>{% if lang == 'en' %}My Coupons{% else %}Moje kupóny{% endif %}</span>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle);">{{ my_coupons|length }}</span>
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle); font-variant-numeric: tabular-nums;">{{ my_coupons|length }}</span>
         </button>
 
         <button type="button" class="shop-tab-btn" onclick="switchShopTab('license')">
-            <span>🔑</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
             <span>{% if lang == 'en' %}PRO / EDU License{% else %}Licencia PRO / EDU{% endif %}</span>
         </button>
 
         <button type="button" class="shop-tab-btn" onclick="switchShopTab('ledger')">
-            <span>💳</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
             <span>{% if lang == 'en' %}Wallet History{% else %}História peňaženky{% endif %}</span>
         </button>
     </nav>
@@ -136,7 +139,7 @@
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                             {{ r.restock_period }}
                         </span>
-                        <span class="{% if r.current_stock > 0 %}badge-emerald{% else %}badge-flame{% endif %}" style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px;">
+                        <span class="{% if r.current_stock > 0 %}badge-emerald{% else %}badge-flame{% endif %}" style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 999px; font-variant-numeric: tabular-nums;">
                             {% if lang == 'en' %}Stock:{% else %}Sklad:{% endif %} {{ r.current_stock }}/{{ r.max_stock }}
                         </span>
                     </div>

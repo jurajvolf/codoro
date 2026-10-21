@@ -129,16 +129,20 @@
         background: var(--bg-surface);
         color: var(--text-secondary);
         cursor: pointer;
-        transition: all 0.18s ease;
+        transition: color 0.18s var(--ease-out), background-color 0.18s var(--ease-out), border-color 0.18s var(--ease-out), transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
         white-space: nowrap;
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
+        font-variant-numeric: tabular-nums;
     }
     .track-pill-btn:hover {
         border-color: var(--ro-indigo-border);
         color: var(--text-primary);
         transform: translateY(-1px);
+    }
+    .track-pill-btn:active {
+        transform: scale(0.96) !important;
     }
     .track-pill-btn.active {
         background: var(--ro-indigo);
@@ -214,10 +218,13 @@
         cursor: pointer;
         user-select: none;
         background: var(--bg-surface);
-        transition: background 0.15s ease;
+        transition: background-color 0.15s ease;
     }
     .module-accordion-header:hover {
         background: var(--bg-subtle);
+    }
+    .module-accordion-header:active {
+        transform: scale(0.995);
     }
     .module-header-left {
         display: flex;
@@ -320,12 +327,16 @@
         justify-content: space-between;
         gap: 1rem;
         text-decoration: none;
-        transition: all 0.15s ease;
+        transition: transform 0.18s var(--ease-out), background-color 0.18s var(--ease-out), border-color 0.18s var(--ease-out);
+        font-variant-numeric: tabular-nums;
     }
     .lesson-item-row:hover {
         background: var(--bg-surface);
         border-color: var(--ro-indigo-border);
-        transform: translateX(3px);
+        transform: translateX(4px);
+    }
+    .lesson-item-row:active {
+        transform: scale(0.98) !important;
     }
     .lesson-item-row.is-active {
         border-color: var(--ro-indigo);
@@ -362,10 +373,13 @@
         justify-content: center;
         gap: 0.35rem;
         border-bottom: 2px solid transparent;
-        transition: all 0.15s ease;
+        transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
     }
     .sidebar-tab-btn:hover {
         color: var(--text-primary);
+    }
+    .sidebar-tab-btn:active {
+        transform: scale(0.96) !important;
     }
     .sidebar-tab-btn.active {
         color: var(--ro-indigo);
@@ -492,8 +506,11 @@
                 </span>
             </div>
             {% else %}
-            <h1 class="hero-title">
-                {% if lang == 'en' %}All Available Lessons Completed! 🎉{% else %}Všetky dostupné lekcie dokončené! 🎉{% endif %}
+            <h1 class="hero-title" style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                <span>{% if lang == 'en' %}All Available Lessons Completed!{% else %}Všetky dostupné lekcie dokončené!{% endif %}</span>
+                <span class="t-shimmer" style="display: inline-flex; align-items: center; color: var(--gold-text);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M14 14.66V17c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+                </span>
             </h1>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
                 {% if lang == 'en' %}Congratulations! Check your graduation certificate or explore the Practice Arena.{% else %}Gratulujeme! Pozri si svoj absolventský certifikát alebo trénuj v Aréne.{% endif %}
@@ -505,12 +522,13 @@
     <!-- Hero CTA Button & Stats Quick Pill -->
     <div style="display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0;">
         <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--gold-text);">
+            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--gold-text); font-variant-numeric: tabular-nums;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
                 {{ user.doros }}
             </div>
-            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text);">
-                🔥 {{ user.current_streak }}d
+            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text); font-variant-numeric: tabular-nums;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
+                {{ user.current_streak }}d
             </div>
         </div>
 
@@ -521,7 +539,8 @@
         </a>
         {% else %}
         <a href="{% url 'certificate' %}" class="btn btn-primary" style="padding: 0.75rem 1.6rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.5rem;">
-            {% if lang == 'en' %}View Certificate 🎓{% else %}Zobraziť Certifikát 🎓{% endif %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            {% if lang == 'en' %}View Certificate{% else %}Zobraziť Certifikát{% endif %}
         </a>
         {% endif %}
     </div>
@@ -662,7 +681,7 @@
                         <div style="display: flex; align-items: center; gap: 0.85rem; min-width: 0;">
                             {% if lesson.id in completed_lesson_ids %}
                             <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--emerald-bg); color: var(--emerald-text);">
-                                ✓
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                             </span>
                             {% elif next_lesson and lesson.id == next_lesson.id %}
                             <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--ro-indigo); color: #ffffff;">
@@ -791,8 +810,9 @@
                                     </button>
                                 </form>
                                 {% elif item.is_claimed %}
-                                <span style="font-size: 0.74rem; font-weight: 800; color: var(--emerald-text);">
-                                    ✓ {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
+                                <span style="display:inline-flex; align-items:center; gap:0.35rem; font-size: 0.74rem; font-weight: 800; color: var(--emerald-text);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
                                 </span>
                                 {% endif %}
                             </div>
@@ -881,8 +901,8 @@
                                     <strong style="font-size: 0.85rem; color: var(--text-primary); display:block;">
                                         {{ s.username }} {% if s.id == user.id %}<span style="color: var(--ro-indigo); font-weight: 800;">({% if lang == 'en' %}You{% else %}Ty{% endif %})</span>{% endif %}
                                     </strong>
-                                    <span style="font-size: 0.72rem; color: var(--text-muted);">
-                                        Lvl {{ s.level }} · {{ s.badge_count }} 🎖️
+                                    <span style="font-size: 0.72rem; color: var(--text-muted); display:inline-flex; align-items:center; gap:0.3rem;">
+                                        Lvl {{ s.level }} · {{ s.badge_count }} <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align: -1px; display:inline-block;"><circle cx="12" cy="8" r="6"/><path d="M15.4 12.8 17 22l-5-3-5 3 1.6-9.2"/></svg>
                                     </span>
                                 </div>
                             </div>
