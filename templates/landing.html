@@ -1132,11 +1132,11 @@ html[data-theme="dark"] .landing-grid-overlay {
 }
 
 .hero-gradient-text {
-    background: linear-gradient(135deg, var(--ro-indigo) 0%, var(--visor-cyan) 85%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--ro-indigo);
     display: inline-block;
+}
+html[data-theme="dark"] .hero-gradient-text {
+    color: #818CF8;
 }
 
 .hero-subhead {

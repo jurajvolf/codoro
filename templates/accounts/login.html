@@ -43,15 +43,15 @@
         </div>
     </div>
 
-    <div class="card-surface" style="padding: 2.5rem;">
+    <div class="card-surface" style="padding: 2.25rem 2.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-hairline); box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);">
         <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.75rem;">
             <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro"
-                style="height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(70, 54, 245, 0.25));">
+                style="height: 48px; width: auto; object-fit: contain;">
             <div>
-                <h2 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+                <h2 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin: 0; color: var(--text-primary);">
                     {% if lang == 'en' %}Sign in to your account{% else %}Prihlásenie do účtu{% endif %}
                 </h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.2rem 0 0;">
+                <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0.2rem 0 0;">
                     {% if lang == 'en' %}Enter your credentials to continue{% else %}Zadaj svoje prihlasovacie údaje{% endif %}
                 </p>
             </div>

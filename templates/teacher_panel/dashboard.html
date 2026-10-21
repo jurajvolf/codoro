@@ -9,39 +9,42 @@
     .stock-pill.in-stock { color: var(--emerald-text); }
 </style>
 
-<div class="animate-in" style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+<div class="cockpit-bar animate-in">
     <div>
-        <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.04em;">
-            {% if lang == 'en' %}INSTRUCTOR ADMINISTRATION{% else %}ADMINISTRÁCIA VYUČUJÚCEHO{% endif %}
-        </span>
-        <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin: 0.2rem 0 0;">
-            {% if lang == 'en' %}Teacher Studio & Economy Control{% else %}Učiteľský panel a správa ekonomiky{% endif %}
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+            <span class="status-dot dot-active"></span>
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase;">
+                {% if lang == 'en' %}Teacher Workspace{% else %}Učiteľský priestor{% endif %}
+            </span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; margin: 0; color: var(--text-primary);">
+            {% if lang == 'en' %}Teacher Studio & Classroom Economy{% else %}Učiteľský panel a triedna ekonomika{% endif %}
         </h1>
     </div>
 
-    <!-- Prepínač sekcií (Tabs) -->
-    <div style="display: flex; gap: 0.4rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); flex-wrap: wrap;">
-        <button type="button" class="btn btn-sm tab-btn {% if not batch_created_students %}btn-primary{% else %}btn-secondary{% endif %}" onclick="switchTab('tab-students', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <!-- Prepínač sekcií (Segmented Nav) -->
+    <div class="segmented-nav">
+        <button type="button" class="nav-tab-btn tab-btn {% if not batch_created_students %}active{% endif %}" onclick="switchTab('tab-students', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             {% if lang == 'en' %}Students & Coupons{% else %}Študenti & Kupóny{% endif %}
-            {% if pending_coupons %}<span style="background:var(--bg-canvas); color:var(--ro-indigo); padding:0 6px; border-radius:99px; font-size:0.72rem; font-weight: 800;">{{ pending_coupons.count }}</span>{% endif %}
+            {% if pending_coupons %}<span style="background:var(--ro-indigo-soft); color:var(--ro-indigo); padding:0.1rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight: 800; font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ pending_coupons.count }}</span>{% endif %}
         </button>
-        <button type="button" class="btn btn-sm tab-btn {% if batch_created_students %}btn-primary{% else %}btn-secondary{% endif %}" onclick="switchTab('tab-classes', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <button type="button" class="nav-tab-btn tab-btn {% if batch_created_students %}active{% endif %}" onclick="switchTab('tab-classes', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             {% if lang == 'en' %}Classrooms & Join Codes{% else %}Triedy & Kódy{% endif %}
-            <span style="background:var(--bg-canvas); color:var(--text-secondary); padding:0 6px; border-radius:99px; font-size:0.72rem; font-weight: 800;">{{ classes.count }}</span>
+            <span style="background:var(--bg-subtle); color:var(--text-secondary); padding:0.1rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight: 800; font-family: var(--font-mono); font-variant-numeric: tabular-nums;">{{ classes.count }}</span>
         </button>
-        <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-economy', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
-            {% if lang == 'en' %}Shop, Drops & Quests{% else %}Obchod, Dropy a Výzvy{% endif %}
+        <button type="button" class="nav-tab-btn tab-btn" onclick="switchTab('tab-economy', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+            {% if lang == 'en' %}Shop, Drops & Quests{% else %}Obchod, Dropy & Výzvy{% endif %}
         </button>
-        <button type="button" class="btn btn-sm tab-btn btn-secondary" onclick="switchTab('tab-content', this)" style="display: inline-flex; align-items: center; gap: 0.4rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-            {% if lang == 'en' %}Exercises & Code Reviews{% else %}Cvičenia a riešenia{% endif %}
+        <button type="button" class="nav-tab-btn tab-btn" onclick="switchTab('tab-content', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+            {% if lang == 'en' %}Exercises & Code Reviews{% else %}Cvičenia & riešenia{% endif %}
         </button>
-        <a href="{% url 'cms_modules' %}" class="btn btn-sm btn-secondary" style="display: inline-flex; align-items: center; gap: 0.4rem; color: var(--ro-indigo); font-weight: 700; text-decoration: none;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-            {% if lang == 'en' %}Curriculum CMS Studio{% else %}Správa kurikula (CMS){% endif %}
+        <a href="{% url 'cms_modules' %}" class="nav-tab-btn" style="color: var(--ro-indigo); font-weight: 700; text-decoration: none;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            CMS Studio
         </a>
     </div>
 </div>
@@ -1113,13 +1116,16 @@
 <script>
 function switchTab(tabId, btn) {
     document.querySelectorAll('.teacher-tab').forEach(el => el.style.display = 'none');
-    document.getElementById(tabId).style.display = 'block';
+    var target = document.getElementById(tabId);
+    if (target) target.style.display = 'block';
     document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('btn-primary');
+        b.classList.remove('active', 'btn-primary');
         b.classList.add('btn-secondary');
     });
-    btn.classList.remove('btn-secondary');
-    btn.classList.add('btn-primary');
+    if (btn) {
+        btn.classList.remove('btn-secondary');
+        btn.classList.add('active', 'btn-primary');
+    }
 }
 
 function generateAiExercise() {

@@ -172,8 +172,8 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
 
 /* Hero sekcia */
 .hero-cheatsheet {
-    padding: 2rem 2.5rem;
-    border-radius: var(--radius-xl);
+    padding: 2rem 2.25rem;
+    border-radius: var(--radius-lg);
     background: var(--bg-surface);
     display: flex;
     flex-direction: column;
@@ -181,26 +181,24 @@ codoro — {% if lang == 'en' %}Python Cheat Sheets & Vocabulary{% else %}Python
     border: 1px solid var(--border-hairline);
     position: relative;
     overflow: hidden;
-}
-
-html[data-theme="dark"] .hero-cheatsheet {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .hero-cheatsheet-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
     background: var(--ro-indigo-soft);
     color: var(--ro-indigo);
     border: 1px solid var(--ro-indigo-border);
     width: fit-content;
+    font-family: var(--font-mono);
 }
 
 .hero-cheatsheet-title {
@@ -339,7 +337,7 @@ html[data-theme="dark"] .hero-cheatsheet {
     background: var(--ro-indigo);
     border-color: var(--ro-indigo);
     color: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(70, 54, 245, 0.3);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 6px rgba(70, 54, 245, 0.2);
 }
 
 .cat-pill.active .cat-pill-count {

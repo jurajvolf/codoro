@@ -7,15 +7,15 @@
     .arena-hero {
         padding: 2rem 2.25rem;
         border-radius: var(--radius-lg);
-        background: linear-gradient(135deg, rgba(70, 54, 245, 0.12) 0%, var(--bg-surface) 60%, rgba(92, 225, 230, 0.08) 100%);
-        border: 1.5px solid var(--ro-indigo-border);
+        background: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 2rem;
         flex-wrap: wrap;
         margin-bottom: 1.75rem;
-        box-shadow: var(--shadow-sm);
     }
 
     .arena-stat-strip {
@@ -54,6 +54,8 @@
         padding: 1.25rem 1.5rem;
         border-radius: var(--radius-lg);
         margin-bottom: 2rem;
+        border: 1px solid var(--border-hairline);
+        box-shadow: var(--shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .arena-grid {
@@ -69,7 +71,7 @@
         flex-direction: column;
         justify-content: space-between;
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        border: 1.5px solid var(--border-hairline);
+        border: 1px solid var(--border-hairline);
         background: var(--bg-surface);
         position: relative;
     }
@@ -77,7 +79,7 @@
     .arena-card:hover {
         transform: translateY(-3px);
         box-shadow: var(--shadow-md);
-        border-color: var(--ro-indigo-border);
+        border-color: var(--border-strong);
     }
     .arena-card:active {
         transform: scale(0.985) !important;
@@ -100,21 +102,21 @@
     }
 
     .diff-badge-easy {
-        background: rgba(16, 185, 129, 0.15);
+        background: rgba(16, 185, 129, 0.12);
         color: #10B981;
-        border: 1px solid rgba(16, 185, 129, 0.35);
+        border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .diff-badge-medium {
-        background: rgba(245, 158, 11, 0.15);
+        background: rgba(245, 158, 11, 0.12);
         color: #F59E0B;
-        border: 1px solid rgba(245, 158, 11, 0.35);
+        border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
     .diff-badge-hard {
-        background: rgba(244, 63, 94, 0.18);
+        background: rgba(244, 63, 94, 0.12);
         color: #FB7185;
-        border: 1px solid rgba(244, 63, 94, 0.4);
+        border: 1px solid rgba(244, 63, 94, 0.3);
     }
 </style>
 
@@ -123,23 +125,23 @@
     <!-- 1. Hero sekcia Tréningovej Arény -->
     <section class="arena-hero">
         <div style="display: flex; align-items: center; gap: 1.25rem; min-width: 280px; flex: 1;">
-            <div style="width: 64px; height: 64px; border-radius: 18px; background: var(--bg-surface); border: 2px solid var(--ro-indigo-border); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(70, 54, 245, 0.25); flex-shrink: 0;">
+            <div style="width: 58px; height: 58px; border-radius: var(--radius-md); background: var(--bg-surface); border: 1.5px solid var(--border-hairline); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-xs); flex-shrink: 0;">
                 <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo"
-                    style="width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(70, 54, 245, 0.35));">
+                    style="width: 42px; height: 42px; object-fit: contain;">
             </div>
             <div>
-                <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 0.35rem;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    <span class="status-dot dot-active"></span>
                     {% if lang == 'en' %}CODORO PRACTICE ARENA{% else %}TRÉNINGOVÁ ARÉNA CODORO{% endif %}
                 </span>
-                <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0.35rem; letter-spacing: -0.02em;">
+                <h1 style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0.35rem; letter-spacing: -0.02em;">
                     {% if lang == 'en' %}Python Challenge Catalog{% else %}Katalóg praktických výziev{% endif %}
                 </h1>
                 <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0; max-width: 500px;">
                     {% if lang == 'en' %}
-                    Practice and master coding problems across all 12 modules. Test your logic, fulfill quests, and prepare for school exams.
+                    Practice and master coding problems across all 18 modules. Test your logic, fulfill quests, and prepare for exams.
                     {% else %}
-                    Precvič si programovanie naprieč všetkými 12 modulmi. Trénuj na písomky, plň denné questy a získavaj Doros!
+                    Precvič si programovanie naprieč všetkými 18 modulmi. Trénuj na písomky, plň denné questy a získavaj Doros!
                     {% endif %}
                 </p>
             </div>

@@ -27,8 +27,8 @@
         padding: 3.5rem 4rem;
         background: #FFFFFF;
         color: #0F172A;
-        border-radius: 16px;
-        border: 10px double #4636F5;
+        border-radius: var(--radius-lg);
+        border: 6px double #4636F5;
         box-shadow: var(--shadow-md);
         position: relative;
         overflow: hidden;
@@ -39,11 +39,11 @@
         border-color: #6366F1;
     }
     .cert-seal {
-        width: 90px;
-        height: 90px;
+        width: 86px;
+        height: 86px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #FFFFFF;
+        background: var(--gold-bg);
+        color: var(--gold-text);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -51,10 +51,10 @@
         font-family: var(--font-mono);
         font-weight: 800;
         font-size: 0.72rem;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.06em;
         text-align: center;
-        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
-        border: 3px dashed #FEF3C7;
+        border: 2px solid var(--gold-border);
+        box-shadow: var(--shadow-xs);
     }
 </style>
 
@@ -72,7 +72,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-hairline); padding-bottom: 1.5rem; margin-bottom: 2rem;">
         <div style="display: flex; align-items: center; gap: 1rem;">
             <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro Logo"
-                style="height: 64px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(70, 54, 245, 0.3));">
+                style="height: 64px; width: auto; object-fit: contain;">
             <div>
                 <span style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; color: #4636F5;">
                     codoro
@@ -126,28 +126,28 @@
 
     <!-- Metriky úspešnosti -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; margin-bottom: 2.5rem; text-align: center;">
-        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+        <div style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Exercises{% else %}Úlohy{% endif %}</span>
-            <strong style="font-family: var(--font-mono); font-size: 1.25rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; font-variant-numeric: tabular-nums;">
                 {{ stats.solved_count }}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-text)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </strong>
         </div>
-        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+        <div style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Level</span>
-            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: #4636F5;">Level {{ user.level }}</strong>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: #4636F5; font-variant-numeric: tabular-nums;">Level {{ user.level }}</strong>
         </div>
-        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+        <div style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">XP Total</span>
-            <strong style="font-family: var(--font-mono); font-size: 1.25rem;">{{ user.xp }} XP</strong>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; font-variant-numeric: tabular-nums;">{{ user.xp }} XP</strong>
         </div>
-        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+        <div style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Accuracy{% else %}Úspešnosť{% endif %}</span>
-            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--emerald-text);">{{ stats.success_rate }}%</strong>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--emerald-text); font-variant-numeric: tabular-nums;">{{ stats.success_rate }}%</strong>
         </div>
-        <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
+        <div style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
             <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">{% if lang == 'en' %}Hours{% else %}Hodiny{% endif %}</span>
-            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--gold-text);">{{ stats.studied_hours }} h</strong>
+            <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--gold-text); font-variant-numeric: tabular-nums;">{{ stats.studied_hours }} h</strong>
         </div>
     </div>
 

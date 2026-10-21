@@ -3,132 +3,76 @@
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
 <style>
-    .shop-header-banner {
-        padding: 1.5rem 1.85rem;
-        border-radius: var(--radius-lg);
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, var(--bg-surface) 60%, rgba(70, 54, 245, 0.06) 100%);
-        border: 1.5px solid var(--gold-border);
-        box-shadow: var(--shadow-sm);
-        margin-bottom: 1.75rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-    .shop-tabs-nav {
-        display: flex;
-        gap: 0.5rem;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        margin-bottom: 1.75rem;
-        border-bottom: 1px solid var(--border-hairline);
-    }
-    .shop-tab-btn {
-        padding: 0.65rem 1.25rem;
-        border-radius: var(--radius-md) var(--radius-md) 0 0;
-        font-family: var(--font-display);
-        font-size: 0.88rem;
-        font-weight: 700;
-        border: 1px solid transparent;
-        background: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45rem;
-        transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-        white-space: nowrap;
-    }
-    .shop-tab-btn:active {
-        transform: scale(0.96) !important;
-    }
-    .shop-tab-btn:hover {
-        color: var(--text-primary);
-        background: var(--bg-subtle);
-    }
-    .shop-tab-btn.active {
-        color: var(--ro-indigo);
-        background: var(--bg-surface);
-        border-color: var(--border-hairline) var(--border-hairline) var(--bg-surface);
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
-    }
     .shop-panel-view {
         display: none;
     }
     .shop-panel-view.active {
         display: block;
-        animation: fadeIn 0.2s ease;
+        animation: fadeIn 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     }
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(4px); }
+        from { opacity: 0; transform: translateY(3px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    .tx-positive { color: var(--emerald-text); }
-    .tx-negative { color: var(--flame-text); }
+    .tx-positive { color: #10B981; }
+    .tx-negative { color: #EF4444; }
 </style>
 
 <div class="animate-in">
 
-    <!-- Horná lišta: Nadpis obchodu + Aktuálny zostatok Doros -->
-    <div class="shop-header-banner">
+    <!-- Horná lišta: Cockpit Bar s nadpisom a zostatkom Doros -->
+    <div class="cockpit-bar">
         <div>
-            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
-                <h1 style="font-family: var(--font-display); font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                    {% if lang == 'en' %}Rewards & Licensing Hub{% else %}Obchod s odmenami a licenciami{% endif %}
-                </h1>
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--gold-text); background: var(--gold-bg); padding: 0.15rem 0.55rem; border-radius: 6px; text-transform: uppercase;">
-                    {% if lang == 'en' %}CLASSROOM MARKETPLACE{% else %}ŠKOLSKÁ TRŽNICA{% endif %}
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <span class="status-dot dot-active"></span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--gold-text); text-transform: uppercase;">
+                    {% if lang == 'en' %}Classroom Marketplace{% else %}Školská tržnica{% endif %}
                 </span>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0; max-width: 680px;">
-                {% if lang == 'en' %}
-                    Exchange your earned Doros for real classroom perks, view purchased vouchers, activate PRO licenses, or inspect your wallet history.
-                {% else %}
-                    Vymeň mince Doros za reálne školské výhody, skontroluj svoje kupóny, aktivuj EDU/PRO licenciu alebo si prezri históriu peňaženky.
-                {% endif %}
-            </p>
+            <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.025em; margin: 0; color: var(--text-primary);">
+                {% if lang == 'en' %}Rewards & Licensing Hub{% else %}Obchod s odmenami a licenciami{% endif %}
+            </h1>
         </div>
 
-        <div style="padding: 0.75rem 1.4rem; background: var(--bg-surface); border: 1.5px solid var(--gold-border); border-radius: var(--radius-md); box-shadow: var(--shadow-xs); display: flex; align-items: center; gap: 0.85rem;">
-            <span style="width: 40px; height: 40px; border-radius: 12px; background: var(--gold-bg); color: var(--gold-text); display: inline-flex; align-items: center; justify-content: center;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+        <div style="padding: 0.65rem 1.15rem; background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); box-shadow: var(--shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.75rem;">
+            <span style="width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); display: inline-flex; align-items: center; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
             </span>
             <div>
-                <span style="font-size: 0.7rem; text-transform: uppercase; font-family: var(--font-mono); font-weight: 700; color: var(--text-muted); display: block;">
+                <span style="font-size: 0.68rem; text-transform: uppercase; font-family: var(--font-mono); font-weight: 700; color: var(--text-muted); display: block;">
                     {% if lang == 'en' %}Doros Balance{% else %}Tvoj zostatok{% endif %}
                 </span>
-                <strong style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--gold-text);">
-                    {{ user.doros }} Doros
+                <strong style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: var(--gold-text); font-variant-numeric: tabular-nums;">
+                    {{ user.doros }}
                 </strong>
             </div>
         </div>
     </div>
 
-    <!-- Horné prepínacie záložky (Tabs) na celú šírku obrazovky -->
-    <nav class="shop-tabs-nav">
-        <button type="button" class="shop-tab-btn active" onclick="switchShopTab('rewards')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    <!-- Horné prepínacie záložky (Segmented Nav) -->
+    <div class="segmented-nav" style="margin-bottom: 1.75rem;">
+        <button type="button" class="nav-tab-btn active" onclick="switchShopTab('rewards', this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span>{% if lang == 'en' %}Rewards Catalog{% else %}Ponuka odmien{% endif %}</span>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle); font-variant-numeric: tabular-nums;">{{ rewards|length }}</span>
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 4px; background: var(--bg-subtle); font-variant-numeric: tabular-nums;">{{ rewards|length }}</span>
         </button>
 
-        <button type="button" class="shop-tab-btn" onclick="switchShopTab('coupons')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
+        <button type="button" class="nav-tab-btn" onclick="switchShopTab('coupons', this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
             <span>{% if lang == 'en' %}My Coupons{% else %}Moje kupóny{% endif %}</span>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 99px; background: var(--bg-subtle); font-variant-numeric: tabular-nums;">{{ my_coupons|length }}</span>
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 4px; background: var(--bg-subtle); font-variant-numeric: tabular-nums;">{{ my_coupons|length }}</span>
         </button>
 
-        <button type="button" class="shop-tab-btn" onclick="switchShopTab('license')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+        <button type="button" class="nav-tab-btn" onclick="switchShopTab('license', this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
             <span>{% if lang == 'en' %}PRO / EDU License{% else %}Licencia PRO / EDU{% endif %}</span>
         </button>
 
-        <button type="button" class="shop-tab-btn" onclick="switchShopTab('ledger')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <button type="button" class="nav-tab-btn" onclick="switchShopTab('ledger', this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
             <span>{% if lang == 'en' %}Wallet History{% else %}História peňaženky{% endif %}</span>
         </button>
-    </nav>
+    </div>
 
     <!-- 1. ZÁLOŽKA: KATALÓG ODMEN ZO SKLADOM -->
     <div class="shop-panel-view active" id="shop-panel-rewards">
@@ -209,22 +153,27 @@
 
     <!-- 3. ZÁLOŽKA: AKTIVÁCIA PRO / ŠKOLSKEJ EDU LICENCIE -->
     <div class="shop-panel-view" id="shop-panel-license">
-        <section class="card-surface" style="padding: 2rem; max-width: 680px; border-radius: var(--radius-lg); border: 1.5px solid var(--ro-indigo-border); background: linear-gradient(135deg, rgba(70, 54, 245, 0.06) 0%, var(--bg-surface) 100%);">
-            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;">
-                <span style="width: 36px; height: 36px; border-radius: 10px; background: var(--ro-indigo-soft); color: var(--ro-indigo); display: flex; align-items: center; justify-content: center;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-6 6 7 7-3 3-2-2-2 2-3-3 2-2-2-2 7-7Zm0 0-4-4"/></svg>
+        <section class="card-surface" style="padding: 2rem; max-width: 680px; border-radius: var(--radius-lg); border: 1px solid var(--border-hairline); box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <span style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--ro-indigo-soft); color: var(--ro-indigo); display: flex; align-items: center; justify-content: center; border: 1px solid var(--ro-indigo-border);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
                 </span>
-                <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                    {% if lang == 'en' %}Activate School License (EDU/PRO){% else %}Aktivácia školskej licencie (EDU/PRO){% endif %}
-                </h2>
+                <div>
+                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                        {% if lang == 'en' %}Activate School License (EDU / PRO){% else %}Aktivácia školskej licencie (EDU / PRO){% endif %}
+                    </h2>
+                    <span style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">
+                        {% if lang == 'en' %}Unlock high-tier modules & unlimited Socratic AI hints{% else %}Odomkni pokročilé moduly a neobmedzeného AI tútora{% endif %}
+                    </span>
+                </div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 1.25rem;">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 1.25rem;">
                 {% if lang == 'en' %}
-                    Enter your teacher's license code to unlock advanced curriculum modules (OOP, SQL, APIs, Security) and unlimited AI hints.<br>
-                    <strong>Demo code:</strong> <code style="font-family: var(--font-mono); color: var(--ro-indigo); font-weight: 800;">EDU-2027-IVC</code>
+                    Enter your school or classroom license code to unlock all 18 modules including OOP, SQL, APIs, Security and complete graduation projects.<br>
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">Demo classroom code:</span> <code style="font-family: var(--font-mono); color: var(--ro-indigo); font-weight: 800; background: var(--ro-indigo-soft); padding: 0.15rem 0.45rem; border-radius: 4px;">EDU-2027-IVC</code>
                 {% else %}
-                    Zadaj licenčný kód od vyučujúceho na odomknutie pokročilých modulov kurikula (OOP, SQL, API, Bezpečnosť) a neobmedzených AI nápovied.<br>
-                    <strong>Ukážkový školský kód:</strong> <code style="font-family: var(--font-mono); color: var(--ro-indigo); font-weight: 800;">EDU-2027-IVC</code>
+                    Zadaj školský alebo triedny licenčný kód na odomknutie všetkých 18 modulov vrátane OOP, SQL, API, kyberbezpečnosti a maturitných projektov.<br>
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">Ukážkový školský kód:</span> <code style="font-family: var(--font-mono); color: var(--ro-indigo); font-weight: 800; background: var(--ro-indigo-soft); padding: 0.15rem 0.45rem; border-radius: 4px;">EDU-2027-IVC</code>
                 {% endif %}
             </p>
             <form method="post" action="{% url 'activate_license' %}" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
@@ -239,39 +188,60 @@
 
     <!-- 4. ZÁLOŽKA: HISTÓRIA POHYBOV V PEŇAŽENKE (TRANSAKCIE) -->
     <div class="shop-panel-view" id="shop-panel-ledger">
-        <section class="card-surface" style="padding: 1.5rem; border-radius: var(--radius-lg); max-width: 800px;">
-            <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 1rem;">
-                {% if lang == 'en' %}Doros Transaction Ledger{% else %}Záznam transakcií Doros{% endif %}
-            </h2>
-            <div style="display: flex; flex-direction: column;">
-                {% for t in transactions %}
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-hairline); font-size: 0.88rem;">
-                    <div>
-                        <strong style="color: var(--text-primary); display:block;">
-                            {% if lang == 'en' %}{{ t.reason_en }}{% else %}{{ t.reason_sk }}{% endif %}
-                        </strong>
-                        <span style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">
-                            {{ t.created_at|date:"d.m.Y H:i" }}
-                        </span>
-                    </div>
-                    <span class="{% if t.amount > 0 %}tx-positive{% else %}tx-negative{% endif %}" style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; font-variant-numeric: tabular-nums;">
-                        {% if t.amount > 0 %}+{% endif %}{{ t.amount }} Doros
+        <div class="data-table-card" style="max-width: 900px;">
+            <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                        {% if lang == 'en' %}Doros Transaction Ledger{% else %}Záznam pohybov v peňaženke{% endif %}
+                    </h2>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+                        {% if lang == 'en' %}Immutable record of all earned and spent currency{% else %}Kompletná história získaných a minutých mincí Doros{% endif %}
                     </span>
                 </div>
-                {% empty %}
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
-                    {% if lang == 'en' %}No transactions in your ledger yet.{% else %}Žiadne transakcie v peňaženke.{% endif %}
-                </p>
-                {% endfor %}
+                <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                    {{ transactions|length }} {% if lang == 'en' %}records{% else %}záznamov{% endif %}
+                </span>
             </div>
-        </section>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 170px;">{% if lang == 'en' %}Timestamp{% else %}Čas transakcie{% endif %}</th>
+                        <th>{% if lang == 'en' %}Reason / Event{% else %}Dôvod / Udalosť{% endif %}</th>
+                        <th style="text-align: right; width: 150px;">{% if lang == 'en' %}Amount{% else %}Čiastka{% endif %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                            {{ t.created_at|date:"d.m.Y H:i" }}
+                        </td>
+                        <td style="font-weight: 600; color: var(--text-primary);">
+                            {% if lang == 'en' %}{{ t.reason_en }}{% else %}{{ t.reason_sk }}{% endif %}
+                        </td>
+                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 800; font-size: 0.92rem; font-variant-numeric: tabular-nums;">
+                            <span class="{% if t.amount > 0 %}tx-positive{% else %}tx-negative{% endif %}">
+                                {% if t.amount > 0 %}+{% endif %}{{ t.amount }} Doros
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                            {% if lang == 'en' %}No transactions in your ledger yet.{% else %}V peňaženke zatiaľ nemáš žiadne transakcie.{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
 
 <script>
-    function switchShopTab(tabKey) {
-        document.querySelectorAll('.shop-tab-btn').forEach(function(b) {
+    function switchShopTab(tabKey, btn) {
+        document.querySelectorAll('.nav-tab-btn').forEach(function(b) {
             b.classList.remove('active');
         });
         document.querySelectorAll('.shop-panel-view').forEach(function(p) {
@@ -282,8 +252,8 @@
         if (targetPanel) {
             targetPanel.classList.add('active');
         }
-        if (event && event.currentTarget) {
-            event.currentTarget.classList.add('active');
+        if (btn) {
+            btn.classList.add('active');
         }
     }
 </script>

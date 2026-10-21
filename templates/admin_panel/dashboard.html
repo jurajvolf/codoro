@@ -13,23 +13,23 @@
     <!-- ========================================================================
          1. HERO HEADER: CODORO SUPERADMIN PORTAL & SYSTEM STATS
          ======================================================================== -->
-    <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(70, 54, 245, 0.06) 100%);
-                border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;
-                display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+    <div class="cockpit-bar">
         <div>
             <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
-                <span style="background: #EF4444; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.55rem; border-radius: 6px; letter-spacing: 0.04em;">
-                    SUPERADMIN
+                <span class="status-dot dot-admin"></span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: #EF4444; letter-spacing: 0.05em; text-transform: uppercase;">
+                    CODORO SUPERADMIN
                 </span>
-                <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
-                    Python 3.12 · Django 6.1 · DB: {{ db_stats.db_engine }} ({{ db_stats.db_size_mb }} MB)
+                <span style="color: var(--border-strong);">·</span>
+                <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                    Python 3.12 · Django 6.1 · {{ db_stats.db_engine }} ({{ db_stats.db_size_mb }} MB)
                 </span>
             </div>
-            <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+            <h1 style="font-family: var(--font-display); font-size: 1.65rem; font-weight: 800; color: var(--text-primary); margin: 0; letter-spacing: -0.02em;">
                 {% if lang == 'en' %}Platform Control Center & Support Desk{% else %}Centrálna administrácia & Riešenie podpory{% endif %}
             </h1>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.2rem; margin-bottom: 0;">
-                {% if lang == 'en' %}Manage users, licenses, global curriculum, database maintenance, and resolve support requests directly without IDE.{% else %}Správa používateľov, licencií, globálneho kurikula, databázy a okamžité riešenie problémov podpory bez nutnosti IDE.{% endif %}
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem; margin-bottom: 0;">
+                {% if lang == 'en' %}Manage users, licenses, curriculum sync, database integrity, and troubleshoot accounts.{% else %}Správa používateľov, licencií, kurikula, integrity databázy a okamžité riešenie problémov účtov.{% endif %}
             </p>
         </div>
 
@@ -49,57 +49,56 @@
     <!-- ========================================================================
          2. KPI STATUS CARDS (RÝCHLE METRIKY SYSTÉMU)
          ======================================================================== -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
-            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                 {% if lang == 'en' %}TOTAL USERS{% else %}POUŽÍVATELIA CELKOM{% endif %}
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0;">
-                {{ db_stats.total_users }}
-            </div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">
-                {{ db_stats.students_count }} {% if lang == 'en' %}students{% else %}žiakov{% endif %} · {{ db_stats.teachers_count }} {% if lang == 'en' %}teachers{% else %}učiteľov{% endif %}
+            <div class="kpi-value">{{ db_stats.total_users }}</div>
+            <div class="kpi-sub">
+                <span class="tabular-nums">{{ db_stats.students_count }}</span> {% if lang == 'en' %}students{% else %}žiakov{% endif %} · <span class="tabular-nums">{{ db_stats.teachers_count }}</span> {% if lang == 'en' %}teachers{% else %}učiteľov{% endif %}
             </div>
         </div>
 
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
-            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                 {% if lang == 'en' %}CURRICULUM CONTENT{% else %}OBSAH KURIKULA{% endif %}
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--ro-indigo); margin: 0.2rem 0;">
-                18 {% if lang == 'en' %}Modules{% else %}Modulov{% endif %}
-            </div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">
-                {{ db_stats.lessons_count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %} · {{ db_stats.exercises_count }} {% if lang == 'en' %}exercises{% else %}cvičení{% endif %}
+            <div class="kpi-value" style="color: var(--ro-indigo);">18</div>
+            <div class="kpi-sub">
+                <span class="tabular-nums">{{ db_stats.lessons_count }}</span> {% if lang == 'en' %}lessons{% else %}lekcií{% endif %} · <span class="tabular-nums">{{ db_stats.exercises_count }}</span> {% if lang == 'en' %}exercises{% else %}cvičení{% endif %}
             </div>
         </div>
 
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
-            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
-                {% if lang == 'en' %}CODE SUBMISSIONS{% else %}ODOVZDané RIEŠENIA{% endif %}
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                {% if lang == 'en' %}CODE SUBMISSIONS{% else %}ODOVZDANÉ RIEŠENIA{% endif %}
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #10B981; margin: 0.2rem 0;">
+            <div class="kpi-value" style="color: #10B981;">
                 {{ db_stats.passed_submissions }} <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">/ {{ db_stats.submissions_count }}</span>
             </div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">
+            <div class="kpi-sub">
                 {% if db_stats.submissions_count > 0 %}
-                {{ db_stats.passed_submissions|stringformat:"d" }} {% if lang == 'en' %}passed unit tests{% else %}úspešných unit testov{% endif %}
+                <span class="tabular-nums">{{ db_stats.passed_submissions }}</span> {% if lang == 'en' %}passed unit tests{% else %}úspešných unit testov{% endif %}
                 {% else %}
                 0% pass rate
                 {% endif %}
             </div>
         </div>
 
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem;">
-            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
+        <div class="kpi-card">
+            <div class="kpi-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
                 {% if lang == 'en' %}DOROS IN CIRCULATION{% else %}DOROS V OBEHU{% endif %}
             </div>
-            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--gold-text); margin: 0.2rem 0; display: flex; align-items: center; gap: 0.4rem; font-variant-numeric: tabular-nums;">
+            <div class="kpi-value" style="color: var(--gold-text); display: flex; align-items: center; gap: 0.4rem;">
                 {{ db_stats.total_doros_circulation }}
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
             </div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">
-                {{ db_stats.total_xp }} {% if lang == 'en' %}total XP gained{% else %}získaných XP bodov{% endif %}
+            <div class="kpi-sub">
+                <span class="tabular-nums">{{ db_stats.total_xp }}</span> {% if lang == 'en' %}total XP gained{% else %}získaných XP bodov{% endif %}
             </div>
         </div>
     </div>
@@ -107,25 +106,25 @@
     <!-- ========================================================================
          3. SEGMENTED NAVIGATION TABS (5 SEKCIE PREHĽADU BEZ SCROLLOVANIA)
          ======================================================================== -->
-    <div style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border-hairline); margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.25rem;">
-        <button type="button" class="admin-tab-btn" id="tab-btn-users" onclick="switchAdminTab('users')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            {% if lang == 'en' %}Users & Support Desk{% else %}Používatelia & Podpora{% endif %} ({{ total_users_count }})
+    <div class="segmented-nav">
+        <button type="button" class="nav-tab-btn" id="tab-btn-users" onclick="switchAdminTab('users')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            {% if lang == 'en' %}Users & Support Desk{% else %}Používatelia & Podpora{% endif %} <span style="font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.8; font-variant-numeric: tabular-nums;">({{ total_users_count }})</span>
         </button>
-        <button type="button" class="admin-tab-btn" id="tab-btn-licenses" onclick="switchAdminTab('licenses')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            {% if lang == 'en' %}Licenses & Keys{% else %}Licencie & Kľúče{% endif %} ({{ licenses.count }})
+        <button type="button" class="nav-tab-btn" id="tab-btn-licenses" onclick="switchAdminTab('licenses')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            {% if lang == 'en' %}Licenses & Keys{% else %}Licencie & Kľúče{% endif %} <span style="font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.8; font-variant-numeric: tabular-nums;">({{ licenses.count }})</span>
         </button>
-        <button type="button" class="admin-tab-btn" id="tab-btn-curriculum" onclick="switchAdminTab('curriculum')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <button type="button" class="nav-tab-btn" id="tab-btn-curriculum" onclick="switchAdminTab('curriculum')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             {% if lang == 'en' %}Global Curriculum (18 Modules){% else %}Globálne kurikulum (18 Modulov){% endif %}
         </button>
-        <button type="button" class="admin-tab-btn" id="tab-btn-database" onclick="switchAdminTab('database')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <button type="button" class="nav-tab-btn" id="tab-btn-database" onclick="switchAdminTab('database')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
             {% if lang == 'en' %}Database & Maintenance{% else %}Databáza & Údržba{% endif %}
         </button>
-        <button type="button" class="admin-tab-btn" id="tab-btn-logs" onclick="switchAdminTab('logs')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <button type="button" class="nav-tab-btn" id="tab-btn-logs" onclick="switchAdminTab('logs')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             {% if lang == 'en' %}Live Code Monitor{% else %}Živý monitor riešení{% endif %}
         </button>
     </div>
@@ -135,17 +134,17 @@
          ======================================================================== -->
     <div class="admin-tab-content" id="tab-content-users">
         <!-- Vyhľadávanie a filtre -->
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+        <div class="card-surface" style="padding: 0.85rem 1.15rem; margin-bottom: 1.25rem;">
             <form method="get" action="{% url 'admin_dashboard' %}" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
                 <input type="hidden" name="tab" value="users">
                 <div style="flex: 1; min-width: 240px; position: relative;">
-                    <input type="text" name="q" value="{{ search_q }}" class="form-input"
+                    <input type="text" name="q" value="{{ search_q }}" class="form-control"
                            placeholder="{% if lang == 'en' %}Search by username, full name, or email...{% else %}Hľadať podľa mena, e-mailu alebo username...{% endif %}"
                            style="width: 100%; padding-left: 2.2rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </div>
 
-                <select name="role" class="form-input" style="width: auto; min-width: 150px;">
+                <select name="role" class="form-select" style="width: auto; min-width: 150px;">
                     <option value="">{% if lang == 'en' %}All roles{% else %}Všetky roly{% endif %}</option>
                     {% for r_val, r_label in roles %}
                     <option value="{{ r_val }}" {% if role_filter == r_val %}selected{% endif %}>{{ r_label }}</option>
@@ -153,7 +152,7 @@
                 </select>
 
                 <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">
-                    {% if lang == 'en' %}Search{% else %}Filtrovať{% endif %}
+                    {% if lang == 'en' %}Filter{% else %}Filtrovať{% endif %}
                 </button>
                 {% if search_q or role_filter %}
                 <a href="{% url 'admin_dashboard' %}?tab=users" class="btn btn-secondary btn-sm">
@@ -164,40 +163,40 @@
         </div>
 
         <!-- Zoznam používateľov -->
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+        <div class="data-table-card">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                <table class="data-table">
                     <thead>
-                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}User / Email{% else %}Používateľ / E-mail{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Role & Tier{% else %}Rola & Predplatné{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Class{% else %}Trieda{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Level / XP{% else %}Level / XP{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Streak / Doros{% else %}Streak / Doros{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}Support Actions{% else %}Riešenie podpory{% endif %}</th>
+                        <tr>
+                            <th>{% if lang == 'en' %}User / Email{% else %}Používateľ / E-mail{% endif %}</th>
+                            <th>{% if lang == 'en' %}Role & Tier{% else %}Rola & Predplatné{% endif %}</th>
+                            <th>{% if lang == 'en' %}Class{% else %}Trieda{% endif %}</th>
+                            <th>{% if lang == 'en' %}Level / XP{% else %}Level / XP{% endif %}</th>
+                            <th>{% if lang == 'en' %}Streak / Doros{% else %}Streak / Doros{% endif %}</th>
+                            <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th style="text-align: right;">{% if lang == 'en' %}Support Actions{% else %}Riešenie podpory{% endif %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for u in users_list %}
-                        <tr style="border-bottom: 1px solid var(--border-hairline); transition: background 0.15s ease;" class="user-row">
-                            <td style="padding: 0.75rem 1rem;">
+                        <tr class="user-row">
+                            <td>
                                 <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                    <div style="width: 34px; height: 34px; border-radius: 8px; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; border: 1px solid var(--border-hairline);">
+                                    <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: 1px solid var(--border-hairline);">
                                         {{ u.avatar_emoji }}
                                     </div>
                                     <div>
                                         <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">
                                             {{ u.username }}
                                             {% if u.id == user.id %}
-                                            <span style="font-size: 0.68rem; background: var(--ro-indigo-soft); color: var(--ro-indigo); padding: 0.1rem 0.35rem; border-radius: 4px; font-weight: 800;">{% if lang == 'en' %}YOU{% else %}TY{% endif %}</span>
+                                            <span style="font-size: 0.68rem; background: var(--ro-indigo-soft); color: var(--ro-indigo); padding: 0.1rem 0.35rem; border-radius: 4px; font-weight: 800; font-family: var(--font-mono);">{% if lang == 'en' %}YOU{% else %}TY{% endif %}</span>
                                             {% endif %}
                                         </strong>
                                         <span style="font-size: 0.74rem; color: var(--text-muted);">{{ u.email|default:"no-email@codoro" }}</span>
                                     </div>
                                 </div>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <div style="display: flex; flex-direction: column; gap: 0.2rem;">
                                     <span class="user-role-badge role-{{ u.role }}">
                                         {{ u.get_role_display }}
@@ -207,7 +206,7 @@
                                     </span>
                                 </div>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 {% if u.school_class %}
                                 <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.45rem; border-radius: 4px;">
                                     {{ u.school_class.name }}
@@ -216,15 +215,15 @@
                                 <span style="color: var(--text-muted); font-size: 0.76rem;">—</span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
-                                <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
+                            <td>
+                                <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
                                     Lvl {{ u.level }}
                                 </div>
-                                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
+                                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                     {{ u.xp }} XP
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <div style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text); display: flex; align-items: center; gap: 0.3rem; font-variant-numeric: tabular-nums;">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
                                     {{ u.current_streak }} d
@@ -234,22 +233,22 @@
                                     {{ u.doros }}
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 {% if u.is_active %}
-                                <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.74rem; font-weight: 700; color: #10B981;">
-                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981;"></span>
+                                <span style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem; font-weight: 700; color: #10B981;">
+                                    <span class="status-dot dot-active"></span>
                                     {% if lang == 'en' %}Active{% else %}Aktívny{% endif %}
                                 </span>
                                 {% else %}
-                                <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.74rem; font-weight: 700; color: #EF4444;">
-                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #EF4444;"></span>
+                                <span style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem; font-weight: 700; color: #EF4444;">
+                                    <span class="status-dot dot-admin"></span>
                                     {% if lang == 'en' %}Blocked{% else %}Zablokovaný{% endif %}
                                 </span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 0.75rem 1rem; text-align: right;">
+                            <td style="text-align: right;">
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                                     {% if lang == 'en' %}Troubleshoot{% else %}Riešiť problém{% endif %}
                                 </button>
                             </td>
@@ -257,13 +256,13 @@
 
                         <!-- Rozbaliteľný Support Panel pre konkrétneho používateľa -->
                         <tr id="user-support-drawer-{{ u.id }}" style="display: none; background: var(--bg-subtle);">
-                            <td colspan="7" style="padding: 1.25rem; border-bottom: 2px solid var(--border-hairline);">
+                            <td colspan="7" class="drawer-content-box">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.5rem;">
                                     <strong style="color: var(--text-primary); font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.4rem;">
                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                                        {% if lang == 'en' %}Live Support Console for{% else %}Zásahová konzola podpory pre{% endif %} <span style="color: var(--ro-indigo);">{{ u.username }}</span> (ID: {{ u.id }})
+                                        {% if lang == 'en' %}Live Support Console for{% else %}Zásahová konzola podpory pre{% endif %} <span style="color: var(--ro-indigo);">{{ u.username }}</span> <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted);">(ID: {{ u.id }})</span>
                                     </strong>
-                                    <button type="button" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center;">
+                                    <button type="button" onclick="toggleUserSupportDrawer('{{ u.id }}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; padding: 0.25rem;">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                     </button>
                                 </div>
@@ -271,15 +270,15 @@
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
 
                                     <!-- Akcia 1: Zmena alebo vygenerovanie hesla -->
-                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                    <div class="sub-panel-card">
+                                        <div class="sub-panel-header">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
                                             {% if lang == 'en' %}Password Reset / Change{% else %}Reset alebo zmena hesla{% endif %}
                                         </div>
                                         <form method="post" action="{% url 'admin_user_set_password' u.id %}">
                                             {% csrf_token %}
                                             <div style="display: flex; gap: 0.4rem; margin-bottom: 0.5rem;">
-                                                <input type="text" name="new_password" placeholder="{% if lang == 'en' %}Enter new password...{% else %}Zadaj nové heslo...{% endif %}" class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <input type="text" name="new_password" placeholder="{% if lang == 'en' %}Enter new password...{% else %}Zadaj nové heslo...{% endif %}" class="form-control" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
                                                 <button type="submit" name="action" value="set" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
                                                     {% if lang == 'en' %}Set{% else %}Nastaviť{% endif %}
                                                 </button>
@@ -292,15 +291,15 @@
                                     </div>
 
                                     <!-- Akcia 2: Oprava vyhasnutého Streaku -->
-                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                    <div class="sub-panel-card">
+                                        <div class="sub-panel-header">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="color:var(--flame-text);"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
                                             {% if lang == 'en' %}Streak Rescue & Repair{% else %}Oprava / Obnova dennej série{% endif %}
                                         </div>
                                         <form method="post" action="{% url 'admin_user_streak' u.id %}">
                                             {% csrf_token %}
                                             <div style="display: flex; gap: 0.4rem;">
-                                                <input type="number" name="streak_value" value="{{ u.current_streak|default:1 }}" min="1" max="999" class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
+                                                <input type="number" name="streak_value" value="{{ u.current_streak|default:1 }}" min="1" max="999" class="form-control" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
                                                 <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
                                                     {% if lang == 'en' %}Set Days{% else %}Nastaviť dni{% endif %}
                                                 </button>
@@ -312,19 +311,19 @@
                                     </div>
 
                                     <!-- Akcia 3: Úprava hernej meny Doros & XP -->
-                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                    <div class="sub-panel-card">
+                                        <div class="sub-panel-header">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
                                             {% if lang == 'en' %}Adjust Doros & XP{% else %}Úprava mincí Doros a XP{% endif %}
                                         </div>
                                         <form method="post" action="{% url 'admin_user_economy' u.id %}">
                                             {% csrf_token %}
                                             <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
-                                                <input type="number" name="doros_change" placeholder="± Doros" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
-                                                <input type="number" name="xp_change" placeholder="± XP" class="form-input" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
+                                                <input type="number" name="doros_change" placeholder="± Doros" class="form-control" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
+                                                <input type="number" name="xp_change" placeholder="± XP" class="form-control" style="width: 50%; font-size: 0.82rem; padding: 0.4rem 0.6rem; font-variant-numeric: tabular-nums;">
                                             </div>
                                             <div style="display: flex; gap: 0.4rem;">
-                                                <input type="text" name="reason" placeholder="Dôvod zásahu..." class="form-input" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
+                                                <input type="text" name="reason" placeholder="Dôvod zásahu..." class="form-control" style="flex: 1; font-size: 0.82rem; padding: 0.4rem 0.6rem;">
                                                 <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.78rem;">
                                                     {% if lang == 'en' %}Apply{% else %}Aplikovať{% endif %}
                                                 </button>
@@ -333,15 +332,15 @@
                                     </div>
 
                                     <!-- Akcia 4: Zmena Roly a Predplatného -->
-                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                    <div class="sub-panel-card">
+                                        <div class="sub-panel-header">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
                                             {% if lang == 'en' %}Role & Subscription Tier{% else %}Rola a Úroveň predplatného{% endif %}
                                         </div>
                                         <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
                                             <form method="post" action="{% url 'admin_user_update_role' u.id %}" style="flex: 1; display: flex; gap: 0.3rem;">
                                                 {% csrf_token %}
-                                                <select name="role" class="form-input" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
+                                                <select name="role" class="form-select" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
                                                     {% for r_val, r_label in roles %}
                                                     <option value="{{ r_val }}" {% if u.role == r_val %}selected{% endif %}>{{ r_label }}</option>
                                                     {% endfor %}
@@ -353,7 +352,7 @@
 
                                             <form method="post" action="{% url 'admin_user_update_tier' u.id %}" style="flex: 1; display: flex; gap: 0.3rem;">
                                                 {% csrf_token %}
-                                                <select name="subscription_tier" class="form-input" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
+                                                <select name="subscription_tier" class="form-select" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
                                                     {% for t_val, t_label in tiers %}
                                                     <option value="{{ t_val }}" {% if u.subscription_tier == t_val %}selected{% endif %}>{{ t_label }}</option>
                                                     {% endfor %}
@@ -367,7 +366,7 @@
                                         <!-- Trieda -->
                                         <form method="post" action="{% url 'admin_user_assign_class' u.id %}" style="display: flex; gap: 0.3rem; margin-top: 0.4rem;">
                                             {% csrf_token %}
-                                            <select name="school_class_id" class="form-input" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
+                                            <select name="school_class_id" class="form-select" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;">
                                                 <option value="">{% if lang == 'en' %}No school class{% else %}Bez priradenej triedy{% endif %}</option>
                                                 {% for c in all_classes %}
                                                 <option value="{{ c.id }}" {% if u.school_class_id == c.id %}selected{% endif %}>{{ c.name }}</option>
@@ -378,8 +377,8 @@
                                     </div>
 
                                     <!-- Akcia 5: Ďalšie rýchle fixy (Reset AI limitu, Ban, Zmazanie) -->
-                                    <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); display: flex; flex-direction: column; justify-content: space-between;">
-                                        <div style="font-weight: 700; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                                    <div class="sub-panel-card">
+                                        <div class="sub-panel-header">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                             {% if lang == 'en' %}AI Limit, Ban & Danger Zone{% else %}AI limit a Správa účtu{% endif %}
                                         </div>
@@ -444,7 +443,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
 
             <!-- Generátor licenčného kľúča -->
-            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem;">
                 <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3M18.5 4.5l3 3"/></svg>
                     {% if lang == 'en' %}Create New License Key{% else %}Vygenerovať nový licenčný kľúč{% endif %}
@@ -455,7 +454,7 @@
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Subscription Tier{% else %}Typ predplatného{% endif %}
                         </label>
-                        <select name="tier" class="form-input" style="width: 100%;">
+                        <select name="tier" class="form-select" style="width: 100%;">
                             <option value="EDU">EDU (Školská triedna licencia)</option>
                             <option value="PRO">PRO (Individuálna Codoro PRO)</option>
                         </select>
@@ -465,14 +464,14 @@
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Max Activations (e.g. 30 for class){% else %}Max počet aktivácií (napr. 30 pre triedu){% endif %}
                         </label>
-                        <input type="number" name="max_uses" value="30" min="1" max="500" class="form-input" style="width: 100%; font-variant-numeric: tabular-nums;">
+                        <input type="number" name="max_uses" value="30" min="1" max="500" class="form-control" style="width: 100%; font-variant-numeric: tabular-nums;">
                     </div>
 
                     <div style="margin-bottom: 1rem;">
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Custom Key Code (Leave empty to auto-generate){% else %}Vlastný kód (alebo nechaj prázdne pre auto-kód){% endif %}
                         </label>
-                        <input type="text" name="code" placeholder="EDU-2027-XXXX" class="form-input" style="width: 100%; text-transform: uppercase; font-family: var(--font-mono);">
+                        <input type="text" name="code" placeholder="EDU-2027-XXXX" class="form-control" style="width: 100%; text-transform: uppercase; font-family: var(--font-mono);">
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; font-weight: 700;">
@@ -482,12 +481,12 @@
             </div>
 
             <!-- Rýchla aktivácia pre používateľa -->
-            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem;">
                 <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--visor-cyan);"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                     {% if lang == 'en' %}Direct License Assignment{% else %}Priame priradenie licencie študentovi{% endif %}
                 </h3>
-                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.45;">
                     {% if lang == 'en' %}Directly unlock PRO or EDU tier for any student by entering their username.{% else %}Priamo odomkni EDU alebo PRO licenciu pre používateľa zadaním jeho prihlasovacieho mena.{% endif %}
                 </p>
                 <form method="post" action="{% url 'admin_license_quick_assign' %}">
@@ -496,14 +495,14 @@
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Username{% else %}Prihlasovacie meno používateľa{% endif %}
                         </label>
-                        <input type="text" name="username" placeholder="student..." required class="form-input" style="width: 100%;">
+                        <input type="text" name="username" placeholder="student..." required class="form-control" style="width: 100%;">
                     </div>
 
                     <div style="margin-bottom: 1rem;">
                         <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
                             {% if lang == 'en' %}Select Active License{% else %}Vyber aktívnu licenciu{% endif %}
                         </label>
-                        <select name="license_id" class="form-input" style="width: 100%;">
+                        <select name="license_id" class="form-select" style="width: 100%;">
                             {% for lic in licenses %}
                             {% if lic.is_active and lic.current_uses < lic.max_uses %}
                             <option value="{{ lic.id }}">{{ lic.code }} ({{ lic.tier }} · {{ lic.current_uses }}/{{ lic.max_uses }} využití)</option>
@@ -521,33 +520,33 @@
         </div>
 
         <!-- Zoznam všetkých licencií -->
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+        <div class="data-table-card">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                <table class="data-table">
                     <thead>
-                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}License Code{% else %}Kód licencie{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Tier{% else %}Typ{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Usage{% else %}Využitie{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Created{% else %}Vytvorená{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}Actions{% else %}Akcie{% endif %}</th>
+                        <tr>
+                            <th>{% if lang == 'en' %}License Code{% else %}Kód licencie{% endif %}</th>
+                            <th>{% if lang == 'en' %}Tier{% else %}Typ{% endif %}</th>
+                            <th>{% if lang == 'en' %}Usage{% else %}Využitie{% endif %}</th>
+                            <th>{% if lang == 'en' %}Created{% else %}Vytvorená{% endif %}</th>
+                            <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th style="text-align: right;">{% if lang == 'en' %}Actions{% else %}Akcie{% endif %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for lic in licenses %}
-                        <tr style="border-bottom: 1px solid var(--border-hairline);">
-                            <td style="padding: 0.75rem 1rem;">
+                        <tr>
+                            <td>
                                 <strong style="font-family: var(--font-mono); font-size: 0.92rem; color: var(--ro-indigo);">
                                     {{ lic.code }}
                                 </strong>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs);">
                                     {{ lic.tier }}
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <div style="flex: 1; height: 6px; background: var(--bg-subtle); border-radius: var(--radius-pill); overflow: hidden; width: 100px;">
                                         <div class="license-usage-bar" data-width="{% widthratio lic.current_uses lic.max_uses 100 %}"></div>
@@ -557,28 +556,28 @@
                                     </span>
                                 </div>
                             </td>
-                            <td style="padding: 0.75rem 1rem; font-size: 0.78rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                            <td style="font-size: 0.78rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                 {{ lic.created_at|date:"d.m.Y H:i" }}
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 {% if lic.is_active and lic.current_uses < lic.max_uses %}
                                 <span style="color: #10B981; font-weight: 700; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                                    <span class="status-dot dot-active"></span>
                                     {% if lang == 'en' %}Active{% else %}Aktívna{% endif %}
                                 </span>
                                 {% elif lic.current_uses >= lic.max_uses %}
                                 <span style="color: var(--gold-text); font-weight: 700; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--gold-text); display: inline-block;"></span>
+                                    <span class="status-dot dot-warn"></span>
                                     {% if lang == 'en' %}Exhausted{% else %}Vyčerpaná{% endif %}
                                 </span>
                                 {% else %}
                                 <span style="color: #EF4444; font-weight: 700; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #EF4444; display: inline-block;"></span>
+                                    <span class="status-dot dot-admin"></span>
                                     {% if lang == 'en' %}Disabled{% else %}Neaktívna{% endif %}
                                 </span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 0.75rem 1rem; text-align: right;">
+                            <td style="text-align: right;">
                                 <div style="display: flex; justify-content: flex-end; gap: 0.4rem;">
                                     <form method="post" action="{% url 'admin_license_toggle' lic.id %}">
                                         {% csrf_token %}
@@ -620,43 +619,43 @@
                 </a>
             </div>
 
-            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+            <div class="data-table-card">
                 <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                    <table class="data-table">
                         <thead>
-                            <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
-                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Date{% else %}Dátum{% endif %}</th>
-                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}School / Educator{% else %}Škola / Vyučujúci{% endif %}</th>
-                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Contact{% else %}Kontakt{% endif %}</th>
-                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Students{% else %}Žiaci{% endif %}</th>
-                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Generated License{% else %}Priradený kľúč{% endif %}</th>
-                                <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
-                                <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}Admin Action{% else %}Rozhodnutie{% endif %}</th>
+                            <tr>
+                                <th>{% if lang == 'en' %}Date{% else %}Dátum{% endif %}</th>
+                                <th>{% if lang == 'en' %}School / Educator{% else %}Škola / Vyučujúci{% endif %}</th>
+                                <th>{% if lang == 'en' %}Contact{% else %}Kontakt{% endif %}</th>
+                                <th>{% if lang == 'en' %}Students{% else %}Žiaci{% endif %}</th>
+                                <th>{% if lang == 'en' %}Generated License{% else %}Priradený kľúč{% endif %}</th>
+                                <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                                <th style="text-align: right;">{% if lang == 'en' %}Admin Action{% else %}Rozhodnutie{% endif %}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for req in school_requests %}
-                            <tr style="border-bottom: 1px solid var(--border-hairline);">
-                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                            <tr>
+                                <td style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                     {{ req.created_at|date:"d.m.Y H:i" }}
                                 </td>
-                                <td style="padding: 0.75rem 1rem;">
+                                <td>
                                     <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">{{ req.school_name }}</strong>
                                     <span style="font-size: 0.78rem; color: var(--text-muted);">{{ req.contact_name }}</span>
                                     {% if req.note %}
                                     <p style="font-size: 0.74rem; color: var(--text-secondary); margin: 0.2rem 0 0 0; font-style: italic;">"{{ req.note }}"</p>
                                     {% endif %}
                                 </td>
-                                <td style="padding: 0.75rem 1rem; font-size: 0.78rem;">
+                                <td style="font-size: 0.78rem;">
                                     <a href="mailto:{{ req.email }}" style="color: var(--ro-indigo); font-weight: 600; display: block;">{{ req.email }}</a>
                                     {% if req.phone %}
                                     <span style="color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ req.phone }}</span>
                                     {% endif %}
                                 </td>
-                                <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
+                                <td style="font-family: var(--font-mono); font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
                                     {{ req.estimated_students }}
                                 </td>
-                                <td style="padding: 0.75rem 1rem;">
+                                <td>
                                     {% if req.generated_license %}
                                     <code style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; color: var(--ro-indigo);">{{ req.generated_license.code }}</code>
                                     <span style="display: block; font-size: 0.7rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ req.generated_license.current_uses }}/{{ req.generated_license.max_uses }} využití</span>
@@ -664,7 +663,7 @@
                                     <span style="color: var(--text-muted); font-size: 0.78rem;">—</span>
                                     {% endif %}
                                 </td>
-                                <td style="padding: 0.75rem 1rem;">
+                                <td>
                                     {% if req.status == 'APPROVED' %}
                                     <span style="color: #10B981; font-weight: 800; font-size: 0.76rem; background: var(--emerald-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
                                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -682,7 +681,7 @@
                                     </span>
                                     {% endif %}
                                 </td>
-                                <td style="padding: 0.75rem 1rem; text-align: right;">
+                                <td style="text-align: right;">
                                     <div style="display: flex; justify-content: flex-end; gap: 0.4rem;">
                                         {% if req.status != 'APPROVED' %}
                                         <form method="post" action="{% url 'admin_license_request_approve' req.id %}">
@@ -723,7 +722,7 @@
          TAB 3: GLOBAL CURRICULUM (18 MODULOV & RE-SYNC)
          ======================================================================== -->
     <div class="admin-tab-content" id="tab-content-curriculum" style="display: none;">
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="card-surface" style="padding: 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
                 <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 0.45rem;">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -744,27 +743,27 @@
         </div>
 
         <!-- Tabuľka 18 modulov -->
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+        <div class="data-table-card">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                <table class="data-table">
                     <thead>
-                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase;">
-                            <th style="padding: 0.75rem 1rem;">#</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Module Title{% else %}Názov modulu{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Track{% else %}Kariérna cesta{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Lessons / Tasks{% else %}Lekcie / Úlohy{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Access Tier{% else %}Prístup{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem;">{% if lang == 'en' %}Publish Status{% else %}Publikovanie{% endif %}</th>
-                            <th style="padding: 0.75rem 1rem; text-align: right;">{% if lang == 'en' %}CMS Actions{% else %}Akcie v CMS{% endif %}</th>
+                        <tr>
+                            <th>#</th>
+                            <th>{% if lang == 'en' %}Module Title{% else %}Názov modulu{% endif %}</th>
+                            <th>{% if lang == 'en' %}Track{% else %}Kariérna cesta{% endif %}</th>
+                            <th>{% if lang == 'en' %}Lessons / Tasks{% else %}Lekcie / Úlohy{% endif %}</th>
+                            <th>{% if lang == 'en' %}Access Tier{% else %}Prístup{% endif %}</th>
+                            <th>{% if lang == 'en' %}Publish Status{% else %}Publikovanie{% endif %}</th>
+                            <th style="text-align: right;">{% if lang == 'en' %}CMS Actions{% else %}Akcie v CMS{% endif %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for mod in modules %}
-                        <tr style="border-bottom: 1px solid var(--border-hairline);">
-                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-weight: 800; color: var(--ro-indigo); font-variant-numeric: tabular-nums;">
+                        <tr>
+                            <td style="font-family: var(--font-mono); font-weight: 800; color: var(--ro-indigo); font-variant-numeric: tabular-nums;">
                                 {{ mod.order|stringformat:"02d" }}
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <strong style="color: var(--text-primary); font-size: 0.9rem; display: block;">
                                     {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
                                 </strong>
@@ -772,15 +771,15 @@
                                     {{ mod.estimated_hours }}h · {{ mod.get_difficulty_level_display }}
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);">
                                     {{ mod.get_track_display }}
                                 </span>
                             </td>
-                            <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
+                            <td style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums;">
                                 {{ mod.lesson_count }} lekcií / {{ mod.exercise_count }} úloh
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <form method="post" action="{% url 'admin_module_toggle_pro' mod.id %}">
                                     {% csrf_token %}
                                     {% if mod.is_pro_only %}
@@ -794,23 +793,23 @@
                                     {% endif %}
                                 </form>
                             </td>
-                            <td style="padding: 0.75rem 1rem;">
+                            <td>
                                 <form method="post" action="{% url 'admin_module_toggle_publish' mod.id %}">
                                     {% csrf_token %}
                                     {% if mod.is_published %}
                                     <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10B981; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                        <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                                        <span class="status-dot dot-active"></span>
                                         {% if lang == 'en' %}Published{% else %}Publikovaný{% endif %}
                                     </button>
                                     {% else %}
                                     <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem;">
-                                        <span style="width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--text-muted); display: inline-block;"></span>
+                                        <span class="status-dot dot-warn"></span>
                                         {% if lang == 'en' %}Draft{% else %}Koncept{% endif %}
                                     </button>
                                     {% endif %}
                                 </form>
                             </td>
-                            <td style="padding: 0.75rem 1rem; text-align: right;">
+                            <td style="text-align: right;">
                                 <a href="{% url 'cms_modules' %}" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                                     CMS
@@ -831,7 +830,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
 
             <!-- Karta: Databázové tabuľky a počty záznamov -->
-            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem;">
                 <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--ro-indigo);"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
                     {% if lang == 'en' %}Database Table Metrics{% else %}Metriky tabuliek databázy{% endif %}
@@ -873,7 +872,7 @@
             </div>
 
             <!-- Karta: Rýchle systémové akcie údržby -->
-            <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div class="card-surface" style="padding: 1.25rem;">
                 <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--gold-text);"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                     {% if lang == 'en' %}System Maintenance Actions{% else %}Systémové úkony údržby{% endif %}
@@ -917,7 +916,7 @@
          TAB 5: LIVE SUBMISSIONS & CODE MONITOR (LOGY RIEŠENÍ A CHÝB)
          ======================================================================== -->
     <div class="admin-tab-content" id="tab-content-logs" style="display: none;">
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div class="card-surface" style="padding: 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
             <div style="display: flex; gap: 0.5rem;">
                 <a href="{% url 'admin_dashboard' %}?tab=logs" class="btn btn-sm {% if not submission_filter %}btn-primary{% else %}btn-secondary{% endif %}" style="font-weight: 700;">
                     {% if lang == 'en' %}All Submissions{% else %}Všetky odovzdania{% endif %}
@@ -934,29 +933,29 @@
             </span>
         </div>
 
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden;">
+        <div class="data-table-card">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.86rem;">
+                <table class="data-table">
                     <thead>
-                        <tr style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-hairline); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;">
-                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Time{% else %}Čas{% endif %}</th>
-                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Student{% else %}Študent{% endif %}</th>
-                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Exercise / Lesson{% else %}Úloha / Lekcia{% endif %}</th>
-                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
-                            <th style="padding: 0.65rem 1rem;">{% if lang == 'en' %}Runtime{% else %}Doba behu{% endif %}</th>
-                            <th style="padding: 0.65rem 1rem; text-align: right;">{% if lang == 'en' %}Code & Traceback{% else %}Kód a výstup{% endif %}</th>
+                        <tr>
+                            <th>{% if lang == 'en' %}Time{% else %}Čas{% endif %}</th>
+                            <th>{% if lang == 'en' %}Student{% else %}Študent{% endif %}</th>
+                            <th>{% if lang == 'en' %}Exercise / Lesson{% else %}Úloha / Lekcia{% endif %}</th>
+                            <th>{% if lang == 'en' %}Status{% else %}Stav{% endif %}</th>
+                            <th>{% if lang == 'en' %}Runtime{% else %}Doba behu{% endif %}</th>
+                            <th style="text-align: right;">{% if lang == 'en' %}Code & Traceback{% else %}Kód a výstup{% endif %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for sub in recent_submissions %}
-                        <tr style="border-bottom: 1px solid var(--border-hairline);">
-                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                        <tr>
+                            <td style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                 {{ sub.created_at|date:"d.m.Y H:i:s" }}
                             </td>
-                            <td style="padding: 0.65rem 1rem;">
+                            <td>
                                 <strong style="color: var(--text-primary);">{{ sub.student.username }}</strong>
                             </td>
-                            <td style="padding: 0.65rem 1rem;">
+                            <td>
                                 {% if sub.exercise %}
                                 <span style="color: var(--text-secondary);">{{ sub.exercise.title_sk }}</span>
                                 <span style="font-size: 0.72rem; color: var(--text-muted); display: block; font-variant-numeric: tabular-nums;">Modul {{ sub.exercise.lesson.module.order|stringformat:"02d" }}</span>
@@ -964,7 +963,7 @@
                                 <span style="color: var(--text-muted);">—</span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 0.65rem 1rem;">
+                            <td>
                                 {% if sub.status == 'PASSED' %}
                                 <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: #10B981; background: var(--emerald-bg); padding: 0.15rem 0.45rem; border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 0.25rem;">
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -977,10 +976,10 @@
                                 </span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+                            <td style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
                                 {{ sub.execution_time_ms }} ms
                             </td>
-                            <td style="padding: 0.65rem 1rem; text-align: right;">
+                            <td style="text-align: right;">
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSubmissionTrace('{{ sub.id }}')" style="font-size: 0.74rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     {% if lang == 'en' %}Inspect{% else %}Pozrieť výstup{% endif %}
@@ -989,17 +988,17 @@
                         </tr>
 
                         <!-- Inšpekcia kódu a výstupu unit testov -->
-                        <tr id="sub-trace-{{ sub.id }}" style="display: none; background: #070B14;">
-                            <td colspan="6" style="padding: 1rem 1.25rem;">
+                        <tr id="sub-trace-{{ sub.id }}" style="display: none; background: var(--bg-subtle);">
+                            <td colspan="6" class="drawer-content-box">
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                     <div>
-                                        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; margin-bottom: 0.35rem;">
+                                        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem; font-weight: 700;">
                                             {% if lang == 'en' %}Submitted Python Code:{% else %}Odovzdaný Python kód študenta:{% endif %}
                                         </div>
-                                        <pre style="margin: 0; padding: 0.75rem; background: #0B1120; border: 1px solid #1E293B; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.78rem; color: #F8FAFC; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.submitted_code }}</pre>
+                                        <pre style="margin: 0; padding: 0.75rem; background: #070B14; border: 1px solid var(--border-hairline); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.78rem; color: #F8FAFC; white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto;">{{ sub.submitted_code }}</pre>
                                     </div>
                                     <div>
-                                        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; margin-bottom: 0.35rem;">
+                                        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem; font-weight: 700;">
                                             {% if lang == 'en' %}Test Execution Output / Traceback:{% else %}Výstup testovacieho behu / Traceback:{% endif %}
                                         </div>
                                         <pre class="sub-output-log status-{{ sub.status }}">{{ sub.output_log }}</pre>
