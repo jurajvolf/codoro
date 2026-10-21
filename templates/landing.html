@@ -11,492 +11,367 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-<!-- REAKTÍVNE POHYBLIVÉ POZADIE S CYBERNETICKÝM MESHOM A KANVASOM -->
-<div class="landing-canvas-wrapper" aria-hidden="true">
-    <canvas id="heroBackgroundCanvas" class="hero-interactive-canvas"></canvas>
-    <div class="aurora-orb aurora-orb-1"></div>
-    <div class="aurora-orb aurora-orb-2"></div>
-    <div class="aurora-orb aurora-orb-3"></div>
-    <div class="landing-grid-overlay"></div>
+<!-- ATMOSPHERIC SUBTLE BACKDROP & GRID -->
+<div class="landing-ambient-backdrop" aria-hidden="true">
+    <div class="landing-ambient-glow"></div>
+    <div class="landing-ambient-grid"></div>
 </div>
 
 <div class="landing-page-root">
 
-    <!-- HERO SEKCE S AURORA EFEKTOM, INTERAKTÍVNYM KANVASOM A PUNCHLINE -->
-    <section class="landing-hero-section" id="hero">
-        <div class="hero-content reveal-on-scroll">
-            <div class="hero-badge-pill">
-                <span class="pulse-dot"></span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ro-indigo); flex-shrink: 0;">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                <span class="t-shimmer">
-                    {% if lang == 'en' %}
-                    MATURA GRADUATION PROJECT 2026/2027 • THEME #22 • SOŠ TECHNICKÁ NIŽNÁ
-                    {% else %}
-                    MATURITNÝ PROJEKT 2026/2027 • TÉMA Č. 22 • SOŠ TECHNICKÁ NIŽNÁ
-                    {% endif %}
-                </span>
-            </div>
+    <!-- 1. HERO SECTION: CONFIDENCE, CLARITY & HIGH CONVERSION -->
+    <section class="landing-hero" id="hero">
+        <h1 class="landing-hero-headline">
+            {% if lang == 'en' %}
+            Master Python Programming.<br>
+            <span class="headline-accent">Built for Genuine Understanding.</span>
+            {% else %}
+            Nauč sa programovať v Pythone.<br>
+            <span class="headline-accent">Bez skratiek, so skutočným pochopením.</span>
+            {% endif %}
+        </h1>
 
-            <h1 class="hero-headline">
-                {% if lang == 'en' %}
-                Master Python Programming.<br>
-                <span class="hero-gradient-text">From First Variable to Graduation.</span>
-                {% else %}
-                Nauč sa programovať v Pythone.<br>
-                <span class="hero-gradient-text">Od prvej premennej po maturitu.</span>
-                {% endif %}
-            </h1>
+        <p class="landing-hero-subhead">
+            {% if lang == 'en' %}
+            No passive video bingeing, no mindless copy-pasting from ChatGPT. Codoro combines an in-browser Python AST sandbox, Socratic AI guidance, Doros classroom economy, and live teacher supervision in one developer platform.
+            {% else %}
+            Žiadne pasívne pozeranie videí ani bezhlavé kopírovanie hotového kódu z ChatGPT. Codoro spája prehliadačový Python sandbox, Sokratovského AI tútora Codo, hernú ekonomiku Doros a prepojenie celej triedy s učiteľom v jednom ucelenom vývojárskom systéme.
+            {% endif %}
+        </p>
 
-            <p class="hero-subhead">
-                {% if lang == 'en' %}
-                Codoro unites an in-browser Python IDE, Socratic AI tutor Codo, Doros token economy, and a real-time classroom ecosystem in one cohesive platform. Zero installation, 100% focused on genuine comprehension.
-                {% else %}
-                Codoro spája moderný prehliadačový Python editor, Sokratovského AI tútora Codo, hernú ekonomiku Doros a prepojenie celej triedy s učiteľom v jednom ucelenom systéme. Bez akejkoľvek inštalácie, s dôrazom na skutočné pochopenie.
-                {% endif %}
-            </p>
-
-            <div class="hero-cta-group">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary glow-effect">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                    {% if lang == 'en' %}Start Learning Free{% else %}Začať sa učiť zadarmo{% endif %}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cta-arrow-icon"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </a>
-                <a href="{% url 'get_license' %}" class="btn btn-secondary btn-hero-secondary">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                    </svg>
-                    {% if lang == 'en' %}For Schools & Teachers{% else %}Portál pre školy a učiteľov{% endif %}
-                </a>
-            </div>
-
-            <div class="hero-trust-row">
-                <span class="trust-chip">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    {% if lang == 'en' %}Zero installation required{% else %}100% v prehliadači bez inštalácie{% endif %}
-                </span>
-                <span class="trust-chip">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    {% if lang == 'en' %}Socratic AI guidance{% else %}Sokratovské AI navádzanie{% endif %}
-                </span>
-                <span class="trust-chip">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    {% if lang == 'en' %}18 Modules • 220+ Hours{% else %}18 Modulov • 220+ Hodín výučby{% endif %}
-                </span>
-                <span class="trust-chip">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    {% if lang == 'en' %}100% Bilingual (SK / EN){% else %}Plne v slovenčine aj angličtine{% endif %}
-                </span>
-            </div>
+        <div class="landing-hero-actions">
+            <a href="{% url 'register' %}" class="btn btn-hero-primary">
+                {% if lang == 'en' %}Start Learning Free{% else %}Začať sa učiť zadarmo{% endif %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#curriculum" class="btn btn-hero-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                {% if lang == 'en' %}Explore 18 Modules{% else %}Prezrieť 18 modulov kurikula{% endif %}
+            </a>
+            <a href="{% url 'get_license' %}" class="btn btn-hero-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                {% if lang == 'en' %}For Schools & Teachers{% else %}Portál pre školy a učiteľov{% endif %}
+            </a>
         </div>
 
-        <!-- MULTI-SNIPPET INTERAKTÍVNE IDE & CODO TÚTOR SHOWCASE -->
-        <div class="hero-ide-preview reveal-on-scroll" id="ide">
-            <!-- POHYBLIVÉ PLÁVAJÚCE WIDGETY S PARALAXOU -->
-            <div class="floating-widget widget-top-right">
-                <div class="widget-icon cyan">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <div>
-                    <span class="widget-sub">AST Sandbox</span>
-                    <strong class="widget-main">Izolovaný podproces</strong>
-                </div>
-            </div>
+        <!-- MINIMALIST INLINE TELEMETRY ROW (REPLACES GENERIC 4 STAT BOXES) -->
+        <div class="landing-telemetry-row">
+            <span class="telemetry-item">
+                <span class="telemetry-dot"></span>
+                <span>Python 3.12 AST Sandbox</span>
+            </span>
+            <span class="telemetry-sep">•</span>
+            <span class="telemetry-item">
+                <span class="telemetry-dot cyan"></span>
+                <span>{% if lang == 'en' %}Socratic AI Codo (Gemini 2.5){% else %}Sokratovský AI Tútor Codo (Gemini 2.5){% endif %}</span>
+            </span>
+            <span class="telemetry-sep">•</span>
+            <span class="telemetry-item">
+                <span class="telemetry-dot indigo"></span>
+                <span>{% if lang == 'en' %}18 Modules • 220+ Hours{% else %}18 Modulov • 220+ Hodín výučby{% endif %}</span>
+            </span>
+            <span class="telemetry-sep">•</span>
+            <span class="telemetry-item">
+                <span class="telemetry-dot gold"></span>
+                <span>{% if lang == 'en' %}100% Bilingual (SK / EN){% else %}100% v slovenčine i angličtine{% endif %}</span>
+            </span>
+        </div>
 
-            <div class="floating-widget widget-bottom-left">
-                <div class="widget-icon gold">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-                </div>
-                <div>
-                    <span class="widget-sub">Trieda IV.C</span>
-                    <strong class="widget-main">Top 5% v rebríčku</strong>
-                </div>
-            </div>
-
-            <div class="floating-widget widget-bottom-right">
-                <div class="widget-icon red">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/></svg>
-                </div>
-                <div>
-                    <span class="widget-sub">Denný Streak</span>
-                    <strong class="widget-main">14 dní aktivity</strong>
-                </div>
-            </div>
-
-            <div class="ide-window card-surface">
-                <div class="ide-window-bar">
-                    <div class="ide-window-dots">
-                        <span class="dot-red"></span>
-                        <span class="dot-yellow"></span>
-                        <span class="dot-green"></span>
+        <!-- 2. CENTERPIECE: INTERACTIVE LIVE SOCRATIC WORKBENCH -->
+        <div class="hero-workbench-wrapper" id="workbench">
+            <div class="hero-workbench">
+                <!-- Workbench Window Header -->
+                <div class="workbench-header">
+                    <div class="workbench-dots">
+                        <span class="workbench-dot red"></span>
+                        <span class="workbench-dot yellow"></span>
+                        <span class="workbench-dot green"></span>
                     </div>
 
-                    <!-- PREPÍNAČ 3 REÁLNYCH PYTHON ÚLOH -->
-                    <div class="ide-file-tabs">
-                        <button type="button" class="ide-tab-btn active" onclick="switchSnippet(0, this)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <!-- File Tabs Switcher -->
+                    <div class="workbench-tabs">
+                        <button type="button" class="workbench-tab-btn active" onclick="switchSnippet(0, this)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             <span>priemer_znamok.py</span>
                         </button>
-                        <button type="button" class="ide-tab-btn" onclick="switchSnippet(1, this)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <button type="button" class="workbench-tab-btn" onclick="switchSnippet(1, this)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             <span>02_caesar_sifra.py</span>
                         </button>
-                        <button type="button" class="ide-tab-btn" onclick="switchSnippet(2, this)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <button type="button" class="workbench-tab-btn" onclick="switchSnippet(2, this)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             <span>03_fibonacci.py</span>
                         </button>
                     </div>
 
-                    <div class="ide-window-meta">
-                        <span class="sandbox-badge">
-                            <span class="dot-pulse"></span>
-                            Python 3.12 Sandbox
-                        </span>
+                    <div class="workbench-status-pill">
+                        <span class="telemetry-dot cyan"></span>
+                        <span>AST Secure Sandbox</span>
                     </div>
                 </div>
 
-                <div class="ide-body">
-                    <div class="code-lines" id="editorCodeLines">
-                        <!-- Generované dynamicky cez JS pre plynulé prepínanie -->
+                <!-- Code Lines Area -->
+                <div class="workbench-body">
+                    <div id="editorCodeLines">
+                        <!-- Dynamicky generované cez JS -->
                     </div>
                 </div>
 
-                <div class="ide-toolbar">
-                    <div class="ide-toolbar-left">
-                        <button type="button" class="btn btn-primary btn-sm glow-effect" id="demoRunBtn" onclick="runInteractiveDemo()">
+                <!-- Interactive Toolbar -->
+                <div class="workbench-toolbar">
+                    <div style="display:flex; align-items:center; gap:0.85rem; flex-wrap:wrap;">
+                        <button type="button" class="workbench-run-btn" id="demoRunBtn" onclick="runInteractiveDemo()">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             <span id="demoRunBtnText">{% if lang == 'en' %}Run Sandbox Tests{% else %}Spustiť a otestovať kód{% endif %}</span>
                         </button>
-                        <span class="ide-reward-tag" id="demoRewardTag">
+                        <span class="workbench-reward-pill" id="demoRewardTag">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/></svg>
                             +35 XP • +10 Doros
                         </span>
                     </div>
-                    <span class="ide-time-tag" id="demoTimerTag">AST Static Safety: Verified</span>
+                    <span class="workbench-meta-info" id="demoTimerTag">AST Static Safety: Verified</span>
                 </div>
 
-                <!-- TERMINÁL A CODO TÚTOR ODPIS -->
-                <div class="ide-output-panel">
-                    <div class="ide-test-cases" id="demoTestCases">
-                        <!-- Generované dynamicky -->
-                    </div>
-
-                    <div class="codo-ai-bubble">
-                        <div class="codo-ai-header">
-                            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="codo-bubble-avatar">
-                            <div class="codo-bubble-title">
-                                <strong>Codo</strong>
-                                <span class="codo-pill">{% if lang == 'en' %}Socratic AI Tutor{% else %}Sokratovský AI Tútor{% endif %}</span>
-                            </div>
-                            <span class="codo-model-pill">Gemini 2.5 Flash</span>
+                <!-- Split Output Deck: Test Runner (Left) & Socratic Codo Dialogue (Right) -->
+                <div class="workbench-deck">
+                    <div class="deck-tests-panel">
+                        <div class="deck-panel-title">
+                            <span>{% if lang == 'en' %}Automated Unit Tests{% else %}Automatické Unit Testy{% endif %}</span>
+                            <span style="color:#10b981; font-weight:600;">3 / 3 PASS</span>
                         </div>
-                        <p class="codo-ai-text" id="demoCodoText">
+                        <div id="demoTestCases">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <div class="deck-codo-panel">
+                        <div class="codo-deck-header">
+                            <div class="codo-deck-brand">
+                                <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="codo-deck-avatar">
+                                <div>
+                                    <span class="codo-deck-name">Codo</span>
+                                    <span class="codo-deck-tag">Gemini 2.5 Flash</span>
+                                </div>
+                            </div>
+                            <div class="codo-compare-toggle">
+                                <button type="button" class="codo-mode-btn active" id="btnModeCodo" onclick="toggleCodoMode('codo')">
+                                    {% if lang == 'en' %}Socratic Codo{% else %}Sokratovský Codo{% endif %}
+                                </button>
+                                <button type="button" class="codo-mode-btn" id="btnModeChatGPT" onclick="toggleCodoMode('chatgpt')">
+                                    {% if lang == 'en' %}Standard ChatGPT{% else %}Bežný ChatGPT{% endif %}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="codo-dialogue-content" id="demoCodoDialogue">
                             <!-- Injected by script -->
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- METRICS TICKER ROW S ANIMOVANÝMI POČÍTADLAMI -->
-    <section class="landing-metrics-ribbon card-surface reveal-on-scroll" id="metrics">
-        <div class="metric-ribbon-item">
-            <div class="metric-icon-box indigo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                    <line x1="9" y1="7" x2="15" y2="7"/>
-                    <line x1="9" y1="11" x2="13" y2="11"/>
-                </svg>
-            </div>
-            <div class="metric-data">
-                <div class="metric-val-row">
-                    <strong class="metric-val counter-val" data-target="{{ total_modules|default:'18' }}">0</strong>
-                </div>
-                <span class="metric-lbl">{% if lang == 'en' %}Learning Modules{% else %}Učebných modulov kurikula{% endif %}</span>
-            </div>
-        </div>
-        <div class="metric-ribbon-item">
-            <div class="metric-icon-box cyan">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                </svg>
-            </div>
-            <div class="metric-data">
-                <div class="metric-val-row">
-                    <strong class="metric-val counter-val" data-target="{{ total_hours|default:'220' }}">0</strong>
-                    <span class="metric-suffix">+</span>
-                </div>
-                <span class="metric-lbl">{% if lang == 'en' %}Hours of Curriculum{% else %}Hodín študijného materiálu{% endif %}</span>
-            </div>
-        </div>
-        <div class="metric-ribbon-item">
-            <div class="metric-icon-box emerald">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="16 12 12 8 8 12"/>
-                    <line x1="12" y1="16" x2="12" y2="8"/>
-                </svg>
-            </div>
-            <div class="metric-data">
-                <div class="metric-val-row">
-                    <strong class="metric-val counter-val" data-target="{{ total_exercises|default:'250' }}">0</strong>
-                    <span class="metric-suffix">+</span>
-                </div>
-                <span class="metric-lbl">{% if lang == 'en' %}Interactive Exercises{% else %}Praktických úloh a unit testov{% endif %}</span>
-            </div>
-        </div>
-        <div class="metric-ribbon-item">
-            <div class="metric-icon-box gold">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
-                    <path d="M12 2a10 10 0 0 1 10 10h-10V2z"/>
-                    <circle cx="12" cy="12" r="4"/>
-                </svg>
-            </div>
-            <div class="metric-data">
-                <div class="metric-val-row">
-                    <strong class="metric-val counter-val" data-target="100">0</strong>
-                    <span class="metric-suffix">%</span>
-                </div>
-                <span class="metric-lbl">{% if lang == 'en' %}Socratic AI Feedback{% else %}Sokratovské navádzanie AI{% endif %}</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4 HLAVNÉ PILIERE - PREČO CODORO (SEKCIA #pillars) -->
-    <section class="landing-section" id="pillars">
-        <div class="section-header text-center reveal-on-scroll">
-            <span class="section-kicker">{% if lang == 'en' %}COMPETITIVE ADVANTAGE{% else %}UNIKÁTNA HODNOTA PRE VÝUČBU{% endif %}</span>
-            <h2 class="section-title">
+    <!-- 3. ARCHITECTURAL ADVANTAGE: ASYMMETRICAL BENTO GRID (#pillars) -->
+    <section class="landing-section-deck" id="pillars">
+        <div class="landing-section-header">
+            <h2 class="landing-section-title">
                 {% if lang == 'en' %}
-                4 Pillars Where Codoro Outperforms Traditional Platforms
+                Pedagogical Rigor Meets Modern Engineering
                 {% else %}
-                4 Piliere, ktorými Codoro prekonáva bežné výučbové nástroje
+                4 Piliere, ktorými Codoro prekonáva bežné kurzy
                 {% endif %}
             </h2>
-            <p class="section-lead">
+            <p class="landing-section-subhead">
                 {% if lang == 'en' %}
-                Generic apps are built for solitary learning and output full answers. Codoro connects the student, the class, and the teacher through pedagogical rigor and a real school economy.
+                Generic apps are built for solitary learning and output full answers. Codoro connects the student, the class, and the teacher through genuine comprehension and real incentives.
                 {% else %}
-                Bežné aplikácie sú navrhnuté pre samoukov a AI vám napíše hotové riešenie. Codoro prepája študenta, triedu a učiteľa prostredníctvom pedagogického prístupu a skutočnej školskej ekonomiky.
+                Bežné platformy sú navrhnuté pre izolovaných samoukov a AI vám napíše hotové riešenie bez pochopenia. Codoro prepája študenta, triedu a pedagóga cez sokratovské vedenie a riadenú školskú ekonomiku.
                 {% endif %}
             </p>
         </div>
 
-        <div class="pillars-grid">
-            <!-- PILIER 1: SOKRATOVSKÉ AI -->
-            <div class="pillar-card card-surface spotlight-card reveal-on-scroll" id="codo-ai">
-                <div class="pillar-icon-box cyan">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <circle cx="12" cy="12" r="4"/>
-                        <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
-                        <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
-                        <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
-                        <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
+        <div class="landing-bento-grid">
+            <!-- BENTO TILE 1: SOKRATOVSKÉ AI (SPAN 7) -->
+            <div class="bento-card bento-span-7" id="codo-ai">
+                <div class="bento-icon-pill cyan">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
                     </svg>
                 </div>
-                <h3 class="pillar-title">
-                    {% if lang == 'en' %}1. Socratic AI Tutor Codo{% else %}1. Sokratovský AI Tútor Codo{% endif %}
+                <h3 class="bento-title">
+                    {% if lang == 'en' %}1. Socratic AI Tutor Codo (Zero Leaks){% else %}1. Sokratovský AI Tútor Codo (Žiadny hotový kód){% endif %}
                 </h3>
-                <p class="pillar-desc">
+                <p class="bento-desc">
                     {% if lang == 'en' %}
-                    Standard ChatGPT gives students the full solution immediately, resulting in zero retention. Codo is constrained by strict pedagogical prompts: it analyzes failing unit test tracebacks and responds with guiding questions pointing to the exact line and logic.
+                    Standard LLMs immediately dump complete code solutions, leading to zero retention and failing exams. Codo is governed by strict pedagogical system constraints: it inspects the failing AST traceback and guides the student with diagnostic questions pointing to the exact line and logic.
                     {% else %}
-                    Bežný ChatGPT napíše žiakovi celý kód, takže sa nič nenaučí. Codo má striktnú inštrukciu nikdy neprezradiť hotové riešenie – analyzuje chybu v unit testoch a sokratovskou otázkou navedie študenta na správny riadok a logiku.
+                    Bežný ChatGPT napíše žiakovi celý kód, takže sa nič nenaučí a na písomke prepadne. Codo má striktnú pedagogickú inštrukciu nikdy neprezradiť riešenie – analyzuje chybu v unit testoch a otázkou navedie študenta na správny riadok a logiku.
                     {% endif %}
                 </p>
-                <div class="pillar-tag-list">
-                    <span class="pillar-chip">Gemini 2.5 Flash</span>
-                    <span class="pillar-chip">Pedagogický Sokratovský filter</span>
-                    <span class="pillar-chip">SK / EN podpora</span>
+                <div class="bento-preview-box">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem; font-family:var(--font-mono); font-size:0.75rem; color:#64748b;">
+                        <span>Gemini 2.5 Flash API</span>
+                        <span style="color:#10b981;">100% Deterministic Local Fallback</span>
+                    </div>
+                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#38bdf8;">
+                        &gt; Defenzívny filter: Zákaz generovania syntaxe riešenia. Iba sokratovské otázky.
+                    </div>
                 </div>
             </div>
 
-            <!-- PILIER 2: TRIEDNY EKOSYSTÉM -->
-            <div class="pillar-card card-surface spotlight-card reveal-on-scroll">
-                <div class="pillar-icon-box indigo">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            <!-- BENTO TILE 2: ŠKOLSKÁ EKONOMIKA SO SKLADOM (SPAN 5) -->
+            <div class="bento-card bento-span-5">
+                <div class="bento-icon-pill gold">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/>
                     </svg>
                 </div>
-                <h3 class="pillar-title">
-                    {% if lang == 'en' %}2. Classroom Ecosystem & Teacher Studio{% else %}2. Prepojenie Žiak – Trieda – Učiteľ{% endif %}
+                <h3 class="bento-title">
+                    {% if lang == 'en' %}2. Doros Economy with Stock Quotas{% else %}2. Školská ekonomika so skladom{% endif %}
                 </h3>
-                <p class="pillar-desc">
+                <p class="bento-desc">
                     {% if lang == 'en' %}
-                    Students join real school classes (e.g. IV.C) with a class code. Teachers have a full CMS studio to monitor live progress, create customized tasks, review code submissions, and batch-provision student accounts in 5 seconds without diacritics issues.
+                    Doros tokens are not cosmetic numbers. Teachers offer real school perks (homework waiver, +10% test bonus) with strict weekly stock quotas to prevent inflation.
                     {% else %}
-                    Študenti sú spojení do reálnych školských tried (napr. IV.C) pomocou kódu. Učiteľ má k dispozícii kompletné štúdio na sledovanie živého progresu, zadávanie úloh, hodnotenie kódov a hromadné generovanie účtov za 5 sekúnd bez problémov s diakritikou.
+                    Mince Doros nie sú len bezcenné čísla na obrazovke. Učiteľ v obchode vypisuje reálne školské odmeny (odpustenie domácej úlohy, +10% bodov k písomke, žolík) s prísne obmedzeným skladom pre triedu.
                     {% endif %}
                 </p>
-                <div class="pillar-tag-list">
-                    <span class="pillar-chip">Kódy tried (IVC-2027)</span>
-                    <span class="pillar-chip">Hromadný import žiakov</span>
-                    <span class="pillar-chip">Spoločné triedne výzvy</span>
+                <div class="bento-preview-box">
+                    <div class="bento-stock-row">
+                        <span>Odpustenie domácej úlohy</span>
+                        <span class="stock-tag-finite">Sklad: 2 / 5 ks</span>
+                    </div>
+                    <div class="bento-stock-row">
+                        <span>+10 % bodov k písomke</span>
+                        <span class="stock-tag-finite">Sklad: 1 / 3 ks</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- PILIER 3: REÁLNA ŠKOLSKÁ EKONOMIKA -->
-            <div class="pillar-card card-surface spotlight-card reveal-on-scroll">
-                <div class="pillar-icon-box gold">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/>
+            <!-- BENTO TILE 3: TRIEDNY EKOSYSTÉM & UČITEĽ (SPAN 5) -->
+            <div class="bento-card bento-span-5">
+                <div class="bento-icon-pill">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                     </svg>
                 </div>
-                <h3 class="pillar-title">
-                    {% if lang == 'en' %}3. Doros Economy with Stock Management{% else %}3. Reálna školská ekonomika so skladom{% endif %}
+                <h3 class="bento-title">
+                    {% if lang == 'en' %}3. Classroom Ecosystem & CMS{% else %}3. Prepojenie Žiak – Trieda – Učiteľ{% endif %}
                 </h3>
-                <p class="pillar-desc">
+                <p class="bento-desc">
                     {% if lang == 'en' %}
-                    Tokens earned by solving exercises are not just vanity numbers. Teachers define real school benefits in the shop (homework waiver, test bonus, hint tokens) with strict weekly stock limits (e.g. 2 per week) to prevent inflation and abuse.
+                    Students join school classes with a 1-click code. Teachers have a full CMS studio for live monitoring, Class Quests, and batch account provisioning in 5 seconds without diacritics issues.
                     {% else %}
-                    Mince Doros nie sú len bezcenné čísla na obrazovke. Učiteľ v obchode vypisuje reálne školské odmeny (odpustenie domácej úlohy, +10% bodov k písomke, žolík) s prísne riadeným skladom pre triedu, aby nedošlo k inflácii a vykúpeniu.
+                    Študenti sa pripájajú do školskej triedy kódom (napr. IVC-2027). Učiteľ má k dispozícii kompletné štúdio na sledovanie živého progresu, spoločné triedne questy a vygenerovanie 30 žiackych účtov za 5 sekúnd.
                     {% endif %}
                 </p>
-                <div class="pillar-tag-list">
-                    <span class="pillar-chip">Riadené zásoby (Stock)</span>
-                    <span class="pillar-chip">Reálne školské kupóny</span>
-                    <span class="pillar-chip">Ochrana pred infláciou</span>
+                <div class="bento-preview-box">
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:0.78rem;">
+                        <span>Kód triedy: <strong>IVC-2027</strong></span>
+                        <span style="color:#10b981;">30 účtov za 5s</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- PILIER 4: MATURITNÝ ŠPECIÁL A DVOJJAZYČNOSŤ -->
-            <div class="pillar-card card-surface spotlight-card reveal-on-scroll">
-                <div class="pillar-icon-box emerald">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            <!-- BENTO TILE 4: 100% DVOJJAZYČNOSŤ & MATURITA (SPAN 7) -->
+            <div class="bento-card bento-span-7">
+                <div class="bento-icon-pill emerald">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
                     </svg>
                 </div>
-                <h3 class="pillar-title">
+                <h3 class="bento-title">
                     {% if lang == 'en' %}4. 100% Bilingual & High School Matura Prep{% else %}4. 100% Dvojjazyčnosť & Maturitný špeciál{% endif %}
                 </h3>
-                <p class="pillar-desc">
+                <p class="bento-desc">
                     {% if lang == 'en' %}
-                    Every lesson, theory, exercise, and AI prompt is completely bilingual (Slovak and English). Includes dedicated tracks for the practical part of the graduation exam (PČOZ MS), technical data parsing, and graduation certificate generation.
+                    Every lesson, exercise, and AI prompt is natively bilingual (Slovak and English). Includes dedicated preparation for the practical graduation exam (PČOZ MS), vocational measurement parsing, and cryptographic ciphers.
                     {% else %}
-                    Každá lekcia, teória, cvičenie aj odpovede AI tútora sú plne dvojjazyčné (SK/EN). Obsahuje špecializované moduly pre praktickú časť odbornej zložky maturitnej skúšky (PČOZ MS), merania v elektrotechnike/IMT a certifikáty s overovacím ID.
+                    Každá lekcia, teória, cvičenie aj odpovede AI tútora sú plne dvojjazyčné (SK/EN). Obsahuje špecializované moduly pre praktickú časť odbornej zložky maturitnej skúšky (PČOZ MS), spracovanie meraní a kryptografiu.
                     {% endif %}
                 </p>
-                <div class="pillar-tag-list">
-                    <span class="pillar-chip">100% SK / EN lokalizácia</span>
-                    <span class="pillar-chip">Zadania pre PČOZ MS</span>
-                    <span class="pillar-chip">Overiteľné certifikáty</span>
+                <div class="bento-preview-box" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; font-family:var(--font-mono); font-size:0.75rem;">
+                    <span>✓ PČOZ MS Špeciál</span>
+                    <span>✓ Odbor IMT & Elektrotechnika</span>
+                    <span>✓ Overiteľné certifikáty</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- UČEBNÉ CESTY A KURIKULUM (SEKCIA #curriculum) -->
-    <section class="landing-section" id="curriculum">
-        <div class="section-header text-center reveal-on-scroll">
-            <span class="section-kicker">{% if lang == 'en' %}COMPREHENSIVE SYLLABUS{% else %}ŠTRUKTÚROVANÉ UČIVO PRE STREDNÉ ŠKOLY{% endif %}</span>
-            <h2 class="section-title">
+    <!-- 4. INTERACTIVE CURRICULUM ROADMAP MATRIX (#curriculum) -->
+    <section class="landing-section-deck" id="curriculum">
+        <div class="landing-section-header">
+            <h2 class="landing-section-title">
                 {% if lang == 'en' %}
                 5 Career Tracks • 18 Modules • 220+ Hours
                 {% else %}
                 5 Kariérnych ciest • 18 Modulov • 220+ Hodín výučby
                 {% endif %}
             </h2>
-            <p class="section-lead">
+            <p class="landing-section-subhead">
                 {% if lang == 'en' %}
-                From absolute algorithmic fundamentals to object-oriented programming, in-memory databases, and practical high school graduation challenges.
+                From absolute algorithmic fundamentals to object-oriented programming, in-memory SQLite databases, and graduation boss challenges.
                 {% else %}
-                Od úplných algoritmických základov cez objektovo-orientované programovanie a SQL databázy až po praktické maturitné výzvy.
+                Od algoritmických základov a dátových štruktúr cez objektovo-orientované programovanie a SQL databázy až po praktické maturitné výzvy.
                 {% endif %}
             </p>
         </div>
 
-        <!-- SEGMENTED TABS PRE 5 CIEST S ČISTÝMI SVG IKONAMI -->
-        <div class="track-tab-container reveal-on-scroll">
-            <div class="track-segmented-bar">
-                {% for track in tracks_data %}
-                <button type="button" class="track-pill-btn {% if forloop.first %}active{% endif %}" onclick="switchLandingTrack('{{ track.key }}', this)">
-                    <span class="track-pill-svg">
-                        {% if track.icon == 'zap' %}
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        {% elif track.icon == 'layers' %}
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                        {% elif track.icon == 'box' %}
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                        {% elif track.icon == 'cpu' %}
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                        {% else %}
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-                        {% endif %}
-                    </span>
-                    <span class="track-pill-text">{% if lang == 'en' %}{{ track.label_en }}{% else %}Track {{ forloop.counter }}: {{ track.label_sk }}{% endif %}</span>
-                </button>
-                {% endfor %}
-            </div>
+        <!-- Horizontal Track Navigation Rail -->
+        <div class="tracks-nav-rail">
+            {% for track in tracks_data %}
+            <button type="button" class="track-rail-btn {% if forloop.first %}active{% endif %}" onclick="switchLandingTrack('{{ track.key }}', this)">
+                <span>
+                    {% if track.icon == 'zap' %}⚡
+                    {% elif track.icon == 'layers' %}📚
+                    {% elif track.icon == 'box' %}📦
+                    {% elif track.icon == 'cpu' %}🧠
+                    {% else %}🎓{% endif %}
+                </span>
+                <span>{% if lang == 'en' %}{{ track.label_en }}{% else %}Track {{ forloop.counter }}: {{ track.label_sk }}{% endif %}</span>
+            </button>
+            {% endfor %}
         </div>
 
-        <!-- ZOZNAM KARIÉRNYCH CIEST A MODULOV -->
-        <div class="track-content-panels">
+        <!-- Track Content Panels -->
+        <div class="track-panels-wrapper">
             {% for track in tracks_data %}
-            <div class="track-panel {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}">
-                <div class="track-panel-banner card-surface spotlight-card">
-                    <div class="track-banner-info">
-                        <span class="track-badge-pill">{{ track.badge }}</span>
-                        <h3 class="track-panel-title">
-                            {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
-                        </h3>
-                        <p class="track-panel-desc">
-                            {% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}
-                        </p>
+            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}">
+                <div class="track-summary-banner">
+                    <div class="track-summary-info">
+                        <h3>{% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}</h3>
+                        <p>{% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}</p>
                     </div>
-                    <div class="track-banner-meta">
-                        <span class="track-count-badge">{{ track.modules|length }} {% if lang == 'en' %}modules{% else %}modulov{% endif %}</span>
+                    <div class="track-meta-chips">
+                        <span class="track-chip">{{ track.badge }}</span>
+                        <span class="track-chip">{{ track.modules|length }} {% if lang == 'en' %}Modules{% else %}Modulov{% endif %}</span>
                     </div>
                 </div>
 
-                <div class="modules-compact-grid">
+                <div class="modules-matrix-grid">
                     {% for mod in track.modules %}
-                    <div class="module-mini-card card-surface spotlight-card reveal-on-scroll">
-                        <div class="module-mini-header">
-                            <span class="module-num-chip">#{{ mod.order|stringformat:"02d" }}</span>
-                            <div class="module-tier-badges">
-                                {% if mod.is_pro_only %}
-                                <span class="badge-pro">PRO / EDU</span>
-                                {% else %}
-                                <span class="badge-free">FREE</span>
-                                {% endif %}
-                                <span class="badge-hours">{{ mod.estimated_hours }}h</span>
-                            </div>
+                    <div class="module-matrix-card">
+                        <div class="module-card-top">
+                            <span class="module-order-chip">#{{ mod.order|stringformat:"02d" }}</span>
+                            <span class="module-tier-tag {% if mod.is_pro_only %}pro{% else %}free{% endif %}">
+                                {% if mod.is_pro_only %}PRO / EDU{% else %}FREE{% endif %}
+                            </span>
                         </div>
-
-                        <h4 class="module-mini-title">
+                        <h4 class="module-card-title">
                             {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
                         </h4>
-
-                        <p class="module-mini-desc">
-                            {% if lang == 'en' %}{{ mod.description_en|truncatewords:18 }}{% else %}{{ mod.description_sk|truncatewords:18 }}{% endif %}
+                        <p class="module-card-desc">
+                            {% if lang == 'en' %}{{ mod.description_en|truncatewords:16 }}{% else %}{{ mod.description_sk|truncatewords:16 }}{% endif %}
                         </p>
-
-                        <div class="module-mini-footer">
-                            <span class="module-lesson-count">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                                {{ mod.lessons.count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}
-                            </span>
-                            <span class="module-diff-tag diff-{{ mod.difficulty_level|lower }}">
-                                {{ mod.get_difficulty_level_display|truncatewords:1 }}
-                            </span>
+                        <div class="module-card-foot">
+                            <span>{{ mod.lessons.count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}</span>
+                            <span>{{ mod.estimated_hours }}h • {{ mod.get_difficulty_level_display }}</span>
                         </div>
                     </div>
                     {% empty %}
-                    <div class="empty-track-box">
+                    <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-muted);">
                         {% if lang == 'en' %}Modules in this track will be loaded shortly.{% else %}Moduly v tejto ceste sa načítavajú.{% endif %}
                     </div>
                     {% endfor %}
@@ -506,388 +381,301 @@
         </div>
     </section>
 
-    <!-- PRE ŠKOLY A PEDAGÓGOV (SEKCIA #schools) -->
-    <section class="landing-section" id="schools">
-        <div class="schools-showcase-box card-surface spotlight-card reveal-on-scroll">
-            <div class="schools-left-content">
-                <span class="section-kicker">{% if lang == 'en' %}FOR EDUCATORS & HIGH SCHOOLS{% else %}PRE STREDNÉ ŠKOLY A UČITEĽOV INFORMATIKY{% endif %}</span>
-                <h2 class="schools-headline">
+    <!-- 5. FOR EDUCATORS & HIGH SCHOOLS (#schools) -->
+    <section class="landing-section-deck" id="schools">
+        <div class="schools-deck">
+            <div>
+                <h2 class="landing-section-title" style="text-align:left;">
                     {% if lang == 'en' %}
                     Onboard Your Entire Class in 3 Simple Steps
                     {% else %}
                     Nasaďte Codoro vo svojej triede za menej ako 5 minút
                     {% endif %}
                 </h2>
-                <p class="schools-subhead">
+                <p class="landing-section-subhead" style="text-align:left; margin-bottom:1.5rem;">
                     {% if lang == 'en' %}
                     No bureaucracy, no software installation on school computers. Get an instant 30-day pilot license, generate student credentials in 1 click, and start teaching.
                     {% else %}
-                    Žiadne papierovanie ani inštalovanie softvéru na školské počítače. Získajte okamžitú 30-dňovú pilotnú licenciu, vygenerujte žiacke účty na 1 klik a začnite učiť.
+                    Žiadne papierovanie ani zdĺhavé inštalovanie softvéru na školské počítače. Získajte okamžitú 30-dňovú pilotnú licenciu, vygenerujte žiacke účty na 1 klik a začnite učiť.
                     {% endif %}
                 </p>
 
-                <div class="steps-flow">
-                    <div class="step-flow-item">
-                        <div class="step-num-badge">1</div>
-                        <div class="step-body">
+                <div class="schools-step-list">
+                    <div class="school-step-item">
+                        <div class="school-step-num">1</div>
+                        <div class="school-step-body">
                             <strong>{% if lang == 'en' %}Instant School Pilot Key{% else %}Okamžitý pilotný EDU kľúč{% endif %}</strong>
-                            <p>{% if lang == 'en' %}Request a 30-day pilot license for your school via our instant portal.{% else %}Požiadajte o 30-dňovú pilotnú licenciu cez náš verejný formulár bez čakania.{% endif %}</p>
+                            <p>{% if lang == 'en' %}Request a 30-day pilot license for your school via our instant portal without waiting.{% else %}Požiadajte o 30-dňovú pilotnú licenciu cez náš verejný formulár bez čakania na schválenie.{% endif %}</p>
                         </div>
                     </div>
-                    <div class="step-flow-item">
-                        <div class="step-num-badge">2</div>
-                        <div class="step-body">
+                    <div class="school-step-item">
+                        <div class="school-step-num">2</div>
+                        <div class="school-step-body">
                             <strong>{% if lang == 'en' %}Create Class & Batch Provisioning{% else %}Založenie triedy & Hromadné účty{% endif %}</strong>
-                            <p>{% if lang == 'en' %}Generate student accounts with automatic diacritics removal and printable login slips.{% else %}Vytvorte 30 študentov naraz s automatickým orezaním diakritiky a kartičkami hesiel.{% endif %}</p>
+                            <p>{% if lang == 'en' %}Generate 30 student accounts at once with automatic diacritics removal and printable login slips.{% else %}Vytvorte 30 študentov naraz s automatickým orezaním diakritiky a kartičkami hesiel.{% endif %}</p>
                         </div>
                     </div>
-                    <div class="step-flow-item">
-                        <div class="step-num-badge">3</div>
-                        <div class="step-body">
+                    <div class="school-step-item">
+                        <div class="school-step-num">3</div>
+                        <div class="school-step-body">
                             <strong>{% if lang == 'en' %}Live Studio & Homework Rewards{% else %}Živý dozor a riadenie obchodu{% endif %}</strong>
-                            <p>{% if lang == 'en' %}Track real-time student submissions, run class quests, and manage school rewards.{% else %}Sledujte úspešnosť v reálnom čase, vyhlasujte triedne questy a schvaľujte odmeny.{% endif %}</p>
+                            <p>{% if lang == 'en' %}Track real-time student submissions, run class quests, and approve school rewards.{% else %}Sledujte úspešnosť v reálnom čase, vyhlasujte triedne questy a schvaľujte odmeny.{% endif %}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="schools-cta-row">
-                    <a href="{% url 'get_license' %}" class="btn btn-primary btn-lg glow-effect">
+                <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                    <a href="{% url 'get_license' %}" class="btn btn-hero-primary">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        {% if lang == 'en' %}Request Free School License{% else %}Požiadať o školskú pilotnú licenciu{% endif %}
+                        {% if lang == 'en' %}Request Free School License{% else %}Požiadať o školskú licenciu{% endif %}
                     </a>
-                    <a href="{% url 'register' %}" class="btn btn-secondary btn-lg">
+                    <a href="{% url 'register' %}" class="btn btn-hero-secondary">
                         {% if lang == 'en' %}Teacher Registration{% else %}Registrácia učiteľa{% endif %}
                     </a>
                 </div>
             </div>
 
-            <div class="schools-right-card">
-                <div class="teacher-preview-card">
-                    <div class="preview-card-header">
-                        <div class="teacher-avatar-mock">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
+            <!-- Live Teacher Studio Mockup Card -->
+            <div class="teacher-studio-mock">
+                <div class="teacher-mock-header">
+                    <div class="teacher-mock-profile">
+                        <div class="teacher-avatar-circle">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </div>
                         <div>
-                            <strong>Mgr. Markéta Brišová</strong>
-                            <span class="preview-school-sub">SOŠ Technická Nižná • Trieda IV.C</span>
-                        </div>
-                        <span class="preview-live-tag">● Živý náhľad</span>
-                    </div>
-
-                    <div class="preview-stats-grid">
-                        <div class="preview-stat-box">
-                            <span class="stat-number">28</span>
-                            <span class="stat-label">{% if lang == 'en' %}Active Students{% else %}Aktívnych žiakov{% endif %}</span>
-                        </div>
-                        <div class="preview-stat-box">
-                            <span class="stat-number">94.2%</span>
-                            <span class="stat-label">{% if lang == 'en' %}Test Pass Rate{% else %}Úspešnosť testov{% endif %}</span>
-                        </div>
-                        <div class="preview-stat-box">
-                            <span class="stat-number">4 / 5</span>
-                            <span class="stat-label">{% if lang == 'en' %}Coupons Used{% else %}Kupóny v obchode{% endif %}</span>
+                            <strong style="display:block; font-size:0.95rem; color:#f8fafc;">Mgr. Markéta Brišová</strong>
+                            <span style="font-size:0.78rem; color:#94a3b8;">SOŠ Technická Nižná • Trieda IV.C</span>
                         </div>
                     </div>
+                    <span style="font-family:var(--font-mono); font-size:0.72rem; color:#10b981;">● Živý stav</span>
+                </div>
 
-                    <div class="preview-class-quest">
-                        <div class="preview-quest-header">
-                            <div style="display:flex; align-items:center; gap:0.4rem;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ro-indigo)" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                                <strong>{% if lang == 'en' %}Class Quest: 100 Solved Tasks{% else %}Triedny Quest: 100 Vyriešených úloh{% endif %}</strong>
-                            </div>
-                            <span class="quest-pct">78%</span>
-                        </div>
-                        <div class="progress-track" style="height: 8px;">
-                            <div class="progress-fill" style="width: 78%; background: var(--ro-indigo);"></div>
-                        </div>
+                <div class="teacher-stats-triple">
+                    <div class="teacher-stat-cell">
+                        <strong>28</strong>
+                        <span>{% if lang == 'en' %}Students{% else %}Žiakov{% endif %}</span>
                     </div>
-
-                    <div class="preview-quote-box">
-                        <p>
-                            {% if lang == 'en' %}
-                            <em>"Codoro completely transformed our Python classes. Students are self-motivated by Doros rewards, and Codo guides them through errors without revealing the solution."</em>
-                            {% else %}
-                            <em>"Codoro posunulo hodiny programovania na úplne inú úroveň. Žiaci sa sami motivujú vďaka minciam Doros a Codo im pomáha odhaľovať chyby bez toho, aby im prezradil riešenie."</em>
-                            {% endif %}
-                        </p>
+                    <div class="teacher-stat-cell">
+                        <strong>94.2%</strong>
+                        <span>{% if lang == 'en' %}Pass Rate{% else %}Úspešnosť{% endif %}</span>
+                    </div>
+                    <div class="teacher-stat-cell">
+                        <strong>4 / 5</strong>
+                        <span>{% if lang == 'en' %}Coupons Used{% else %}Kupóny{% endif %}</span>
                     </div>
                 </div>
+
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:8px; padding:0.85rem;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:0.4rem;">
+                        <span>Triedny Quest: 100 vyriešených úloh</span>
+                        <strong style="color:#818cf8;">78%</strong>
+                    </div>
+                    <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:9999px; overflow:hidden;">
+                        <div style="width:78%; height:100%; background:#4636f5;"></div>
+                    </div>
+                </div>
+
+                <p style="font-size:0.82rem; font-style:italic; color:#94a3b8; line-height:1.5; margin:0;">
+                    {% if lang == 'en' %}
+                    "Codoro completely transformed our Python classes. Students are self-motivated by Doros rewards, and Codo guides them through errors without revealing the solution."
+                    {% else %}
+                    "Codoro posunulo hodiny programovania na úplne inú úroveň. Žiaci sa sami motivujú vďaka minciam Doros a Codo im pomáha odhaľovať chyby bez toho, aby im prezradil riešenie."
+                    {% endif %}
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- POROVNÁVACIA TABUĽKA (CODORO VS OSTATNÉ) -->
-    <section class="landing-section" id="compare">
-        <div class="section-header text-center reveal-on-scroll">
-            <span class="section-kicker">{% if lang == 'en' %}FEATURE MATRIX{% else %}PREHĽADNÉ POROVNANIE{% endif %}</span>
-            <h2 class="section-title">
-                {% if lang == 'en' %}
-                Why Codoro is Different
-                {% else %}
-                Prečo je Codoro iné než bežné riešenia
-                {% endif %}
+    <!-- 6. FEATURE COMPARISON MATRIX (#compare) -->
+    <section class="landing-section-deck" id="compare">
+        <div class="landing-section-header">
+            <h2 class="landing-section-title">
+                {% if lang == 'en' %}Why Codoro is Different{% else %}Prečo je Codoro iné než bežné riešenia{% endif %}
             </h2>
         </div>
 
-        <div class="table-responsive card-surface spotlight-card reveal-on-scroll" style="padding: 1.5rem; overflow-x: auto;">
-            <table class="landing-compare-table">
+        <div class="compare-matrix-box">
+            <table class="compare-matrix-table">
                 <thead>
                     <tr>
                         <th style="width: 38%;">{% if lang == 'en' %}Feature / Capability{% else %}Vlastnosť / Schopnosť{% endif %}</th>
-                        <th style="width: 22%;" class="highlight-col">Codoro (Slovensko)</th>
-                        <th style="width: 20%;">Duolingo / Codecademy</th>
-                        <th style="width: 20%;">W3Schools / YouTube</th>
+                        <th style="width: 24%;" class="col-codoro">Codoro (Slovensko)</th>
+                        <th style="width: 19%;">Duolingo / Codecademy</th>
+                        <th style="width: 19%;">W3Schools / YouTube</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>{% if lang == 'en' %}Socratic AI Guidance (No full code leaks){% else %}Sokratovský AI Tútor (Nikdy neprezradí riešenie){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Yes (Pedagogical prompt){% else %}Áno (Pedagogický filter){% endif %}
+                        <td><strong>{% if lang == 'en' %}Socratic AI Guidance (Never leaks code){% else %}Sokratovský AI Tútor (Nikdy neprezradí kód){% endif %}</strong></td>
+                        <td class="col-codoro">
+                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Yes (Pedagogical prompt){% else %}Áno (Pedagogický filter){% endif %}</span>
                         </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}No (Gives answers directly){% else %}Nie (Generuje hotový kód){% endif %}
-                        </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}No AI{% else %}Žiadne AI{% endif %}
-                        </td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Generates answers{% else %}Generuje hotový kód{% endif %}</span></td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}No AI{% else %}Žiadne AI{% endif %}</span></td>
                     </tr>
                     <tr>
-                        <td><strong>{% if lang == 'en' %}Real Classroom Ecosystem & Teacher Studio{% else %}Triedny ekosystém a Učiteľské štúdio (CMS){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Full Teacher CRUD{% else %}Kompletný CMS pre učiteľa{% endif %}
+                        <td><strong>{% if lang == 'en' %}Classroom Ecosystem & Teacher CMS{% else %}Triedny ekosystém a Učiteľské štúdio (CMS){% endif %}</strong></td>
+                        <td class="col-codoro">
+                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Full Teacher CRUD{% else %}Kompletný CMS pre učiteľa{% endif %}</span>
                         </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}Only individual users{% else %}Iba pre samoukov{% endif %}
-                        </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}No classroom support{% else %}Žiadna správa triedy{% endif %}
-                        </td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Individual only{% else %}Iba pre samoukov{% endif %}</span></td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}No classroom{% else %}Žiadna správa triedy{% endif %}</span></td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}School Marketplace with Stock Controls{% else %}Školský obchod so zásobami (Odpustenie úloh){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Yes (Managed quotas){% else %}Áno (Riadené týždenné kvóty){% endif %}
+                        <td class="col-codoro">
+                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Yes (Managed quotas){% else %}Áno (Riadené týždenné kvóty){% endif %}</span>
                         </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}Virtual cosmetic points{% else %}Iba virtuálne body{% endif %}
-                        </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}None{% else %}Žiadne{% endif %}
-                        </td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Cosmetic points{% else %}Iba virtuálne body{% endif %}</span></td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}None{% else %}Žiadne{% endif %}</span></td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}100% Slovak & English Localization{% else %}100% Slovenská a anglická lokalizácia{% endif %}</strong></td>
-                        <td class="highlight-col check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Native SK & EN{% else %}Plná slovenčina i angličtina{% endif %}
+                        <td class="col-codoro">
+                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Native SK & EN{% else %}Plná slovenčina i angličtina{% endif %}</span>
                         </td>
-                        <td class="check-partial">
-                            <span class="matrix-icon partial">~</span>
-                            {% if lang == 'en' %}Partial machine translation{% else %}Len strojový preklad{% endif %}
-                        </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}English only{% else %}Väčšinou iba anglicky{% endif %}
-                        </td>
+                        <td><span class="cross-icon-no">~ {% if lang == 'en' %}Partial machine{% else %}Len strojový preklad{% endif %}</span></td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}English only{% else %}Väčšinou iba anglicky{% endif %}</span></td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Tailored for High School Matura (PČOZ MS){% else %}Príprava na slovenskú maturitu (PČOZ MS){% endif %}</strong></td>
-                        <td class="highlight-col check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Dedicated Track 5{% else %}Vyhradená Kariérna cesta 5{% endif %}
+                        <td class="col-codoro">
+                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Dedicated Track 5{% else %}Vyhradená Kariérna cesta 5{% endif %}</span>
                         </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}Generic curriculum{% else %}Všeobecné kurikulum{% endif %}
-                        </td>
-                        <td class="check-no">
-                            <span class="matrix-icon no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-                            {% if lang == 'en' %}Generic tutorials{% else %}Všeobecné návody{% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>{% if lang == 'en' %}Zero Installation Browser Python Sandbox{% else %}Prehliadačový Python sandbox bez inštalácie{% endif %}</strong></td>
-                        <td class="highlight-col check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Yes (AST Security){% else %}Áno (Bezpečný AST sandbox){% endif %}
-                        </td>
-                        <td class="check-yes">
-                            <span class="matrix-icon yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-                            {% if lang == 'en' %}Yes{% else %}Áno{% endif %}
-                        </td>
-                        <td class="check-partial">
-                            <span class="matrix-icon partial">~</span>
-                            {% if lang == 'en' %}Limited Try-It{% else %}Iba obmedzené ukážky{% endif %}
-                        </td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Generic{% else %}Všeobecné kurikulum{% endif %}</span></td>
+                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Generic{% else %}Všeobecné návody{% endif %}</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </section>
 
-    <!-- FAQ AKORDEÓN -->
-    <section class="landing-section" id="faq">
-        <div class="section-header text-center reveal-on-scroll">
-            <span class="section-kicker">{% if lang == 'en' %}FAQ{% else %}ČASTÉ OTÁZKY{% endif %}</span>
-            <h2 class="section-title">
-                {% if lang == 'en' %}Frequently Asked Questions{% else %}Všetko, čo potrebujete vedieť{% endif %}
+    <!-- 7. FAQ ACCORDION (#faq) -->
+    <section class="landing-section-deck" id="faq">
+        <div class="landing-section-header">
+            <h2 class="landing-section-title">
+                {% if lang == 'en' %}Frequently Asked Questions{% else %}Často kladené otázky{% endif %}
             </h2>
         </div>
 
-        <div class="landing-faq-accordion reveal-on-scroll">
-            <details class="faq-item card-surface spotlight-card">
-                <summary class="faq-question">
-                    <span>{% if lang == 'en' %}Is Codoro free for high school students?{% else %}Je Codoro bezplatné pre študentov a školy?{% endif %}</span>
-                    <span class="faq-arrow-svg">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </span>
+        <div class="faq-accordion-deck">
+            <details class="faq-detail-card">
+                <summary class="faq-summary">
+                    <span>{% if lang == 'en' %}Is Codoro free for students and schools?{% else %}Je Codoro bezplatné pre študentov a školy?{% endif %}</span>
+                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 </summary>
-                <div class="faq-answer">
-                    <p>
-                        {% if lang == 'en' %}
-                        Yes! Tracks 1, 2, and parts of 4 and 5 are completely free forever. Schools can also request a free 30-day pilot EDU license for all advanced PRO features including all 18 modules and batch provisioning.
-                        {% else %}
-                        Áno! Základné cesty (Moduly 1 až 8 a vybrané pokročilé moduly) sú navždy bezplatné. Pre stredné školy poskytujeme bezplatnú 30-dňovú pilotnú EDU licenciu na odomknutie všetkých 18 modulov pre celú triedu.
-                        {% endif %}
-                    </p>
+                <div class="faq-content-body">
+                    {% if lang == 'en' %}
+                    Yes! Tracks 1, 2, and parts of 4 and 5 are completely free forever. Schools can also request an instant 30-day pilot EDU license for all advanced PRO features including all 18 modules and batch student provisioning.
+                    {% else %}
+                    Áno! Základné cesty (Moduly 1 až 8 a vybrané pokročilé moduly) sú navždy bezplatné pre všetkých. Pre stredné školy poskytujeme bezplatnú 30-dňovú pilotnú EDU licenciu na odomknutie všetkých 18 modulov pre celú triedu.
+                    {% endif %}
                 </div>
             </details>
 
-            <details class="faq-item card-surface spotlight-card">
-                <summary class="faq-question">
+            <details class="faq-detail-card">
+                <summary class="faq-summary">
                     <span>{% if lang == 'en' %}Do students need to install Python or Visual Studio Code?{% else %}Je potrebné na počítače inštalovať Python alebo VS Code?{% endif %}</span>
-                    <span class="faq-arrow-svg">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </span>
+                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 </summary>
-                <div class="faq-answer">
-                    <p>
-                        {% if lang == 'en' %}
-                        Not at all. Everything runs directly inside modern web browsers. Codoro evaluates student code in an isolated, secure backend sandbox with sub-second response times.
-                        {% else %}
-                        Vôbec nie. Celé prostredie beží v internetovom prehliadači (Chrome, Firefox, Safari, Edge). Kód sa spúšťa a overuje v zabezpečenom serverovom sandboxe s odozvou v milisekundách.
-                        {% endif %}
-                    </p>
+                <div class="faq-content-body">
+                    {% if lang == 'en' %}
+                    Not at all. Everything runs directly inside modern web browsers. Codoro evaluates student code in an isolated, secure backend sandbox with sub-second response times.
+                    {% else %}
+                    Vôbec nie. Celé vývojové prostredie beží v internetovom prehliadači (Chrome, Firefox, Safari, Edge). Kód sa spúšťa a overuje v zabezpečenom serverovom sandboxe s odozvou v milisekundách.
+                    {% endif %}
                 </div>
             </details>
 
-            <details class="faq-item card-surface spotlight-card">
-                <summary class="faq-question">
-                    <span>{% if lang == 'en' %}How does Codo prevent students from cheating?{% else %}Ako Codo zabraňuje podvádzaniu pri písomkách?{% endif %}</span>
-                    <span class="faq-arrow-svg">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </span>
+            <details class="faq-detail-card">
+                <summary class="faq-summary">
+                    <span>{% if lang == 'en' %}How does Codo prevent students from cheating?{% else %}Ako Codo zabraňuje podvádzaniu pri písomkách a úlohách?{% endif %}</span>
+                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 </summary>
-                <div class="faq-answer">
-                    <p>
-                        {% if lang == 'en' %}
-                        Codo's system prompt strictly prohibits generating functional code solutions. It only evaluates syntax and algorithmic errors, asking clarifying questions. Teachers can also monitor attempts and submission history.
-                        {% else %}
-                        Systémová inštrukcia Codo tútora prísne zakazuje vygenerovať hotový kód. Codo analyzuje chybový traceback unit testov a kladie navádzacie otázky. Učiteľ má navyše v paneli kompletnú históriu odovzdaní študenta.
-                        {% endif %}
-                    </p>
+                <div class="faq-content-body">
+                    {% if lang == 'en' %}
+                    Codo's system prompt strictly prohibits generating functional code solutions. It only evaluates syntax and algorithmic errors, asking clarifying questions. Teachers can also monitor attempts and submission history in real-time.
+                    {% else %}
+                    Systémová inštrukcia Codo tútora prísne zakazuje vygenerovať hotový kód. Codo analyzuje chybový traceback unit testov a kladie navádzacie otázky. Učiteľ má navyše v paneli kompletnú históriu odovzdaní študenta.
+                    {% endif %}
                 </div>
             </details>
 
-            <details class="faq-item card-surface spotlight-card">
-                <summary class="faq-question">
+            <details class="faq-detail-card">
+                <summary class="faq-summary">
                     <span>{% if lang == 'en' %}What is the Doros currency and how does the shop work?{% else %}Čo je mena Doros a ako funguje školský obchod?{% endif %}</span>
-                    <span class="faq-arrow-svg">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </span>
+                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 </summary>
-                <div class="faq-answer">
-                    <p>
-                        {% if lang == 'en' %}
-                        Doros is our in-app gold currency earned by solving exercises, maintaining daily streaks, and completing quests. Teachers can add real classroom perks to the shop with weekly stock quotas.
-                        {% else %}
-                        Doros sú zlaté mince, ktoré žiaci získavajú za správne riešenia, udržiavanie Streaku a plnenie questov. Učiteľ v obchode definuje reálne odmeny (odpustenie úlohy, bonusové body) s obmedzeným týždenným skladom.
-                        {% endif %}
-                    </p>
+                <div class="faq-content-body">
+                    {% if lang == 'en' %}
+                    Doros is our in-app gold currency earned by solving exercises, maintaining daily streaks, and completing quests. Teachers can define real classroom perks in the shop with weekly stock quotas.
+                    {% else %}
+                    Doros sú virtuálne zlaté mince, ktoré žiaci získavajú za správne riešenia, udržiavanie Streaku a plnenie questov. Učiteľ v obchode definuje reálne odmeny (odpustenie úlohy, bonusové body) s obmedzeným týždenným skladom.
+                    {% endif %}
                 </div>
             </details>
         </div>
     </section>
 
-    <!-- ZÁVEREČNÝ HIGH-CONVERSION CTA BANNER -->
-    <section class="landing-cta-banner card-surface spotlight-card reveal-on-scroll">
-        <div class="cta-banner-content text-center">
-            <span class="cta-pill">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                <span class="t-shimmer">{% if lang == 'en' %}START YOUR JOURNEY TODAY{% else %}ZAČNITE UŽ DNES{% endif %}</span>
-            </span>
-            <h2 class="cta-title">
-                {% if lang == 'en' %}
-                Ready to Master Python the Smart Way?
-                {% else %}
-                Pripravený zvládnuť Python s modernou platformou?
-                {% endif %}
-            </h2>
-            <p class="cta-desc">
-                {% if lang == 'en' %}
-                Join hundreds of students preparing for university and IT careers with Codoro. Free forever for individuals, instant trial for schools.
-                {% else %}
-                Pripojte sa k modernej výučbe programovania. Bezplatne pre študentov a samoukov, s okamžitým nasadením pre stredné školy.
-                {% endif %}
-            </p>
-            <div class="cta-buttons-row">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-hero-primary glow-effect">
-                    {% if lang == 'en' %}Create Free Account{% else %}Vytvoriť bezplatný účet{% endif %}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </a>
-                <a href="{% url 'login' %}" class="btn btn-secondary btn-hero-secondary">
-                    {% if lang == 'en' %}Sign In to Classroom{% else %}Prihlásiť sa do triedy{% endif %}
-                </a>
-            </div>
+    <!-- 8. HIGH-CONVERSION CTA DECK -->
+    <section class="landing-cta-deck">
+        <h2 class="cta-deck-title">
+            {% if lang == 'en' %}
+            Ready to Master Python the Smart Way?
+            {% else %}
+            Pripravený zvládnuť Python s modernou platformou?
+            {% endif %}
+        </h2>
+        <p class="cta-deck-desc">
+            {% if lang == 'en' %}
+            Join hundreds of students preparing for university and IT careers with Codoro. Free forever for individuals, instant trial for schools.
+            {% else %}
+            Pripojte sa k modernej výučbe programovania. Bezplatne pre študentov a samoukov, s okamžitým nasadením pre stredné školy.
+            {% endif %}
+        </p>
+        <div style="display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap;">
+            <a href="{% url 'register' %}" class="btn btn-hero-primary">
+                {% if lang == 'en' %}Create Free Account{% else %}Vytvoriť bezplatný účet{% endif %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-hero-secondary">
+                {% if lang == 'en' %}Sign In to Classroom{% else %}Prihlásiť sa do triedy{% endif %}
+            </a>
         </div>
     </section>
 
-    <!-- FOOTER S IDENTIFIKÁCIOU MATURITNEJ PRÁCE -->
-    <footer class="landing-footer reveal-on-scroll">
-        <div class="footer-grid">
-            <div class="footer-col brand-col">
+    <!-- 9. DEVELOPER FOOTER -->
+    <footer class="landing-footer-deck">
+        <div class="footer-top-grid">
+            <div class="footer-brand-pane">
                 <a href="{% url 'dashboard' %}" class="sidebar-brand">
                     <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="sidebar-brand-logo">
                     <span class="sidebar-brand-text">codo<span>ro</span></span>
                 </a>
-                <p class="footer-text">
+                <p>
                     {% if lang == 'en' %}
                     Next-generation gamified Python learning platform designed for secondary technical education and graduation exam preparation.
                     {% else %}
                     Gamifikovaný vzdelávací systém na výučbu programovania v jazyku Python určený pre stredné odborné školy a prípravu na maturitnú skúšku.
                     {% endif %}
                 </p>
-                <div class="footer-patent-tag">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <span>TMview Verified Brand • Codoro™</span>
+                <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">
+                    TMview Verified Brand • Codoro™
                 </div>
             </div>
 
-            <div class="footer-col">
-                <h4 class="footer-col-title">{% if lang == 'en' %}Navigation{% else %}Navigácia{% endif %}</h4>
-                <ul class="footer-link-list">
-                    <li><a href="/#curriculum">{% if lang == 'en' %}Curriculum{% else %}Učebné cesty{% endif %}</a></li>
-                    <li><a href="/#pillars">{% if lang == 'en' %}Why Codoro{% else %}Prečo Codoro{% endif %}</a></li>
-                    <li><a href="{% url 'cheat_sheets' %}">{% if lang == 'en' %}Cheat Sheets{% else %}Ťaháky Pythonu{% endif %}</a></li>
-                    <li><a href="{% url 'get_license' %}">{% if lang == 'en' %}For Schools{% else %}Pre školy{% endif %}</a></li>
+            <div class="footer-nav-pane">
+                <h4>{% if lang == 'en' %}Navigation{% else %}Navigácia{% endif %}</h4>
+                <ul class="footer-links-col">
+                    <li><a href="#curriculum">{% if lang == 'en' %}Curriculum (18 Modules){% else %}Učebné cesty (18 modulov){% endif %}</a></li>
+                    <li><a href="#pillars">{% if lang == 'en' %}Why Codoro{% else %}Prečo Codoro{% endif %}</a></li>
+                    <li><a href="{% url 'cheat_sheets' %}">{% if lang == 'en' %}Python Cheat Sheets{% else %}Ťaháky Pythonu{% endif %}</a></li>
+                    <li><a href="{% url 'get_license' %}">{% if lang == 'en' %}School License{% else %}Školská licencia{% endif %}</a></li>
                 </ul>
             </div>
 
-            <div class="footer-col">
-                <h4 class="footer-col-title">{% if lang == 'en' %}Matura Project Info{% else %}Maturitný projekt{% endif %}</h4>
+            <div class="footer-meta-pane">
+                <h4>{% if lang == 'en' %}Matura Project Credentials{% else %}Maturitný projekt{% endif %}</h4>
                 <ul class="footer-meta-list">
                     <li><strong>{% if lang == 'en' %}School:{% else %}Škola:{% endif %}</strong> Spojená škola Nižná (SOŠ Technická)</li>
                     <li><strong>{% if lang == 'en' %}Theme:{% else %}Téma:{% endif %}</strong> Téma č. 22 (Trieda IV.C, 2026/2027)</li>
@@ -899,1654 +687,23 @@
 
         <div class="footer-bottom-bar">
             <span>&copy; 2026/2027 Juraj Volf • Codoro Education System. Všetky práva vyhradené.</span>
-            <div class="footer-bottom-links">
-                <a href="https://github.com/jurajvolf/codoro.git" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.35rem;">
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <a href="https://github.com/jurajvolf/codoro.git" target="_blank" rel="noopener" style="color:var(--text-muted); text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                    GitHub Repozitár
+                    GitHub
                 </a>
                 <span>•</span>
-                <a href="{% url 'get_license' %}">{% if lang == 'en' %}School License{% else %}Školská licencia{% endif %}</a>
+                <a href="{% url 'get_license' %}" style="color:var(--text-muted); text-decoration:none;">
+                    {% if lang == 'en' %}School Pilot License{% else %}Školská pilotná licencia{% endif %}
+                </a>
             </div>
         </div>
     </footer>
 
 </div>
 
-<style>
-/* ==========================================================================
-   REAKTÍVNE POHYBLIVÉ POZADIE S CYBERNETICKÝM KANVASOM
-   ========================================================================== */
-.landing-canvas-wrapper {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-    overflow: hidden;
-}
-
-.hero-interactive-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: auto;
-}
-
-.landing-grid-overlay {
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(to right, rgba(70, 54, 245, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(70, 54, 245, 0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 25%, black 40%, transparent 85%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 25%, black 40%, transparent 85%);
-}
-
-html[data-theme="dark"] .landing-grid-overlay {
-    background-image:
-        linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
-}
-
-.aurora-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.45;
-    animation: auroraDrift 16s infinite alternate ease-in-out;
-}
-
-.aurora-orb-1 {
-    width: 550px;
-    height: 550px;
-    background: radial-gradient(circle, rgba(70, 54, 245, 0.35) 0%, transparent 70%);
-    top: -100px;
-    left: -100px;
-}
-
-.aurora-orb-2 {
-    width: 480px;
-    height: 480px;
-    background: radial-gradient(circle, rgba(92, 225, 230, 0.25) 0%, transparent 70%);
-    top: 15%;
-    right: -80px;
-    animation-duration: 20s;
-    animation-delay: -5s;
-}
-
-.aurora-orb-3 {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, transparent 70%);
-    bottom: 5%;
-    left: 25%;
-    animation-duration: 24s;
-    animation-delay: -10s;
-}
-
-@keyframes auroraDrift {
-    0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(60px, 40px) scale(1.12); }
-    100% { transform: translate(-40px, 70px) scale(0.92); }
-}
-
-/* ==========================================================================
-   SCROLL REVEAL ANIMÁCIE & SPOTLIGHT HOVER EFEKTY
-   ========================================================================== */
-.reveal-on-scroll {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
-    will-change: opacity, transform;
-}
-
-.reveal-on-scroll.reveal-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Hero elements handled by GSAP staggered entrance */
-#hero .reveal-on-scroll {
-    opacity: 1;
-    transform: none;
-}
-
-/* SPOTLIGHT GLOW ON CARD HOVER (Cursor tracking) & 3D TILT (transitions.dev & gsap-skills) */
-.spotlight-card {
-    position: relative;
-    overflow: hidden;
-    transform-style: preserve-3d;
-    transition-property: transform, box-shadow, border-color;
-    transition-duration: 0.28s;
-    transition-timing-function: var(--ease-out-expo);
-}
-
-.spotlight-card::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    padding: 1.5px;
-    background: radial-gradient(350px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(99, 102, 241, 0.45), transparent 75%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-}
-
-.spotlight-card:hover::before {
-    opacity: 1;
-}
-
-/* Animated SVG Success Checkmark (transitions.dev 10-success-check) */
-.test-icon-svg.t-success-check polyline {
-    stroke-dasharray: 25;
-    stroke-dashoffset: 25;
-    animation: drawCheckSvg 0.38s var(--ease-out-back) forwards;
-}
-
-@keyframes drawCheckSvg {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-/* ==========================================================================
-   LANDING PAGE BESPOKE DESIGN SYSTEM
-   ========================================================================== */
-.landing-page-root {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 5rem;
-    position: relative;
-    z-index: 1;
-}
-
-/* HERO SECTION */
-.landing-hero-section {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 3.5rem;
-    align-items: center;
-    padding: 2rem 0 1rem;
-    position: relative;
-}
-
-@media (max-width: 1080px) {
-    .landing-hero-section {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-}
-
-.hero-badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-    background: var(--ro-indigo-subtle);
-    border: 1px solid var(--ro-indigo-border);
-    color: var(--ro-indigo);
-    font-size: 0.75rem;
-    font-weight: 800;
-    font-family: var(--font-mono);
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.04em;
-    box-shadow: 0 4px 12px rgba(70, 54, 245, 0.15);
-}
-
-.pulse-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--ro-indigo);
-    box-shadow: 0 0 10px var(--ro-indigo);
-    animation: pulseGlow 1.8s infinite ease-in-out;
-}
-
-@keyframes pulseGlow {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.4); opacity: 0.6; }
-}
-
-.hero-headline {
-    font-family: var(--font-display);
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1.14;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
-    margin-bottom: 1.35rem;
-}
-
-@media (max-width: 640px) {
-    .hero-headline {
-        font-size: 2.2rem;
-    }
-}
-
-.hero-gradient-text {
-    color: var(--ro-indigo);
-    display: inline-block;
-}
-html[data-theme="dark"] .hero-gradient-text {
-    color: #818CF8;
-}
-
-.hero-subhead {
-    font-size: 1.14rem;
-    color: var(--text-secondary);
-    line-height: 1.68;
-    margin-bottom: 2rem;
-    max-width: 620px;
-}
-
-.hero-cta-group {
-    display: flex;
-    align-items: center;
-    gap: 1.15rem;
-    flex-wrap: wrap;
-    margin-bottom: 2.25rem;
-}
-
-.btn-hero-primary {
-    padding: 0.9rem 1.85rem;
-    font-size: 1.02rem;
-    font-weight: 700;
-    border-radius: var(--radius-md);
-    box-shadow: 0 8px 24px -4px rgba(70, 54, 245, 0.5);
-    transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-}
-
-.btn-hero-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 32px -4px rgba(70, 54, 245, 0.65);
-}
-
-.cta-arrow-icon {
-    transition: transform 0.2s ease;
-}
-
-.btn-hero-primary:hover .cta-arrow-icon {
-    transform: translateX(3px);
-}
-
-.btn-hero-secondary {
-    padding: 0.9rem 1.6rem;
-    font-size: 1.02rem;
-    font-weight: 600;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-}
-
-.hero-trust-row {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.trust-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-/* ==========================================================================
-   PLÁVAJÚCE PARALAX WIDGETY V HERO SEKCII
-   ========================================================================== */
-.hero-ide-preview {
-    position: relative;
-}
-
-.floating-widget {
-    position: absolute;
-    z-index: 15;
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 0.65rem 0.95rem;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    animation: floatWidget 6s infinite ease-in-out;
-    pointer-events: none;
-}
-
-.widget-top-right {
-    top: -24px;
-    right: 20px;
-    animation-delay: -1s;
-}
-
-.widget-bottom-left {
-    bottom: 45px;
-    left: -28px;
-    animation-delay: -3s;
-}
-
-.widget-bottom-right {
-    bottom: -22px;
-    right: 35px;
-    animation-delay: -4.5s;
-}
-
-@keyframes floatWidget {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-}
-
-@media (max-width: 768px) {
-    .floating-widget {
-        display: none;
-    }
-}
-
-.widget-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.widget-icon.cyan {
-    background: var(--visor-cyan-bg);
-    color: var(--visor-cyan);
-    border: 1px solid var(--visor-cyan-border);
-}
-
-.widget-icon.gold {
-    background: rgba(245, 158, 11, 0.12);
-    color: var(--amber);
-    border: 1px solid rgba(245, 158, 11, 0.25);
-}
-
-.widget-icon.red {
-    background: rgba(239, 68, 68, 0.12);
-    color: #EF4444;
-    border: 1px solid rgba(239, 68, 68, 0.25);
-}
-
-.widget-sub {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--text-muted);
-}
-
-.widget-main {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    white-space: nowrap;
-}
-
-/* ==========================================================================
-   IDE WINDOW SHOWCASE
-   ========================================================================== */
-.ide-window {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-surface);
-    position: relative;
-}
-
-.ide-window-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 1rem;
-    background: var(--bg-subtle);
-    border-bottom: 1px solid var(--border-hairline);
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.ide-window-dots {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    flex-shrink: 0;
-}
-
-.ide-window-dots span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.dot-red { background: #EF4444; }
-.dot-yellow { background: #F59E0B; }
-.dot-green { background: #10B981; }
-
-.ide-file-tabs {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    flex: 1;
-    overflow-x: auto;
-}
-
-.ide-tab-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: transparent;
-    padding: 0.3rem 0.65rem;
-    border-radius: 6px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    border: 1px solid transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-    white-space: nowrap;
-}
-
-.ide-tab-btn:hover {
-    color: var(--text-primary);
-    background: var(--bg-surface);
-}
-
-.ide-tab-btn:active {
-    transform: scale(0.96) !important;
-}
-
-.ide-tab-btn.active {
-    background: var(--bg-surface);
-    color: var(--ro-indigo);
-    border-color: var(--border-hairline);
-    box-shadow: var(--shadow-xs);
-}
-
-.sandbox-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--visor-cyan);
-    background: var(--visor-cyan-bg);
-    padding: 0.22rem 0.55rem;
-    border-radius: 6px;
-    border: 1px solid var(--visor-cyan-border);
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.dot-pulse {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--visor-cyan);
-    box-shadow: 0 0 6px var(--visor-cyan);
-}
-
-.ide-body {
-    padding: 1.15rem 1.25rem;
-    background: var(--code-bg);
-    color: var(--code-text);
-    font-family: var(--font-mono);
-    font-size: 0.86rem;
-    line-height: 1.68;
-    border-bottom: 1px solid var(--border-hairline);
-    min-height: 140px;
-}
-
-.code-lines {
-    display: flex;
-    flex-direction: column;
-}
-
-.code-row {
-    white-space: pre-wrap;
-    word-break: break-all;
-}
-
-.line-num {
-    display: inline-block;
-    width: 26px;
-    color: #64748B;
-    user-select: none;
-    font-size: 0.76rem;
-}
-
-.code-kw { color: #F43F5E; font-weight: 700; }
-.code-fn { color: #60A5FA; font-weight: 600; }
-.code-type { color: #38BDF8; }
-.code-doc { color: #94A3B8; font-style: italic; }
-.code-num { color: #F59E0B; }
-.code-str { color: #10B981; }
-
-.ide-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 1.15rem;
-    background: var(--bg-subtle);
-    border-bottom: 1px solid var(--border-hairline);
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.ide-toolbar-left {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-}
-
-.ide-reward-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--amber);
-}
-
-.ide-time-tag {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--text-muted);
-}
-
-.ide-output-panel {
-    padding: 1rem 1.15rem;
-    background: var(--bg-surface);
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-}
-
-.ide-test-cases {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    transition: opacity 0.2s ease;
-}
-
-.test-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.45rem 0.75rem;
-    border-radius: 6px;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border-hairline);
-}
-
-.test-item.pass {
-    border-color: var(--emerald-border);
-    background: var(--emerald-bg);
-}
-
-.test-icon-svg {
-    width: 14px;
-    height: 14px;
-    color: var(--emerald);
-    margin-right: 0.4rem;
-    flex-shrink: 0;
-}
-
-.test-name {
-    font-weight: 600;
-    color: var(--text-primary);
-    flex: 1;
-}
-
-.test-expected {
-    color: var(--text-secondary);
-    margin: 0 0.8rem;
-}
-
-.test-ms {
-    color: var(--text-muted);
-    font-size: 0.72rem;
-}
-
-.codo-ai-bubble {
-    padding: 0.85rem 1rem;
-    border-radius: var(--radius-md);
-    background: var(--ro-indigo-subtle);
-    border: 1px solid var(--ro-indigo-border);
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-}
-
-.codo-ai-header {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.codo-bubble-avatar {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(70, 54, 245, 0.4));
-}
-
-.codo-bubble-title {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.82rem;
-    color: var(--text-primary);
-}
-
-.codo-pill {
-    font-size: 0.68rem;
-    font-family: var(--font-mono);
-    font-weight: 800;
-    padding: 0.12rem 0.45rem;
-    border-radius: 4px;
-    background: var(--visor-cyan-bg);
-    color: var(--visor-cyan);
-    border: 1px solid var(--visor-cyan-border);
-}
-
-.codo-model-pill {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--text-muted);
-}
-
-.codo-ai-text {
-    font-size: 0.86rem;
-    line-height: 1.55;
-    color: var(--text-secondary);
-}
-
-/* ==========================================================================
-   METRICS RIBBON WITH COUNTER ROW
-   ========================================================================== */
-.landing-metrics-ribbon {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    padding: 2rem 2.25rem;
-    box-shadow: var(--shadow-sm);
-}
-
-@media (max-width: 900px) {
-    .landing-metrics-ribbon {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 520px) {
-    .landing-metrics-ribbon {
-        grid-template-columns: 1fr;
-    }
-}
-
-.metric-ribbon-item {
-    display: flex;
-    align-items: center;
-    gap: 1.15rem;
-}
-
-.metric-icon-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.metric-icon-box.indigo {
-    background: var(--ro-indigo-subtle);
-    color: var(--ro-indigo);
-    border: 1px solid var(--ro-indigo-border);
-}
-
-.metric-icon-box.cyan {
-    background: var(--visor-cyan-bg);
-    color: var(--visor-cyan);
-    border: 1px solid var(--visor-cyan-border);
-}
-
-.metric-icon-box.emerald {
-    background: rgba(16, 185, 129, 0.12);
-    color: var(--emerald);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.metric-icon-box.gold {
-    background: rgba(245, 158, 11, 0.12);
-    color: var(--amber);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.metric-data {
-    display: flex;
-    flex-direction: column;
-}
-
-.metric-val-row {
-    display: flex;
-    align-items: baseline;
-    gap: 0.15rem;
-}
-
-.metric-val {
-    font-family: var(--font-display);
-    font-size: 2.1rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.1;
-}
-
-.metric-suffix {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--ro-indigo);
-}
-
-.metric-lbl {
-    font-size: 0.82rem;
-    color: var(--text-secondary);
-    font-weight: 600;
-}
-
-/* ==========================================================================
-   LANDING SECTION GENERAL
-   ========================================================================== */
-.landing-section {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-}
-
-.section-header.text-center {
-    text-align: center;
-    max-width: 780px;
-    margin: 0 auto;
-}
-
-.section-kicker {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: var(--ro-indigo);
-    margin-bottom: 0.6rem;
-    text-transform: uppercase;
-}
-
-.section-title {
-    font-family: var(--font-display);
-    font-size: 2.35rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.85rem;
-}
-
-@media (max-width: 640px) {
-    .section-title {
-        font-size: 1.85rem;
-    }
-}
-
-.section-lead {
-    font-size: 1.08rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-}
-
-/* ==========================================================================
-   PILLARS GRID (4 HLAVNÉ PILIERE)
-   ========================================================================== */
-.pillars-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.75rem;
-}
-
-@media (max-width: 860px) {
-    .pillars-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.pillar-card {
-    padding: 2.35rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.15rem;
-    transition: transform 0.28s var(--ease-out), box-shadow 0.28s var(--ease-out);
-}
-
-.pillar-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-}
-
-.pillar-icon-box {
-    width: 54px;
-    height: 54px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.35rem;
-}
-
-.pillar-icon-box.cyan {
-    background: var(--visor-cyan-bg);
-    color: var(--visor-cyan);
-    border: 1px solid var(--visor-cyan-border);
-}
-
-.pillar-icon-box.indigo {
-    background: var(--ro-indigo-subtle);
-    color: var(--ro-indigo);
-    border: 1px solid var(--ro-indigo-border);
-}
-
-.pillar-icon-box.gold {
-    background: rgba(245, 158, 11, 0.12);
-    color: var(--amber);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.pillar-icon-box.emerald {
-    background: rgba(16, 185, 129, 0.12);
-    color: var(--emerald);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.pillar-title {
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.pillar-desc {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-    flex: 1;
-}
-
-.pillar-tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.pillar-chip {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    font-weight: 700;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
-    background: var(--bg-subtle);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-hairline);
-}
-
-/* ==========================================================================
-   TRACK SEGMENTED TABS & CURRICULUM
-   ========================================================================== */
-.track-tab-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-}
-
-.track-segmented-bar {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    background: var(--bg-subtle);
-    padding: 0.35rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-hairline);
-    justify-content: center;
-}
-
-.track-pill-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    padding: 0.55rem 1.05rem;
-    border-radius: var(--radius-sm);
-    background: transparent;
-    border: none;
-    font-size: 0.86rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-}
-
-.track-pill-btn:hover {
-    color: var(--text-primary);
-}
-
-.track-pill-btn:active {
-    transform: scale(0.96) !important;
-}
-
-.track-pill-btn.active {
-    background: var(--bg-surface);
-    color: var(--ro-indigo);
-    box-shadow: var(--shadow-xs);
-}
-
-.track-pill-svg {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.track-panel {
-    display: none;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.track-panel.active {
-    display: flex;
-}
-
-.track-panel-banner {
-    padding: 1.85rem 2.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-}
-
-@media (max-width: 768px) {
-    .track-panel-banner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-.track-badge-pill {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    font-weight: 800;
-    color: var(--ro-indigo);
-    background: var(--ro-indigo-subtle);
-    padding: 0.2rem 0.55rem;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-    border: 1px solid var(--ro-indigo-border);
-}
-
-.track-panel-title {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 0.35rem;
-}
-
-.track-panel-desc {
-    color: var(--text-secondary);
-    font-size: 0.96rem;
-    max-width: 780px;
-}
-
-.track-count-badge {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    background: var(--bg-subtle);
-    padding: 0.45rem 0.95rem;
-    border-radius: 999px;
-    border: 1px solid var(--border-hairline);
-    white-space: nowrap;
-}
-
-.modules-compact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-}
-
-.module-mini-card {
-    padding: 1.35rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    transition: transform 0.22s var(--ease-out), border-color 0.22s ease;
-}
-
-.module-mini-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--ro-indigo);
-}
-
-.module-mini-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.module-num-chip {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    font-weight: 800;
-    color: var(--text-muted);
-}
-
-.module-tier-badges {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.badge-pro {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 800;
-    color: var(--ro-indigo);
-    background: var(--ro-indigo-subtle);
-    border: 1px solid var(--ro-indigo-border);
-    padding: 0.12rem 0.4rem;
-    border-radius: 4px;
-}
-
-.badge-free {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 800;
-    color: var(--emerald);
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    padding: 0.12rem 0.4rem;
-    border-radius: 4px;
-}
-
-.badge-hours {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-muted);
-}
-
-.module-mini-title {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.35;
-}
-
-.module-mini-desc {
-    font-size: 0.86rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-    flex: 1;
-}
-
-.module-mini-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 0.65rem;
-    border-top: 1px solid var(--border-hairline);
-    font-size: 0.78rem;
-}
-
-.module-lesson-count {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-.module-diff-tag {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.diff-beginner { color: var(--emerald); }
-.diff-intermediate { color: var(--amber); }
-.diff-advanced { color: #EF4444; }
-
-/* ==========================================================================
-   SCHOOLS SHOWCASE & TEACHER HUD
-   ========================================================================== */
-.schools-showcase-box {
-    padding: 3.25rem;
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 3.5rem;
-    align-items: center;
-}
-
-@media (max-width: 1024px) {
-    .schools-showcase-box {
-        grid-template-columns: 1fr;
-        padding: 2.25rem;
-    }
-}
-
-.schools-headline {
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 0.85rem;
-    line-height: 1.25;
-}
-
-.schools-subhead {
-    font-size: 1.06rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-    margin-bottom: 2rem;
-}
-
-.steps-flow {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    margin-bottom: 2.25rem;
-}
-
-.step-flow-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.15rem;
-}
-
-.step-num-badge {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--ro-indigo);
-    color: #FFFFFF;
-    font-family: var(--font-mono);
-    font-size: 0.88rem;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(70, 54, 245, 0.4);
-}
-
-.step-body strong {
-    display: block;
-    font-size: 0.98rem;
-    color: var(--text-primary);
-    margin-bottom: 0.2rem;
-}
-
-.step-body p {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-}
-
-.schools-cta-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-/* TEACHER CARD PREVIEW */
-.teacher-preview-card {
-    background: var(--bg-subtle);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-lg);
-    padding: 1.85rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    box-shadow: var(--shadow-sm);
-}
-
-.preview-card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-}
-
-.teacher-avatar-mock {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--bg-surface);
-    border: 1.5px solid var(--ro-indigo-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.preview-school-sub {
-    display: block;
-    font-size: 0.76rem;
-    color: var(--text-muted);
-}
-
-.preview-live-tag {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--emerald);
-    background: rgba(16, 185, 129, 0.12);
-    padding: 0.2rem 0.55rem;
-    border-radius: 999px;
-    font-weight: 700;
-}
-
-.preview-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    background: var(--bg-surface);
-    padding: 0.85rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-hairline);
-    text-align: center;
-}
-
-.preview-stat-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-number {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: var(--ro-indigo);
-}
-
-.stat-label {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-.preview-class-quest {
-    background: var(--bg-surface);
-    padding: 0.95rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-hairline);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.preview-quest-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.84rem;
-}
-
-.quest-pct {
-    font-family: var(--font-mono);
-    font-weight: 800;
-    color: var(--ro-indigo);
-}
-
-.preview-quote-box {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.55;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-sm);
-    padding: 0.75rem 1rem;
-}
-
-/* ==========================================================================
-   COMPARISON TABLE S ČISTÝMI VEKTOROVÝMI IKONAMI
-   ========================================================================== */
-.landing-compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.92rem;
-}
-
-.landing-compare-table th,
-.landing-compare-table td {
-    padding: 1.15rem 1.25rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-hairline);
-}
-
-.landing-compare-table th {
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--text-muted);
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.landing-compare-table th.highlight-col,
-.landing-compare-table td.highlight-col {
-    background: var(--ro-indigo-subtle);
-    font-weight: 700;
-    color: var(--ro-indigo);
-}
-
-.matrix-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    margin-right: 0.45rem;
-    vertical-align: middle;
-    font-weight: 800;
-    font-size: 0.76rem;
-}
-
-.matrix-icon.yes {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--emerald);
-}
-
-.matrix-icon.no {
-    background: rgba(239, 68, 68, 0.12);
-    color: #EF4444;
-}
-
-.matrix-icon.partial {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--amber);
-}
-
-.check-yes {
-    color: var(--emerald) !important;
-    font-weight: 700;
-}
-
-.check-no {
-    color: var(--text-muted) !important;
-}
-
-.check-partial {
-    color: var(--amber) !important;
-}
-
-/* ==========================================================================
-   FAQ ACCORDION
-   ========================================================================== */
-.landing-faq-accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    max-width: 860px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-.faq-item {
-    border-radius: var(--radius-md);
-    overflow: hidden;
-}
-
-.faq-question {
-    padding: 1.25rem 1.5rem;
-    font-weight: 700;
-    font-size: 1.02rem;
-    color: var(--text-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    list-style: none;
-    user-select: none;
-    gap: 1rem;
-}
-
-.faq-question::-webkit-details-marker {
-    display: none;
-}
-
-.faq-arrow-svg {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    transition: transform 0.25s var(--ease-out);
-    flex-shrink: 0;
-}
-
-.faq-item[open] .faq-arrow-svg {
-    transform: rotate(180deg);
-    color: var(--ro-indigo);
-}
-
-.faq-answer {
-    padding: 0 1.5rem 1.35rem;
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.65;
-}
-
-/* ==========================================================================
-   FINAL HIGH-CONVERSION CTA BANNER
-   ========================================================================== */
-.landing-cta-banner {
-    padding: 4.5rem 2rem;
-    background: linear-gradient(135deg, rgba(70, 54, 245, 0.1) 0%, rgba(92, 225, 230, 0.1) 100%), var(--bg-surface);
-    border: 1px solid var(--ro-indigo-border);
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-indigo);
-}
-
-.cta-banner-content {
-    max-width: 680px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-}
-
-.cta-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    font-weight: 800;
-    color: var(--ro-indigo);
-    background: var(--ro-indigo-subtle);
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid var(--ro-indigo-border);
-}
-
-.cta-title {
-    font-family: var(--font-display);
-    font-size: 2.4rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-
-.cta-desc {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-}
-
-.cta-buttons-row {
-    display: flex;
-    align-items: center;
-    gap: 1.15rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 0.5rem;
-}
-
-/* ==========================================================================
-   PROJECT FOOTER
-   ========================================================================== */
-.landing-footer {
-    padding-top: 3.5rem;
-    border-top: 1px solid var(--border-hairline);
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1.5fr;
-    gap: 3rem;
-}
-
-@media (max-width: 860px) {
-    .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-}
-
-.brand-col {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.footer-text {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    max-width: 380px;
-}
-
-.footer-patent-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-.footer-col-title {
-    font-family: var(--font-display);
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.footer-link-list,
-.footer-meta-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    font-size: 0.88rem;
-}
-
-.footer-link-list a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
-
-.footer-link-list a:hover {
-    color: var(--ro-indigo);
-}
-
-.footer-meta-list li {
-    color: var(--text-secondary);
-    line-height: 1.45;
-}
-
-.footer-meta-list strong {
-    color: var(--text-primary);
-}
-
-.footer-bottom-bar {
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-hairline);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.footer-bottom-links {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.footer-bottom-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
-
-.footer-bottom-links a:hover {
-    color: var(--ro-indigo);
-}
-</style>
-
+<!-- JAVASCRIPT: LIGHTWEIGHT, REACTIVE DEVELOPER WORKBENCH -->
 <script>
-// ==========================================================================
-// 1. DYNAMICKÝ PYTHON SNIPPET RUNNER SHOWCASE
-// ==========================================================================
 const SNIPPETS = [
     {
         filename: "priemer_znamok.py",
@@ -2563,39 +720,40 @@ const SNIPPETS = [
             { name: "Test #2: Prázdny zoznam []", res: "== 0.0", ms: "0.21ms" },
             { name: "Test #3: Hraničné hodnoty", res: "PASSED", ms: "0.38ms" }
         ],
-        codo_init_sk: "<em>Codo analyzuje kód:</em> Výborne! Ošetril si delenie nulou. Vieš, ako by sa funkcia správala pri neplatnej známke mimo rozsahu 1 až 5?",
-        codo_init_en: "<em>Codo analyzing code:</em> Great work! You guarded against division by zero. How would the function handle values outside the 1 to 5 grade range?",
-        codo_run_sk: "<strong>Všetky 3 testovacie prípady úspešne prešli za 0.38ms!</strong><br><em>Codo radí:</em> AST kontrola potvrdila O(1) pamäťový strop. Skús sa zamyslieť, či by si vedel použiť modul <code>statistics.mean</code>.",
-        codo_run_en: "<strong>All 3 test cases passed in 0.38ms!</strong><br><em>Codo tip:</em> AST checks verified O(1) memory bound. Could you solve this using the standard <code>statistics.mean</code> function?"
+        codo_sk: "<em>Codo analyzuje kód:</em> Výborne! Ošetril si delenie nulou pri prázdnom zozname. Vieš, ako by si funkciu upravil tak, aby ignorovala neplatné známky mimo rozsahu 1 až 5 bez pádu programu?",
+        codo_en: "<em>Codo analyzing code:</em> Great job guarding against division by zero on empty inputs. How would you handle invalid grades outside the 1 to 5 range without raising an unhandled exception?",
+        chatgpt_sk: "<strong style='color:#ef4444;'>Bežný ChatGPT:</strong><br><em>Tu je hotový kód: skopíruj a vlož toto...</em> (Študent kód bez premýšľania odovzdá, ničomu neporozumie a na písomke zlyhá).",
+        chatgpt_en: "<strong style='color:#ef4444;'>Standard ChatGPT:</strong><br><em>Here is the complete solution: copy and paste this...</em> (Student copies without thinking, learns zero retention, fails in-class exam)."
     },
     {
         filename: "02_caesar_sifra.py",
         reward: "+50 XP • +15 Doros",
         code: [
             '<span class="code-kw">def</span> <span class="code-fn">caesar_sifra</span>(text: <span class="code-type">str</span>, posun: <span class="code-type">int</span>) -&gt; <span class="code-type">str</span>:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Zašifruje abecedné znaky pomocou posunu mod 26."""</span>',
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Zašifruje text posunom v abecede s modulo 26."""</span>',
             '&nbsp;&nbsp;&nbsp;&nbsp;vysledok = []',
             '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">for</span> znak <span class="code-kw">in</span> text:',
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if</span> znak.<span class="code-fn">isalpha</span>():',
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;zaklad = <span class="code-fn">ord</span>(<span class="code-str">\'A\'</span>) <span class="code-kw">if</span> znak.<span class="code-fn">isupper</span>() <span class="code-kw">else</span> <span class="code-fn">ord</span>(<span class="code-str">\'a\'</span>)',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(<span class="code-fn">chr</span>((<span class="code-fn">ord</span>(znak) - zaklad + posun) % <span class="code-num">26</span> + zaklad))',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;novy = <span class="code-fn">chr</span>((<span class="code-fn">ord</span>(znak) - zaklad + posun) % <span class="code-num">26</span> + zaklad)',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(novy)',
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">else</span>:',
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(znak)',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-str">""</span>.<span class="code-fn">join</span>(vysledok)'
+            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-str">\'\'</span>.<span class="code-fn">join</span>(vysledok)'
         ],
         tests: [
-            { name: "Test #1: ('PYTHON', 3)", res: "== 'SBWKRQ'", ms: "0.33ms" },
-            { name: "Test #2: Zachovanie medzier a čísiel", res: "PASSED", ms: "0.27ms" },
-            { name: "Test #3: Záporný posun (mod 26)", res: "PASSED", ms: "0.41ms" }
+            { name: "Test #1: caesar_sifra('Ahoj', 3)", res: "== 'Dkrm'", ms: "0.31ms" },
+            { name: "Test #2: Pretečenie abecedy ('Z', 1)", res: "== 'A'", ms: "0.24ms" },
+            { name: "Test #3: Zachovanie medzier a čísiel", res: "PASSED", ms: "0.35ms" }
         ],
-        codo_init_sk: "<em>Codo analyzuje kód:</em> Skvelé použitie funkcie <code>ord()</code> a <code>chr()</code> s modulárnou aritmetikou. Aká je časová zložitosť tohto algoritmu?",
-        codo_init_en: "<em>Codo analyzing code:</em> Elegant use of <code>ord()</code> and <code>chr()</code> with modular arithmetic. What is the time complexity with respect to text length?",
-        codo_run_sk: "<strong>Kryptografické testy úspešne overené (0.41ms)!</strong><br><em>Codo radí:</em> Algoritmus beží v čase O(n). Vieš, prečo je v Pythone lepšie použiť <code>\'\'.join()</code> namiesto opakovaného sčítavania reťazcov <code>+</code>?",
-        codo_run_en: "<strong>Cryptographic tests verified (0.41ms)!</strong><br><em>Codo tip:</em> The algorithm runs in linear O(n) time. Why is <code>\'\'.join()</code> vastly faster in Python than repeated string concatenation <code>+</code>?"
+        codo_sk: "<em>Codo analyzuje kód:</em> Správne použitie modulo aritmetiky <code>% 26</code>! Čo by sa stalo, ak by používateľ zadal záporný posun (dešifrovanie)? Prečo to v Pythone funguje korektne?",
+        codo_en: "<em>Codo analyzing code:</em> Solid use of modulo 26 arithmetic! What happens when a negative shift is supplied for decryption? Why does Python's modulo handle negative numbers gracefully?",
+        chatgpt_sk: "<strong style='color:#ef4444;'>Bežný ChatGPT:</strong><br><em>Hotové riešenie: Tu je kód.</em> (Žiak netuší, prečo sa odčítava ASCII hodnota `ord('A')` a princíp nepochopí).",
+        chatgpt_en: "<strong style='color:#ef4444;'>Standard ChatGPT:</strong><br><em>Full solution dumped.</em> (Student misses why ASCII base normalization via `ord('A')` is required)."
     },
     {
         filename: "03_fibonacci.py",
-        reward: "+45 XP • +12 Doros",
+        reward: "+60 XP • +20 Doros",
         code: [
             '<span class="code-kw">from</span> functools <span class="code-kw">import</span> lru_cache',
             '',
@@ -2611,53 +769,72 @@ const SNIPPETS = [
             { name: "Test #2: fibonacci(50) memoization", res: "== 12586269025", ms: "0.26ms" },
             { name: "Test #3: Hraničné n=0 a n=1", res: "PASSED", ms: "0.19ms" }
         ],
-        codo_init_sk: "<em>Codo analyzuje kód:</em> Použitie dekorátora <code>@lru_cache</code> mení časovú zložitosť z exponenciálnej O(2^n) na lineárnu O(n).",
-        codo_init_en: "<em>Codo analyzing code:</em> Applying <code>@lru_cache</code> transforms exponential O(2^n) complexity into linear O(n).",
-        codo_run_sk: "<strong>Fibonacci(50) vypočítaný za 0.26ms!</strong><br><em>Codo radí:</em> Bez memoizácie by tento výpočet trval miliardy operácií. Vieš, ako by si rovnaký výsledok dosiahol iteratívne pomocou dvoch premenných a O(1) pamäte?",
-        codo_run_en: "<strong>Fibonacci(50) computed in 0.26ms!</strong><br><em>Codo tip:</em> Without caching this would take billions of recursion steps. How could you achieve the same result iteratively with O(1) auxiliary space?"
+        codo_sk: "<em>Codo analyzuje kód:</em> Dekorátor <code>@lru_cache</code> transformoval zložitosť z exponenciálnej O(2^n) na lineárnu O(n). Vieš, ako by si rovnaký výsledok dosiahol iteratívne s O(1) pamäťou?",
+        codo_en: "<em>Codo analyzing code:</em> <code>@lru_cache</code> turned exponential O(2^n) complexity into linear O(n). How could you achieve the same result iteratively using two variables and O(1) memory?",
+        chatgpt_sk: "<strong style='color:#ef4444;'>Bežný ChatGPT:</strong><br><em>Tu máš rekurzívny kód:</em> (Bez vysvetlenia memoizácie by program pri n=50 zamrzol na hodiny).",
+        chatgpt_en: "<strong style='color:#ef4444;'>Standard ChatGPT:</strong><br><em>Unoptimized recursive dump:</em> (Without caching explanation, executing for n=50 hangs the student's browser)."
     }
 ];
 
 let activeSnippetIdx = 0;
+let currentCodoMode = 'codo';
 const currentLang = "{{ lang }}";
 
 function renderSnippet(idx) {
     const s = SNIPPETS[idx];
     const linesEl = document.getElementById('editorCodeLines');
     const rewardEl = document.getElementById('demoRewardTag');
-    const codoEl = document.getElementById('demoCodoText');
     const testsEl = document.getElementById('demoTestCases');
     
-    // Render lines with line numbers
+    // Code lines
     linesEl.innerHTML = s.code.map((line, i) => 
-        `<div class="code-row"><span class="line-num">${i + 1}</span>${line}</div>`
+        `<div class="code-row"><span class="code-line-num">${i + 1}</span>${line}</div>`
     ).join('');
 
-    // Reward tag
+    // Reward
     rewardEl.innerHTML = `
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/></svg>
         ${s.reward}
     `;
 
-    // Initial tests display with animated SVG checkmarks
-    testsEl.innerHTML = s.tests.map((t, i) => `
+    // Test cases
+    testsEl.innerHTML = s.tests.map(t => `
         <div class="test-item pass">
-            <svg class="test-icon-svg t-success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation-delay: ${i * 0.08}s"><polyline points="20 6 9 17 4 12"/></svg>
+            <svg class="test-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
             <span class="test-name">${t.name}</span>
             <span class="test-expected">${t.res}</span>
             <span class="test-ms">${t.ms}</span>
         </div>
     `).join('');
 
-    // Codo text
-    codoEl.innerHTML = (currentLang === 'en') ? s.codo_init_en : s.codo_init_sk;
+    updateDialogueContent();
+}
+
+function updateDialogueContent() {
+    const s = SNIPPETS[activeSnippetIdx];
+    const dialogueEl = document.getElementById('demoCodoDialogue');
+    
+    if (currentCodoMode === 'codo') {
+        dialogueEl.classList.remove('chatgpt-mode');
+        dialogueEl.innerHTML = (currentLang === 'en') ? s.codo_en : s.codo_sk;
+    } else {
+        dialogueEl.classList.add('chatgpt-mode');
+        dialogueEl.innerHTML = (currentLang === 'en') ? s.chatgpt_en : s.chatgpt_sk;
+    }
 }
 
 function switchSnippet(idx, btnEl) {
     activeSnippetIdx = idx;
-    document.querySelectorAll('.ide-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.workbench-tab-btn').forEach(b => b.classList.remove('active'));
     btnEl.classList.add('active');
     renderSnippet(idx);
+}
+
+function toggleCodoMode(mode) {
+    currentCodoMode = mode;
+    document.getElementById('btnModeCodo').classList.toggle('active', mode === 'codo');
+    document.getElementById('btnModeChatGPT').classList.toggle('active', mode === 'chatgpt');
+    updateDialogueContent();
 }
 
 function runInteractiveDemo() {
@@ -2666,354 +843,45 @@ function runInteractiveDemo() {
     const btnText = document.getElementById('demoRunBtnText');
     const timerTag = document.getElementById('demoTimerTag');
     const testCases = document.getElementById('demoTestCases');
-    const codoText = document.getElementById('demoCodoText');
     
     btn.disabled = true;
-    btnText.textContent = (currentLang === 'en') ? "Compiling AST & Executing..." : "Kompilujem AST & Spúšťam...";
+    btnText.textContent = (currentLang === 'en') ? "Executing AST Sandbox..." : "Spúšťam v sandboxe...";
     testCases.style.opacity = '0.35';
-    timerTag.textContent = "Sandbox AST Verification...";
+    timerTag.textContent = "Verifying AST security constraints...";
 
     setTimeout(() => {
         btn.disabled = false;
         btnText.textContent = (currentLang === 'en') ? "Run Sandbox Tests" : "Spustiť a otestovať kód";
         testCases.style.opacity = '1';
-        timerTag.textContent = "0.38 ms AST execution";
+        timerTag.textContent = "0.38 ms execution • Memory O(1)";
 
-        // Re-render tests with dynamic draw animation (transitions.dev 10-success-check)
-        testCases.innerHTML = s.tests.map((t, i) => `
+        testCases.innerHTML = s.tests.map(t => `
             <div class="test-item pass">
-                <svg class="test-icon-svg t-success-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation-delay: ${i * 0.08}s"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg class="test-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                 <span class="test-name">${t.name}</span>
                 <span class="test-expected">${t.res}</span>
                 <span class="test-ms">${t.ms}</span>
             </div>
         `).join('');
 
-        codoText.innerHTML = (currentLang === 'en') ? s.codo_run_en : s.codo_run_sk;
-    }, 480);
+        updateDialogueContent();
+    }, 450);
 }
 
-// Initial render of first snippet
-renderSnippet(0);
-
-// ==========================================================================
-// 2. REAKTÍVNA NAVIGÁCIA PRI SCROLLOVANÍ & SCROLL PROGRESS BAR
-// ==========================================================================
-const scrollProgress = document.getElementById('scrollProgressBar');
-const publicNav = document.querySelector('.public-navbar');
-const navLinks = document.querySelectorAll('.public-nav-links a[href^="/#"]');
-
-window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-    
-    if (scrollProgress) {
-        scrollProgress.style.width = pct + '%';
-    }
-
-    if (publicNav) {
-        if (scrollTop > 20) {
-            publicNav.classList.add('scrolled');
-        } else {
-            publicNav.classList.remove('scrolled');
-        }
-    }
-
-    // Scroll spy for active link
-    const sections = ['curriculum', 'pillars', 'codo-ai', 'schools', 'compare', 'faq'];
-    let activeFound = false;
-    for (let i = sections.length - 1; i >= 0; i--) {
-        const sec = document.getElementById(sections[i]);
-        if (sec) {
-            const rect = sec.getBoundingClientRect();
-            if (rect.top <= 160) {
-                navLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href === '/#' + sections[i] || href.endsWith('#' + sections[i])) {
-                        link.classList.add('active');
-                        activeFound = true;
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-                break;
-            }
-        }
-    }
-    if (!activeFound && scrollTop < 200) {
-        navLinks.forEach(l => l.classList.remove('active'));
-    }
-}, { passive: true });
-
-// ==========================================================================
-// 3. INTERSECTION OBSERVER PRE SCROLL REVEAL & ANIMOVANÉ POČÍTADLÁ
-// ==========================================================================
-const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-visible');
-            
-            // Check if counters are inside this element
-            const counters = entry.target.querySelectorAll('.counter-val');
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target'), 10);
-                if (target && !counter.dataset.counted) {
-                    counter.dataset.counted = "true";
-                    animateCounter(counter, target, 1200);
-                }
-            });
-        }
-    });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
-
-function animateCounter(el, target, duration) {
-    let start = 0;
-    const stepTime = 16;
-    const steps = duration / stepTime;
-    const increment = target / steps;
-    
-    const timer = setInterval(() => {
-        start += increment;
-        if (start >= target) {
-            el.textContent = target;
-            clearInterval(timer);
-        } else {
-            el.textContent = Math.floor(start);
-        }
-    }, stepTime);
-}
-
-// ==========================================================================
-// 4. SPOTLIGHT BORDER GLOW EFECT NA POHYB MYŠI
-// ==========================================================================
-document.querySelectorAll('.spotlight-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-    });
-});
-
-// ==========================================================================
-// 5. INTERAKTÍVNE CYBERNETICKÉ KANVAS POZADIE (CONSTELLATION NODES)
-// ==========================================================================
-(function initConstellationCanvas() {
-    const canvas = document.getElementById('heroBackgroundCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    let width = 0, height = 0;
-    let particles = [];
-    const particleCount = 42;
-    const maxDistance = 125;
-    let mouse = { x: null, y: null, radius: 140 };
-
-    function resize() {
-        const dpr = window.devicePixelRatio || 1;
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        ctx.scale(dpr, dpr);
-        initParticles();
-    }
-
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.6,
-                vy: (Math.random() - 0.5) * 0.6,
-                radius: Math.random() * 2 + 1.5,
-                color: (i % 3 === 0) ? '#5CE1E6' : '#6366F1'
-            });
-        }
-    }
-
-    window.addEventListener('mousemove', e => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
-
-    window.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-
-        // Update & draw particles
-        for (let i = 0; i < particles.length; i++) {
-            const p = particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-
-            // Bounce on borders
-            if (p.x < 0 || p.x > width) p.vx *= -1;
-            if (p.y < 0 || p.y > height) p.vy *= -1;
-
-            // Mouse interaction (soft attraction / repellent wave)
-            if (mouse.x !== null && mouse.y !== null) {
-                const dx = mouse.x - p.x;
-                const dy = mouse.y - p.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < mouse.radius) {
-                    const force = (mouse.radius - dist) / mouse.radius;
-                    p.x -= (dx / dist) * force * 1.8;
-                    p.y -= (dy / dist) * force * 1.8;
-                }
-            }
-
-            // Draw particle dot
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = 0.55;
-            ctx.fill();
-
-            // Connect nearby particles
-            for (let j = i + 1; j < particles.length; j++) {
-                const p2 = particles[j];
-                const dx = p.x - p2.x;
-                const dy = p.y - p2.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < maxDistance) {
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = '#6366F1';
-                    ctx.globalAlpha = (1 - dist / maxDistance) * 0.22;
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-            }
-        }
-        ctx.globalAlpha = 1.0;
-        requestAnimationFrame(draw);
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    draw();
-})();
-
-// Prepínanie kariérnych ciest (Tracks)
 function switchLandingTrack(trackKey, btnEl) {
-    document.querySelectorAll('.track-pill-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.track-panel').forEach(p => p.classList.remove('active'));
-    
+    document.querySelectorAll('.track-rail-btn').forEach(b => b.classList.remove('active'));
     btnEl.classList.add('active');
-    const targetPanel = document.getElementById('track-panel-' + trackKey);
-    if (targetPanel) {
-        targetPanel.classList.add('active');
+
+    document.querySelectorAll('.track-panel-deck').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('track-panel-' + trackKey);
+    if (target) {
+        target.classList.add('active');
     }
 }
 
-// ==========================================================================
-// 6. GSAP 3 & SCROLLTRIGGER ORCHESTRATION (gsap-skills, transitions.dev, impeccable)
-// ==========================================================================
-function initGsapLandingAnimation() {
-    if (!window.gsap) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    if (window.ScrollTrigger) {
-        gsap.registerPlugin(ScrollTrigger);
-    }
-
-    // Hero Stagger Timeline
-    const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    heroTl
-        .from('.hero-badge-pill', { scale: 0.88, opacity: 0, duration: 0.55, ease: "back.out(1.8)" })
-        .from('.hero-headline', { y: 35, opacity: 0, duration: 0.75 }, "-=0.35")
-        .from('.hero-subhead', { y: 22, opacity: 0, duration: 0.65 }, "-=0.5")
-        .from('.hero-cta-group .btn', { y: 15, scale: 0.95, opacity: 0, stagger: 0.1, duration: 0.5, ease: "back.out(1.5)" }, "-=0.4")
-        .from('.trust-chip', { y: 10, opacity: 0, stagger: 0.06, duration: 0.4 }, "-=0.3")
-        .from('.hero-ide-preview .ide-window', { y: 45, rotationX: 4, opacity: 0, duration: 0.95, ease: "power3.out" }, "-=0.6")
-        .from('.floating-widget', { scale: 0.75, opacity: 0, stagger: 0.12, duration: 0.6, ease: "back.out(1.7)" }, "-=0.5");
-
-    // Continuous ambient floating loop for widgets
-    gsap.to('.widget-top-right', { y: "-=8", duration: 3.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
-    gsap.to('.widget-bottom-left', { y: "+=7", duration: 2.8, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.4 });
-    gsap.to('.widget-bottom-right', { y: "-=6", duration: 3.6, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.8 });
-
-    // 3D Card Hover Tilt with GSAP (transitions.dev 19-card-tilt)
-    document.querySelectorAll('.spotlight-card, .ide-window').forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const rect = card.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            gsap.to(card, {
-                rotationY: x * 7,
-                rotationX: -y * 7,
-                transformPerspective: 1000,
-                duration: 0.35,
-                ease: "power1.out"
-            });
-        });
-        card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-                rotationY: 0,
-                rotationX: 0,
-                duration: 0.65,
-                ease: "power2.out"
-            });
-        });
-    });
-
-    // ScrollTrigger batch reveals on sections
-    if (window.ScrollTrigger) {
-        ScrollTrigger.batch('.landing-section .reveal-on-scroll, .landing-metrics-ribbon, .landing-cta-banner', {
-            start: "top 85%",
-            once: true,
-            onEnter: batch => {
-                gsap.to(batch, {
-                    opacity: 1,
-                    y: 0,
-                    stagger: 0.12,
-                    duration: 0.75,
-                    ease: "power2.out",
-                    overwrite: true
-                });
-
-                // Trigger counters
-                batch.forEach(container => {
-                    container.querySelectorAll('.counter-val').forEach(counter => {
-                        const target = parseInt(counter.getAttribute('data-target'), 10);
-                        if (target && !counter.dataset.counted) {
-                            counter.dataset.counted = "true";
-                            let obj = { val: 0 };
-                            gsap.to(obj, {
-                                val: target,
-                                duration: 1.4,
-                                ease: "power2.out",
-                                onUpdate: () => {
-                                    counter.textContent = Math.floor(obj.val);
-                                }
-                            });
-                        }
-                    });
-                });
-            }
-        });
-    }
-}
-
-// Call on load
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initGsapLandingAnimation);
-} else {
-    initGsapLandingAnimation();
-}
+// Initial render
+document.addEventListener('DOMContentLoaded', () => {
+    renderSnippet(0);
+});
 </script>
 {% endblock %}
