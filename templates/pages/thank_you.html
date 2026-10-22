@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+{% if lang == 'en' %}Thank You! — Codoro{% else %}Ďakujeme! — Codoro{% endif %}
+{% endblock %}
+
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="animate-in" style="max-width: 680px; margin: 3.5rem auto; text-align: center; padding: 2.5rem 1.5rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); box-shadow: var(--shadow-md);">
+    <!-- Celebrating Codo Mascot -->
+    <div style="width: 130px; height: 130px; margin: 0 auto 1.5rem; position: relative;">
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(0, 135, 103, 0.2) 0%, rgba(0,0,0,0) 70%); border-radius: 50%;"></div>
+        <div style="position: relative; z-index: 2; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+            <svg width="110" height="110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Drop shadow -->
+                <ellipse cx="50" cy="92" rx="34" ry="7" fill="rgba(14, 30, 24, 0.12)"/>
+                <!-- Hood outer -->
+                <path d="M50 14 C32 14 22 28 22 46 C22 64 26 78 50 78 C74 78 78 64 78 46 C78 28 68 14 50 14 Z" fill="#008767"/>
+                <!-- Hood inner -->
+                <path d="M50 18 C35 18 26 30 26 46 C26 62 30 74 50 74 C70 74 74 62 74 46 C74 30 65 18 50 18 Z" fill="#006E53"/>
+                <!-- Face screen -->
+                <path d="M50 23 C38 23 30 33 30 46 C30 59 36 68 50 68 C64 68 70 59 70 46 C70 33 62 23 50 23 Z" fill="#111C18"/>
+                <!-- Laughing Cyan Arc Eyes -->
+                <path d="M37 45 Q42 39 47 45" stroke="#5CE1E6" stroke-width="3" stroke-linecap="round"/>
+                <path d="M53 45 Q58 39 63 45" stroke="#5CE1E6" stroke-width="3" stroke-linecap="round"/>
+                <!-- Laptop -->
+                <rect x="34" y="66" width="32" height="18" rx="3" fill="#E2ECE7" stroke="#CBD5E1" stroke-width="1.5"/>
+                <path d="M42 75 L46 71 L42 67" stroke="#008767" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M50 75 L56 75" stroke="#008767" stroke-width="1.8" stroke-linecap="round"/>
+                <rect x="28" y="82" width="44" height="4" rx="2" fill="#94A3B8"/>
+                <!-- Confetti Sparkles -->
+                <circle cx="18" cy="24" r="2.5" fill="#EAB308"/>
+                <circle cx="82" cy="28" r="2.5" fill="#F97316"/>
+                <polygon points="26,12 28,17 33,18 29,21 30,26 26,23 21,25 23,20 20,16 25,16" fill="#10B981" transform="scale(0.5) translate(20, 10)"/>
+                <polygon points="76,14 78,19 83,20 79,23 80,28 76,25 71,27 73,22 70,18 75,18" fill="#EAB308" transform="scale(0.5) translate(65, 10)"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Success Badge -->
+    <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: rgba(16, 185, 129, 0.12); color: #008767; font-weight: 700; font-size: 0.84rem; margin-bottom: 1rem;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>{% if lang == 'en' %}SUCCESSFUL ACTION{% else %}ÚSPEŠNE ODOSLANÉ{% endif %}</span>
+    </div>
+
+    <h1 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3.2vw, 2.4rem); font-weight: 800; color: var(--text-primary); margin: 0 0 1rem; line-height: 1.2;">
+        {% if flow_type == 'license' %}
+            {% if lang == 'en' %}Thank You for Requesting Codoro EDU!{% else %}Ďakujeme za záujem o školskú licenciu Codoro EDU!{% endif %}
+        {% elif flow_type == 'registration' %}
+            {% if lang == 'en' %}Welcome to Codoro!{% else %}Vitaj v komunite Codoro!{% endif %}
+        {% else %}
+            {% if lang == 'en' %}Thank You for Connecting with Codoro!{% else %}Ďakujeme za kontaktovanie Codoro!{% endif %}
+        {% endif %}
+    </h1>
+
+    <p style="font-size: 1.02rem; color: var(--text-secondary); line-height: 1.6; margin: 0 auto 2.25rem; max-width: 46ch;">
+        {% if flow_type == 'license' %}
+            {% if lang == 'en' %}
+            Your school license request has been recorded. Our educational team will reach out with pilot materials and support.
+            {% else %}
+            Tvoja žiadosť o školskú licenciu bola zaznamenaná. Náš tím ťa bude čoskoro kontaktovať s pilotnými materiálmi a inštrukciami pre triedu.
+            {% endif %}
+        {% elif flow_type == 'registration' %}
+            {% if lang == 'en' %}
+            Your profile has been created. Step inside the interactive curriculum and start earning your first Doros coins!
+            {% else %}
+            Tvoj profil bol úspešne vytvorený. Vstúp do interaktívneho kurikula a začni riešiť svoje prvé zadania a zbierať mince Doros!
+            {% endif %}
+        {% else %}
+            {% if lang == 'en' %}
+            Your message has been received by our support team. We usually respond within 24 hours.
+            {% else %}
+            Tvoja správa bola doručená nášmu tímu podpory. Bežne odpovedáme do 24 hodín.
+            {% endif %}
+        {% endif %}
+    </p>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap;">
+        {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn-emerald-solid" style="padding: 0.75rem 1.4rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+            {% include 'components/icon_svg.html' with name='map' size='16' %}
+            <span>{% if lang == 'en' %}Go to My Learning Map{% else %}Prejsť na mapu učiva{% endif %}</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn-emerald-solid" style="padding: 0.75rem 1.4rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+            <span>{% if lang == 'en' %}Sign In to Account{% else %}Prihlásiť sa do konta{% endif %}</span>
+        </a>
+        <a href="{% url 'landing_page' %}" class="btn-secondary" style="padding: 0.75rem 1.4rem; font-weight: 700; text-decoration: none;">
+            {% if lang == 'en' %}Back to Home{% else %}Úvodná stránka{% endif %}
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

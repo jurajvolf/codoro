@@ -1,103 +1,129 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}{% if ui_lang == 'en' %}Sign In — Codoro{% else %}Prihlásenie — Codoro{% endif %}{% endblock %}
+
 {% block content %}
 {% firstof ui_lang 'sk' as lang %}
-<div class="layout-auth animate-in"
-    style="max-width: 1040px; margin: 2rem auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center;">
 
+<div style="max-width: 980px; margin: 3rem auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+
+    <!-- Left intro column -->
     <div>
-        <div style="display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: var(--ro-indigo-soft); color: var(--ro-indigo); font-weight: 700; font-size: 0.8rem; margin-bottom: 1.25rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <span>Codoro Classroom Ecosystem</span>
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: var(--bg-mint-soft); color: var(--brand-emerald); font-weight: 700; font-size: 0.82rem; margin-bottom: 1.25rem;">
+            {% include 'components/icon_svg.html' with name='layers' size='14' %}
+            <span>{% if lang == 'en' %}Codoro Classroom Ecosystem{% else %}Ekosystém tried a výučby Pythonu{% endif %}</span>
         </div>
 
-        <h1 style="font-family: var(--font-display); font-size: 2.6rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.1rem; color: var(--text-primary);">
+        <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 3.2vw, 2.7rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 1.25rem; color: var(--text-primary);">
             {% if lang == 'en' %}
-            Master Python with your class and AI tutor Codo.
+            Learn Python by Doing, Earning, and Building.
             {% else %}
-            Ovládni Python so svojou triedou a AI tútorom Codo.
+            Nauč sa Python praxou, zbieraním odmien a tvorbou.
             {% endif %}
         </h1>
 
-        <p style="font-size: 1.02rem; color: var(--text-secondary); margin-bottom: 2rem; max-width: 52ch;">
+        <p style="font-size: 1.02rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; max-width: 48ch;">
             {% if lang == 'en' %}
-            Write and test real Python code directly in your browser, complete collective class quests, and exchange earned Doros for classroom rewards managed by your teacher.
+            Step into the guided visual learning map, solve hands-on Python exercises in real time, and earn Doros to redeem classroom rewards with your peers.
             {% else %}
-            Píš a testuj reálny Python kód priamo v prehliadači, plň spoločné triedne výzvy a vymieňaj získané mince Doros za školské odmeny od svojho učiteľa.
+            Vstúp do interaktívnej mapy učiva, rieš praktické Python cvičenia s okamžitým testovaním a získavaj mince Doros na reálne triedne výhody.
             {% endif %}
         </p>
 
-        <div class="card-surface" style="padding: 1.25rem 1.5rem; max-width: 480px; background: var(--bg-subtle);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border-hairline);">
+        <!-- Python Workbench snippet card -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 1.25rem 1.5rem; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
                 <div style="display: flex; gap: 6px;">
                     <span style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444;"></span>
                     <span style="width: 10px; height: 10px; border-radius: 50%; background: #F59E0B;"></span>
                     <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
                 </div>
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ro-indigo); font-weight: 600;">codo_tutor.py</span>
+                <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--brand-emerald); font-weight: 700;">codo_area.py</span>
             </div>
-            <pre style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-primary); line-height: 1.6; overflow-x: auto; margin: 0;"><code>def vypocitaj_odmenu(ulohy, bonus):
-    return ulohy * 20 + bonus
+            <pre style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-primary); line-height: 1.65; margin: 0;"><code>def area(width, height):
+    return width * height
 
-# [PASSED] 3/3 unit tests verified (+50 XP, +30 Doros)</code></pre>
+# [PASSED] 3/3 tests verified (+20 Doros)</code></pre>
         </div>
     </div>
 
-    <div class="card-surface" style="padding: 2.25rem 2.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-hairline); box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);">
-        <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.75rem;">
-            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro"
-                style="height: 48px; width: auto; object-fit: contain;">
-            <div>
-                <h2 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin: 0; color: var(--text-primary);">
-                    {% if lang == 'en' %}Sign in to your account{% else %}Prihlásenie do účtu{% endif %}
-                </h2>
-                <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0.2rem 0 0;">
-                    {% if lang == 'en' %}Enter your credentials to continue{% else %}Zadaj svoje prihlasovacie údaje{% endif %}
-                </p>
-            </div>
+    <!-- Right login card -->
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 2.5rem 2.25rem; box-shadow: 0 16px 40px -12px rgba(14, 30, 24, 0.08);">
+        <!-- Clickable Brand Link & Back Home Navigation -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+            <a href="{% url 'landing_page' %}" class="emerald-brand-link" title="{% if lang == 'en' %}Back to home page{% else %}Návrat na hlavnú stránku{% endif %}">
+                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="height: 38px; width: 38px; object-fit: contain;">
+                <span class="emerald-brand-text" style="font-size: 1.6rem;">codo<span class="brand-ro">ro</span></span>
+            </a>
+            <a href="{% url 'landing_page' %}" style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.8rem; color:var(--text-muted); text-decoration:none; font-weight:600; padding:0.3rem 0.65rem; border-radius:9999px; background:var(--bg-subtle);" title="{% if lang == 'en' %}Back to home page{% else %}Späť na hlavnú stránku{% endif %}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                <span>{% if lang == 'en' %}Home{% else %}Domov{% endif %}</span>
+            </a>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; margin: 0; color: var(--text-primary);">
+                {% if lang == 'en' %}Sign In to Codoro{% else %}Prihlásenie do účtu{% endif %}
+            </h2>
+            <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0.2rem 0 0;">
+                {% if lang == 'en' %}Enter your username and password{% else %}Zadaj svoje prihlasovacie údaje{% endif %}
+            </p>
         </div>
 
         <form method="post">
             {% csrf_token %}
             <div style="margin-bottom: 1.15rem;">
-                <label class="form-label" for="loginUsername">
+                <label style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;" for="loginUsername">
                     {% if lang == 'en' %}Username{% else %}Používateľské meno{% endif %}
                 </label>
-                <input type="text" name="username" id="loginUsername" class="form-control" required>
+                <input type="text" name="username" id="loginUsername" required
+                       style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.92rem; outline: none; transition: border-color 0.15s ease;"
+                       onfocus="this.style.borderColor='var(--brand-emerald)'" onblur="this.style.borderColor='var(--border-subtle)'">
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <label class="form-label" for="loginPassword">
+                <label style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;" for="loginPassword">
                     {% if lang == 'en' %}Password{% else %}Heslo{% endif %}
                 </label>
-                <input type="password" name="password" id="loginPassword" class="form-control" required>
+                <div style="position:relative;">
+                    <input type="password" name="password" id="loginPassword" required
+                           style="width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.92rem; outline: none; transition: border-color 0.15s ease;"
+                           onfocus="this.style.borderColor='var(--brand-emerald)'" onblur="this.style.borderColor='var(--border-subtle)'">
+                    <button type="button" onclick="togglePasswordVisibility('loginPassword', this)"
+                            style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); display:inline-flex; align-items:center;"
+                            title="{% if lang == 'en' %}Show / hide password{% else %}Zobraziť / skryť heslo{% endif %}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.78rem; font-weight: 700;">
-                {% if lang == 'en' %}Sign in to Codoro{% else %}Prihlásiť sa do Codoro{% endif %}
+            <button type="submit" class="btn-emerald-full" style="padding: 0.85rem; font-size: 0.96rem; display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;">
+                <span>{% if lang == 'en' %}Sign In to Codoro{% else %}Prihlásiť sa do Codoro{% endif %}</span>
+                {% include 'components/icon_svg.html' with name='arrow_right' size='15' %}
             </button>
         </form>
 
         <div style="text-align: center; margin-top: 1.35rem; font-size: 0.88rem; color: var(--text-secondary);">
             {% if lang == 'en' %}
-            New to Codoro? <a href="{% url 'register' %}" style="color: var(--ro-indigo); font-weight: 600;">Create a student account (+100 Doros)</a>
+            New to Codoro? <a href="{% url 'register' %}" style="color: var(--brand-emerald); font-weight: 700; text-decoration: none;">Create an account (+100 Doros)</a>
             {% else %}
-            Nemáš ešte účet? <a href="{% url 'register' %}" style="color: var(--ro-indigo); font-weight: 600;">Vytvor si študentský účet (+100 Doros)</a>
+            Nemáš ešte účet? <a href="{% url 'register' %}" style="color: var(--brand-emerald); font-weight: 700; text-decoration: none;">Vytvor si študentský účet (+100 Doros)</a>
             {% endif %}
         </div>
 
-        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-hairline);">
-            <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.65rem; text-align: center;">
-                {% if lang == 'en' %}Quick demo access (for presentation):{% else %}Rýchly prístup pre ukážku na obhajobe:{% endif %}
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle);">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.65rem; text-align: center; display:flex; align-items:center; justify-content:center; gap:0.35rem;">
+                {% include 'components/icon_svg.html' with name='lightning' size='13' %}
+                <span>{% if lang == 'en' %}1-Click Demo Accounts (for presentation):{% else %}Rýchly prístup pre ukážku na obhajobe:{% endif %}</span>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('student', 'heslo123')" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                    {% if lang == 'en' %}Demo Student{% else %}Demo Študent{% endif %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+                <button type="button" class="btn-demo-quick" onclick="fillDemo('student', 'heslo123')" style="display:inline-flex; align-items:center; justify-content:center; gap:0.35rem;">
+                    {% include 'components/icon_svg.html' with name='user' size='14' %}
+                    <span>{% if lang == 'en' %}Demo Student{% else %}Demo Študent{% endif %}</span>
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('ucitel', 'heslo123')" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                    {% if lang == 'en' %}Demo Teacher{% else %}Demo Učiteľ{% endif %}
+                <button type="button" class="btn-demo-quick" onclick="fillDemo('ucitel', 'heslo123')" style="display:inline-flex; align-items:center; justify-content:center; gap:0.35rem;">
+                    {% include 'components/icon_svg.html' with name='teacher' size='14' %}
+                    <span>{% if lang == 'en' %}Demo Teacher{% else %}Demo Učiteľ{% endif %}</span>
                 </button>
             </div>
         </div>

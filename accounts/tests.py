@@ -229,20 +229,98 @@ class TeacherRegistrationAndLicenseTests(TestCase):
         post_data = {
             'school_name': 'Stredná odborná škola technická',
             'school_city': 'Nižná',
-            'contact_person': 'Mgr. Markéta Brišová',
-            'email': 'brisova@sos-nizna.sk',
+            'contact_person': 'Ing. Peter Novák',
+            'email': 'novak@skola-technicka.sk',
             'phone': '+421901234567',
             'expected_students': 35,
-            'note': 'Pilotná výučba IV.C',
+            'note': 'Pilotná výučba triedy programovania',
         }
         resp_post = self.client.post(reverse('get_license'), post_data)
         self.assertEqual(resp_post.status_code, 200)
         self.assertIn('generated_license', resp_post.context)
 
         from accounts.models import SchoolLicenseRequest
-        req = SchoolLicenseRequest.objects.filter(email='brisova@sos-nizna.sk').first()
+        req = SchoolLicenseRequest.objects.filter(email='novak@skola-technicka.sk').first()
         self.assertIsNotNone(req)
         self.assertEqual(req.status, SchoolLicenseRequest.Status.PENDING)
         self.assertIsNotNone(req.generated_license)
         self.assertTrue(req.generated_license.code.startswith('EDU-'))
+
+
+class LanguageSwitchingTests(TestCase):
+    """Testy prepínania jazyka (SK/EN) pre prihlásených aj neprihlásených používateľov."""
+
+    def test_anonymous_user_switches_language(self):
+        # 1. Počiatočná návšteva landing page má predvolene slovenčinu
+        resp1 = self.client.get(reverse('landing_page'))
+        self.assertEqual(resp1.status_code, 200)
+        self.assertEqual(resp1.context['lang'], 'sk')
+        self.assertContains(resp1, 'Nauč sa Python praxou')
+
+        # 2. Kliknutie na prepínač na angličtinu (/lang/en/)
+        resp_switch = self.client.get(reverse('switch_language', kwargs={'lang_code': 'en'}))
+        self.assertEqual(resp_switch.status_code, 302)
+
+        # 3. Následná návšteva zobrazí anglické texty
+        resp2 = self.client.get(reverse('landing_page'))
+        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(resp2.context['lang'], 'en')
+        self.assertContains(resp2, 'Learn Python by Doing')
+
+        # 4. Prepnutie späť na slovenčinu (/lang/sk/)
+        self.client.get(reverse('switch_language', kwargs={'lang_code': 'sk'}))
+        resp3 = self.client.get(reverse('landing_page'))
+        self.assertEqual(resp3.context['lang'], 'sk')
+        self.assertContains(resp3, 'Nauč sa Python praxou')
+
+    def test_authenticated_user_switches_language(self):
+        user = User.objects.create_user(username='filip', password='heslo123', preferred_language='sk')
+        self.client.login(username='filip', password='heslo123')
+
+        # Prepnutie na EN
+        self.client.get(reverse('switch_language', kwargs={'lang_code': 'en'}))
+        user.refresh_from_db()
+        self.assertEqual(user.preferred_language, 'en')
+
+        # Dashboard v EN
+        resp = self.client.get(reverse('dashboard'))
+        self.assertEqual(resp.context['lang'], 'en')
+
+
+class PublicPagesAndSEOTests(TestCase):
+    def test_privacy_policy_page(self):
+        resp = self.client.get(reverse('privacy_policy'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Zásady ochrany osobných údajov')
+
+    def test_terms_of_service_page(self):
+        resp = self.client.get(reverse('terms_of_service'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Všeobecné podmienky používania')
+
+    def test_thank_you_page(self):
+        resp = self.client.get(reverse('thank_you') + '?type=license')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Ďakujeme')
+
+    def test_robots_txt(self):
+        resp = self.client.get('/robots.txt')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'text/plain')
+        self.assertIn('User-agent: *', resp.content.decode('utf-8'))
+        self.assertIn('Sitemap:', resp.content.decode('utf-8'))
+
+    def test_sitemap_xml(self):
+        resp = self.client.get('/sitemap.xml')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'application/xml')
+        self.assertIn('<urlset', resp.content.decode('utf-8'))
+        self.assertIn('https://codoro.sk/welcome/', resp.content.decode('utf-8'))
+
+    def test_custom_404_page(self):
+        resp = self.client.get('/neexistujuca-stranka-test-404/')
+        self.assertEqual(resp.status_code, 404)
+        self.assertContains(resp, '404', status_code=404)
+        self.assertContains(resp, 'PAGE_NOT_FOUND', status_code=404)
+
 

@@ -101,26 +101,36 @@ codoro/
 |-- GEMINI.md
 
 
-5. PRAVIDLÁ DIZAJNOVÉHO SYSTÉMU A ŠTRUKTÚRY UI/UX (STRIKTNE DODRŽIAVAŤ)
+5. PRAVIDLÁ DIZAJNOVÉHO SYSTÉMU A ŠTRUKTÚRY UI/UX (MINERAL & EMERALD EDTECH DIZAJN)
 --------------------------------------------------------------------------------
-1. ZÁKAZ NEKONEČNÉHO SCROLLOVANIA ("ENDLESS WALL OF CONTENT"):
+1. Celkový štýl a vizuálna identita (Mineral & Emerald EdTech):
+   - Čistý, harmonický denný dizajn s mäkkými prírodnými tieňmi, bielymi kartami, zaoblením `16px - 20px` a vektorovými ilustráciami v smaragdovo-zelenej palete.
+   - Presná farebná paleta pre svetlý režim (`:root` / `html[data-theme="light"]`):
+     * Pozadie plátna (`--bg-canvas`): `#F3F7F5` s jemným prechodom do `#EBF2EE`
+     * Povrch kariet (`--bg-surface`): `#FFFFFF` s jemným okrajom `#E2ECE7` a tieňom `0 8px 24px -4px rgba(14, 30, 24, 0.05)`
+     * Sekundárny mätový povrch (`--bg-mint-soft`): `#E3F5EE` (pre aktívne položky v navigácii, aktívne tab karty a vybrané podklady)
+     * Hlavný text (`--text-primary`): `#111C18` (hlboká lesná uhľová)
+     * Sekundárny text (`--text-secondary`): `#4B5E57`
+     * Primárna smaragdová (`--brand-emerald`): `#008767` (tlačidlá, aktívne rámčeky, kapucňa maskota Codo; hover `#006E53`)
+     * Jasná zelená pre progres a úspešné testy (`--pass-green`): `#16A34A` / `#22C55E` (pozadie `#DCFCE7`)
+     * Oranžová pre Streak a Class Quest (`--streak-orange`): `#F97316` (pozadie `#FFEDD5`)
+     * Zlatá pre Doros mince (`--doros-gold`): `#EAB308` / `#D97706` (pozadie `#FEF9C3`)
+   - Tmavý režim (`html[data-theme="dark"]`):
+     * Lesný bridlicový režim (`#0D1512` pozadie, `#15201C` karty, `#23332D` okraje, `#10B981` smaragdový akcent, `#4ADE80` svetlozelená pre testy).
+2. Maskot Codo a Zelené Logo:
+   - Oficiálne logo platformy: `static/img/codorolo_logo_with_letters_green.png` a `static/img/codoro_logo_without_letters_transparent_green.png`.
+   - Znovupoužiteľný inline SVG komponent maskota Codo: smaragdovo-zelená kapucňa (`#008767`) s bielym lemom, tmavá tvár (`#111C18`) s dvoma vysmiatymi oblúkovými azúrovými očami (`#5CE1E6`) a strieborno-sivý laptop so značkou `</>`.
+3. ZÁKAZ NEKONEČNÉHO SCROLLOVANIA ("ENDLESS WALL OF CONTENT"):
    - Je prísne zakázané vykresľovať všetky moduly, lekcie, formuláre alebo tabuľky otvorené pod sebou na jednej dlhej stránke.
-   - Každá obrazovka musí využívať progresívne odhaľovanie obsahu (Progressive Disclosure):
+   - Každá obrazovka využíva progresívne odhaľovanie obsahu:
      * Prepínacie záložky (Tabs / Segmented Pills),
-     * Zbaliteľné akordeóny (Collapsible Accordions - predvolene je rozbalený len 1 aktívny prvok, ostatné sú zbalené),
-     * Vyhľadávacie pole a filtre v reálnom čase (Search & Filter),
-     * Modálne okná (Modals / Drawers) pre formuláre na tvorbu/úpravu položiek.
-2. Zjednotený Light / Dark Mode:
-   - Celá stránka sa riadi atribútom `html[data-theme="light"]` alebo `html[data-theme="dark"]` (uložené v `localStorage` pod kľúčom `codoro_theme`).
-   - Nikdy nemiešať svetlú kartu a tmavú kartu vedľa seba na jednej obrazovke.
-   - Prepnutie témy zároveň dynamicky prepne tému CodeMirror editora (`eclipse` pre svetlý režim, `material-darker` pre tmavý režim).
-3. Farebná paleta podľa loga Codoro:
-   - Primárna akčná farba (Ro Indigo): `#4636F5` (v tmavom režime `#6366F1`).
-   - Polnočná modrá (Codo Navy): `#0F172A`.
-   - Azúrová (Visor Cyan): `#5CE1E6` / `#0891B2`.
-4. Formátovanie Markdownu a 100 % Dvojjazyčnosť (SK / EN):
-   - Všetky texty lekcií, zadaní a nápovied musia mať triedy `markdown-content markdown-render` spracované cez `marked.js`.
-   - Na začiatku každej šablóny používať bezpečný tag `{% firstof user.preferred_language ui_lang 'sk' as lang %}`.
+     * Zbaliteľné akordeóny (Collapsible Accordions - predvolene je rozbalený len 1 aktívny modul s 2px smaragdovým okrajom `#008767`, ostatné sú zbalené),
+     * Interaktívna kľukatá cesta (Winding Stepping-Stone Path) s 3D pedestálmi a vlajočkami (zelená `✓`, aktívna `▶`, zamknutá `🔒`).
+4. Apple Design & Impeccable Motion:
+   - Plynulé fyzikálne animácie (spring transitions), okamžitá odozva na stlačenie (`:active transform: scale(0.97)`), prerušiteľné prepínania záložiek (Interruptibility) a 1:1 prepínanie obsahu bez skákania stránky.
+5. Formátovanie Markdownu a 100 % Dvojjazyčnosť (SK / EN):
+   - Všetky texty lekcií, zadaní a nápovied majú triedy `markdown-content markdown-render` spracované cez `marked.js`.
+   - Na začiatku každej šablóny sa používa bezpečný tag `{% firstof user.preferred_language ui_lang 'sk' as lang %}`.
 
 
 6. DOTERAJŠÍ STAV A ŠPECIFIKÁCIA NOVÝCH FÁZ PROJEKTU
@@ -132,6 +142,10 @@ codoro/
 - FÁZA 12: SuperAdmin rozhranie a Live Support Helpdesk (/admin-panel/) [DOKONČENÉ]
 - FÁZA 13: Registrácia pedagógov, zaobstaranie licencií a správa tried (/get-license/, /teacher/) [DOKONČENÉ]
 - FÁZA 14: Verejná prezentácia a Landing Page (/ a /welcome/) [DOKONČENÉ]
+- FÁZA 15: Vizuálny audit a refaktoring podľa zásad Impeccable Design & Craft Floor [DOKONČENÉ]
+- FÁZA 16: Kompletný architektonický a dizajnový overhaul celej platformy [DOKONČENÉ]
+- FÁZA 17: Modernizácia Landing Page, interaktívne demo štúdio, dynamický progress tracker a systém vlastných avatarov [DOKONČENÉ]
+- FÁZA 18: Oprava renderovania lekcií (Markdown & CodeMirror) a rearchitektúra prírodnej scenérie na Mape učiva [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
@@ -412,4 +426,47 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
     - Vlastný dizajn systémových prvkov prehliadača: `::selection` vo farbe Ro-Indigo, vlastné zaoblené 6px posuvníky (Scrollbars), zjednotené `focus-visible` a vlastný kurzor (`caret-color`).
   * Klávesové skratky pre profesionálny vývoj:
     - `Ctrl + Enter` (alebo `Cmd + Enter`) v CodeMirror editore pre okamžité spustenie a otestovanie kódu v Python sandboxe s AST kontrolou.
+
+- FÁZA 17: MODERNIZÁCIA LANDING PAGE, DEMO ŠTÚDIO, PROGRESS TRACKER A SYSTÉM AVATAROV [DOKONČENÉ]
+  * Modernizácia sekcie modulov na Landing Page (`templates/landing.html`):
+    - Úplné odstránenie horizontálneho scrollbaru v prospech intuitívneho, ergonomického rozhrania.
+    - Zavedený horizontálny prepínač 5 kariérnych ciest (Segmented Track Pills) s plynulým prepínaním cez data atribúty a real-time vyhľadávacím poľom.
+    - Responzívny grid kariet modulov s odznakmi náročnosti, časovou dotáciou a odkazmi do výučby.
+  * Očistenie maskota Codo a oprava modálneho okna prihlásenia:
+    - Odstránené rušivé žlté lúče a žiarenie okolo maskota Codo vo všetkých inštanciách, zachovaný čistý, priateľský 2D vektorový vzhľad s kapucňou a laptopom.
+    - Oprava modálneho dialógu prihlásenia (`#loginModal`) na Welcome page: funkčné otváranie cez tlačidlá v navigácii a CTA tlačidlá, zatváranie krížikom, kliknutím na backdrop alebo klávesom ESC, funkčné demo predvyplnenie jedným klikom.
+  * Presný dynamický progress tracker:
+    - Odstránená statická hodnota "62% hotovo".
+    - Nahradené dynamickým kruhovým SVG indikátorom počítaným z reálneho stavu dokončených lekcií používateľa v databáze (0% pre nového študenta).
+  * Plná lokalizácia interaktívneho demo štúdia na Landing Page (100% SK / EN):
+    - Kompletný preklad popiskov, súborových záložiek a tlačidiel podľa preferovaného jazyka.
+    - Obojsmerné prepínanie súborov v demo editore medzi `main.py` a `priemer_znamok.py` s plnou interaktivitou.
+    - Plná funkčnosť ovládacích tlačidiel: Reset kódu do pôvodného stavu, Formátovanie kódu s vizuálnym potvrdením, Klávesové skratky v samostatnom modálnom okne.
+  * Systém vlastných profilových avatarov (`profile.html` & `accounts/`):
+    - Generovanie 4 nových unikátnych AI portrétov v anime/edtech štýle:
+      * `student_alex`: Chlapec s hnedými vlasmi, mikinou a slúchadlami
+      * `student_mia`: Dievča s tmavými vlasmi v cope a zelenom svetri
+      * `student_sam`: Chlapec s kučeravými vlasmi v rifľovej bunde
+      * `cyber_ninja`: Postava v tmavej mikine s neónovými azúrovými prvkami
+      * `codo`: Oficiálny zelený maskot platformy Codoro
+    - Nové pole `avatar_choice` v modeli `User` s migráciou a možnosťou okamžitej zmeny profilovej fotky.
+    - Integrácia zvoleného avatara do celého rozhrania (top app bar, profil, rebríček triedy).
+
+- FÁZA 18: OPRAVA LEKCIÍ (MARKDOWN & CODEMIRROR) A REARCHITEKTÚRA PRÍRODNEJ SCENÉRIE [DOKONČENÉ]
+  * Oprava pracoviska lekcie a Split-Screen IDE (`templates/courses/lesson_detail.html`):
+    - Presun knižníc `CodeMirror 5.65.16` (jadro, python režim, matchbrackets, closebrackets) a `marked.js` priamo do `<head>` v `templates/base.html`, čím sa eliminovala chyba `ReferenceError: CodeMirror is not defined`.
+    - Plné automatické renderovanie teórie cez `marked.js`: formátované smaragdové nadpisy H1-H4, bloky kódu v tmavom bloku (`#0D1512`), inline mätové `code` štítky, formátované Markdown tabuľky a odrážky.
+    - CodeMirror editor inicializovaný s číslami riadkov, syntaxou Pythonu, klávesovou skratkou `Ctrl + Enter` pre spustenie a nastavenou výškou.
+    - Pevná jednoradová horná navigačná lišta s elipsou pre dlhé názvy lekcií – tlačidlo `Ďalšia lekcia →` drží pevnú pozíciu vpravo bez zalamovania na druhý riadok.
+    - Názov okna *Codoro Studio Workbench* upravený s elipsou, zamedzené nežiaducemu zalamovaniu do dvoch riadkov.
+    - Výstupy unit testov a chybové tracebacky vybavené pravidlom `word-break: break-word` a `white-space: pre-wrap`.
+  * Rearchitektúra prírodnej scenérie na Mape učiva (`templates/courses/dashboard.html` & `static/css/codoro.css`):
+    - Kamene a kríky boli **kompletne odstránené z vlajok a pedestálov** (`.path-pedestal-anchor`). Vlajky sú čisté a zreteľné.
+    - Úprava responzívneho breakpointu z `1280px` na `1040px` v `.emerald-dashboard-grid`: 3 bočné widgety (*Triedny Quest*, *Moja Doros peňaženka*, *Môj postup*) stoja v pravom stĺpci priamo vedľa mapy na všetkých bežných displejoch a notebookoch (1184px+), čím sa úplne vyplnil prázdny biely priestor vpravo.
+    - Prírodné prvky presunuté do prázdnych okrajov a pozadia mapy:
+      * Panoramatický horský hrebeň v pozadí (`mountain_peaks_landscape`),
+      * Zhluky borovíc (`pine_tree_cluster`), riečnych balvanov a lúčnych kríkov vo voľných okrajoch plátna.
+    - Ľavý bočný panel (`emerald-sidebar`) nastavený ako `position: sticky` na výšku obrazovky, čím sa zamedzilo vzniku prázdneho bieleho vákua pod navigáciou.
+  * Validácia celistvosti systému:
+    - Všetkých 76 automatizovaných testov Django ORM a biznis logiky úspešne prebehlo: `Ran 76 tests in 309.113s - OK`.
 ================================================================================

@@ -1,15 +1,15 @@
 """
-MODUL 17: Maturitné algoritmické zadania z praxe
+MODUL 17: Praktické priemyselné zadania a inžinierske algoritmy
 Odhadovaný rozsah: 14 hodín | Náročnosť: INTERMEDIATE | Úroveň: FREE | Track: MATURITA_PREP
 """
 
 MODULE_DATA = {
     'order': 17,
     'track': 'MATURITA_PREP',
-    'title_sk': 'Maturitné algoritmické zadania z praxe',
-    'title_en': 'Graduation Practical Algorithmic Challenges',
-    'description_sk': 'Reálne maturitné a priemyselné výzvy pre odbor Informačno-mediálne technológie a Elektrotechniku: spracovanie fyzikálnych senzorických meraní, štatistika triedy, kolízny plánovač rozvrhov, bezstratová RLE kompresia a integrita sieťových paketov.',
-    'description_en': 'Real graduation and industry challenges tailored for IMT and Electrical Engineering: sensor processing, classroom grade analytics, schedule collision detection, lossless RLE data compression, and network packet checksums.',
+    'title_sk': 'Praktické priemyselné zadania a algoritmy z praxe',
+    'title_en': 'Real-World Practical Algorithmic Challenges',
+    'description_sk': 'Reálne priemyselné a inžinierske výzvy pre odbor Informačno-mediálne technológie a Elektrotechniku: spracovanie fyzikálnych senzorických meraní, štatistika triedy, kolízny plánovač rozvrhov, bezstratová RLE kompresia a integrita sieťových paketov.',
+    'description_en': 'Real industrial and engineering challenges tailored for IMT and Electrical Engineering: sensor processing, classroom grade analytics, schedule collision detection, lossless RLE data compression, and network packet checksums.',
     'programming_language': 'python',
     'estimated_hours': 14,
     'difficulty_level': 'INTERMEDIATE',

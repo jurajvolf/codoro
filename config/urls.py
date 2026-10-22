@@ -20,6 +20,14 @@ urlpatterns = [
     path('profile/', acc_views.profile_view, name='profile'),
     path('certificate/', acc_views.certificate_view, name='certificate'),
 
+    # Právne dokumenty, SEO a potvrdenia
+    path('privacy/', acc_views.privacy_policy_view, name='privacy_policy'),
+    path('terms/', acc_views.terms_of_service_view, name='terms_of_service'),
+    path('thank-you/', acc_views.thank_you_view, name='thank_you'),
+    path('robots.txt', acc_views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', acc_views.sitemap_xml, name='sitemap_xml'),
+    path('404/', acc_views.custom_404, name='preview_404'),
+
     # Študentský Dashboard, Lekcie a Editor kódu
     path('', course_views.dashboard, name='dashboard'),
     path('welcome/', course_views.landing_page, name='landing_page'),
@@ -92,3 +100,5 @@ urlpatterns = [
     path('teacher/classquest/<int:class_quest_id>/delete/', teacher_views.cms_classquest_delete, name='cms_classquest_delete'),
     path('teacher/classquest/<int:class_quest_id>/distribute/', teacher_views.cms_classquest_distribute, name='cms_classquest_distribute'),
 ]
+
+handler404 = 'accounts.views.custom_404'

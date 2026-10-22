@@ -331,7 +331,7 @@ squares = [x ** 2 for x in range(10) if x % 2 == 0]
             'order': 5,
             'title_sk': 'N-tice (tuple), rozbaľovanie a 2D matice',
             'title_en': 'Tuples, Unpacking & 2D Matrices',
-            'summary_sk': 'Nemenné n-tice (), tuple unpacking, reprezentácia tabuliek cez matice a maturitný projekt.',
+            'summary_sk': 'Nemenné n-tice (), tuple unpacking, reprezentácia tabuliek cez matice a capstone projekt.',
             'summary_en': 'Immutable tuples, tuple unpacking, row-column matrices, and capstone challenge.',
             'estimated_minutes': 60,
             'xp_reward': 40,

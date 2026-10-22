@@ -1,40 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}{% if user.preferred_language == 'en' %}{{ lesson.title_en }} — Codoro{% else %}{{ lesson.title_sk }} — Codoro{% endif %}{% endblock %}
+
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-
-<!-- ========================================================================
-     1. HORNÁ NAVIGÁCIA LEKCIE (BREADCRUMB BAR SO STROMOM MODULU)
-     ======================================================================== -->
-<nav class="ide-breadcrumb-bar animate-in">
-    <div class="ide-nav-left">
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
-            {% if lang == 'en' %}Curriculum{% else %}Prehľad{% endif %}
+<!-- 1. TOP BREADCRUMB & MODULE NAV BAR -->
+<div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 0.65rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); flex-wrap: nowrap; overflow: hidden;">
+    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; overflow: hidden;">
+        <a href="{% url 'dashboard' %}" class="btn-subtle-full" style="width: auto; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.82rem; text-decoration: none; display:inline-flex; align-items:center; gap:0.35rem; flex-shrink:0;">
+            {% include 'components/icon_svg.html' with name='arrow_left' size='13' %}
+            <span>{% if lang == 'en' %}Curriculum Map{% else %}Mapa učiva{% endif %}</span>
         </a>
 
-        <!-- Dropdown na rýchly preskok v rámci lekcií tohto modulu -->
-        <div class="module-jump-dropdown" id="moduleJumpDropdown">
-            <button type="button" class="module-jump-btn" onclick="toggleModuleJumpMenu()">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>
-                <span>{% if lang == 'en' %}Mod {{ lesson.module.order }}: {{ lesson.module.title_en|truncatewords:4 }}{% else %}Modul {{ lesson.module.order }}: {{ lesson.module.title_sk|truncatewords:4 }}{% endif %}</span>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        <!-- Module drop jump -->
+        <div class="module-jump-dropdown" id="moduleJumpDropdown" style="position: relative; flex-shrink: 0;">
+            <button type="button" class="btn-subtle-full" onclick="toggleModuleJumpMenu()" style="width: auto; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.82rem; display:inline-flex; align-items:center; gap:0.4rem;">
+                {% include 'components/icon_svg.html' with name='book' size='14' %}
+                <span>{% if lang == 'en' %}Mod {{ lesson.module.order }}{% else %}Modul {{ lesson.module.order }}{% endif %}</span>
+                {% include 'components/icon_svg.html' with name='chevron_down' size='11' %}
             </button>
 
-            <div class="module-jump-menu" id="moduleJumpMenu">
-                <div style="padding: 0.4rem 0.5rem 0.5rem; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; border-bottom: 1px solid var(--border-hairline);">
-                    {% if lang == 'en' %}MODULE LESSONS{% else %}LEKCIE TOHTO MODULU{% endif %}
+            <div class="module-jump-menu" id="moduleJumpMenu" style="display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 260px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; box-shadow: 0 16px 36px rgba(0,0,0,0.12); z-index: 100; padding: 0.5rem;">
+                <div style="padding: 0.4rem 0.5rem; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--brand-emerald); text-transform: uppercase;">
+                    {% if lang == 'en' %}Module Lessons{% else %}Lekcie v module{% endif %}
                 </div>
                 {% for ml in module_lessons %}
-                <a href="{% url 'lesson_detail' ml.id %}" class="jump-item-link {% if ml.id == lesson.id %}current{% endif %}">
-                    <span>
-                        <strong style="font-family: var(--font-mono); margin-right: 4px;">{{ ml.order }}.</strong>
-                        {% if lang == 'en' %}{{ ml.title_en }}{% else %}{{ ml.title_sk }}{% endif %}
-                    </span>
+                <a href="{% url 'lesson_detail' ml.id %}" class="module-lesson-jump-item {% if ml.id == lesson.id %}active{% endif %}">
+                    <span>{{ ml.order }}. {% if lang == 'en' %}{{ ml.title_en }}{% else %}{{ ml.title_sk }}{% endif %}</span>
                     {% if ml.id in completed_lesson_ids %}
-                    <span style="color: var(--emerald-text); display: inline-flex; align-items: center;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span style="color: var(--pass-green); display:inline-flex; align-items:center;">
+                        {% include 'components/icon_svg.html' with name='check' size='12' %}
                     </span>
                     {% endif %}
                 </a>
@@ -42,116 +38,94 @@
             </div>
         </div>
 
-        <span style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        <span style="font-family: var(--font-display); font-size: 0.96rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;" title="{% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}">
             {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
         </span>
     </div>
 
-    <!-- Navigácia Prev / Next -->
-    <div class="ide-nav-right">
+    <!-- Prev / Next Navigation -->
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
         {% if prev_lesson %}
-        <a href="{% url 'lesson_detail' prev_lesson.id %}" class="btn btn-secondary btn-sm" title="{% if lang == 'en' %}Previous Lesson{% else %}Predchádzajúca lekcia{% endif %}">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="{% url 'lesson_detail' prev_lesson.id %}" class="btn-icon-circle" title="{% if lang == 'en' %}Previous{% else %}Predchádzajúca{% endif %}">
+            {% include 'components/icon_svg.html' with name='arrow_left' size='13' %}
         </a>
         {% endif %}
 
         {% if lesson_completed %}
-        <span style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--emerald-text); background: var(--emerald-bg); padding: 0.2rem 0.6rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.25rem;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-            {% if lang == 'en' %}Lesson Completed{% else %}Lekcia dokončená{% endif %}
+        <span style="background: var(--pass-green-bg); color: var(--pass-green); font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 9999px; display:inline-flex; align-items:center; gap:0.3rem;">
+            {% include 'components/icon_svg.html' with name='check' size='12' %}
+            <span>{% if lang == 'en' %}Completed{% else %}Dokončená{% endif %}</span>
         </span>
         {% endif %}
 
         {% if next_lesson %}
-        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
-            {% if lang == 'en' %}Next Lesson{% else %}Ďalšia lekcia{% endif %}
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn-pill-emerald" style="padding: 0.4rem 1rem; font-size: 0.84rem; display:inline-flex; align-items:center; gap:0.4rem;">
+            <span>{% if lang == 'en' %}Next Lesson{% else %}Ďalšia lekcia{% endif %}</span>
+            {% include 'components/icon_svg.html' with name='arrow_right' size='13' %}
         </a>
         {% endif %}
     </div>
-</nav>
+</div>
 
-<!-- ========================================================================
-     2. SPLIT-SCREEN PRACOVISKO (VĽAVO TEÓRIA/KVÍZ/VZOR, VPRAVO INTERAKTÍVNE IDE)
-     ======================================================================== -->
-<div class="ide-workbench-grid">
+<!-- 2. SPLIT-SCREEN WORKBENCH: THEORY (LEFT) + STUDIO WORKBENCH (RIGHT) -->
+<div class="lesson-split-grid">
 
-    <!-- ĽAVÝ PANEL: 3 ZÁLOŽKY (TEÓRIA, OVEROVACÍ KVÍZ, VZOROVÉ RIEŠENIE & NÁPOVEDA) -->
-    <div class="ide-panel-card animate-in delay-1">
-        <div class="panel-tab-header">
-            <button type="button" class="panel-tab-btn active" id="btn-left-tab-theory" onclick="switchLeftTab('theory')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
-                {% if lang == 'en' %}Theory & Guide{% else %}Teoretický výklad{% endif %}
+    <!-- LEFT PANEL: THEORY / QUIZ / SOLUTION -->
+    <div class="lesson-theory-panel">
+        <!-- Left segmented tabs -->
+        <div style="display: flex; gap: 0.4rem; padding: 3px; background: var(--bg-subtle); border-radius: 12px; margin-bottom: 1.25rem; flex-shrink: 0;">
+            <button type="button" class="btn-socratic-pill active" id="btn-left-tab-theory" onclick="switchLeftTab('theory')" style="flex: 1; border: none; text-align: center; display:inline-flex; align-items:center; justify-content:center; gap:0.35rem;">
+                {% include 'components/icon_svg.html' with name='book' size='14' %}
+                <span>{% if lang == 'en' %}Theory{% else %}Teória{% endif %}</span>
             </button>
-
             {% if quiz_questions %}
-            <button type="button" class="panel-tab-btn" id="btn-left-tab-quiz" onclick="switchLeftTab('quiz')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-                {% if lang == 'en' %}Quiz (+20 XP){% else %}Overovací kvíz (+20 XP){% endif %}
-                {% if quiz_passed %}
-                <span style="color: var(--emerald-text); display: inline-flex; align-items: center;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </span>
-                {% endif %}
+            <button type="button" class="btn-socratic-pill" id="btn-left-tab-quiz" onclick="switchLeftTab('quiz')" style="flex: 1; border: none; text-align: center; display:inline-flex; align-items:center; justify-content:center; gap:0.35rem;">
+                {% include 'components/icon_svg.html' with name='brain' size='14' %}
+                <span>{% if lang == 'en' %}Quiz (+20 XP){% else %}Kvíz (+20 XP){% endif %}</span>
             </button>
             {% endif %}
-
-            <button type="button" class="panel-tab-btn" id="btn-left-tab-solution" onclick="switchLeftTab('solution')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                {% if lang == 'en' %}Solution & Hints{% else %}Vzorové riešenie & Nápoveda{% endif %}
+            <button type="button" class="btn-socratic-pill" id="btn-left-tab-solution" onclick="switchLeftTab('solution')" style="flex: 1; border: none; text-align: center; display:inline-flex; align-items:center; justify-content:center; gap:0.35rem;">
+                {% include 'components/icon_svg.html' with name='lightbulb' size='14' %}
+                <span>{% if lang == 'en' %}Hints & Notes{% else %}Nápoveda{% endif %}</span>
             </button>
         </div>
 
-        <!-- 1. ZÁLOŽKA: TEORETICKÝ VÝKLAD S MARKDOWNOM -->
-        <div class="panel-scroll-body" id="left-tab-theory">
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.35rem;">
+        <!-- 1. Theory Tab Content -->
+        <div id="left-tab-theory" style="flex: 1;">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--brand-emerald); text-transform: uppercase;">
                 {% if lang == 'en' %}UNIT LESSON {{ lesson.order }}{% else %}LEKCIA {{ lesson.order }}{% endif %}
             </span>
-            <h1 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--text-primary); margin: 0 0 1rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0 1.15rem; line-height: 1.3;">
                 {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
-            </h1>
+            </h2>
 
-            <div class="markdown-content markdown-render" style="color: var(--text-secondary); line-height: 1.65;">
+            <div class="markdown-content markdown-render" style="color: var(--text-secondary); line-height: 1.75; font-size: 0.94rem;">
                 {% if lang == 'en' %}{{ lesson.content_en }}{% else %}{{ lesson.content_sk }}{% endif %}
             </div>
 
             {% if quiz_questions %}
-            <div style="margin-top: 2rem; padding: 1.25rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div style="margin-top: 1.75rem; padding: 1.25rem; border-radius: 14px; background: var(--bg-subtle); border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
                 <div>
-                    <strong style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); display:block;">
-                        {% if lang == 'en' %}Ready to test your comprehension?{% else %}Pripravený otestovať pochopenie látky?{% endif %}
+                    <strong style="font-family: var(--font-display); font-size: 0.94rem; color: var(--text-primary); display: block;">
+                        {% if lang == 'en' %}Check your understanding?{% else %}Otestovať pochopenie látky?{% endif %}
                     </strong>
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">
-                        {% if lang == 'en' %}Take the quick theory check and earn +20 XP.{% else %}Vyrieš overovací kvíz a získaj +20 XP.{% endif %}
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">
+                        {% if lang == 'en' %}Take the quick quiz for +20 XP.{% else %}Vyrieš overovací kvíz a získaj +20 XP.{% endif %}
                     </span>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="switchLeftTab('quiz')" style="font-weight: 700;">
-                    {% if lang == 'en' %}Take Quiz →{% else %}Prejsť na overovací kvíz →{% endif %}
+                <button type="button" class="btn-pill-emerald" onclick="switchLeftTab('quiz')" style="padding: 0.4rem 0.95rem; font-size: 0.82rem;">
+                    {% if lang == 'en' %}Start Quiz →{% else %}Prejsť na kvíz →{% endif %}
                 </button>
             </div>
             {% endif %}
         </div>
 
-        <!-- 2. ZÁLOŽKA: OVEROVACÍ KVÍZ -->
+        <!-- 2. Quiz Tab Content -->
         {% if quiz_questions %}
-        <div class="panel-scroll-body" id="left-tab-quiz" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div>
-                    <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.2rem;">
-                        {% if lang == 'en' %}Theory Check Quiz{% else %}Overovací kvíz lekcie{% endif %}
-                    </h2>
-                    <span style="font-size: 0.82rem; color: var(--text-secondary);">
-                        {% if lang == 'en' %}Answer all questions correctly to collect +20 XP bonus.{% else %}Odpovedz správne na otázky a získaj bonus +20 XP.{% endif %}
-                    </span>
-                </div>
-                {% if quiz_passed %}
-                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--emerald-text); background: var(--emerald-bg); padding: 0.25rem 0.7rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.35rem;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    {% if lang == 'en' %}Passed{% else %}Zvládnuté{% endif %}
-                </span>
-                {% endif %}
-            </div>
-
+        <div id="left-tab-quiz" style="display: none;">
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 1rem;">
+                {% if lang == 'en' %}Theory Check Quiz (+20 XP){% else %}Overovací kvíz lekcie (+20 XP){% endif %}
+            </h3>
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="submit_quiz">
@@ -160,309 +134,286 @@
                 {% endif %}
 
                 {% for q in quiz_questions %}
-                <div style="padding: 1.1rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); margin-bottom: 1rem;">
+                <div style="padding: 1rem; border-radius: 12px; background: var(--bg-subtle); border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
                     <p style="font-weight: 700; font-size: 0.92rem; margin: 0 0 0.75rem; color: var(--text-primary);">
                         {{ forloop.counter }}. {% if lang == 'en' %}{{ q.question_en }}{% else %}{{ q.question_sk }}{% endif %}
                     </p>
-                    <label style="display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); background: var(--bg-surface); margin-bottom: 0.45rem; cursor: pointer;">
+                    <label style="display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-surface); margin-bottom: 0.4rem; cursor: pointer;">
                         <input type="radio" name="quiz_{{ q.id }}" value="A" required>
-                        <code style="font-family: var(--font-mono); font-size: 0.86rem; color: var(--text-primary);">{% if lang == 'en' %}{{ q.option_a_en }}{% else %}{{ q.option_a_sk }}{% endif %}</code>
+                        <code style="font-family: var(--font-mono); font-size: 0.84rem;">{% if lang == 'en' %}{{ q.option_a_en }}{% else %}{{ q.option_a_sk }}{% endif %}</code>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); background: var(--bg-surface); margin-bottom: 0.45rem; cursor: pointer;">
+                    <label style="display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-surface); margin-bottom: 0.4rem; cursor: pointer;">
                         <input type="radio" name="quiz_{{ q.id }}" value="B">
-                        <code style="font-family: var(--font-mono); font-size: 0.86rem; color: var(--text-primary);">{% if lang == 'en' %}{{ q.option_b_en }}{% else %}{{ q.option_b_sk }}{% endif %}</code>
+                        <code style="font-family: var(--font-mono); font-size: 0.84rem;">{% if lang == 'en' %}{{ q.option_b_en }}{% else %}{{ q.option_b_sk }}{% endif %}</code>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); background: var(--bg-surface); cursor: pointer;">
+                    <label style="display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-surface); cursor: pointer;">
                         <input type="radio" name="quiz_{{ q.id }}" value="C">
-                        <code style="font-family: var(--font-mono); font-size: 0.86rem; color: var(--text-primary);">{% if lang == 'en' %}{{ q.option_c_en }}{% else %}{{ q.option_c_sk }}{% endif %}</code>
+                        <code style="font-family: var(--font-mono); font-size: 0.84rem;">{% if lang == 'en' %}{{ q.option_c_en }}{% else %}{{ q.option_c_sk }}{% endif %}</code>
                     </label>
                 </div>
                 {% endfor %}
 
-                <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700; padding: 0.6rem 1.4rem;">
-                    {% if lang == 'en' %}Verify Quiz Answers{% else %}Overiť odpovede kvízu{% endif %}
+                <button type="submit" class="btn-emerald-full" style="padding: 0.65rem;">
+                    {% if lang == 'en' %}Verify Answers{% else %}Overiť odpovede kvízu{% endif %}
                 </button>
             </form>
         </div>
         {% endif %}
 
-        <!-- 3. ZÁLOŽKA: VZOROVÉ RIEŠENIE A NÁPOVEDA -->
-        <div class="panel-scroll-body" id="left-tab-solution" style="display: none;">
-            <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.85rem;">
-                {% if lang == 'en' %}Model Solution & Hints{% else %}Vzorové riešenie a nápoveda{% endif %}
-            </h2>
-
-            <!-- Blok nápovedy -->
+        <!-- 3. Solution & Hints Tab Content -->
+        <div id="left-tab-solution" style="display: none;">
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 1rem;">
+                {% if lang == 'en' %}Hints & Official Solution{% else %}Nápoveda a vzorové riešenie{% endif %}
+            </h3>
             {% if current_exercise and current_exercise.hint_sk %}
-            <div style="padding: 1.15rem; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-hairline); margin-bottom: 1.25rem;">
+            <div style="padding: 1.15rem; border-radius: 14px; background: var(--bg-subtle); border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <strong style="font-size: 0.88rem; color: var(--ro-indigo); display: flex; align-items: center; gap: 0.35rem;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
-                        {% if lang == 'en' %}Exercise Hint{% else %}Nápoveda k úlohe{% endif %}
+                    <strong style="color: var(--brand-emerald); font-size: 0.9rem; display:inline-flex; align-items:center; gap:0.35rem;">
+                        {% include 'components/icon_svg.html' with name='lightbulb' size='14' %}
+                        <span>{% if lang == 'en' %}Exercise Hint{% else %}Nápoveda k úlohe{% endif %}</span>
                     </strong>
                     {% if not hint_unlocked %}
                     <form method="post" action="{% url 'unlock_hint' current_exercise.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; font-weight: 700;">
+                        <button type="submit" class="btn-pill-emerald" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;">
                             {% if lang == 'en' %}Unlock ({{ current_exercise.hint_cost_doros }} Doros){% else %}Odomknúť ({{ current_exercise.hint_cost_doros }} Doros){% endif %}
                         </button>
                     </form>
                     {% endif %}
                 </div>
-
                 {% if hint_unlocked %}
-                <div class="markdown-content markdown-render" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.55;">
+                <div class="markdown-content markdown-render" style="font-size: 0.88rem; color: var(--text-primary);">
                     {% if lang == 'en' %}{{ current_exercise.hint_en }}{% else %}{{ current_exercise.hint_sk }}{% endif %}
                 </div>
                 {% else %}
-                <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">
-                    {% if lang == 'en' %}The hint is locked. Spend {{ current_exercise.hint_cost_doros }} Doros to reveal guidance.{% else %}Nápoveda je zamknutá. Použi {{ current_exercise.hint_cost_doros }} Doros na jej odomknutie.{% endif %}
+                <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0;">
+                    {% if lang == 'en' %}Use {{ current_exercise.hint_cost_doros }} Doros to unlock guided assistance.{% else %}Použi {{ current_exercise.hint_cost_doros }} Doros na odomknutie nápovedy.{% endif %}
                 </p>
                 {% endif %}
             </div>
             {% endif %}
 
-            <!-- Blok vysvetlenia vzorového riešenia (odomkne sa po vyriešení) -->
             {% if is_current_passed and current_exercise.explanation_sk %}
-            <div style="padding: 1.15rem; border-radius: var(--radius-md); background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25);">
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem;">
-                    <span style="color: #10B981; display: inline-flex; align-items: center;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </span>
-                    <strong style="font-size: 0.92rem; color: #10B981;">
-                        {% if lang == 'en' %}Official Model Solution Breakdown{% else %}Rozbor a vysvetlenie vzorového riešenia{% endif %}
-                    </strong>
-                </div>
-                <div class="markdown-content markdown-render" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+            <div style="padding: 1.15rem; border-radius: 14px; background: var(--pass-green-bg); border: 1px solid var(--pass-green-border);">
+                <strong style="color: var(--pass-green); display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    {% include 'components/icon_svg.html' with name='award' size='15' %}
+                    <span>{% if lang == 'en' %}Official Breakdown{% else %}Rozbor vzorového riešenia{% endif %}</span>
+                </strong>
+                <div class="markdown-content markdown-render" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.6;">
                     {% if lang == 'en' %}{{ current_exercise.explanation_en|default:current_exercise.explanation_sk }}{% else %}{{ current_exercise.explanation_sk }}{% endif %}
                 </div>
             </div>
             {% else %}
-            <div style="padding: 1.5rem; text-align: center; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px dashed var(--border-hairline);">
-                <p style="font-size: 0.86rem; color: var(--text-muted); margin: 0;">
-                    {% if lang == 'en' %}Solve all test cases of this exercise to unlock the official model solution explanation.{% else %}Vyrieš všetky testovacie prípady tejto úlohy a odomkni rozbor vzorového riešenia.{% endif %}
-                </p>
+            <div style="padding: 1.5rem; text-align: center; border-radius: 14px; background: var(--bg-subtle); border: 1px dashed var(--border-subtle); color: var(--text-muted); font-size: 0.86rem;">
+                {% if lang == 'en' %}Pass all unit test cases to unlock the model breakdown.{% else %}Vyrieš všetky testovacie prípady na odomknutie vzorového riešenia.{% endif %}
             </div>
             {% endif %}
         </div>
     </div>
 
-    <!-- PRAVÝ PANEL: INTERAKTÍVNE PYTHON IDE PRACOVISKO -->
-    <div class="ide-right-panel animate-in delay-2" id="workbench">
-        {% if exercises and current_exercise %}
-        <!-- Prepínač úloh lekcie (Exercise Pills) -->
-        <div class="exercise-pills-bar">
-            <div style="display: flex; gap: 0.45rem; align-items: center;">
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
-                    {% if lang == 'en' %}TASKS:{% else %}ÚLOHY:{% endif %}
-                </span>
-                {% for ex in exercises %}
-                <a href="?exercise={{ ex.id }}#workbench" class="exercise-pill-btn {% if ex.id == current_exercise.id %}active{% endif %}">
-                    {% if ex.id in solved_ids %}
-                    <span style="color: #10B981; display: inline-flex; align-items: center;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </span>
-                    {% endif %}
-                    <span>{% if lang == 'en' %}Task {{ forloop.counter }}{% else %}Úloha {{ forloop.counter }}{% endif %}</span>
-                    {% if ex.difficulty == 'HARD' %}
-                    <span style="font-size: 0.65rem; font-weight: 800; color: #FB7185;">BOSS</span>
-                    {% elif ex.difficulty == 'MEDIUM' %}
-                    <span style="font-size: 0.65rem; font-weight: 700; color: #F59E0B;">MID</span>
-                    {% endif %}
-                </a>
-                {% endfor %}
-            </div>
-
-            <div style="display: flex; gap: 0.45rem; align-items: center;">
-                <span class="metric-badge metric-xp">+{{ current_exercise.xp_reward }} XP</span>
-                <span class="metric-badge metric-doros">+{{ current_exercise.doros_reward }} Doros</span>
-            </div>
-        </div>
-
-        <!-- Stručné zadanie aktuálnej úlohy -->
-        <div style="padding: 1rem 1.25rem; border-radius: var(--radius-md); background: var(--bg-surface); border: 1px solid var(--border-hairline); box-shadow: var(--shadow-xs);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-                    {% if lang == 'en' %}{{ current_exercise.title_en }}{% else %}{{ current_exercise.title_sk }}{% endif %}
-                </h3>
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.5rem; border-radius: 6px;">
-                    {{ current_exercise.difficulty }}
-                </span>
-            </div>
-            <div class="markdown-content markdown-render" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55;">
-                {% if lang == 'en' %}{{ current_exercise.instructions_en }}{% else %}{{ current_exercise.instructions_sk }}{% endif %}
-            </div>
-        </div>
-
-        <!-- Učiteľské Code Review (ak učiteľ komentoval túto úlohu) -->
-        {% if reviewed_submission and reviewed_submission.teacher_comment %}
-        <div style="padding: 0.85rem 1.1rem; border-radius: var(--radius-md); background: var(--ro-indigo-soft); border: 1px solid var(--ro-indigo-border);">
-            <strong style="font-size: 0.82rem; color: var(--ro-indigo); display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.2rem;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                {% if lang == 'en' %}Teacher Code Review Comment:{% else %}Hodnotenie od učiteľa (Code Review):{% endif %}
-            </strong>
-            <p style="font-size: 0.86rem; color: var(--text-primary); margin: 0;">
-                {{ reviewed_submission.teacher_comment }}
-            </p>
-        </div>
-        {% endif %}
-
-        <!-- CodeMirror Editor s nástrojovou lištou -->
-        <form method="post" id="codeSubmitForm">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="run_code">
-            <input type="hidden" name="exercise_id" value="{{ current_exercise.id }}">
-
-            <div style="border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-hairline); box-shadow: var(--shadow-sm);">
-                <!-- Toolbar editora -->
-                <div class="editor-toolbar">
-                    <div class="editor-toolbar-left">
-                        <span style="display:inline-flex; align-items:center; gap:6px; color:#F8FAFC; font-weight:700;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            solution.py
-                        </span>
-                        <span style="color: rgba(255,255,255,0.25);">|</span>
-                        <span style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; color:#94A3B8;">
-                            <span style="width:7px; height:7px; border-radius:50%; background:#10B981;"></span>
-                            Python 3.12 (AST Guard)
-                        </span>
-                    </div>
-
-                    <div class="editor-toolbar-right">
-                        <button type="button" class="editor-btn reset" onclick="resetEditorCode()" title="{% if lang == 'en' %}Reset starter template{% else %}Resetovať štartovací kód{% endif %}">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                            {% if lang == 'en' %}Reset{% else %}Reset{% endif %}
-                        </button>
-                        <button type="submit" id="runCodeBtn" class="editor-btn run" style="display: inline-flex; align-items: center; gap: 0.45rem;">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            <span>{% if lang == 'en' %}Run & Test{% else %}Spustiť a otestovať{% endif %}</span>
-                            <kbd style="font-family: var(--font-mono); font-size: 0.65rem; background: rgba(255, 255, 255, 0.2); padding: 1px 4px; border-radius: 4px; letter-spacing: 0;">Ctrl+↵</kbd>
-                        </button>
-                    </div>
+    <!-- RIGHT PANEL: CODORO STUDIO WORKBENCH (macOS Application Window) -->
+    <div class="lesson-workbench-container">
+        <div class="studio-workbench-window" id="workbenchWindow" style="box-shadow: 0 16px 40px -12px rgba(14, 30, 24, 0.08);">
+            <!-- 1. Window macOS Titlebar -->
+            <div class="workbench-mac-titlebar">
+                <div class="mac-traffic-lights">
+                    <span class="mac-dot red"></span>
+                    <span class="mac-dot yellow"></span>
+                    <span class="mac-dot green"></span>
                 </div>
+                <div class="workbench-window-title">
+                    Codoro Studio Workbench — {% if current_exercise %}{{ current_exercise.title_sk }}{% else %}Python 3.12{% endif %}
+                </div>
+                <div class="workbench-header-tools">
+                    <button type="button" class="workbench-tool-btn" onclick="resetEditorCode()">
+                        {% include 'components/icon_svg.html' with name='refresh' size='12' %}
+                        <span>{% if lang == 'en' %}Reset{% else %}Reset{% endif %}</span>
+                    </button>
+                    <button type="button" class="workbench-tool-btn btn-run" onclick="submitCodeForm()">
+                        {% include 'components/icon_svg.html' with name='play' size='11' %}
+                        <span>{% if lang == 'en' %}Run{% else %}Spustiť{% endif %}</span>
+                    </button>
+                </div>
+            </div>
 
-                <!-- Textarea pre CodeMirror -->
-                <textarea id="pythonEditor" name="submitted_code">{% if latest_submission %}{{ latest_submission.submitted_code }}{% else %}{{ current_exercise.starter_code }}{% endif %}</textarea>
+            <!-- 2. Exercise Selection Pills Bar -->
+            {% if exercises %}
+            <div style="padding: 0.65rem 1rem; background: var(--bg-subtle); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
+                        {% if lang == 'en' %}TASKS:{% else %}ÚLOHY:{% endif %}
+                    </span>
+                    {% for ex in exercises %}
+                    <a href="?exercise={{ ex.id }}" class="task-pill {% if ex.id == current_exercise.id %}active{% endif %}">
+                        {% if ex.id in solved_ids %}
+                        {% include 'components/icon_svg.html' with name='check' size='11' %}
+                        {% endif %}
+                        <span>{% if lang == 'en' %}Task {{ forloop.counter }}{% else %}Úloha {{ forloop.counter }}{% endif %}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div style="display: flex; gap: 0.45rem;">
+                    <span class="badge-mini-pct" style="color: var(--brand-emerald); background: var(--bg-mint-soft);">+{{ current_exercise.xp_reward }} XP</span>
+                    <span class="badge-mini-pct" style="color: #CA8A04; background: var(--doros-gold-bg);">+{{ current_exercise.doros_reward }} Doros</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 3. Form & CodeMirror Area + Tests Deck Split -->
+            <form method="post" id="codeSubmitForm" style="flex: 1; display: flex; flex-direction: column;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="run_code">
+                <input type="hidden" name="exercise_id" value="{{ current_exercise.id }}">
+
+                <div class="lesson-editor-tests-split">
+                    <!-- Editor Column -->
+                    <div style="border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; min-height: 340px;">
+                        <div class="editor-file-tab-bar">
+                            <span class="editor-file-chip">main.py</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Python 3.12 (AST Sandbox)</span>
+                        </div>
+                        <div style="flex: 1; height: 100%; position: relative;">
+                            <textarea id="pythonEditor" name="submitted_code">{% if latest_submission %}{{ latest_submission.submitted_code }}{% else %}{{ current_exercise.starter_code }}{% endif %}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tests Deck Column -->
+                    <div class="workbench-col-tests" style="display: flex; flex-direction: column; overflow-y: auto; max-height: 440px;">
+                        <div class="tests-deck-header">
+                            <span>
+                                {% if lang == 'en' %}Tests Output{% else %}Výsledky Testov{% endif %}
+                            </span>
+                            {% if latest_submission %}
+                            {% if latest_submission.status == 'PASSED' %}
+                            <span style="color: var(--pass-green); font-size: 0.78rem; display:inline-flex; align-items:center; gap:0.25rem;">
+                                {% include 'components/icon_svg.html' with name='check' size='12' %}
+                                <span>PASSED ({{ latest_submission.execution_time_ms }}ms)</span>
+                            </span>
+                            {% else %}
+                            <span style="color: #EF4444; font-size: 0.78rem; display:inline-flex; align-items:center; gap:0.25rem;">
+                                {% include 'components/icon_svg.html' with name='cross' size='12' %}
+                                <span>FAILED</span>
+                            </span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    {% if latest_submission %}
+                        {% if latest_submission.status == 'PASSED' %}
+                        <div class="test-row-pill">
+                            <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                                {% include 'components/icon_svg.html' with name='check' size='13' %}
+                            </span>
+                            <span>All test assertions verified</span>
+                        </div>
+                        <div class="all-tests-pass-card">
+                            <div style="display:flex; align-items:center; gap:0.35rem; color:var(--pass-green); font-weight:800; margin-bottom:0.25rem;">
+                                {% include 'components/icon_svg.html' with name='check_circle' size='16' %}
+                                <span>{% if lang == 'en' %}All tests passed!{% else %}Všetky testy prešli!{% endif %}</span>
+                            </div>
+                            <p style="margin:0; font-size:0.84rem; color:var(--text-secondary);">
+                                {% if lang == 'en' %}Nice work! Your function works for all test cases.{% else %}Skvelá práca! Tvoja funkcia funguje pre všetky vstupy.{% endif %}
+                            </p>
+                        </div>
+                        {% else %}
+                        <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.78rem; color: #DC2626; max-height: 180px; overflow-y: auto;">
+                            {{ latest_submission.output_log|default:"Traceback / Assertion Error" }}
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="test-row-pill">
+                            <span style="color: var(--text-muted); display:inline-flex; align-items:center;">
+                                {% include 'components/icon_svg.html' with name='play' size='10' %}
+                            </span>
+                            <span>Test case #1: {{ current_exercise.title_sk }}</span>
+                        </div>
+                        <div class="test-row-pill">
+                            <span style="color: var(--text-muted); display:inline-flex; align-items:center;">
+                                {% include 'components/icon_svg.html' with name='play' size='10' %}
+                            </span>
+                            <span>Test case #2: Edge validation</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); padding: 0.5rem;">
+                            {% if lang == 'en' %}Click "Run" or press Ctrl+Enter to test your solution.{% else %}Klikni na "Spustiť" alebo stlač Ctrl+Enter pre overenie.{% endif %}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </form>
 
-        <!-- PREPÍNACÍ TERMINÁL (CONSOLE TABS: VÝSLEDKY TESTOV, CODO AI TÚTOR, HISTÓRIA POKUSOV) -->
-        <div class="console-card">
-            <div class="console-tab-header">
-                <button type="button" class="console-tab-btn active" id="btn-console-tests" onclick="switchConsoleTab('tests')">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
-                    {% if lang == 'en' %}Test Results{% else %}Výstup Unit Testov{% endif %}
-                    {% if latest_submission %}
-                        {% if latest_submission.status == 'PASSED' %}
-                        <span style="color:#10B981;">(Passed)</span>
-                        {% else %}
-                        <span style="color:#EF4444;">(Failed)</span>
-                        {% endif %}
-                    {% endif %}
-                </button>
-
-                <button type="button" class="console-tab-btn" id="btn-console-codo" onclick="switchConsoleTab('codo')">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-                    Codo AI Tútor
-                    {% if latest_submission and latest_submission.ai_tutor_feedback %}
-                    <span style="width:6px; height:6px; border-radius:50%; background:#5CE1E6; display:inline-block;"></span>
-                    {% endif %}
-                </button>
-
-                <button type="button" class="console-tab-btn" id="btn-console-history" onclick="switchConsoleTab('history')">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    {% if lang == 'en' %}History ({{ submission_history|length }}){% else %}História pokusov ({{ submission_history|length }}){% endif %}
-                </button>
-            </div>
-
-            <!-- Tab 1: Výsledky Unit Testov -->
-            <div class="console-panel-body" id="console-panel-tests" style="color: #CBD5E1;">
-                {% if latest_submission %}
-                <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; font-size: 0.76rem; color: #94A3B8;">
-                    <span>Execution Status: 
-                        {% if latest_submission.status == 'PASSED' %}
-                        <strong style="color: #10B981;">{{ latest_submission.status }}</strong>
-                        {% else %}
-                        <strong style="color: #EF4444;">{{ latest_submission.status }}</strong>
-                        {% endif %}
+        <!-- 4. Bottom Docked Socratic AI Panel -->
+        <div class="workbench-docked-ai-panel">
+            <div class="docked-ai-header">
+                <div class="docked-ai-title-row">
+                    <div style="width:26px; height:26px;">
+                        {% include 'components/codo_mascot_svg.html' with extra_classes='inline-mascot' %}
+                    </div>
+                    <strong>Ask Codoro (AI Tutor)</strong>
+                    <span class="badge-socratic-mode" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                        <span class="status-dot dot-active"></span>
+                        <span>Socratic AI</span>
                     </span>
-                    <span>Time: {{ latest_submission.execution_time_ms }} ms</span>
                 </div>
-                <pre style="margin: 0; white-space: pre-wrap; word-break: break-all; color: #E2E8F0;">{{ latest_submission.output_log }}</pre>
-                {% else %}
-                <span style="color: #64748B;">{% if lang == 'en' %}Click "Run & Test" above to execute your solution against unit test cases.{% else %}Klikni na "Spustiť a otestovať" pre spustenie svojho kódu voči assert testom.{% endif %}</span>
-                {% endif %}
             </div>
 
-            <!-- Tab 2: Sokratovský AI Tútor Codo -->
-            <div class="console-panel-body" id="console-panel-codo" style="display: none;">
+            <!-- Socratic bubble -->
+            <div class="socratic-speech-bubble" id="socraticSpeechBubble">
                 {% if latest_submission and latest_submission.ai_tutor_feedback %}
-                <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
-                    <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo"
-                         style="width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(92, 225, 230, 0.4));">
-                    <div>
-                        <strong style="color: var(--visor-cyan); font-size: 0.82rem; display: block; margin-bottom: 0.2rem;">
-                            Codo — Sokratovský AI Tútor
-                        </strong>
-                        <p style="font-size: 0.86rem; color: #F1F5F9; line-height: 1.5; margin: 0;">
-                            {{ latest_submission.ai_tutor_feedback }}
-                        </p>
-                    </div>
-                </div>
+                    {{ latest_submission.ai_tutor_feedback }}
                 {% else %}
-                <p style="color: #64748B; margin: 0;">
-                    {% if lang == 'en' %}If your solution fails any tests, Codo analyzes the traceback and provides a guided question without revealing the code.{% else %}Ak tvoje riešenie zlyhá na teste, Codo zanalyzuje traceback a navedie ťa otázkou na správny riadok.{% endif %}
-                </p>
+                    {% if lang == 'en' %}
+                    "Great start! Instead of giving the answer, let's think it through: Check your return value and make sure your variables match the task requirements."
+                    {% else %}
+                    "Skvelý začiatok! Namiesto hotového riešenia sa zamyslime: Skontroluj návratovú hodnotu return a over, či vstupné parametre zodpovedajú zadaniu."
+                    {% endif %}
                 {% endif %}
             </div>
 
-            <!-- Tab 3: História odovzdaní & Code Review -->
-            <div class="console-panel-body" id="console-panel-history" style="display: none;">
-                {% for sub in submission_history %}
-                <div style="padding: 0.45rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); display: flex; justify-content: space-between; font-size: 0.78rem;">
-                    <div>
-                        {% if sub.status == 'PASSED' %}
-                        <span style="font-weight: 700; color: #10B981; margin-right: 0.5rem;">{{ sub.status }}</span>
-                        {% else %}
-                        <span style="font-weight: 700; color: #EF4444; margin-right: 0.5rem;">{{ sub.status }}</span>
-                        {% endif %}
-                        <span style="color: #94A3B8;">{{ sub.created_at|date:"d.m.Y H:i" }}</span>
-                        {% if sub.teacher_comment %}
-                        <span style="color: var(--ro-indigo); font-weight: 700; margin-left: 0.4rem; display: inline-flex; align-items: center; gap: 0.25rem;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            Review
-                        </span>
-                        {% endif %}
-                    </div>
-                    <span style="color: #64748B; font-variant-numeric: tabular-nums;">{{ sub.execution_time_ms }} ms</span>
-                </div>
-                {% empty %}
-                <p style="color: #64748B; margin: 0;">
-                    {% if lang == 'en' %}No submissions for this exercise yet.{% else %}Zatiaľ žiadne odovzdania tejto úlohy.{% endif %}
-                </p>
-                {% endfor %}
+            <!-- 3 Socratic Action Pills -->
+            <div class="socratic-action-pills">
+                <button type="button" class="btn-socratic-pill" onclick="codoInteractivePrompt('hint')" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                    {% include 'components/icon_svg.html' with name='lightbulb' size='13' %}
+                    <span>{% if lang == 'en' %}Give me a hint{% else %}Daj mi nápovedu{% endif %}</span>
+                </button>
+                <button type="button" class="btn-socratic-pill" onclick="codoInteractivePrompt('question')" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                    {% include 'components/icon_svg.html' with name='question' size='13' %}
+                    <span>{% if lang == 'en' %}Ask a question{% else %}Opýtať sa otázku{% endif %}</span>
+                </button>
+                <button type="button" class="btn-socratic-pill" onclick="codoInteractivePrompt('check')" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                    {% include 'components/icon_svg.html' with name='refresh' size='13' %}
+                    <span>{% if lang == 'en' %}Check my thinking{% else %}Skontroluj môj postup{% endif %}</span>
+                </button>
             </div>
         </div>
-        {% else %}
-        <div class="card-surface" style="padding: 2.5rem; text-align: center; color: var(--text-muted); border-radius: var(--radius-lg);">
-            {% if lang == 'en' %}This lesson has no coding exercises attached.{% else %}Táto lekcia nemá priradené žiadne praktické cvičenia.{% endif %}
-        </div>
-        {% endif %}
     </div>
-
 </div>
 
-<!-- Hidden storage pre pôvodný štartovací kód na reset -->
+<!-- Hidden original starter code for Reset -->
 <div id="starterCodeOriginal" style="display:none;">{% if current_exercise %}{{ current_exercise.starter_code }}{% endif %}</div>
 
-{% endblock %}
-
-{% block extra_js %}
 <script>
-    // 1. Inicializácia CodeMirror editora
+    // Universal lesson markdown rendering function
+    function renderLessonMarkdown() {
+        if (typeof marked !== 'undefined') {
+            document.querySelectorAll('.markdown-render').forEach(function(el) {
+                if (!el.dataset.rendered) {
+                    const raw = el.textContent.trim();
+                    if (raw) {
+                        el.innerHTML = marked.parse(raw);
+                        el.dataset.rendered = 'true';
+                    }
+                }
+            });
+        }
+    }
+    // Run immediately and on DOMContentLoaded
+    renderLessonMarkdown();
+    document.addEventListener('DOMContentLoaded', renderLessonMarkdown);
+
+    // Initialize CodeMirror
     const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
     const editorElem = document.getElementById("pythonEditor");
-    if (editorElem) {
+    if (editorElem && typeof CodeMirror !== 'undefined') {
         window.codoroEditor = CodeMirror.fromTextArea(editorElem, {
             mode: "python",
             theme: activeTheme === 'dark' ? "material-darker" : "eclipse",
@@ -476,19 +427,31 @@
                 }
             }
         });
+        window.codoroEditor.setSize("100%", "100%");
+        setTimeout(function() {
+            if (window.codoroEditor) window.codoroEditor.refresh();
+        }, 80);
     }
 
-    // 2. Resetovanie štartovacieho kódu
+    // Submit form helper
+    window.submitCodeForm = function() {
+        if (window.codoroEditor) {
+            window.codoroEditor.save();
+        }
+        document.getElementById('codeSubmitForm').submit();
+    };
+
+    // Reset code
     window.resetEditorCode = function() {
         if (!window.codoroEditor) return;
         var original = document.getElementById('starterCodeOriginal').textContent;
-        var confirmMsg = "{% if lang == 'en' %}Reset editor to starter code template?{% else %}Naozaj resetovať kód na pôvodný štartovací stav?{% endif %}";
-        if (confirm(confirmMsg)) {
+        var msg = "{% if lang == 'en' %}Reset editor to starter code?{% else %}Naozaj resetovať kód na pôvodný štartovací stav?{% endif %}";
+        if (confirm(msg)) {
             window.codoroEditor.setValue(original);
         }
     };
 
-    // 3. Prepínanie záložiek v ľavom paneli (Teória / Kvíz / Vzorové riešenie)
+    // Left Tab Switcher
     window.switchLeftTab = function(tabName) {
         ['theory', 'quiz', 'solution'].forEach(function(t) {
             var el = document.getElementById('left-tab-' + t);
@@ -499,48 +462,66 @@
                 else btn.classList.remove('active');
             }
         });
+        renderLessonMarkdown();
+        if (window.codoroEditor) {
+            setTimeout(function() {
+                window.codoroEditor.refresh();
+            }, 50);
+        }
     };
 
-    // 4. Prepínanie záložiek v spodnej konzole (Unit Testy / Codo AI / História)
-    window.switchConsoleTab = function(tabName) {
-        ['tests', 'codo', 'history'].forEach(function(t) {
-            var el = document.getElementById('console-panel-' + t);
-            var btn = document.getElementById('btn-console-' + t);
-            if (el) el.style.display = (t === tabName) ? 'block' : 'none';
-            if (btn) {
-                if (t === tabName) btn.classList.add('active');
-                else btn.classList.remove('active');
-            }
-        });
-    };
-
-    // 5. Vysúvacie menu obsahu modulu v breadcrumb lište
+    // Toggle Jump Menu
     window.toggleModuleJumpMenu = function() {
         var menu = document.getElementById('moduleJumpMenu');
-        if (menu) menu.classList.toggle('show');
+        if (menu) menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     };
 
-    // Zatvorenie vysúvacieho menu pri kliknutí mimo neho
     document.addEventListener('click', function(e) {
-        var dropdown = document.getElementById('moduleJumpDropdown');
+        var dd = document.getElementById('moduleJumpDropdown');
         var menu = document.getElementById('moduleJumpMenu');
-        if (dropdown && menu && !dropdown.contains(e.target)) {
-            menu.classList.remove('show');
+        if (dd && menu && !dd.contains(e.target)) {
+            menu.style.display = 'none';
         }
     });
 
-    // 6. Klávesová skratka Ctrl+Enter (Cmd+Enter) na okamžité spustenie a otestovanie kódu
+    // Keyboard shortcut Ctrl+Enter
     document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            var form = document.getElementById('codeSubmitForm');
-            if (form) {
-                e.preventDefault();
-                if (window.codoroEditor) {
-                    window.codoroEditor.save();
-                }
-                form.submit();
-            }
+            e.preventDefault();
+            submitCodeForm();
         }
     });
+
+    // Socratic Codo interactive advice change
+    window.codoInteractivePrompt = function(kind) {
+        const bubble = document.getElementById('socraticSpeechBubble');
+        const lang = '{{ lang }}';
+        let text = '';
+        if (kind === 'hint') {
+            text = lang === 'en' 
+                ? "Codo: Think about which data type your function is expected to return. Are you printing the result or returning it with 'return'?"
+                : "Codo: Zamysli sa nad tým, aký dátový typ má funkcia vrátiť. Používaš funkciu 'print()' alebo kľúčové slovo 'return'?";
+        } else if (kind === 'question') {
+            text = lang === 'en'
+                ? "Codo: If the input parameters were 0 or negative numbers, what should the expected output be according to the specification?"
+                : "Codo: Ak by boli vstupné parametre 0 alebo záporné čísla, aký by mal byť očakávaný výstup podľa zadania úlohy?";
+        } else if (kind === 'check') {
+            text = lang === 'en'
+                ? "Codo: Your code logic looks clean! Check line by line whether all variable names match the function signature."
+                : "Codo: Logika tvojho kódu vyzerá správne! Skontroluj riadok po riadku, či sa názvy premenných presne zhodujú s hlavičkou funkcie.";
+        }
+        
+        // Typewriter animation
+        bubble.textContent = '';
+        let i = 0;
+        const interval = setInterval(function() {
+            if (i < text.length) {
+                bubble.textContent += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 12);
+    };
 </script>
 {% endblock %}

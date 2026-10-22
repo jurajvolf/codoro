@@ -40,18 +40,22 @@ class User(AbstractUser):
         PRO = 'PRO', 'Codoro PRO'
         EDU = 'EDU', 'Školská EDU licencia'
 
-    # Prednastavené avatary (bez nutnosti nahrávania obrázkov a knižnice Pillow)
+    # Prednastavené avatary (podpora ilustrovaných portrétov aj retro emoji)
     AVATAR_CHOICES = [
-        ('codo', '🤖'),
-        ('snake', '🐍'),
-        ('fox', '🦊'),
-        ('owl', '🦉'),
-        ('panda', '🐼'),
-        ('cat', '🐱'),
-        ('rocket', '🚀'),
-        ('ninja', '🥷'),
-        ('wizard', '🧙'),
-        ('alien', '👾'),
+        ('student_alex', '👦 Alex (Programátor)'),
+        ('student_mia', '👧 Mia (Data Scientist)'),
+        ('student_sam', '🧑 Sam (Full-stack)'),
+        ('cyber_ninja', '🥷 Cyber Coder'),
+        ('codo', '🤖 Codo (AI Maskot)'),
+        ('snake', '🐍 Pythonista'),
+        ('fox', '🦊 Lišiak'),
+        ('owl', '🦉 Sova'),
+        ('panda', '🐼 Panda'),
+        ('cat', '🐱 Hacker Cat'),
+        ('rocket', '🚀 Inovátor'),
+        ('ninja', '🥷 Ninja'),
+        ('wizard', '🧙 Kód Magik'),
+        ('alien', '👾 Cyber Alien'),
     ]
     AVATAR_COLORS = [
         ('indigo', '#4636F5'),
@@ -111,8 +115,7 @@ class User(AbstractUser):
 
     def calculate_level_from_xp(self):
         """
-        Vypočíta level zo získaných XP podľa vzorca: XP = 100 * (Level - 1)^1.5
-        (Tento vzorec uvedieme v 2. kapitole maturitnej práce).
+        Vypočíta level zo získaných XP podľa nelineárneho vzorca: XP = 100 * (Level - 1)^1.5.
         """
         if self.xp < 100:
             return 1
@@ -236,7 +239,22 @@ class User(AbstractUser):
         return True
 
     def avatar_emoji(self):
-        return dict(self.AVATAR_CHOICES).get(self.avatar, '🤖')
+        choice = dict(self.AVATAR_CHOICES).get(self.avatar, '👦')
+        # Ak je to string v tvare "👦 Alex", extrahujeme prvý symbol
+        return choice.split()[0] if choice else '👦'
+
+    def get_avatar_url(self):
+        """Vráti URL adresu obrázka avatara používateľa."""
+        image_map = {
+            'student_alex': '/static/img/avatars/student_alex.jpg',
+            'student_mia': '/static/img/avatars/student_mia.jpg',
+            'student_sam': '/static/img/avatars/student_sam.jpg',
+            'cyber_ninja': '/static/img/avatars/cyber_ninja.jpg',
+            'codo': '/static/img/avatars/codo.png',
+        }
+        if self.avatar in image_map:
+            return image_map[self.avatar]
+        return '/static/img/avatars/student_alex.jpg'
 
     def avatar_hex(self):
         return dict(self.AVATAR_COLORS).get(self.avatar_color, '#4636F5')

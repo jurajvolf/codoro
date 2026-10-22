@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+{% if lang == 'en' %}Privacy Policy — Codoro{% else %}Zásady ochrany osobných údajov — Codoro{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+{% if lang == 'en' %}Codoro Privacy Policy and GDPR compliance. Transparent handling of student and educator learning data.{% else %}Informácie o spracúvaní a ochrane osobných údajov (GDPR) na vzdelávacej platforme Codoro.{% endif %}
+{% endblock %}
+
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="animate-in" style="max-width: 860px; margin: 2rem auto; padding-bottom: 4rem;">
+    <!-- Breadcrumb / Back button -->
+    <div style="margin-bottom: 1.5rem;">
+        <a href="{% url 'landing_page' %}" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); text-decoration: none;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>{% if lang == 'en' %}Back to Home{% else %}Späť na hlavnú stránku{% endif %}</span>
+        </a>
+    </div>
+
+    <!-- Header Card -->
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 2.25rem 2rem; box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.8rem; border-radius: 9999px; background: var(--bg-mint-soft); color: var(--brand-emerald); font-weight: 700; font-size: 0.82rem; margin-bottom: 0.75rem;">
+            {% include 'components/icon_svg.html' with name='shield' size='14' %}
+            <span>GDPR & PRIVACY FIRST</span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem;">
+            {% if lang == 'en' %}Privacy Policy{% else %}Zásady ochrany osobných údajov{% endif %}
+        </h1>
+        <p style="font-size: 0.94rem; color: var(--text-secondary); margin: 0;">
+            {% if lang == 'en' %}
+            Last updated: October 2026 · Transparent educational data governance
+            {% else %}
+            Posledná aktualizácia: Október 2026 · Transparentné nakladanie so vzdelávacími údajmi
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Content Card -->
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 2.5rem 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--text-primary);">
+        {% if lang == 'en' %}
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                1. Data Controller
+            </h2>
+            <p>
+                The platform <strong>Codoro</strong> (accessible at <a href="https://codoro.sk" style="color:var(--brand-emerald);">codoro.sk</a>) is operated by the Codoro educational initiative located at:
+            </p>
+            <div style="background: var(--bg-canvas); padding: 1rem 1.25rem; border-radius: var(--radius-md); border-left: 3px solid var(--brand-emerald); font-size: 0.92rem; margin: 0.75rem 0;">
+                <strong>Codoro Platform</strong><br>
+                Hattalova 471, 027 43 Nižná, Slovak Republic<br>
+                E-mail: <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald);">podpora@codoro.sk</a><br>
+                Support Hotline: +421 948 123 456
+            </div>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                2. Categories of Processed Personal Data
+            </h2>
+            <p>To provide personalized learning experiences and verify classroom solutions, we process:</p>
+            <ul>
+                <li><strong>Account details:</strong> Username, first and last name, institutional email, hashed password.</li>
+                <li><strong>Academic & Curriculum data:</strong> Module progress, unit test outputs, code submissions, quiz results, streak count.</li>
+                <li><strong>Classroom & Economy:</strong> School class association, Doros coin balance, claimed classroom coupons and rewards.</li>
+                <li><strong>Technical data:</strong> IP address, browser type, preferred language (SK/EN), UI theme preference (Light/Dark).</li>
+            </ul>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                3. Purpose and Legal Basis of Processing
+            </h2>
+            <p>
+                Data processing is conducted under <strong>Article 6(1)(b) GDPR</strong> (performance of an educational contract/service) and <strong>Article 6(1)(f) GDPR</strong> (legitimate interest in maintaining platform security and fair classroom economy). We never sell or monetize student data.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                4. Cookies & Local Storage
+            </h2>
+            <p>
+                Codoro uses <strong>only strictly essential cookies</strong> (Django CSRF token, session cookie) and client-side <code>localStorage</code> for saving theme and language preferences. We do not use third-party advertising trackers or invasive analytics.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                5. Your Rights as a Data Subject
+            </h2>
+            <p>Under GDPR, you have the right to:</p>
+            <ul>
+                <li>Request access to your personal and academic learning history.</li>
+                <li>Request rectification of inaccurate account details.</li>
+                <li>Request account deletion (Right to be Forgotten) by contacting <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald);">podpora@codoro.sk</a>.</li>
+                <li>Lodge a complaint with the supervisory authority: <em>Úrad na ochranu osobných údajov Slovenskej republiky</em> (dataprotection.gov.sk).</li>
+            </ul>
+        </section>
+        {% else %}
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                1. Prevádzkovateľ osobných údajov
+            </h2>
+            <p>
+                Vzdelávaciu platformu <strong>Codoro</strong> (dostupnú na adrese <a href="https://codoro.sk" style="color:var(--brand-emerald);">codoro.sk</a>) prevádzkuje vzdelávacia iniciatíva Codoro so sídlom:
+            </p>
+            <div style="background: var(--bg-canvas); padding: 1rem 1.25rem; border-radius: var(--radius-md); border-left: 3px solid var(--brand-emerald); font-size: 0.92rem; margin: 0.75rem 0;">
+                <strong>Vzdelávací systém Codoro</strong><br>
+                Hattalova 471, 027 43 Nižná, Slovenská republika<br>
+                E-mail: <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald);">podpora@codoro.sk</a><br>
+                Telefón podpory: +421 948 123 456
+            </div>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                2. Rozsah spracovávaných údajov
+            </h2>
+            <p>Pre zabezpečenie výučby a overovania programových riešení spracúvame nasledujúce kategórie údajov:</p>
+            <ul>
+                <li><strong>Identifikačné a prihlasovacie údaje:</strong> Prihlasovacie meno (username), krstné meno a priezvisko, školská e-mailová adresa, zahashované heslo.</li>
+                <li><strong>Vzdelávací progres a dáta o štúdiu:</strong> Absolvované moduly a lekcie, odovzdaný Python kód, výsledky testov sandboxu, zodpovedané kvízy a denný Streak.</li>
+                <li><strong>Triedna príslušnosť a herná ekonomika:</strong> Zaradenie do školskej triedy, zostatok Doros mincí, zakúpené kupóny a odmeny v obchode.</li>
+                <li><strong>Technické údaje:</strong> IP adresa, typ prehliadača, zvolený jazyk rozhrania (SK/EN) a preferovaná téma (Svetlá/Tmavá).</li>
+            </ul>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                3. Účel a právny základ spracúvania
+            </h2>
+            <p>
+                Spracúvanie údajov je nevyhnutné na <strong>plnenie zmluvy / poskytovanie vzdelávacej služby v zmysle Čl. 6 ods. 1 písm. b) GDPR</strong> a na základe oprávneného záujmu prevádzkovateľa (Čl. 6 ods. 1 písm. f) GDPR) pri zabezpečení integrity sandboxu a zabránení podvodom. Vaše údaje nikdy nepredávame ani neposkytujeme tretím stranám na marketingové účely.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                4. Súbory cookies a lokálne úložisko
+            </h2>
+            <p>
+                Codoro využíva <strong>výhradne nevyhnutné technické cookies</strong> (napr. relačné cookie `sessionid` a bezpečnostný `csrftoken`) pre overenie prihláseného používateľa a bezpečnosť formulárov. Preferencie témy a jazyka sa ukladajú lokálne v prehliadači používateľa (`localStorage`). Nepoužívame reklamné ani sledovacie cookies tretích strán.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                5. Práva dotknutej osoby
+            </h2>
+            <p>Ako používateľ platformy máte v súlade s nariadením GDPR právo:</p>
+            <ul>
+                <li>Požadovať prístup k svojim osobným údajom a histórii riešení úloh.</li>
+                <li>Požiadať o opravu nesprávnych údajov vo svojom študentskom alebo učiteľskom profile.</li>
+                <li>Požiadať o vymazanie účtu a všetkých pridružených údajov (právo byť zabudnutý) na adrese <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald);">podpora@codoro.sk</a>.</li>
+                <li>Podať sťažnosť dozornému orgánu: <em>Úrad na ochranu osobných údajov Slovenskej republiky</em>, Hraničná 12, 820 07 Bratislava.</li>
+            </ul>
+        </section>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

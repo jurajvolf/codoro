@@ -3,376 +3,602 @@
 
 {% block title %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
-{% if lang == 'en' %}Codoro | Next-Gen Python Learning Platform{% else %}Codoro | Interaktívna výučba Pythonu novej generácie{% endif %}
+{% if lang == 'en' %}Codoro — Interactive Python Education{% else %}Codoro — Interaktívna výučba Pythonu{% endif %}
 {% endblock %}
 
-{% block body_class %}page-landing{% endblock %}
+{% block body_class %}page-emerald-landing{% endblock %}
 
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-<!-- ATMOSPHERIC SUBTLE BACKDROP & GRID -->
-<div class="landing-ambient-backdrop" aria-hidden="true">
-    <div class="landing-ambient-glow"></div>
-    <div class="landing-ambient-grid"></div>
-</div>
+<div class="public-hero-canvas-root" style="position:relative;">
 
-<div class="landing-page-root">
+    <!-- ====================================================================
+         1. SCENIC LANDSCAPE CANVAS DECORATIONS (LIFE IN THE BACKGROUND)
+         ==================================================================== -->
+    <div class="scenic-ambient-glow" aria-hidden="true"></div>
 
-    <!-- 1. HERO SECTION: CONFIDENCE, CLARITY & HIGH CONVERSION -->
-    <section class="landing-hero" id="hero">
-        <h1 class="landing-hero-headline">
-            {% if lang == 'en' %}
-            Master Python Programming.<br>
-            <span class="headline-accent">Built for Genuine Understanding.</span>
+    <!-- ====================================================================
+         2. HORNÁ PLÁVAJÚCA NAVIGAČNÁ KAPSULA (STRICT SINGLE ROW / SINGLE PLANE)
+         ==================================================================== -->
+    <header class="floating-pill-navbar">
+        <a href="{% url 'landing_page' %}" class="emerald-brand-link" title="Codoro">
+            <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" class="emerald-brand-icon">
+            <span class="emerald-brand-text">codo<span class="brand-ro">ro</span></span>
+        </a>
+
+        <nav class="floating-pill-links">
+            <a href="#workbench">{% if lang == 'en' %}Features{% else %}Funkcie{% endif %}</a>
+            <a href="#curriculum">{% if lang == 'en' %}Curriculum{% else %}Učebný plán{% endif %}</a>
+            <a href="#schools">{% if lang == 'en' %}For Teachers{% else %}Pre učiteľov{% endif %}</a>
+            <a href="{% url 'get_license' %}">{% if lang == 'en' %}Pricing{% else %}Licencie{% endif %}</a>
+        </nav>
+
+        <div class="floating-pill-actions">
+            <!-- Language Switcher (SK / EN) -->
+            <div class="lang-segmented">
+                <a href="{% url 'switch_language' 'sk' %}?next={{ request.get_full_path|urlencode }}"
+                   onclick="document.cookie='codoro_lang=sk;path=/;max-age=31536000;SameSite=Lax';"
+                   class="lang-pill {% if lang == 'sk' %}active{% endif %}">SK</a>
+                <a href="{% url 'switch_language' 'en' %}?next={{ request.get_full_path|urlencode }}"
+                   onclick="document.cookie='codoro_lang=en;path=/;max-age=31536000;SameSite=Lax';"
+                   class="lang-pill {% if lang == 'en' %}active{% endif %}">EN</a>
+            </div>
+
+            <!-- Theme Toggle Button -->
+            <button type="button" class="btn-icon-circle theme-toggle-btn" onclick="toggleCodoroTheme()" title="{% if lang == 'en' %}Toggle theme{% else %}Prepnúť tému{% endif %}" aria-label="Theme toggle" style="width:34px; height:34px; border-radius:50%; border:1px solid var(--border-subtle); background:var(--bg-subtle); color:var(--text-primary); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                <span class="theme-toggle-icon-container" style="display:inline-flex; align-items:center; justify-content:center;">
+                    {% include 'components/icon_svg.html' with name='moon' size='15' %}
+                </span>
+            </button>
+
+            <!-- Sign In / App Link Button -->
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn-pill-emerald" style="flex-shrink:0;">
+                {% if lang == 'en' %}My Dashboard →{% else %}Moja nástenka →{% endif %}
+            </a>
             {% else %}
-            Nauč sa programovať v Pythone.<br>
-            <span class="headline-accent">Bez skratiek, so skutočným pochopením.</span>
+            <a href="{% url 'login' %}" class="btn-pill-login" style="flex-shrink:0;">
+                {% if lang == 'en' %}Log In{% else %}Prihlásiť sa{% endif %}
+            </a>
+            <a href="{% url 'register' %}" class="btn-pill-emerald" style="flex-shrink:0;">
+                {% if lang == 'en' %}Get Started{% else %}Začať sa učiť{% endif %}
+            </a>
             {% endif %}
-        </h1>
+        </div>
+    </header>
 
-        <p class="landing-hero-subhead">
-            {% if lang == 'en' %}
-            No passive video bingeing, no mindless copy-pasting from ChatGPT. Codoro combines an in-browser Python AST sandbox, Socratic AI guidance, Doros classroom economy, and live teacher supervision in one developer platform.
-            {% else %}
-            Žiadne pasívne pozeranie videí ani bezhlavé kopírovanie hotového kódu z ChatGPT. Codoro spája prehliadačový Python sandbox, Sokratovského AI tútora Codo, hernú ekonomiku Doros a prepojenie celej triedy s učiteľom v jednom ucelenom vývojárskom systéme.
-            {% endif %}
-        </p>
+    <!-- ====================================================================
+         3. HERO SEKCIA S ČISTOU TYPOGRAFIOU A PRVKAMI PO STRANÁCH
+         ==================================================================== -->
+    <section class="hero-stage">
+        <!-- Scenic Rolling Meadow Hills Backdrop behind Hero with Decorative Stones -->
+        <div class="scenic-hero-hills-backdrop" aria-hidden="true">
+            <svg viewBox="0 0 1440 380" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Layer 1: Distant soft rounded misty hills rising on left and right -->
+                <path d="M0 130 C 180 50, 340 50, 520 130 C 660 190, 780 190, 920 130 C 1100 50, 1260 50, 1440 130 L 1440 380 L 0 380 Z" fill="var(--bg-hills-back)" opacity="0.75"/>
+                
+                <!-- Distant Soft Pebbles on Layer 1 -->
+                <ellipse cx="320" cy="95" rx="14" ry="7" fill="#CBD5E1" opacity="0.45"/>
+                <ellipse cx="1120" cy="95" rx="15" ry="7.5" fill="#CBD5E1" opacity="0.45"/>
 
-        <div class="landing-hero-actions">
-            <a href="{% url 'register' %}" class="btn btn-hero-primary">
-                {% if lang == 'en' %}Start Learning Free{% else %}Začať sa učiť zadarmo{% endif %}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-            <a href="#curriculum" class="btn btn-hero-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                {% if lang == 'en' %}Explore 18 Modules{% else %}Prezrieť 18 modulov kurikula{% endif %}
-            </a>
-            <a href="{% url 'get_license' %}" class="btn btn-hero-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                {% if lang == 'en' %}For Schools & Teachers{% else %}Portál pre školy a učiteľov{% endif %}
-            </a>
+                <!-- Layer 2: Mid rolling meadow hill rising behind stone & codo -->
+                <path d="M0 180 C 160 90, 320 85, 480 160 C 640 230, 800 230, 960 160 C 1120 85, 1280 90, 1440 180 L 1440 380 L 0 380 Z" fill="var(--bg-hills-mid)" opacity="0.9"/>
+
+                <!-- Mid-hill River Stones & Leaf Sprouts Left & Right -->
+                <g opacity="0.85">
+                    <!-- Stone Cluster Left -->
+                    <ellipse cx="418" cy="152" rx="18" ry="9" fill="#94A3B8"/>
+                    <ellipse cx="417" cy="150" rx="16" ry="8" fill="#CBD5E1"/>
+                    <ellipse cx="415" cy="148" rx="13" ry="6" fill="#E2E8F0"/>
+                    <ellipse cx="434" cy="153" rx="11" ry="5.5" fill="#94A3B8"/>
+                    <ellipse cx="433" cy="151" rx="10" ry="5" fill="#CBD5E1"/>
+                    <!-- Tiny Leaf Sprout Left -->
+                    <path d="M408 149 C 404 138, 402 128, 408 125 C 414 122, 415 134, 412 147 Z" fill="#15803D"/>
+                    <path d="M412 147 C 416 135, 422 128, 428 132 C 432 136, 426 145, 418 148 Z" fill="#22C55E"/>
+
+                    <!-- Stone Cluster Right -->
+                    <ellipse cx="1022" cy="152" rx="18" ry="9" fill="#94A3B8"/>
+                    <ellipse cx="1021" cy="150" rx="16" ry="8" fill="#CBD5E1"/>
+                    <ellipse cx="1019" cy="148" rx="13" ry="6" fill="#E2E8F0"/>
+                    <ellipse cx="1004" cy="153" rx="11" ry="5.5" fill="#94A3B8"/>
+                    <ellipse cx="1005" cy="151" rx="10" ry="5" fill="#CBD5E1"/>
+                    <!-- Tiny Leaf Sprout Right -->
+                    <path d="M1028 148 C 1034 135, 1042 128, 1046 134 C 1050 140, 1042 146, 1034 149 Z" fill="#22C55E"/>
+                </g>
+
+                <!-- Layer 3: Foreground gentle ridge dipping under CTA button -->
+                <path d="M0 240 C 180 170, 360 175, 520 220 C 660 255, 780 255, 920 220 C 1080 175, 1260 170, 1440 240 L 1440 380 L 0 380 Z" fill="var(--bg-hills-front)"/>
+
+                <!-- Foreground Pebble Accents -->
+                <ellipse cx="560" cy="235" rx="12" ry="6" fill="#CBD5E1" opacity="0.6"/>
+                <ellipse cx="880" cy="235" rx="12" ry="6" fill="#CBD5E1" opacity="0.6"/>
+            </svg>
         </div>
 
-        <!-- MINIMALIST INLINE TELEMETRY ROW (REPLACES GENERIC 4 STAT BOXES) -->
-        <div class="landing-telemetry-row">
-            <span class="telemetry-item">
-                <span class="telemetry-dot"></span>
-                <span>Python 3.12 AST Sandbox</span>
-            </span>
-            <span class="telemetry-sep">•</span>
-            <span class="telemetry-item">
-                <span class="telemetry-dot cyan"></span>
-                <span>{% if lang == 'en' %}Socratic AI Codo (Gemini 2.5){% else %}Sokratovský AI Tútor Codo (Gemini 2.5){% endif %}</span>
-            </span>
-            <span class="telemetry-sep">•</span>
-            <span class="telemetry-item">
-                <span class="telemetry-dot indigo"></span>
-                <span>{% if lang == 'en' %}18 Modules • 220+ Hours{% else %}18 Modulov • 220+ Hodín výučby{% endif %}</span>
-            </span>
-            <span class="telemetry-sep">•</span>
-            <span class="telemetry-item">
-                <span class="telemetry-dot gold"></span>
-                <span>{% if lang == 'en' %}100% Bilingual (SK / EN){% else %}100% v slovenčine i angličtine{% endif %}</span>
-            </span>
+        <div class="hero-content-wrapper" style="position:relative; z-index:3;">
+            <!-- Radiating Emerald Rays Category Header (Exact matching reference photo) -->
+            <div class="hero-rays-kicker">
+                <svg width="44" height="32" viewBox="0 0 44 32" fill="none" stroke="var(--brand-emerald)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true" class="hero-kicker-rays-svg">
+                    <line x1="36" y1="8" x2="8" y2="2"/>
+                    <line x1="38" y1="16" x2="4" y2="16"/>
+                    <line x1="36" y1="24" x2="8" y2="30"/>
+                </svg>
+                <span class="hero-kicker-text">{% if lang == 'en' %}INTERACTIVE PYTHON EDUCATION{% else %}INTERAKTÍVNA VÝUČBA PYTHONU{% endif %}</span>
+                <svg width="44" height="32" viewBox="0 0 44 32" fill="none" stroke="var(--brand-emerald)" stroke-width="2.8" stroke-linecap="round" aria-hidden="true" class="hero-kicker-rays-svg">
+                    <line x1="8" y1="8" x2="36" y2="2"/>
+                    <line x1="6" y1="16" x2="40" y2="16"/>
+                    <line x1="8" y1="24" x2="36" y2="30"/>
+                </svg>
+            </div>
+
+            <h1 class="hero-big-title">
+                {% if lang == 'en' %}
+                Learn Python by Doing,<br>Earning, and Building
+                {% else %}
+                Nauč sa Python praxou,<br>zbieraním odmien a tvorbou
+                {% endif %}
+            </h1>
+
+            <p class="hero-lead-text">
+                {% if lang == 'en' %}
+                An interactive, gameful Python platform for students and classrooms — code in a real IDE, follow a guided learning map, and earn Doros as you level up.
+                {% else %}
+                Interaktívna, gamifikovaná platforma na výučbu Pythonu pre študentov a školské triedy — píš kód v reálnom IDE, kráčaj po vizuálnej mape učiva a zbieraj Doros mince s každou vyriešenou úlohou.
+                {% endif %}
+            </p>
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:0.85rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+                <a href="{% url 'register' %}" class="hero-cta-btn-emerald">
+                    <span>{% if lang == 'en' %}Start Learning Python{% else %}Začať sa učiť Python{% endif %}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+                <a href="#workbench" class="btn-secondary" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 1.4rem; border-radius:9999px; background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); font-weight:700; font-size:0.96rem; text-decoration:none; box-shadow:var(--shadow-xs); transition:all 0.2s ease;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--brand-emerald)" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    <span>{% if lang == 'en' %}Try Live Demo{% else %}Vyskúšať demo{% endif %}</span>
+                </a>
+            </div>
         </div>
 
-        <!-- 2. CENTERPIECE: INTERACTIVE LIVE SOCRATIC WORKBENCH -->
-        <div class="hero-workbench-wrapper" id="workbench">
-            <div class="hero-workbench">
-                <!-- Workbench Window Header -->
-                <div class="workbench-header">
-                    <div class="workbench-dots">
-                        <span class="workbench-dot red"></span>
-                        <span class="workbench-dot yellow"></span>
-                        <span class="workbench-dot green"></span>
-                    </div>
+        <!-- Left Illustration: Python on Upright River Boulder with Sprouts & Pebbles (Exact Match to Reference Photo) -->
+        <div class="hero-art-left">
+            {% include 'components/illustrations_svg.html' with illustration='python_stone' %}
+        </div>
 
-                    <!-- File Tabs Switcher -->
-                    <div class="workbench-tabs">
-                        <button type="button" class="workbench-tab-btn active" onclick="switchSnippet(0, this)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            <span>priemer_znamok.py</span>
-                        </button>
-                        <button type="button" class="workbench-tab-btn" onclick="switchSnippet(1, this)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            <span>02_caesar_sifra.py</span>
-                        </button>
-                        <button type="button" class="workbench-tab-btn" onclick="switchSnippet(2, this)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            <span>03_fibonacci.py</span>
-                        </button>
-                    </div>
+        <!-- Right Illustration: Official Codoro Mascot with River Pebbles (Clean Mineral & Emerald Design) -->
+        <div class="hero-art-right" title="Codoro Mascot">
+            <div class="codo-hero-unit">
+                <!-- Official Codoro Green Avatar -->
+                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}"
+                     alt="Codoro"
+                     class="codo-official-avatar-img">
 
-                    <div class="workbench-status-pill">
-                        <span class="telemetry-dot cyan"></span>
-                        <span>AST Secure Sandbox</span>
-                    </div>
-                </div>
-
-                <!-- Code Lines Area -->
-                <div class="workbench-body">
-                    <div id="editorCodeLines">
-                        <!-- Dynamicky generované cez JS -->
-                    </div>
-                </div>
-
-                <!-- Interactive Toolbar -->
-                <div class="workbench-toolbar">
-                    <div style="display:flex; align-items:center; gap:0.85rem; flex-wrap:wrap;">
-                        <button type="button" class="workbench-run-btn" id="demoRunBtn" onclick="runInteractiveDemo()">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            <span id="demoRunBtnText">{% if lang == 'en' %}Run Sandbox Tests{% else %}Spustiť a otestovať kód{% endif %}</span>
-                        </button>
-                        <span class="workbench-reward-pill" id="demoRewardTag">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/></svg>
-                            +35 XP • +10 Doros
-                        </span>
-                    </div>
-                    <span class="workbench-meta-info" id="demoTimerTag">AST Static Safety: Verified</span>
-                </div>
-
-                <!-- Split Output Deck: Test Runner (Left) & Socratic Codo Dialogue (Right) -->
-                <div class="workbench-deck">
-                    <div class="deck-tests-panel">
-                        <div class="deck-panel-title">
-                            <span>{% if lang == 'en' %}Automated Unit Tests{% else %}Automatické Unit Testy{% endif %}</span>
-                            <span style="color:#10b981; font-weight:600;">3 / 3 PASS</span>
-                        </div>
-                        <div id="demoTestCases">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-
-                    <div class="deck-codo-panel">
-                        <div class="codo-deck-header">
-                            <div class="codo-deck-brand">
-                                <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="codo-deck-avatar">
-                                <div>
-                                    <span class="codo-deck-name">Codo</span>
-                                    <span class="codo-deck-tag">Gemini 2.5 Flash</span>
-                                </div>
-                            </div>
-                            <div class="codo-compare-toggle">
-                                <button type="button" class="codo-mode-btn active" id="btnModeCodo" onclick="toggleCodoMode('codo')">
-                                    {% if lang == 'en' %}Socratic Codo{% else %}Sokratovský Codo{% endif %}
-                                </button>
-                                <button type="button" class="codo-mode-btn" id="btnModeChatGPT" onclick="toggleCodoMode('chatgpt')">
-                                    {% if lang == 'en' %}Standard ChatGPT{% else %}Bežný ChatGPT{% endif %}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="codo-dialogue-content" id="demoCodoDialogue">
-                            <!-- Injected by script -->
-                        </div>
-                    </div>
+                <!-- Companion River Pebbles & Green Sprouts Base -->
+                <div class="codo-ground-base" aria-hidden="true">
+                    <svg viewBox="0 0 240 50" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="120" cy="38" rx="90" ry="10" fill="rgba(0, 135, 103, 0.12)"/>
+                        <ellipse cx="44" cy="32" rx="26" ry="13" fill="#94A3B8"/>
+                        <ellipse cx="43" cy="29" rx="24" ry="11" fill="#CBD5E1"/>
+                        <ellipse cx="41" cy="27" rx="21" ry="9" fill="#E2E8F0"/>
+                        <path d="M30 26 C 24 10, 20 2, 30 0 C 40 -2, 40 14, 34 26 Z" fill="#16A34A"/>
+                        <path d="M38 25 C 44 12, 54 6, 60 14 C 64 22, 52 26, 42 26 Z" fill="#22C55E"/>
+                        <ellipse cx="196" cy="34" rx="24" ry="12" fill="#94A3B8"/>
+                        <ellipse cx="195" cy="31" rx="22" ry="10" fill="#CBD5E1"/>
+                        <ellipse cx="193" cy="29" rx="19" ry="8" fill="#E2E8F0"/>
+                        <path d="M204 28 C 210 16, 220 10, 224 18 C 228 26, 218 30, 208 30 Z" fill="#22C55E"/>
+                    </svg>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. ARCHITECTURAL ADVANTAGE: ASYMMETRICAL BENTO GRID (#pillars) -->
-    <section class="landing-section-deck" id="pillars">
+    <!-- ====================================================================
+         4. HLAVNÁ DOMINANTA: CODORO STUDIO WORKBENCH S PRÍRODNÝM POZADÍM
+         ==================================================================== -->
+    <section class="studio-workbench-container" id="workbench" style="position:relative;">
+
+        <!-- Scenic Green Meadow Hill Backdrop directly behind Workbench -->
+        <div class="scenic-hills-workbench-backdrop" aria-hidden="true">
+            <svg viewBox="0 0 1440 220" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 150 C 320 80, 560 190, 880 120 C 1120 70, 1320 110, 1440 90 L 1440 220 L 0 220 Z" fill="var(--bg-hills-back)" opacity="0.55"/>
+                <path d="M0 170 C 260 110, 600 120, 920 160 C 1200 195, 1340 140, 1440 155 L 1440 220 L 0 220 Z" fill="var(--bg-hills-front)" opacity="0.85"/>
+            </svg>
+        </div>
+
+        <div class="studio-workbench-window" style="position:relative; z-index:2;">
+            <!-- macOS Window Title Bar with Traffic Lights & Tools -->
+            <div class="workbench-mac-titlebar">
+                <div class="mac-traffic-lights">
+                    <span class="mac-dot red"></span>
+                    <span class="mac-dot yellow"></span>
+                    <span class="mac-dot green"></span>
+                </div>
+
+                <span class="workbench-window-title">Codoro Studio Workbench</span>
+
+                <div class="workbench-header-tools">
+                    <!-- Text Size Adjuster (A- / A+) -->
+                    <span class="workbench-tool-btn" style="padding:0.25rem 0.5rem; gap:0.25rem;">
+                        <button type="button" onclick="adjustCodeFontSize(-1)" style="background:none; border:none; cursor:pointer; color:inherit; font-size:0.75rem; font-weight:700;" title="Zmenšiť písmo">A-</button>
+                        <span style="opacity:0.4;">|</span>
+                        <button type="button" onclick="adjustCodeFontSize(1)" style="background:none; border:none; cursor:pointer; color:inherit; font-size:0.85rem; font-weight:700;" title="Zväčšiť písmo">A+</button>
+                    </span>
+
+                    <!-- Copy Code Button -->
+                    <button type="button" class="workbench-tool-btn" onclick="copyWorkbenchCode()" title="{% if lang == 'en' %}Copy code{% else %}Kopírovať kód{% endif %}">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span>{% if lang == 'en' %}Copy{% else %}Kopírovať{% endif %}</span>
+                    </button>
+
+                    <button type="button" class="workbench-tool-btn" onclick="togglePythonVersionInfo()" title="{% if lang == 'en' %}Python Sandbox Environment{% else %}Python Sandbox Prostredie{% endif %}">
+                        <span>Python 3.12</span>
+                        {% include 'components/icon_svg.html' with name='chevron_down' size='11' %}
+                    </button>
+
+                    <!-- Run Code Button -->
+                    <button type="button" class="workbench-tool-btn btn-run" id="demoRunBtn" onclick="runWorkbenchDemo()" title="Ctrl + Enter">
+                        <span id="demoRunBtnIcon" style="display:inline-flex; align-items:center;">
+                            {% include 'components/icon_svg.html' with name='play' size='11' %}
+                        </span>
+                        <span id="demoRunBtnText">{% if lang == 'en' %}Run{% else %}Spustiť{% endif %}</span>
+                    </button>
+
+                    <!-- Reset Code Button -->
+                    <button type="button" class="workbench-tool-btn" onclick="resetWorkbenchDemo()">
+                        {% include 'components/icon_svg.html' with name='refresh' size='12' %}
+                        <span>{% if lang == 'en' %}Reset{% else %}Reset{% endif %}</span>
+                    </button>
+
+                    <span class="workbench-tool-btn" style="padding:0.3rem 0.5rem;" title="Keyboard shortcuts (?)" onclick="openShortcutsModal()">
+                        <span style="font-size:0.78rem; font-weight:700;">?</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 3-Column Workbench Body -->
+            <div class="workbench-trio-body">
+                <!-- Column 1: Mode Switcher Tabs -->
+                <div class="workbench-col-modes">
+                    <button type="button" class="mode-tab-item active" id="modeBtn01" onclick="switchWorkbenchMode(1, this)">
+                        <span class="mode-tab-icon" style="display:inline-flex; align-items:center;">
+                            {% include 'components/icon_svg.html' with name='code' size='18' %}
+                        </span>
+                        <div class="mode-tab-meta">
+                            <span class="mode-tab-num">01</span>
+                            <span class="mode-tab-title">{% if lang == 'en' %}Interactive Python IDE{% else %}Interaktívne Python IDE{% endif %}</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="mode-tab-item" id="modeBtn02" onclick="switchWorkbenchMode(2, this)">
+                        <span class="mode-tab-icon" style="display:inline-flex; align-items:center;">
+                            {% include 'components/icon_svg.html' with name='map' size='18' %}
+                        </span>
+                        <div class="mode-tab-meta">
+                            <span class="mode-tab-num">02</span>
+                            <span class="mode-tab-title">{% if lang == 'en' %}Visual Curriculum Map{% else %}Vizuálna mapa učiva{% endif %}</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="mode-tab-item" id="modeBtn03" onclick="switchWorkbenchMode(3, this)">
+                        <span class="mode-tab-icon" style="display:inline-flex; align-items:center; width:20px; height:20px;">
+                            {% include 'components/illustrations_svg.html' with illustration='doros_coin_2d' %}
+                        </span>
+                        <div class="mode-tab-meta">
+                            <span class="mode-tab-num">03</span>
+                            <span class="mode-tab-title">{% if lang == 'en' %}Classroom Reward Shop{% else %}Školský obchod odmien{% endif %}</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Column 2: Code Editor Workspace -->
+                <div class="workbench-col-editor" id="workbenchCenterCol">
+                    <div class="editor-file-tab-bar">
+                        <span class="editor-file-chip active" id="tabChipMain" style="cursor:pointer;" onclick="switchDemoCode('main')">main.py</span>
+                        <span class="editor-file-chip" id="tabChipChallenge" style="opacity:0.65; cursor:pointer;" onclick="switchDemoCode('challenge2')">priemer_znamok.py</span>
+                        <span style="color:var(--text-muted); cursor:pointer; font-size:1.1rem; line-height:1; padding:0 0.35rem;" onclick="notifyFileTabFeature()" title="{% if lang == 'en' %}Add scratch file{% else %}Pridať pomocný súbor{% endif %}">+</span>
+                    </div>
+
+                    <div class="editor-code-workspace" id="editorCodeLines">
+                        <div class="code-row"><span class="code-line-num">1</span><span class="code-doc"># Mini Challenge: Calculate the area of a rectangle</span></div>
+                        <div class="code-row"><span class="code-line-num">2</span></div>
+                        <div class="code-row"><span class="code-line-num">3</span><span class="code-kw">def</span> <span class="code-fn">area</span>(width, height):</div>
+                        <div class="code-row"><span class="code-line-num">4</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> width * height</div>
+                        <div class="code-row"><span class="code-line-num">5</span></div>
+                        <div class="code-row"><span class="code-line-num">6</span><span class="code-doc"># Tests (run automatically)</span></div>
+                        <div class="code-row"><span class="code-line-num">7</span><span class="code-fn">print</span>(area(<span class="code-num">5</span>, <span class="code-num">3</span>))</div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Tests Deck -->
+                <div class="workbench-col-tests" id="workbenchRightCol">
+                    <div class="tests-deck-header">
+                        <span>{% if lang == 'en' %}Tests (3/3){% else %}Testy (3/3){% endif %}</span>
+                        <span style="font-size:0.8rem; color:var(--text-muted); display:inline-flex; align-items:center; gap:0.25rem;">
+                            {% include 'components/icon_svg.html' with name='refresh' size='12' %}
+                            <span>Auto</span>
+                        </span>
+                    </div>
+
+                    <div id="workbenchTestsList" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <div class="test-row-pill" id="testPill1">
+                            <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                                {% include 'components/icon_svg.html' with name='check' size='13' %}
+                            </span>
+                            <span>area(5, 3) == 15</span>
+                        </div>
+                        <div class="test-row-pill" id="testPill2">
+                            <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                                {% include 'components/icon_svg.html' with name='check' size='13' %}
+                            </span>
+                            <span>area(2, 7) == 14</span>
+                        </div>
+                        <div class="test-row-pill" id="testPill3">
+                            <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                                {% include 'components/icon_svg.html' with name='check' size='13' %}
+                            </span>
+                            <span>area(10, 10) == 100</span>
+                        </div>
+                    </div>
+
+                    <div class="all-tests-pass-card" id="testsPassCard">
+                        <div style="display:flex; align-items:center; gap:0.4rem; color:var(--pass-green); font-weight:800; margin-bottom:0.25rem;">
+                            {% include 'components/icon_svg.html' with name='check_circle' size='16' %}
+                            <span>{% if lang == 'en' %}All tests passed!{% else %}Všetky testy prešli!{% endif %}</span>
+                        </div>
+                        <p style="margin:0; font-size:0.84rem; color:var(--text-secondary);">
+                            {% if lang == 'en' %}Nice work! Your function works for all cases.{% else %}Skvelá práca! Tvoja funkcia funguje pre všetky vstupy.{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Docked Socratic AI Panel -->
+            <div class="workbench-docked-ai-panel">
+                <div class="docked-ai-header">
+                    <div class="docked-ai-title-row">
+                        <div style="width:28px; height:28px;">
+                            {% include 'components/codo_mascot_svg.html' with extra_classes='inline-mascot' %}
+                        </div>
+                        <strong>Ask Codoro (AI Tutor)</strong>
+                        <span class="badge-socratic-mode" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                            <span class="status-dot dot-active"></span>
+                            <span>Socratic Mode</span>
+                        </span>
+                    </div>
+                    <button type="button" class="socratic-collapse-btn" onclick="toggleSocraticPanel()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0.25rem; display:inline-flex; align-items:center; transition:transform 0.2s ease;" id="socraticToggleBtn" title="{% if lang == 'en' %}Toggle Socratic Panel{% else %}Zbaliť / Rozbaliť panel{% endif %}">
+                        {% include 'components/icon_svg.html' with name='chevron_down' size='14' %}
+                    </button>
+                </div>
+
+                <div class="socratic-speech-bubble" id="socraticSpeechBubble">
+                    {% if lang == 'en' %}
+                    Great start! Instead of giving the answer, let's think it through: What does the area of a rectangle represent, and how are the width and height related?
+                    {% else %}
+                    Skvelý začiatok! Namiesto prezradenia hotového riešenia sa zamyslime: Čo vyjadruje obsah obdĺžnika a ako v ňom súvisí šírka a výška?
+                    {% endif %}
+                </div>
+
+                <div class="socratic-action-pills">
+                    <button type="button" class="btn-socratic-pill" onclick="triggerSocraticAdvice('hint')" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                        {% include 'components/icon_svg.html' with name='lightbulb' size='13' %}
+                        <span>{% if lang == 'en' %}Give me a hint{% else %}Daj mi nápovedu{% endif %}</span>
+                    </button>
+                    <button type="button" class="btn-socratic-pill" onclick="triggerSocraticAdvice('question')" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                        {% include 'components/icon_svg.html' with name='question' size='13' %}
+                        <span>{% if lang == 'en' %}Ask a question{% else %}Opýtať sa otázku{% endif %}</span>
+                    </button>
+                    <button type="button" class="btn-socratic-pill" onclick="triggerSocraticAdvice('check')" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                        {% include 'components/icon_svg.html' with name='refresh' size='13' %}
+                        <span>{% if lang == 'en' %}Check my thinking{% else %}Skontroluj môj postup{% endif %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====================================================================
+         5. INTERAKTÍVNA POROVNÁVACIA TABUĽKA: SAMOUKOVIA VS CODORO (#comparison)
+         ==================================================================== -->
+    <section class="landing-section-deck" id="comparison">
         <div class="landing-section-header">
             <h2 class="landing-section-title">
-                {% if lang == 'en' %}
-                Pedagogical Rigor Meets Modern Engineering
-                {% else %}
-                4 Piliere, ktorými Codoro prekonáva bežné kurzy
-                {% endif %}
+                {% if lang == 'en' %}Why Codoro Outshines Generic Coding Platforms{% else %}Prečo je Codoro iné než bežné samoucké kurzy{% endif %}
             </h2>
             <p class="landing-section-subhead">
                 {% if lang == 'en' %}
-                Generic apps are built for solitary learning and output full answers. Codoro connects the student, the class, and the teacher through genuine comprehension and real incentives.
+                Traditional platforms were built for isolated solo learners. Codoro connects students, school classes, and teachers into a real educational ecosystem.
                 {% else %}
-                Bežné platformy sú navrhnuté pre izolovaných samoukov a AI vám napíše hotové riešenie bez pochopenia. Codoro prepája študenta, triedu a pedagóga cez sokratovské vedenie a riadenú školskú ekonomiku.
+                Bežné platformy (Duolingo, W3Schools, Codecademy) sú stavané pre osamelých samoukov. Codoro spája študentov, triedy a učiteľov do skutočného školského sveta s motiváciou.
                 {% endif %}
             </p>
         </div>
 
-        <div class="landing-bento-grid">
-            <!-- BENTO TILE 1: SOKRATOVSKÉ AI (SPAN 7) -->
-            <div class="bento-card bento-span-7" id="codo-ai">
-                <div class="bento-icon-pill cyan">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
-                    </svg>
-                </div>
-                <h3 class="bento-title">
-                    {% if lang == 'en' %}1. Socratic AI Tutor Codo (Zero Leaks){% else %}1. Sokratovský AI Tútor Codo (Žiadny hotový kód){% endif %}
-                </h3>
-                <p class="bento-desc">
-                    {% if lang == 'en' %}
-                    Standard LLMs immediately dump complete code solutions, leading to zero retention and failing exams. Codo is governed by strict pedagogical system constraints: it inspects the failing AST traceback and guides the student with diagnostic questions pointing to the exact line and logic.
-                    {% else %}
-                    Bežný ChatGPT napíše žiakovi celý kód, takže sa nič nenaučí a na písomke prepadne. Codo má striktnú pedagogickú inštrukciu nikdy neprezradiť riešenie – analyzuje chybu v unit testoch a otázkou navedie študenta na správny riadok a logiku.
-                    {% endif %}
-                </p>
-                <div class="bento-preview-box">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem; font-family:var(--font-mono); font-size:0.75rem; color:#64748b;">
-                        <span>Gemini 2.5 Flash API</span>
-                        <span style="color:#10b981;">100% Deterministic Local Fallback</span>
-                    </div>
-                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#38bdf8;">
-                        &gt; Defenzívny filter: Zákaz generovania syntaxe riešenia. Iba sokratovské otázky.
-                    </div>
-                </div>
-            </div>
-
-            <!-- BENTO TILE 2: ŠKOLSKÁ EKONOMIKA SO SKLADOM (SPAN 5) -->
-            <div class="bento-card bento-span-5">
-                <div class="bento-icon-pill gold">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/>
-                    </svg>
-                </div>
-                <h3 class="bento-title">
-                    {% if lang == 'en' %}2. Doros Economy with Stock Quotas{% else %}2. Školská ekonomika so skladom{% endif %}
-                </h3>
-                <p class="bento-desc">
-                    {% if lang == 'en' %}
-                    Doros tokens are not cosmetic numbers. Teachers offer real school perks (homework waiver, +10% test bonus) with strict weekly stock quotas to prevent inflation.
-                    {% else %}
-                    Mince Doros nie sú len bezcenné čísla na obrazovke. Učiteľ v obchode vypisuje reálne školské odmeny (odpustenie domácej úlohy, +10% bodov k písomke, žolík) s prísne obmedzeným skladom pre triedu.
-                    {% endif %}
-                </p>
-                <div class="bento-preview-box">
-                    <div class="bento-stock-row">
-                        <span>Odpustenie domácej úlohy</span>
-                        <span class="stock-tag-finite">Sklad: 2 / 5 ks</span>
-                    </div>
-                    <div class="bento-stock-row">
-                        <span>+10 % bodov k písomke</span>
-                        <span class="stock-tag-finite">Sklad: 1 / 3 ks</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BENTO TILE 3: TRIEDNY EKOSYSTÉM & UČITEĽ (SPAN 5) -->
-            <div class="bento-card bento-span-5">
-                <div class="bento-icon-pill">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                </div>
-                <h3 class="bento-title">
-                    {% if lang == 'en' %}3. Classroom Ecosystem & CMS{% else %}3. Prepojenie Žiak – Trieda – Učiteľ{% endif %}
-                </h3>
-                <p class="bento-desc">
-                    {% if lang == 'en' %}
-                    Students join school classes with a 1-click code. Teachers have a full CMS studio for live monitoring, Class Quests, and batch account provisioning in 5 seconds without diacritics issues.
-                    {% else %}
-                    Študenti sa pripájajú do školskej triedy kódom (napr. IVC-2027). Učiteľ má k dispozícii kompletné štúdio na sledovanie živého progresu, spoločné triedne questy a vygenerovanie 30 žiackych účtov za 5 sekúnd.
-                    {% endif %}
-                </p>
-                <div class="bento-preview-box">
-                    <div style="display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:0.78rem;">
-                        <span>Kód triedy: <strong>IVC-2027</strong></span>
-                        <span style="color:#10b981;">30 účtov za 5s</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BENTO TILE 4: 100% DVOJJAZYČNOSŤ & MATURITA (SPAN 7) -->
-            <div class="bento-card bento-span-7">
-                <div class="bento-icon-pill emerald">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                    </svg>
-                </div>
-                <h3 class="bento-title">
-                    {% if lang == 'en' %}4. 100% Bilingual & High School Matura Prep{% else %}4. 100% Dvojjazyčnosť & Maturitný špeciál{% endif %}
-                </h3>
-                <p class="bento-desc">
-                    {% if lang == 'en' %}
-                    Every lesson, exercise, and AI prompt is natively bilingual (Slovak and English). Includes dedicated preparation for the practical graduation exam (PČOZ MS), vocational measurement parsing, and cryptographic ciphers.
-                    {% else %}
-                    Každá lekcia, teória, cvičenie aj odpovede AI tútora sú plne dvojjazyčné (SK/EN). Obsahuje špecializované moduly pre praktickú časť odbornej zložky maturitnej skúšky (PČOZ MS), spracovanie meraní a kryptografiu.
-                    {% endif %}
-                </p>
-                <div class="bento-preview-box" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; font-family:var(--font-mono); font-size:0.75rem;">
-                    <span>✓ PČOZ MS Špeciál</span>
-                    <span>✓ Odbor IMT & Elektrotechnika</span>
-                    <span>✓ Overiteľné certifikáty</span>
-                </div>
-            </div>
+        <div class="comparison-table-wrapper">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th style="width:28%;">{% if lang == 'en' %}Feature / Capability{% else %}Kľúčová vlastnosť{% endif %}</th>
+                        <th style="width:36%;">{% if lang == 'en' %}Generic Coding Apps (W3Schools / Duolingo){% else %}Bežné samoucké platformy{% endif %}</th>
+                        <th class="col-codoro" style="width:36%;">Codoro Platform</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Classroom & Teacher Ecosystem{% else %}Školská trieda & Učiteľský CMS{% endif %}</strong></td>
+                        <td style="color:var(--text-muted);">✕ {% if lang == 'en' %}Solo only. No teacher oversight or real class bonding.{% else %}Iba pre samoukov. Učiteľ nemá prehľad ani správu triedy.{% endif %}</td>
+                        <td class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Full SchoolClass linking, teacher live god-mode & class quests.{% else %}Reálne školské triedy, hromadné generovanie žiakov, spoločné triedne výzvy.{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}AI Tutor Philosophy{% else %}Filozofia AI Tútora (Codo){% endif %}</strong></td>
+                        <td style="color:var(--text-muted);">✕ {% if lang == 'en' %}Generates the full answer; students copy-paste without learning.{% else %}ChatGPT napíše hotový kód a žiak sa nič nenaučí.{% endif %}</td>
+                        <td class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Strict Socratic method: analyzes test failures and guides with questions.{% else %}Prísny Sokratovský prístup: nikdy neprezradí kód, navedie žiaka otázkou.{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Real Economy with Inventory{% else %}Školská ekonomika a sklad zásob{% endif %}</strong></td>
+                        <td style="color:var(--text-muted);">✕ {% if lang == 'en' %}Meaningless virtual points that buy cosmetics only.{% else %}Virtuálne body bez reálnej hodnoty.{% endif %}</td>
+                        <td class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Doros coins buy real school perks (homework pass) with weekly stock caps.{% else %}Doros mince kupujú reálne výhody (odpustenie DÚ) s riadeným týždenným skladom.{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Language & Curriculum Quality{% else %}100 % Dvojjazyčnosť (SK / EN){% endif %}</strong></td>
+                        <td style="color:var(--text-muted);">✕ {% if lang == 'en' %}English only or sloppy machine translation.{% else %}Iba angličtina alebo nekvalitný strojový preklad.{% endif %}</td>
+                        <td class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Native 100% Slovak and English across all 18 modules, IDE, and AI.{% else %}100 % slovenčina a angličtina od teórie a testov až po odpovede AI tútora.{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{% if lang == 'en' %}Capstone Projects & Certification{% else %}Záverečné projekty & Certifikácia{% endif %}</strong></td>
+                        <td style="color:var(--text-muted);">✕ {% if lang == 'en' %}Generic snippets without portfolio building.{% else %}Iba izolované fragmenty kódu bez tvorby skutočného portfólia.{% endif %}</td>
+                        <td class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Capstone Special: in-memory SQLite, Big-O, cryptography, and real software projects.{% else %}Záverečný špeciál: SQL v pamäti, Big-O, kryptografia a komplexné softvérové projekty.{% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
-    <!-- 4. INTERACTIVE CURRICULUM ROADMAP MATRIX (#curriculum) -->
+    <!-- ====================================================================
+         6. UČEBNÝ PLÁN A 5 KARIÉRNYCH CIEST (#curriculum)
+         ==================================================================== -->
     <section class="landing-section-deck" id="curriculum">
         <div class="landing-section-header">
             <h2 class="landing-section-title">
-                {% if lang == 'en' %}
-                5 Career Tracks • 18 Modules • 220+ Hours
-                {% else %}
-                5 Kariérnych ciest • 18 Modulov • 220+ Hodín výučby
-                {% endif %}
+                {% if lang == 'en' %}5 Career Tracks • 18 Modules • 220+ Hours{% else %}5 Kariérnych ciest • 18 Modulov • 220+ Hodín výučby{% endif %}
             </h2>
             <p class="landing-section-subhead">
                 {% if lang == 'en' %}
-                From absolute algorithmic fundamentals to object-oriented programming, in-memory SQLite databases, and graduation boss challenges.
+                Follow a guided learning map from absolute Python fundamentals to OOP, in-memory databases, and advanced boss projects.
                 {% else %}
-                Od algoritmických základov a dátových štruktúr cez objektovo-orientované programovanie a SQL databázy až po praktické maturitné výzvy.
+                Prejdite po vizuálnej mape od základov syntaxe a dátových štruktúr cez objektovo-orientované programovanie a SQL databázy až po komplexné softvérové projekty.
                 {% endif %}
             </p>
         </div>
 
-        <!-- Horizontal Track Navigation Rail -->
-        <div class="tracks-nav-rail">
-            {% for track in tracks_data %}
-            <button type="button" class="track-rail-btn {% if forloop.first %}active{% endif %}" onclick="switchLandingTrack('{{ track.key }}', this)">
-                <span>
-                    {% if track.icon == 'zap' %}⚡
-                    {% elif track.icon == 'layers' %}📚
-                    {% elif track.icon == 'box' %}📦
-                    {% elif track.icon == 'cpu' %}🧠
-                    {% else %}🎓{% endif %}
+        <!-- Filter & Search Bar for Curriculum -->
+        <div style="max-width:520px; margin:0 auto 1.5rem; position:relative;">
+            <input type="text" id="curriculumSearchInput" onkeyup="filterCurriculumModules()"
+                   placeholder="{% if lang == 'en' %}Search modules, e.g. OOP, SQL, Loops...{% else %}Hľadať v moduloch, napr. OOP, SQL, cykly...{% endif %}"
+                   class="faq-search-input" style="padding-left:2.75rem;">
+            <span class="faq-search-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+        </div>
+
+        <!-- Modern Responsive Track Segmented Bar (Zero Horizontal Scrollbar) -->
+        <div class="curriculum-track-segmented-bar" role="tablist" aria-label="Kariérne cesty">
+            <button type="button" class="curriculum-track-tab active" data-track="ALL" onclick="switchLandingTrack('ALL', this)" role="tab" aria-selected="true">
+                <span class="tab-icon">
+                    {% include 'components/icon_svg.html' with name='layers' size='15' %}
                 </span>
-                <span>{% if lang == 'en' %}{{ track.label_en }}{% else %}Track {{ forloop.counter }}: {{ track.label_sk }}{% endif %}</span>
+                <span>{% if lang == 'en' %}All Tracks{% else %}Všetky cesty{% endif %}</span>
+                <span class="tab-count-pill">18</span>
+            </button>
+            {% for track in tracks_data %}
+            <button type="button" class="curriculum-track-tab" data-track="{{ track.key }}" onclick="switchLandingTrack('{{ track.key }}', this)" role="tab" aria-selected="false">
+                <span class="tab-icon">
+                    {% if track.icon == 'zap' %}
+                        {% include 'components/icon_svg.html' with name='lightning' size='14' %}
+                    {% elif track.icon == 'layers' %}
+                        {% include 'components/icon_svg.html' with name='layers' size='14' %}
+                    {% elif track.icon == 'box' %}
+                        {% include 'components/icon_svg.html' with name='box' size='14' %}
+                    {% elif track.icon == 'cpu' %}
+                        {% include 'components/icon_svg.html' with name='database' size='14' %}
+                    {% else %}
+                        {% include 'components/icon_svg.html' with name='award' size='14' %}
+                    {% endif %}
+                </span>
+                <span>{% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}</span>
+                <span class="tab-count-pill">{{ track.modules|length }}</span>
             </button>
             {% endfor %}
         </div>
 
-        <!-- Track Content Panels -->
+        <!-- Curriculum Empty State for Search -->
+        <div id="curriculumEmptyState" style="display:none; text-align:center; padding:3rem 1.5rem; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:20px; max-width:540px; margin:0 auto 2rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🔍</div>
+            <strong style="font-family:var(--font-display); font-size:1.15rem; color:var(--text-primary); display:block; margin-bottom:0.35rem;">
+                {% if lang == 'en' %}No modules matched your search{% else %}Žiadne moduly nezodpovedajú vyhľadávaniu{% endif %}
+            </strong>
+            <p style="font-size:0.88rem; color:var(--text-secondary); margin:0;">
+                {% if lang == 'en' %}Try searching for OOP, SQL, functions, loops, or lists.{% else %}Skús hľadať napr. OOP, SQL, funkcie, cykly alebo zoznamy.{% endif %}
+            </p>
+        </div>
+
         <div class="track-panels-wrapper">
             {% for track in tracks_data %}
-            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}">
-                <div class="track-summary-banner">
-                    <div class="track-summary-info">
-                        <h3>{% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}</h3>
-                        <p>{% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}</p>
+            <div class="track-panel-deck active" id="track-panel-{{ track.key }}" data-track="{{ track.key }}" style="margin-bottom:2.25rem;">
+                <!-- Track Overview Capsule Banner -->
+                <div class="landing-track-banner">
+                    <div style="display:flex; align-items:center; gap:0.85rem;">
+                        <div style="width:40px; height:40px; border-radius:12px; background:var(--bg-mint-soft); color:var(--brand-emerald); display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">
+                            {% if track.icon == 'zap' %}
+                                {% include 'components/icon_svg.html' with name='lightning' size='20' %}
+                            {% elif track.icon == 'layers' %}
+                                {% include 'components/icon_svg.html' with name='layers' size='20' %}
+                            {% elif track.icon == 'box' %}
+                                {% include 'components/icon_svg.html' with name='box' size='20' %}
+                            {% elif track.icon == 'cpu' %}
+                                {% include 'components/icon_svg.html' with name='database' size='20' %}
+                            {% else %}
+                                {% include 'components/icon_svg.html' with name='award' size='20' %}
+                            {% endif %}
+                        </div>
+                        <div>
+                            <strong style="font-family:var(--font-display); font-size:1.12rem; color:var(--text-primary); display:block; line-height:1.25;">
+                                {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
+                            </strong>
+                            <span style="font-size:0.84rem; color:var(--text-secondary);">
+                                {% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}
+                            </span>
+                        </div>
                     </div>
-                    <div class="track-meta-chips">
-                        <span class="track-chip">{{ track.badge }}</span>
-                        <span class="track-chip">{{ track.modules|length }} {% if lang == 'en' %}Modules{% else %}Modulov{% endif %}</span>
-                    </div>
+                    <span class="badge-mini-pct" style="background:var(--bg-mint-soft); color:var(--brand-emerald); font-weight:700; padding:0.35rem 0.8rem; border-radius:9999px;">
+                        {{ track.badge }}
+                    </span>
                 </div>
 
                 <div class="modules-matrix-grid">
                     {% for mod in track.modules %}
-                    <div class="module-matrix-card">
-                        <div class="module-card-top">
-                            <span class="module-order-chip">#{{ mod.order|stringformat:"02d" }}</span>
-                            <span class="module-tier-tag {% if mod.is_pro_only %}pro{% else %}free{% endif %}">
-                                {% if mod.is_pro_only %}PRO / EDU{% else %}FREE{% endif %}
+                    <div class="landing-curriculum-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                                <span class="badge-mini-pct" style="font-family:var(--font-mono); font-weight:800; background:var(--bg-mint-soft); color:var(--brand-emerald);">
+                                    #{{ mod.order|stringformat:"02d" }}
+                                </span>
+                                <div style="display:flex; align-items:center; gap:0.4rem;">
+                                    <span class="badge-mini-pct" style="color:var(--text-secondary); font-weight:700;">
+                                        ⏱️ {{ mod.estimated_hours }}h
+                                    </span>
+                                    {% if mod.is_pro_only %}
+                                    <span class="badge-mini-pct" style="background:rgba(99, 102, 241, 0.12); color:#6366F1; font-weight:700;">
+                                        EDU
+                                    </span>
+                                    {% else %}
+                                    <span class="badge-mini-pct" style="background:rgba(16, 185, 129, 0.12); color:#10B981; font-weight:700;">
+                                        FREE
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <h4 style="font-family:var(--font-display); font-size:1.08rem; font-weight:800; margin:0 0 0.5rem; color:var(--text-primary); line-height:1.35;">
+                                {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
+                            </h4>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.55; margin:0 0 1.25rem;">
+                                {% if lang == 'en' %}{{ mod.description_en|truncatewords:20 }}{% else %}{{ mod.description_sk|truncatewords:20 }}{% endif %}
+                            </p>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:0.85rem; font-size:0.8rem; color:var(--text-muted); font-weight:600;">
+                            <span style="display:inline-flex; align-items:center; gap:0.35rem;">
+                                {% include 'components/icon_svg.html' with name='file' size='13' %}
+                                <span>{% if lang == 'en' %}{{ mod.lessons.count }} Lessons{% else %}{{ mod.lessons.count }} Lekcií{% endif %}</span>
                             </span>
+                            <a href="{% url 'register' %}" style="display:inline-flex; align-items:center; gap:0.3rem; color:var(--brand-emerald); text-decoration:none; font-weight:700;">
+                                <span>{% if lang == 'en' %}Open Module{% else %}Otvoriť modul{% endif %}</span>
+                                <span>→</span>
+                            </a>
                         </div>
-                        <h4 class="module-card-title">
-                            {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
-                        </h4>
-                        <p class="module-card-desc">
-                            {% if lang == 'en' %}{{ mod.description_en|truncatewords:16 }}{% else %}{{ mod.description_sk|truncatewords:16 }}{% endif %}
-                        </p>
-                        <div class="module-card-foot">
-                            <span>{{ mod.lessons.count }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}</span>
-                            <span>{{ mod.estimated_hours }}h • {{ mod.get_difficulty_level_display }}</span>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-muted);">
-                        {% if lang == 'en' %}Modules in this track will be loaded shortly.{% else %}Moduly v tejto ceste sa načítavajú.{% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -381,507 +607,699 @@
         </div>
     </section>
 
-    <!-- 5. FOR EDUCATORS & HIGH SCHOOLS (#schools) -->
+    <!-- ====================================================================
+         7. PRE UČITEĽOV A ŠKOLY (#schools)
+         ==================================================================== -->
     <section class="landing-section-deck" id="schools">
-        <div class="schools-deck">
-            <div>
-                <h2 class="landing-section-title" style="text-align:left;">
-                    {% if lang == 'en' %}
-                    Onboard Your Entire Class in 3 Simple Steps
-                    {% else %}
-                    Nasaďte Codoro vo svojej triede za menej ako 5 minút
-                    {% endif %}
-                </h2>
-                <p class="landing-section-subhead" style="text-align:left; margin-bottom:1.5rem;">
-                    {% if lang == 'en' %}
-                    No bureaucracy, no software installation on school computers. Get an instant 30-day pilot license, generate student credentials in 1 click, and start teaching.
-                    {% else %}
-                    Žiadne papierovanie ani zdĺhavé inštalovanie softvéru na školské počítače. Získajte okamžitú 30-dňovú pilotnú licenciu, vygenerujte žiacke účty na 1 klik a začnite učiť.
-                    {% endif %}
-                </p>
-
-                <div class="schools-step-list">
-                    <div class="school-step-item">
-                        <div class="school-step-num">1</div>
-                        <div class="school-step-body">
-                            <strong>{% if lang == 'en' %}Instant School Pilot Key{% else %}Okamžitý pilotný EDU kľúč{% endif %}</strong>
-                            <p>{% if lang == 'en' %}Request a 30-day pilot license for your school via our instant portal without waiting.{% else %}Požiadajte o 30-dňovú pilotnú licenciu cez náš verejný formulár bez čakania na schválenie.{% endif %}</p>
-                        </div>
-                    </div>
-                    <div class="school-step-item">
-                        <div class="school-step-num">2</div>
-                        <div class="school-step-body">
-                            <strong>{% if lang == 'en' %}Create Class & Batch Provisioning{% else %}Založenie triedy & Hromadné účty{% endif %}</strong>
-                            <p>{% if lang == 'en' %}Generate 30 student accounts at once with automatic diacritics removal and printable login slips.{% else %}Vytvorte 30 študentov naraz s automatickým orezaním diakritiky a kartičkami hesiel.{% endif %}</p>
-                        </div>
-                    </div>
-                    <div class="school-step-item">
-                        <div class="school-step-num">3</div>
-                        <div class="school-step-body">
-                            <strong>{% if lang == 'en' %}Live Studio & Homework Rewards{% else %}Živý dozor a riadenie obchodu{% endif %}</strong>
-                            <p>{% if lang == 'en' %}Track real-time student submissions, run class quests, and approve school rewards.{% else %}Sledujte úspešnosť v reálnom čase, vyhlasujte triedne questy a schvaľujte odmeny.{% endif %}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                    <a href="{% url 'get_license' %}" class="btn btn-hero-primary">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        {% if lang == 'en' %}Request Free School License{% else %}Požiadať o školskú licenciu{% endif %}
-                    </a>
-                    <a href="{% url 'register' %}" class="btn btn-hero-secondary">
-                        {% if lang == 'en' %}Teacher Registration{% else %}Registrácia učiteľa{% endif %}
-                    </a>
-                </div>
+        <div class="school-cta-card" style="padding:2.75rem 2rem; max-width:960px; margin:0 auto; border-radius:24px; border:1px solid var(--border-subtle); background:var(--bg-surface); box-shadow:var(--shadow-md); text-align:center;">
+            <div style="width:54px; height:54px; border-radius:16px; background:var(--bg-mint-soft); color:var(--brand-emerald); display:inline-flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+                {% include 'components/icon_svg.html' with name='teacher' size='28' %}
             </div>
-
-            <!-- Live Teacher Studio Mockup Card -->
-            <div class="teacher-studio-mock">
-                <div class="teacher-mock-header">
-                    <div class="teacher-mock-profile">
-                        <div class="teacher-avatar-circle">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </div>
-                        <div>
-                            <strong style="display:block; font-size:0.95rem; color:#f8fafc;">Mgr. Markéta Brišová</strong>
-                            <span style="font-size:0.78rem; color:#94a3b8;">SOŠ Technická Nižná • Trieda IV.C</span>
-                        </div>
-                    </div>
-                    <span style="font-family:var(--font-mono); font-size:0.72rem; color:#10b981;">● Živý stav</span>
-                </div>
-
-                <div class="teacher-stats-triple">
-                    <div class="teacher-stat-cell">
-                        <strong>28</strong>
-                        <span>{% if lang == 'en' %}Students{% else %}Žiakov{% endif %}</span>
-                    </div>
-                    <div class="teacher-stat-cell">
-                        <strong>94.2%</strong>
-                        <span>{% if lang == 'en' %}Pass Rate{% else %}Úspešnosť{% endif %}</span>
-                    </div>
-                    <div class="teacher-stat-cell">
-                        <strong>4 / 5</strong>
-                        <span>{% if lang == 'en' %}Coupons Used{% else %}Kupóny{% endif %}</span>
-                    </div>
-                </div>
-
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:8px; padding:0.85rem;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:0.4rem;">
-                        <span>Triedny Quest: 100 vyriešených úloh</span>
-                        <strong style="color:#818cf8;">78%</strong>
-                    </div>
-                    <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:9999px; overflow:hidden;">
-                        <div style="width:78%; height:100%; background:#4636f5;"></div>
-                    </div>
-                </div>
-
-                <p style="font-size:0.82rem; font-style:italic; color:#94a3b8; line-height:1.5; margin:0;">
-                    {% if lang == 'en' %}
-                    "Codoro completely transformed our Python classes. Students are self-motivated by Doros rewards, and Codo guides them through errors without revealing the solution."
-                    {% else %}
-                    "Codoro posunulo hodiny programovania na úplne inú úroveň. Žiaci sa sami motivujú vďaka minciam Doros a Codo im pomáha odhaľovať chyby bez toho, aby im prezradil riešenie."
-                    {% endif %}
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. FEATURE COMPARISON MATRIX (#compare) -->
-    <section class="landing-section-deck" id="compare">
-        <div class="landing-section-header">
-            <h2 class="landing-section-title">
-                {% if lang == 'en' %}Why Codoro is Different{% else %}Prečo je Codoro iné než bežné riešenia{% endif %}
+            <h2 class="landing-section-title" style="text-align:center; margin-top:0;">
+                {% if lang == 'en' %}Designed for Secondary Schools & Educators{% else %}Navrhnuté pre stredné školy a učiteľov informatiky{% endif %}
             </h2>
-        </div>
+            <p class="landing-section-subhead" style="text-align:center; margin-bottom:2rem;">
+                {% if lang == 'en' %}
+                Onboard 30 students in 5 seconds without diacritics issues, run collaborative Class Quests, and incentivize learning with managed Doros rewards.
+                {% else %}
+                Založte triedu, vygenerujte 30 žiackych účtov bez problémov s diakritikou za 5 sekúnd a motivujte žiakov reálnymi školskými odmenami v obchode.
+                {% endif %}
+            </p>
 
-        <div class="compare-matrix-box">
-            <table class="compare-matrix-table">
-                <thead>
-                    <tr>
-                        <th style="width: 38%;">{% if lang == 'en' %}Feature / Capability{% else %}Vlastnosť / Schopnosť{% endif %}</th>
-                        <th style="width: 24%;" class="col-codoro">Codoro (Slovensko)</th>
-                        <th style="width: 19%;">Duolingo / Codecademy</th>
-                        <th style="width: 19%;">W3Schools / YouTube</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>{% if lang == 'en' %}Socratic AI Guidance (Never leaks code){% else %}Sokratovský AI Tútor (Nikdy neprezradí kód){% endif %}</strong></td>
-                        <td class="col-codoro">
-                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Yes (Pedagogical prompt){% else %}Áno (Pedagogický filter){% endif %}</span>
-                        </td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Generates answers{% else %}Generuje hotový kód{% endif %}</span></td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}No AI{% else %}Žiadne AI{% endif %}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>{% if lang == 'en' %}Classroom Ecosystem & Teacher CMS{% else %}Triedny ekosystém a Učiteľské štúdio (CMS){% endif %}</strong></td>
-                        <td class="col-codoro">
-                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Full Teacher CRUD{% else %}Kompletný CMS pre učiteľa{% endif %}</span>
-                        </td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Individual only{% else %}Iba pre samoukov{% endif %}</span></td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}No classroom{% else %}Žiadna správa triedy{% endif %}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>{% if lang == 'en' %}School Marketplace with Stock Controls{% else %}Školský obchod so zásobami (Odpustenie úloh){% endif %}</strong></td>
-                        <td class="col-codoro">
-                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Yes (Managed quotas){% else %}Áno (Riadené týždenné kvóty){% endif %}</span>
-                        </td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Cosmetic points{% else %}Iba virtuálne body{% endif %}</span></td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}None{% else %}Žiadne{% endif %}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>{% if lang == 'en' %}100% Slovak & English Localization{% else %}100% Slovenská a anglická lokalizácia{% endif %}</strong></td>
-                        <td class="col-codoro">
-                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Native SK & EN{% else %}Plná slovenčina i angličtina{% endif %}</span>
-                        </td>
-                        <td><span class="cross-icon-no">~ {% if lang == 'en' %}Partial machine{% else %}Len strojový preklad{% endif %}</span></td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}English only{% else %}Väčšinou iba anglicky{% endif %}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>{% if lang == 'en' %}Tailored for High School Matura (PČOZ MS){% else %}Príprava na slovenskú maturitu (PČOZ MS){% endif %}</strong></td>
-                        <td class="col-codoro">
-                            <span class="check-icon-yes">✓ {% if lang == 'en' %}Dedicated Track 5{% else %}Vyhradená Kariérna cesta 5{% endif %}</span>
-                        </td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Generic{% else %}Všeobecné kurikulum{% endif %}</span></td>
-                        <td><span class="cross-icon-no">✕ {% if lang == 'en' %}Generic{% else %}Všeobecné návody{% endif %}</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+                <a href="{% url 'get_license' %}" class="btn-emerald-full" style="width:auto; padding:0.85rem 2rem; display:inline-flex; align-items:center; gap:0.5rem;">
+                    <span>{% if lang == 'en' %}Request Free 30-Day School License{% else %}Získať bezplatnú 30-dňovú školskú licenciu{% endif %}</span>
+                    {% include 'components/icon_svg.html' with name='arrow_right' size='15' %}
+                </a>
+                <button type="button" class="btn-subtle-full" style="width:auto; padding:0.85rem 1.75rem;" onclick="openLoginModal()">
+                    {% if lang == 'en' %}Teacher Demo Log In{% else %}Vyskúšať učiteľské demo{% endif %}
+                </button>
+            </div>
         </div>
     </section>
 
-    <!-- 7. FAQ ACCORDION (#faq) -->
+    <!-- ====================================================================
+         8. VYHĽADÁVATEĽNÉ ČASTÉ OTÁZKY (SEARCHABLE FAQ SECTION #faq)
+         ==================================================================== -->
     <section class="landing-section-deck" id="faq">
         <div class="landing-section-header">
             <h2 class="landing-section-title">
                 {% if lang == 'en' %}Frequently Asked Questions{% else %}Často kladené otázky{% endif %}
             </h2>
+            <p class="landing-section-subhead">
+                {% if lang == 'en' %}
+                Everything you need to know about Codoro, school licensing, the Socratic AI tutor, and gamified Doros rewards.
+                {% else %}
+                Všetko, čo potrebujete vedieť o Codoro, školskej licencii, Sokratovskom AI tútorovi Codo a Doros minciach.
+                {% endif %}
+            </p>
         </div>
 
-        <div class="faq-accordion-deck">
-            <details class="faq-detail-card">
-                <summary class="faq-summary">
-                    <span>{% if lang == 'en' %}Is Codoro free for students and schools?{% else %}Je Codoro bezplatné pre študentov a školy?{% endif %}</span>
-                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </summary>
-                <div class="faq-content-body">
-                    {% if lang == 'en' %}
-                    Yes! Tracks 1, 2, and parts of 4 and 5 are completely free forever. Schools can also request an instant 30-day pilot EDU license for all advanced PRO features including all 18 modules and batch student provisioning.
-                    {% else %}
-                    Áno! Základné cesty (Moduly 1 až 8 a vybrané pokročilé moduly) sú navždy bezplatné pre všetkých. Pre stredné školy poskytujeme bezplatnú 30-dňovú pilotnú EDU licenciu na odomknutie všetkých 18 modulov pre celú triedu.
-                    {% endif %}
-                </div>
-            </details>
+        <!-- Instant FAQ Search Box -->
+        <div class="faq-search-box">
+            <input type="text" id="faqSearchInput" onkeyup="filterFaq()"
+                   placeholder="{% if lang == 'en' %}Search questions (e.g. Doros, AI, school, license)...{% else %}Hľadať v otázkach (napr. Doros, AI, škola, licencia)...{% endif %}"
+                   class="faq-search-input">
+            <span class="faq-search-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+        </div>
 
-            <details class="faq-detail-card">
-                <summary class="faq-summary">
-                    <span>{% if lang == 'en' %}Do students need to install Python or Visual Studio Code?{% else %}Je potrebné na počítače inštalovať Python alebo VS Code?{% endif %}</span>
-                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </summary>
-                <div class="faq-content-body">
+        <div class="faq-deck-list" id="faqDeckList">
+            <!-- FAQ 1 -->
+            <div class="faq-card-item open">
+                <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
+                    <span>{% if lang == 'en' %}What is Codoro and how does it work in schools?{% else %}Čo je Codoro a ako funguje na stredných školách?{% endif %}</span>
+                    <span class="faq-chevron">▼</span>
+                </button>
+                <div class="faq-card-body">
                     {% if lang == 'en' %}
-                    Not at all. Everything runs directly inside modern web browsers. Codoro evaluates student code in an isolated, secure backend sandbox with sub-second response times.
+                    Codoro is a comprehensive gamified edtech platform for learning Python. Unlike samoucké apps, Codoro links students into real school classes with live teacher supervision, weekly collaborative Class Quests, and an in-school reward shop.
                     {% else %}
-                    Vôbec nie. Celé vývojové prostredie beží v internetovom prehliadači (Chrome, Firefox, Safari, Edge). Kód sa spúšťa a overuje v zabezpečenom serverovom sandboxe s odozvou v milisekundách.
+                    Codoro je komplexná gamifikovaná vzdelávacia platforma na výučbu programovania v jazyku Python. Na rozdiel od platforiem pre samoukov spája žiakov do skutočných školských tried, kde učiteľ vidí živý pokrok a žiaci plnia spoločné triedne výzvy.
                     {% endif %}
                 </div>
-            </details>
+            </div>
 
-            <details class="faq-detail-card">
-                <summary class="faq-summary">
-                    <span>{% if lang == 'en' %}How does Codo prevent students from cheating?{% else %}Ako Codo zabraňuje podvádzaniu pri písomkách a úlohách?{% endif %}</span>
-                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </summary>
-                <div class="faq-content-body">
+            <!-- FAQ 2 -->
+            <div class="faq-card-item">
+                <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
+                    <span>{% if lang == 'en' %}How does the Socratic AI Tutor Codo differ from ChatGPT?{% else %}Ako sa Sokratovský AI Tútor Codo líši od bežného ChatGPT?{% endif %}</span>
+                    <span class="faq-chevron">▼</span>
+                </button>
+                <div class="faq-card-body">
                     {% if lang == 'en' %}
-                    Codo's system prompt strictly prohibits generating functional code solutions. It only evaluates syntax and algorithmic errors, asking clarifying questions. Teachers can also monitor attempts and submission history in real-time.
+                    Standard AI tools write the entire code solution immediately, which means the student learns nothing. Codo has a strict system prompt to never output the final code. Instead, he analyzes unit test outputs and guides the student with Socratic questions to identify the logical flaw.
                     {% else %}
-                    Systémová inštrukcia Codo tútora prísne zakazuje vygenerovať hotový kód. Codo analyzuje chybový traceback unit testov a kladie navádzacie otázky. Učiteľ má navyše v paneli kompletnú históriu odovzdaní študenta.
+                    Bežné AI (ChatGPT) napíše žiakovi hotový kód, čím sa žiak nič nenaučí. Codo má striktnú systémovú inštrukciu nikdy nenapísať hotové riešenie — iba analyzuje chybu vo výstupe testov a navedie študenta otázkou na správny riadok a logiku.
                     {% endif %}
                 </div>
-            </details>
+            </div>
 
-            <details class="faq-detail-card">
-                <summary class="faq-summary">
-                    <span>{% if lang == 'en' %}What is the Doros currency and how does the shop work?{% else %}Čo je mena Doros a ako funguje školský obchod?{% endif %}</span>
-                    <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </summary>
-                <div class="faq-content-body">
+            <!-- FAQ 3 -->
+            <div class="faq-card-item">
+                <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
+                    <span>{% if lang == 'en' %}What are Doros coins and how do weekly stock limits work?{% else %}Čo sú Doros mince a ako funguje riadený sklad odmien?{% endif %}</span>
+                    <span class="faq-chevron">▼</span>
+                </button>
+                <div class="faq-card-body">
                     {% if lang == 'en' %}
-                    Doros is our in-app gold currency earned by solving exercises, maintaining daily streaks, and completing quests. Teachers can define real classroom perks in the shop with weekly stock quotas.
+                    Doros are the official currency of Codoro. Students earn Doros by passing tests and maintaining study streaks. In the school shop, teachers list real rewards (e.g. homework exemption, +10% test bonus) with strict weekly stock caps so inflation never breaks classroom discipline.
                     {% else %}
-                    Doros sú virtuálne zlaté mince, ktoré žiaci získavajú za správne riešenia, udržiavanie Streaku a plnenie questov. Učiteľ v obchode definuje reálne odmeny (odpustenie úlohy, bonusové body) s obmedzeným týždenným skladom.
+                    Doros sú oficiálna mena Codoro. Žiaci ich získavajú za úspešné riešenie úloh a udržiavanie série (Streak). V obchode učiteľ vypisuje reálne školské výhody (odpustenie DÚ, bonusové body) s prísne obmedzeným skladom pre triedu, aby nedošlo k inflácii.
                     {% endif %}
                 </div>
-            </details>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="faq-card-item">
+                <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
+                    <span>{% if lang == 'en' %}Is Codoro fully bilingual in Slovak and English?{% else %}Je Codoro naozaj 100 % dvojjazyčné v slovenčine aj angličtine?{% endif %}</span>
+                    <span class="faq-chevron">▼</span>
+                </button>
+                <div class="faq-card-body">
+                    {% if lang == 'en' %}
+                    Yes! Every single lesson, exercise description, test case, cheat sheet, error message, and AI tutor response is natively authored in both Slovak and English. You can switch between SK and EN instantly at any time.
+                    {% else %}
+                    Áno! Celé používateľské rozhranie, databázový obsah 18 modulov, cvičení, questov, ťahákov, odmien v obchode aj odpovede AI tútora Codo sú plne a natívne dostupné v slovenčine aj v angličtine s okamžitým prepínaním.
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- 8. HIGH-CONVERSION CTA DECK -->
-    <section class="landing-cta-deck">
-        <h2 class="cta-deck-title">
+    <!-- ====================================================================
+         9. VEREJNÁ PÄTIČKA (FOOTER)
+         ==================================================================== -->
+    <footer style="margin-top:4rem; padding-top:2.5rem; padding-bottom:3rem; border-top:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:1.75rem; align-items:center; text-align:center;">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+            <a href="{% url 'landing_page' %}" style="display:inline-flex; align-items:center; gap:0.65rem; text-decoration:none;">
+                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="width:32px; height:32px; object-fit:contain;">
+                <span class="emerald-brand-text" style="font-size:1.4rem;">codo<span class="brand-ro">ro</span></span>
+            </a>
+        </div>
+
+        <p style="font-size:0.92rem; color:var(--text-secondary); max-width:68ch; margin:0; line-height:1.6;">
             {% if lang == 'en' %}
-            Ready to Master Python the Smart Way?
+            Codoro — Interactive educational platform for mastering Python through hands-on exercises, real-time code verification, and Socratic AI guidance.
             {% else %}
-            Pripravený zvládnuť Python s modernou platformou?
-            {% endif %}
-        </h2>
-        <p class="cta-deck-desc">
-            {% if lang == 'en' %}
-            Join hundreds of students preparing for university and IT careers with Codoro. Free forever for individuals, instant trial for schools.
-            {% else %}
-            Pripojte sa k modernej výučbe programovania. Bezplatne pre študentov a samoukov, s okamžitým nasadením pre stredné školy.
+            Codoro — Moderná interaktívna platforma na výučbu programovania v jazyku Python s praktickými cvičeniami, okamžitým testovaním riešení a Sokratovským AI tútorom Codo.
             {% endif %}
         </p>
-        <div style="display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap;">
-            <a href="{% url 'register' %}" class="btn btn-hero-primary">
-                {% if lang == 'en' %}Create Free Account{% else %}Vytvoriť bezplatný účet{% endif %}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-            <a href="{% url 'login' %}" class="btn btn-hero-secondary">
-                {% if lang == 'en' %}Sign In to Classroom{% else %}Prihlásiť sa do triedy{% endif %}
-            </a>
-        </div>
-    </section>
 
-    <!-- 9. DEVELOPER FOOTER -->
-    <footer class="landing-footer-deck">
-        <div class="footer-top-grid">
-            <div class="footer-brand-pane">
-                <a href="{% url 'dashboard' %}" class="sidebar-brand">
-                    <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codoro" class="sidebar-brand-logo">
-                    <span class="sidebar-brand-text">codo<span>ro</span></span>
-                </a>
-                <p>
-                    {% if lang == 'en' %}
-                    Next-generation gamified Python learning platform designed for secondary technical education and graduation exam preparation.
-                    {% else %}
-                    Gamifikovaný vzdelávací systém na výučbu programovania v jazyku Python určený pre stredné odborné školy a prípravu na maturitnú skúšku.
-                    {% endif %}
-                </p>
-                <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">
-                    TMview Verified Brand • Codoro™
-                </div>
-            </div>
-
-            <div class="footer-nav-pane">
-                <h4>{% if lang == 'en' %}Navigation{% else %}Navigácia{% endif %}</h4>
-                <ul class="footer-links-col">
-                    <li><a href="#curriculum">{% if lang == 'en' %}Curriculum (18 Modules){% else %}Učebné cesty (18 modulov){% endif %}</a></li>
-                    <li><a href="#pillars">{% if lang == 'en' %}Why Codoro{% else %}Prečo Codoro{% endif %}</a></li>
-                    <li><a href="{% url 'cheat_sheets' %}">{% if lang == 'en' %}Python Cheat Sheets{% else %}Ťaháky Pythonu{% endif %}</a></li>
-                    <li><a href="{% url 'get_license' %}">{% if lang == 'en' %}School License{% else %}Školská licencia{% endif %}</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-meta-pane">
-                <h4>{% if lang == 'en' %}Matura Project Credentials{% else %}Maturitný projekt{% endif %}</h4>
-                <ul class="footer-meta-list">
-                    <li><strong>{% if lang == 'en' %}School:{% else %}Škola:{% endif %}</strong> Spojená škola Nižná (SOŠ Technická)</li>
-                    <li><strong>{% if lang == 'en' %}Theme:{% else %}Téma:{% endif %}</strong> Téma č. 22 (Trieda IV.C, 2026/2027)</li>
-                    <li><strong>{% if lang == 'en' %}Author:{% else %}Autor:{% endif %}</strong> Juraj Volf</li>
-                    <li><strong>{% if lang == 'en' %}Consultant:{% else %}Konzultantka:{% endif %}</strong> Mgr. Markéta Brišová</li>
-                </ul>
-            </div>
+        <!-- Kontaktná adresa a podpora -->
+        <div style="display:inline-flex; align-items:center; gap:1.25rem; flex-wrap:wrap; justify-content:center; background:var(--bg-surface); padding:0.75rem 1.4rem; border-radius:9999px; border:1px solid var(--border-subtle); font-size:0.84rem; color:var(--text-secondary);">
+            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
+                📍 Hattalova 471, 027 43 Nižná, Slovenská republika
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
+                ✉️ <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald); text-decoration:none; font-weight:600;">podpora@codoro.sk</a>
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
+                📞 +421 948 123 456
+            </span>
         </div>
 
-        <div class="footer-bottom-bar">
-            <span>&copy; 2026/2027 Juraj Volf • Codoro Education System. Všetky práva vyhradené.</span>
-            <div style="display:flex; align-items:center; gap:1rem;">
-                <a href="https://github.com/jurajvolf/codoro.git" target="_blank" rel="noopener" style="color:var(--text-muted); text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                    GitHub
-                </a>
-                <span>•</span>
-                <a href="{% url 'get_license' %}" style="color:var(--text-muted); text-decoration:none;">
-                    {% if lang == 'en' %}School Pilot License{% else %}Školská pilotná licencia{% endif %}
-                </a>
-            </div>
+        <div style="display:flex; gap:1.5rem; font-size:0.86rem; font-weight:600; color:var(--text-secondary); flex-wrap:wrap; justify-content:center;">
+            <a href="#workbench" style="color:inherit; text-decoration:none;">{% if lang == 'en' %}Features{% else %}Funkcie{% endif %}</a>
+            <a href="#curriculum" style="color:inherit; text-decoration:none;">{% if lang == 'en' %}Curriculum{% else %}Učebný plán{% endif %}</a>
+            <a href="{% url 'cheat_sheets' %}" style="color:inherit; text-decoration:none;">{% if lang == 'en' %}Python Cheat Sheets{% else %}Python Ťaháky{% endif %}</a>
+            <a href="{% url 'get_license' %}" style="color:inherit; text-decoration:none;">{% if lang == 'en' %}School Licensing{% else %}Školské licencie{% endif %}</a>
+            <a href="{% url 'privacy_policy' %}" style="color:inherit; text-decoration:none;">{% if lang == 'en' %}Privacy Policy{% else %}Zásady súkromia{% endif %}</a>
+            <a href="{% url 'terms_of_service' %}" style="color:inherit; text-decoration:none;">{% if lang == 'en' %}Terms of Service{% else %}Podmienky používania{% endif %}</a>
+            <a href="#faq" style="color:inherit; text-decoration:none;">FAQ</a>
+        </div>
+
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">
+            © 2026 Codoro. {% if lang == 'en' %}All rights reserved.{% else %}Všetky práva vyhradené.{% endif %}
         </div>
     </footer>
 
+    <!-- STICKY MOBILE CTA BAR (Visible on screens <= 768px) -->
+    <div class="sticky-mobile-cta" role="complementary" aria-label="Quick registration">
+        <div style="display:flex; align-items:center; gap:0.6rem; min-width:0;">
+            <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="width:28px; height:28px; object-fit:contain; flex-shrink:0;">
+            <div style="display:flex; flex-direction:column; min-width:0;">
+                <strong style="font-size:0.84rem; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    {% if lang == 'en' %}Master Python Today{% else %}Nauč sa Python zadarmo{% endif %}
+                </strong>
+                <span style="font-size:0.72rem; color:var(--text-muted);">
+                    {% if lang == 'en' %}Interactive & gamified{% else %}18 modulov & AI tútor{% endif %}
+                </span>
+            </div>
+        </div>
+        <div style="display:flex; gap:0.4rem; flex-shrink:0;">
+            <a href="{% url 'login' %}" class="btn-secondary btn-sm" style="padding:0.45rem 0.75rem; font-size:0.8rem; text-decoration:none;">
+                {% if lang == 'en' %}Sign In{% else %}Prihlásiť sa{% endif %}
+            </a>
+            <a href="{% url 'register' %}" class="btn-emerald-solid btn-sm" style="padding:0.45rem 0.85rem; font-size:0.82rem; font-weight:700; text-decoration:none;">
+                {% if lang == 'en' %}Start Free{% else %}Začať{% endif %}
+            </a>
+        </div>
+    </div>
+
 </div>
 
-<!-- JAVASCRIPT: LIGHTWEIGHT, REACTIVE DEVELOPER WORKBENCH -->
+<!-- ====================================================================
+     INTERAKTÍVNE SKRIPTY: WORKBENCH RUNNER, AI SOCRATIC, SEARCH, SHARING
+     ==================================================================== -->
 <script>
-const SNIPPETS = [
-    {
-        filename: "priemer_znamok.py",
-        reward: "+35 XP • +10 Doros",
-        code: [
-            '<span class="code-kw">def</span> <span class="code-fn">vypocitaj_priemer</span>(znamky: <span class="code-type">list</span>[<span class="code-type">int</span>]) -&gt; <span class="code-type">float</span>:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Vráti vážený študijný priemer zo známok 1 až 5."""</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if not</span> znamky:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-num">0.0</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-fn">round</span>(<span class="code-fn">sum</span>(znamky) / <span class="code-fn">len</span>(znamky), <span class="code-num">2</span>)'
-        ],
-        tests: [
-            { name: "Test #1: [1, 2, 1, 3]", res: "== 1.75", ms: "0.29ms" },
-            { name: "Test #2: Prázdny zoznam []", res: "== 0.0", ms: "0.21ms" },
-            { name: "Test #3: Hraničné hodnoty", res: "PASSED", ms: "0.38ms" }
-        ],
-        codo_sk: "<em>Codo analyzuje kód:</em> Výborne! Ošetril si delenie nulou pri prázdnom zozname. Vieš, ako by si funkciu upravil tak, aby ignorovala neplatné známky mimo rozsahu 1 až 5 bez pádu programu?",
-        codo_en: "<em>Codo analyzing code:</em> Great job guarding against division by zero on empty inputs. How would you handle invalid grades outside the 1 to 5 range without raising an unhandled exception?",
-        chatgpt_sk: "<strong style='color:#ef4444;'>Bežný ChatGPT:</strong><br><em>Tu je hotový kód: skopíruj a vlož toto...</em> (Študent kód bez premýšľania odovzdá, ničomu neporozumie a na písomke zlyhá).",
-        chatgpt_en: "<strong style='color:#ef4444;'>Standard ChatGPT:</strong><br><em>Here is the complete solution: copy and paste this...</em> (Student copies without thinking, learns zero retention, fails in-class exam)."
-    },
-    {
-        filename: "02_caesar_sifra.py",
-        reward: "+50 XP • +15 Doros",
-        code: [
-            '<span class="code-kw">def</span> <span class="code-fn">caesar_sifra</span>(text: <span class="code-type">str</span>, posun: <span class="code-type">int</span>) -&gt; <span class="code-type">str</span>:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Zašifruje text posunom v abecede s modulo 26."""</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;vysledok = []',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">for</span> znak <span class="code-kw">in</span> text:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if</span> znak.<span class="code-fn">isalpha</span>():',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;zaklad = <span class="code-fn">ord</span>(<span class="code-str">\'A\'</span>) <span class="code-kw">if</span> znak.<span class="code-fn">isupper</span>() <span class="code-kw">else</span> <span class="code-fn">ord</span>(<span class="code-str">\'a\'</span>)',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;novy = <span class="code-fn">chr</span>((<span class="code-fn">ord</span>(znak) - zaklad + posun) % <span class="code-num">26</span> + zaklad)',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(novy)',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">else</span>:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vysledok.<span class="code-fn">append</span>(znak)',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-str">\'\'</span>.<span class="code-fn">join</span>(vysledok)'
-        ],
-        tests: [
-            { name: "Test #1: caesar_sifra('Ahoj', 3)", res: "== 'Dkrm'", ms: "0.31ms" },
-            { name: "Test #2: Pretečenie abecedy ('Z', 1)", res: "== 'A'", ms: "0.24ms" },
-            { name: "Test #3: Zachovanie medzier a čísiel", res: "PASSED", ms: "0.35ms" }
-        ],
-        codo_sk: "<em>Codo analyzuje kód:</em> Správne použitie modulo aritmetiky <code>% 26</code>! Čo by sa stalo, ak by používateľ zadal záporný posun (dešifrovanie)? Prečo to v Pythone funguje korektne?",
-        codo_en: "<em>Codo analyzing code:</em> Solid use of modulo 26 arithmetic! What happens when a negative shift is supplied for decryption? Why does Python's modulo handle negative numbers gracefully?",
-        chatgpt_sk: "<strong style='color:#ef4444;'>Bežný ChatGPT:</strong><br><em>Hotové riešenie: Tu je kód.</em> (Žiak netuší, prečo sa odčítava ASCII hodnota `ord('A')` a princíp nepochopí).",
-        chatgpt_en: "<strong style='color:#ef4444;'>Standard ChatGPT:</strong><br><em>Full solution dumped.</em> (Student misses why ASCII base normalization via `ord('A')` is required)."
-    },
-    {
-        filename: "03_fibonacci.py",
-        reward: "+60 XP • +20 Doros",
-        code: [
-            '<span class="code-kw">from</span> functools <span class="code-kw">import</span> lru_cache',
-            '',
-            '<span class="code-fn">@lru_cache</span>(maxsize=<span class="code-num">128</span>)',
-            '<span class="code-kw">def</span> <span class="code-fn">fibonacci</span>(n: <span class="code-type">int</span>) -&gt; <span class="code-type">int</span>:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-doc">"""Vypočíta n-té Fibonacciho číslo v O(n) čase vďaka cache."""</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if</span> n &lt; <span class="code-num">2</span>:',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> n',
-            '&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-fn">fibonacci</span>(n - <span class="code-num">1</span>) + <span class="code-fn">fibonacci</span>(n - <span class="code-num">2</span>)'
-        ],
-        tests: [
-            { name: "Test #1: fibonacci(10)", res: "== 55", ms: "0.22ms" },
-            { name: "Test #2: fibonacci(50) memoization", res: "== 12586269025", ms: "0.26ms" },
-            { name: "Test #3: Hraničné n=0 a n=1", res: "PASSED", ms: "0.19ms" }
-        ],
-        codo_sk: "<em>Codo analyzuje kód:</em> Dekorátor <code>@lru_cache</code> transformoval zložitosť z exponenciálnej O(2^n) na lineárnu O(n). Vieš, ako by si rovnaký výsledok dosiahol iteratívne s O(1) pamäťou?",
-        codo_en: "<em>Codo analyzing code:</em> <code>@lru_cache</code> turned exponential O(2^n) complexity into linear O(n). How could you achieve the same result iteratively using two variables and O(1) memory?",
-        chatgpt_sk: "<strong style='color:#ef4444;'>Bežný ChatGPT:</strong><br><em>Tu máš rekurzívny kód:</em> (Bez vysvetlenia memoizácie by program pri n=50 zamrzol na hodiny).",
-        chatgpt_en: "<strong style='color:#ef4444;'>Standard ChatGPT:</strong><br><em>Unoptimized recursive dump:</em> (Without caching explanation, executing for n=50 hangs the student's browser)."
+    const currentLang = "{{ lang }}";
+
+    // 1. Interactive Demo Code Runner
+    let currentDemoFile = 'main';
+    let isSocraticCollapsed = false;
+
+    // 1. Run Workbench Demo (Tailored to active file)
+    function runWorkbenchDemo() {
+        const btn = document.getElementById('demoRunBtn');
+        const btnText = document.getElementById('demoRunBtnText');
+        const testsList = document.getElementById('workbenchTestsList');
+        const passCard = document.getElementById('testsPassCard');
+        const bubble = document.getElementById('socraticSpeechBubble');
+
+        if (btn) btn.disabled = true;
+        if (btnText) btnText.textContent = (currentLang === 'en') ? "Testing..." : "Testujem...";
+        if (testsList) testsList.style.opacity = '0.35';
+        if (passCard) passCard.style.opacity = '0.35';
+
+        // Staggered tests completion simulation
+        setTimeout(() => {
+            if (testsList) testsList.style.opacity = '1';
+            const pills = testsList ? testsList.querySelectorAll('.test-row-pill') : [];
+            pills.forEach((p, idx) => {
+                setTimeout(() => {
+                    p.style.transform = 'scale(1.03)';
+                    setTimeout(() => p.style.transform = 'scale(1)', 150);
+                }, idx * 100);
+            });
+        }, 250);
+
+        setTimeout(() => {
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.textContent = (currentLang === 'en') ? "Run" : "Spustiť";
+            if (passCard) passCard.style.opacity = '1';
+
+            if (bubble) {
+                if (currentDemoFile === 'main') {
+                    bubble.innerHTML = (currentLang === 'en')
+                        ? "<strong>Execution successful!</strong> <em>Codo says:</em> Your <code>area(width, height)</code> function computes the rectangle area in O(1) time. What would happen if width or height was negative?"
+                        : "<strong>Kód úspešne prebehol!</strong> <em>Codo radí:</em> Tvoja funkcia <code>area(width, height)</code> počíta obsah obdĺžnika v O(1) čase. Ako by sa mala zachovať pri zadaní zápornej dĺžky strany?";
+                } else {
+                    bubble.innerHTML = (currentLang === 'en')
+                        ? "<strong>All tests passed!</strong> <em>Codo says:</em> The grade average function works perfectly for multiple numbers, identical values, and empty lists with zero-division safeguard!"
+                        : "<strong>Všetky testy prešli!</strong> <em>Codo radí:</em> Funkcia na priemer známok funguje bezchybne pre rôzne zoznamy, rovnaké známky aj prázdny vstup vďaka podmienke <code>not znamky</code>!";
+                }
+            }
+            showToast((currentLang === 'en') ? "All 3 Unit Tests Passed! (+20 XP)" : "Všetky 3 unit testy prešli! (+20 XP)");
+        }, 500);
     }
-];
 
-let activeSnippetIdx = 0;
-let currentCodoMode = 'codo';
-const currentLang = "{{ lang }}";
-
-function renderSnippet(idx) {
-    const s = SNIPPETS[idx];
-    const linesEl = document.getElementById('editorCodeLines');
-    const rewardEl = document.getElementById('demoRewardTag');
-    const testsEl = document.getElementById('demoTestCases');
-    
-    // Code lines
-    linesEl.innerHTML = s.code.map((line, i) => 
-        `<div class="code-row"><span class="code-line-num">${i + 1}</span>${line}</div>`
-    ).join('');
-
-    // Reward
-    rewardEl.innerHTML = `
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.5a3 3 0 0 1-3-2.5"/></svg>
-        ${s.reward}
-    `;
-
-    // Test cases
-    testsEl.innerHTML = s.tests.map(t => `
-        <div class="test-item pass">
-            <svg class="test-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-            <span class="test-name">${t.name}</span>
-            <span class="test-expected">${t.res}</span>
-            <span class="test-ms">${t.ms}</span>
-        </div>
-    `).join('');
-
-    updateDialogueContent();
-}
-
-function updateDialogueContent() {
-    const s = SNIPPETS[activeSnippetIdx];
-    const dialogueEl = document.getElementById('demoCodoDialogue');
-    
-    if (currentCodoMode === 'codo') {
-        dialogueEl.classList.remove('chatgpt-mode');
-        dialogueEl.innerHTML = (currentLang === 'en') ? s.codo_en : s.codo_sk;
-    } else {
-        dialogueEl.classList.add('chatgpt-mode');
-        dialogueEl.innerHTML = (currentLang === 'en') ? s.chatgpt_en : s.chatgpt_sk;
+    // 2. Reset Workbench
+    function resetWorkbenchDemo() {
+        switchDemoCode(currentDemoFile);
+        showToast((currentLang === 'en') ? "Workbench reset to starter code" : "Kód resetovaný do pôvodného stavu");
     }
-}
 
-function switchSnippet(idx, btnEl) {
-    activeSnippetIdx = idx;
-    document.querySelectorAll('.workbench-tab-btn').forEach(b => b.classList.remove('active'));
-    btnEl.classList.add('active');
-    renderSnippet(idx);
-}
+    // 3. Two-Way Switch Demo Files (main.py <-> priemer_znamok.py)
+    function switchDemoCode(type) {
+        currentDemoFile = type;
+        const editor = document.getElementById('editorCodeLines');
+        const tabMain = document.getElementById('tabChipMain');
+        const tabChallenge = document.getElementById('tabChipChallenge');
+        const testsList = document.getElementById('workbenchTestsList');
+        const bubble = document.getElementById('socraticSpeechBubble');
 
-function toggleCodoMode(mode) {
-    currentCodoMode = mode;
-    document.getElementById('btnModeCodo').classList.toggle('active', mode === 'codo');
-    document.getElementById('btnModeChatGPT').classList.toggle('active', mode === 'chatgpt');
-    updateDialogueContent();
-}
+        if (type === 'main') {
+            if (tabMain) {
+                tabMain.classList.add('active');
+                tabMain.style.opacity = '1';
+                tabMain.style.fontWeight = '700';
+            }
+            if (tabChallenge) {
+                tabChallenge.classList.remove('active');
+                tabChallenge.style.opacity = '0.65';
+                tabChallenge.style.fontWeight = '500';
+            }
+            if (editor) {
+                editor.innerHTML = `
+                    <div class="code-row"><span class="code-line-num">1</span><span class="code-doc">${(currentLang === 'en') ? '# Mini Challenge: Calculate the area of a rectangle' : '# Mini výzva: Vypočítaj obsah obdĺžnika'}</span></div>
+                    <div class="code-row"><span class="code-line-num">2</span></div>
+                    <div class="code-row"><span class="code-line-num">3</span><span class="code-kw">def</span> <span class="code-fn">area</span>(width, height):</div>
+                    <div class="code-row"><span class="code-line-num">4</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> width * height</div>
+                    <div class="code-row"><span class="code-line-num">5</span></div>
+                    <div class="code-row"><span class="code-line-num">6</span><span class="code-doc">${(currentLang === 'en') ? '# Tests (run automatically)' : '# Testy (spúšťajú sa automaticky)'}</span></div>
+                    <div class="code-row"><span class="code-line-num">7</span><span class="code-fn">print</span>(area(<span class="code-num">5</span>, <span class="code-num">3</span>))</div>
+                `;
+            }
+            if (testsList) {
+                testsList.innerHTML = `
+                    <div class="test-row-pill" id="testPill1">
+                        <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span>area(5, 3) == 15</span>
+                    </div>
+                    <div class="test-row-pill" id="testPill2">
+                        <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span>area(2, 7) == 14</span>
+                    </div>
+                    <div class="test-row-pill" id="testPill3">
+                        <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span>area(10, 10) == 100</span>
+                    </div>
+                `;
+            }
+            if (bubble) {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "Great start! Instead of giving the answer, let's think it through: What does the area of a rectangle represent, and how are the width and height related?"
+                    : "Skvelý začiatok! Namiesto prezradenia hotového riešenia sa zamyslime: Čo vyjadruje obsah obdĺžnika a ako v ňom súvisí šírka a výška?";
+            }
+            showToast((currentLang === 'en') ? "Opened main.py" : "Otvorený súbor main.py");
+        } else {
+            if (tabChallenge) {
+                tabChallenge.classList.add('active');
+                tabChallenge.style.opacity = '1';
+                tabChallenge.style.fontWeight = '700';
+            }
+            if (tabMain) {
+                tabMain.classList.remove('active');
+                tabMain.style.opacity = '0.65';
+                tabMain.style.fontWeight = '500';
+            }
+            if (editor) {
+                editor.innerHTML = `
+                    <div class="code-row"><span class="code-line-num">1</span><span class="code-doc">${(currentLang === 'en') ? '# School grades average calculation' : '# Výpočet priemeru známok školskej triedy'}</span></div>
+                    <div class="code-row"><span class="code-line-num">2</span><span class="code-kw">def</span> <span class="code-fn">spocitaj_priemer</span>(znamky):</div>
+                    <div class="code-row"><span class="code-line-num">3</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">if</span> <span class="code-kw">not</span> znamky: <span class="code-kw">return</span> <span class="code-num">0.0</span></div>
+                    <div class="code-row"><span class="code-line-num">4</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> <span class="code-fn">round</span>(<span class="code-fn">sum</span>(znamky) / <span class="code-fn">len</span>(znamky), <span class="code-num">2</span>)</div>
+                    <div class="code-row"><span class="code-line-num">5</span></div>
+                    <div class="code-row"><span class="code-line-num">6</span><span class="code-fn">print</span>(spocitaj_priemer([<span class="code-num">1</span>, <span class="code-num">2</span>, <span class="code-num">1</span>, <span class="code-num">3</span>]))</div>
+                `;
+            }
+            if (testsList) {
+                testsList.innerHTML = `
+                    <div class="test-row-pill" id="testPill1">
+                        <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span>spocitaj_priemer([1, 2, 1, 3]) == 1.75</span>
+                    </div>
+                    <div class="test-row-pill" id="testPill2">
+                        <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span>spocitaj_priemer([1, 1, 1]) == 1.0</span>
+                    </div>
+                    <div class="test-row-pill" id="testPill3">
+                        <span style="color:var(--pass-green); display:inline-flex; align-items:center;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span>spocitaj_priemer([]) == 0.0</span>
+                    </div>
+                `;
+            }
+            if (bubble) {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Grade average logic:</strong> Notice line 3 prevents a <code>ZeroDivisionError</code> when the list is empty. How does <code>round(..., 2)</code> improve readability?"
+                    : "<strong>Výpočet priemeru známok:</strong> Všimni si, že riadok 3 chráni kód pred <code>ZeroDivisionError</code> pri prázdnom zozname. Prečo je dôležité zaokrúhľovať na 2 desatinné miesta?";
+            }
+            showToast((currentLang === 'en') ? "Opened priemer_znamok.py" : "Otvorený súbor priemer_znamok.py");
+        }
+    }
 
-function runInteractiveDemo() {
-    const s = SNIPPETS[activeSnippetIdx];
-    const btn = document.getElementById('demoRunBtn');
-    const btnText = document.getElementById('demoRunBtnText');
-    const timerTag = document.getElementById('demoTimerTag');
-    const testCases = document.getElementById('demoTestCases');
-    
-    btn.disabled = true;
-    btnText.textContent = (currentLang === 'en') ? "Executing AST Sandbox..." : "Spúšťam v sandboxe...";
-    testCases.style.opacity = '0.35';
-    timerTag.textContent = "Verifying AST security constraints...";
+    // 4. Adjust Code Font Size (A- / A+)
+    let currentCodeFontSize = 13.5;
+    function adjustCodeFontSize(delta) {
+        currentCodeFontSize = Math.max(11, Math.min(18, currentCodeFontSize + delta));
+        const editor = document.getElementById('editorCodeLines');
+        if (editor) {
+            editor.style.fontSize = currentCodeFontSize + 'px';
+        }
+    }
 
-    setTimeout(() => {
-        btn.disabled = false;
-        btnText.textContent = (currentLang === 'en') ? "Run Sandbox Tests" : "Spustiť a otestovať kód";
-        testCases.style.opacity = '1';
-        timerTag.textContent = "0.38 ms execution • Memory O(1)";
+    // 5. Copy Workbench Code
+    function copyWorkbenchCode() {
+        const text = (currentDemoFile === 'main')
+            ? `def area(width, height):\n    return width * height\n\nprint(area(5, 3))`
+            : `def spocitaj_priemer(znamky):\n    if not znamky: return 0.0\n    return round(sum(znamky) / len(znamky), 2)\n\nprint(spocitaj_priemer([1, 2, 1, 3]))`;
+        copyToClipboard(text, (currentLang === 'en') ? "Python code copied to clipboard!" : "Python kód skopírovaný do schránky!");
+    }
 
-        testCases.innerHTML = s.tests.map(t => `
-            <div class="test-item pass">
-                <svg class="test-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                <span class="test-name">${t.name}</span>
-                <span class="test-expected">${t.res}</span>
-                <span class="test-ms">${t.ms}</span>
+    // 6. Python Version Selector Toast / Info
+    function togglePythonVersionInfo() {
+        const msg = (currentLang === 'en')
+            ? "Python 3.12.3 Environment active (CPython Sandbox with AST security & isolated memory)"
+            : "Python 3.12.3 prostredie aktívne (CPython Sandbox s AST kontrolou a izolovanou pamäťou)";
+        showToast(msg);
+    }
+
+    // 7. Shortcuts Modal
+    function openShortcutsModal() {
+        const existing = document.getElementById('shortcutsModalOverlay');
+        if (existing) {
+            existing.style.display = 'flex';
+            return;
+        }
+        const modal = document.createElement('div');
+        modal.id = 'shortcutsModalOverlay';
+        modal.style.cssText = 'position:fixed; inset:0; background:rgba(14,30,24,0.45); backdrop-filter:blur(4px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:1rem;';
+        modal.innerHTML = `
+            <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:20px; max-width:440px; width:100%; padding:1.75rem; box-shadow:var(--shadow-xl); position:relative;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <strong style="font-family:var(--font-display); font-size:1.15rem; color:var(--text-primary);">
+                        ${(currentLang === 'en') ? '⌨️ Codoro Studio Shortcuts' : '⌨️ Klávesové skratky štúdia'}
+                    </strong>
+                    <button type="button" onclick="document.getElementById('shortcutsModalOverlay').style.display='none'" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);">&times;</button>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:0.65rem; font-size:0.88rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.6rem; background:var(--bg-subtle); border-radius:8px;">
+                        <span>${(currentLang === 'en') ? 'Run unit tests' : 'Spustiť unit testy'}</span>
+                        <kbd style="background:var(--bg-surface); border:1px solid var(--border-subtle); padding:0.15rem 0.5rem; border-radius:6px; font-family:var(--font-mono); font-size:0.78rem;">Ctrl + Enter</kbd>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.6rem; background:var(--bg-subtle); border-radius:8px;">
+                        <span>${(currentLang === 'en') ? 'Indent code block' : 'Odsadiť blok (4 medzery)'}</span>
+                        <kbd style="background:var(--bg-surface); border:1px solid var(--border-subtle); padding:0.15rem 0.5rem; border-radius:6px; font-family:var(--font-mono); font-size:0.78rem;">Tab</kbd>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.6rem; background:var(--bg-subtle); border-radius:8px;">
+                        <span>${(currentLang === 'en') ? 'Toggle line comment' : 'Zakomentovať riadok'}</span>
+                        <kbd style="background:var(--bg-surface); border:1px solid var(--border-subtle); padding:0.15rem 0.5rem; border-radius:6px; font-family:var(--font-mono); font-size:0.78rem;">Ctrl + /</kbd>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('shortcutsModalOverlay').style.display='none'" style="width:100%; margin-top:1.25rem; font-weight:700;">
+                    ${(currentLang === 'en') ? 'Got it' : 'Rozumiem'}
+                </button>
             </div>
-        `).join('');
-
-        updateDialogueContent();
-    }, 450);
-}
-
-function switchLandingTrack(trackKey, btnEl) {
-    document.querySelectorAll('.track-rail-btn').forEach(b => b.classList.remove('active'));
-    btnEl.classList.add('active');
-
-    document.querySelectorAll('.track-panel-deck').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('track-panel-' + trackKey);
-    if (target) {
-        target.classList.add('active');
+        `;
+        document.body.appendChild(modal);
     }
-}
 
-// Initial render
-document.addEventListener('DOMContentLoaded', () => {
-    renderSnippet(0);
-});
+    // 8. Add scratch file chip action
+    function notifyFileTabFeature() {
+        const msg = (currentLang === 'en')
+            ? "Scratchpad: In the full Codoro IDE, students can add custom .py and .sql test files!"
+            : "Pomocný súbor: V plnom Codoro IDE si môžeš vytvárať vlastné .py a .sql testovacie súbory!";
+        showToast(msg);
+    }
+
+    // 9. Socratic AI Panel Toggle (Chevron Collapse/Expand)
+    function toggleSocraticPanel() {
+        const bubble = document.getElementById('socraticSpeechBubble');
+        const pills = document.querySelector('.socratic-action-pills');
+        const btn = document.getElementById('socraticToggleBtn');
+        isSocraticCollapsed = !isSocraticCollapsed;
+        if (bubble) bubble.style.display = isSocraticCollapsed ? 'none' : 'block';
+        if (pills) pills.style.display = isSocraticCollapsed ? 'none' : 'flex';
+        if (btn) btn.style.transform = isSocraticCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    // 10. Socratic Advice Pill Click
+    function triggerSocraticAdvice(type) {
+        const bubble = document.getElementById('socraticSpeechBubble');
+        if (!bubble) return;
+
+        if (currentDemoFile === 'main') {
+            if (type === 'hint') {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Hint:</strong> Remember that the area of a 2D rectangle is found by multiplying its two dimensions together (<code>width * height</code>)."
+                    : "<strong>Nápoveda:</strong> Obsah rovinného obdĺžnika získaš vynásobením jeho dvoch susedných strán (<code>width * height</code>).";
+            } else if (type === 'question') {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Guiding Question:</strong> If width = 5 and height = 3, how many 1x1 unit squares fit inside this rectangle?"
+                    : "<strong>Navádzacia otázka:</strong> Ak je šírka 5 a výška 3, koľko štvorčekov s rozmerom 1x1 sa zmestí do tohto obdĺžnika?";
+            } else {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Checking logic:</strong> Your definition <code>def area(width, height):</code> accepts two arguments and returns their product. This logic is completely sound!"
+                    : "<strong>Kontrola logiky:</strong> Tvoja definícia <code>def area(width, height):</code> správne preberá dva parametre a vracia ich súčin. Logika je úplne bezchybná!";
+            }
+        } else {
+            if (type === 'hint') {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Hint:</strong> The mathematical average is the sum of all elements divided by their count (<code>sum(znamky) / len(znamky)</code>)."
+                    : "<strong>Nápoveda:</strong> Aritmetický priemer je súčet všetkých prvkov vydelený ich počtom (<code>sum(znamky) / len(znamky)</code>).";
+            } else if (type === 'question') {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Guiding Question:</strong> What happens in Python if you execute <code>len([])</code> and divide by it?"
+                    : "<strong>Navádzacia otázka:</strong> Čo nastane v Pythone, ak zavoláš <code>len([])</code> a pokúsiš sa týmto číslom deliť?";
+            } else {
+                bubble.innerHTML = (currentLang === 'en')
+                    ? "<strong>Checking logic:</strong> Guard clause <code>if not znamky: return 0.0</code> prevents division by zero. Good defensive programming!"
+                    : "<strong>Kontrola logiky:</strong> Obranná podmienka <code>if not znamky: return 0.0</code> zabraňuje pádu programu pri prázdnom zozname. Skvelé defenzívne programovanie!";
+            }
+        }
+    }
+
+    // 11. Switch Workbench Modes (01 IDE / 02 Map / 03 Shop)
+    function switchWorkbenchMode(modeNum, btnEl) {
+        document.querySelectorAll('.mode-tab-item').forEach(b => b.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+
+        const centerCol = document.getElementById('workbenchCenterCol');
+        const rightCol = document.getElementById('workbenchRightCol');
+
+        if (modeNum === 1) {
+            centerCol.innerHTML = `
+                <div class="editor-file-tab-bar">
+                    <span class="editor-file-chip active" id="tabChipMain" style="cursor:pointer;" onclick="switchDemoCode('main')">main.py</span>
+                    <span class="editor-file-chip" id="tabChipChallenge" style="opacity:0.65; cursor:pointer;" onclick="switchDemoCode('challenge2')">priemer_znamok.py</span>
+                    <span style="color:var(--text-muted); cursor:pointer; font-size:1.1rem; line-height:1; padding:0 0.35rem;" onclick="notifyFileTabFeature()" title="${(currentLang === 'en') ? 'Add scratch file' : 'Pridať pomocný súbor'}">+</span>
+                </div>
+                <div class="editor-code-workspace" id="editorCodeLines">
+                    <div class="code-row"><span class="code-line-num">1</span><span class="code-doc">${(currentLang === 'en') ? '# Mini Challenge: Calculate the area of a rectangle' : '# Mini výzva: Vypočítaj obsah obdĺžnika'}</span></div>
+                    <div class="code-row"><span class="code-line-num">2</span></div>
+                    <div class="code-row"><span class="code-line-num">3</span><span class="code-kw">def</span> <span class="code-fn">area</span>(width, height):</div>
+                    <div class="code-row"><span class="code-line-num">4</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-kw">return</span> width * height</div>
+                    <div class="code-row"><span class="code-line-num">5</span></div>
+                    <div class="code-row"><span class="code-line-num">6</span><span class="code-doc">${(currentLang === 'en') ? '# Tests (run automatically)' : '# Testy (spúšťajú sa automaticky)'}</span></div>
+                    <div class="code-row"><span class="code-line-num">7</span><span class="code-fn">print</span>(area(<span class="code-num">5</span>, <span class="code-num">3</span>))</div>
+                </div>
+            `;
+            if (rightCol) rightCol.style.display = 'flex';
+            currentDemoFile = 'main';
+        } else if (modeNum === 2) {
+            centerCol.innerHTML = `
+                <div style="padding:1.5rem; display:flex; flex-direction:column; gap:0.75rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span style="color:var(--brand-emerald); display:inline-flex; align-items:center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                        </span>
+                        <strong style="color:var(--brand-emerald); font-family:var(--font-display); font-size:1.1rem;">
+                            ${(currentLang === 'en') ? 'Visual Curriculum Map' : 'Vizuálna mapa učiva'}
+                        </strong>
+                    </div>
+                    <p style="font-size:0.88rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+                        ${(currentLang === 'en')
+                            ? '18 comprehensive modules structured into 5 Career Tracks with an adventurous stepping-stone path, 3D pedestals, and progress rings.'
+                            : '18 ucelených modulov rozdelených do 5 kariérnych ciest s dobrodružnou kľukatou cestou, 3D podstavcami a kruhovým progress trackerom.'}
+                    </p>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;">
+                        <span class="badge-mini-pct">${(currentLang === 'en') ? '1. Foundations & Logic' : '1. Základy a Logika'}</span>
+                        <span class="badge-mini-pct">${(currentLang === 'en') ? '2. Data Structures' : '2. Dátové štruktúry'}</span>
+                        <span class="badge-mini-pct">${(currentLang === 'en') ? '3. OOP & Classes' : '3. OOP a Triedy'}</span>
+                        <span class="badge-mini-pct">${(currentLang === 'en') ? '4. Algorithms & SQL' : '4. Algoritmy a SQL'}</span>
+                        <span class="badge-mini-pct">${(currentLang === 'en') ? '5. Practical Projects' : '5. Praktické projekty'}</span>
+                    </div>
+                </div>
+            `;
+            if (rightCol) rightCol.style.display = 'none';
+        } else {
+            centerCol.innerHTML = `
+                <div style="padding:1.5rem; display:flex; flex-direction:column; gap:0.75rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span style="display:inline-flex; align-items:center; width:22px; height:22px;">
+                            <svg viewBox="0 0 36 36" width="22" height="22" fill="none"><circle cx="18" cy="18" r="16" fill="#F59E0B"/><circle cx="18" cy="18" r="13" fill="#FBBF24"/><path d="M13 10 H 18 C 22.4 10, 25 13.2, 25 18 C 25 22.8, 22.4 26, 18 26 H 13 V 10 Z" fill="#78350F"/></svg>
+                        </span>
+                        <strong style="color:#CA8A04; font-family:var(--font-display); font-size:1.1rem;">
+                            ${(currentLang === 'en') ? 'Classroom Reward Shop' : 'Školský obchod odmien'}
+                        </strong>
+                    </div>
+                    <p style="font-size:0.88rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+                        ${(currentLang === 'en')
+                            ? 'Spend your earned Doros coins on real classroom perks created by your teacher with strict weekly stock limits to prevent inflation!'
+                            : 'Míňaj zarobené mince Doros na reálne školské odmeny vypísané učiteľom s obmedzeným skladom pre triedu proti inflácii!'}
+                    </p>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                        <div style="display:flex; justify-content:space-between; background:var(--bg-subtle); padding:0.6rem 0.85rem; border-radius:10px; font-size:0.84rem; font-weight:600;">
+                            <span>${(currentLang === 'en') ? 'Homework Pass' : 'Odpustenie domácej úlohy'}</span>
+                            <span style="color:#CA8A04; font-weight:700;">250 Doros ${(currentLang === 'en') ? '(2 pcs / week)' : '(2 ks na týždeň)'}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; background:var(--bg-subtle); padding:0.6rem 0.85rem; border-radius:10px; font-size:0.84rem; font-weight:600;">
+                            <span>${(currentLang === 'en') ? '+10% Quiz Bonus' : '+10 % bodov k písomke'}</span>
+                            <span style="color:#CA8A04; font-weight:700;">400 Doros ${(currentLang === 'en') ? '(1 pc / week)' : '(1 ks na týždeň)'}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; background:var(--bg-subtle); padding:0.6rem 0.85rem; border-radius:10px; font-size:0.84rem; font-weight:600;">
+                            <span>${(currentLang === 'en') ? 'Test Hint Joker' : 'Žolík na písomke (nápoveda)'}</span>
+                            <span style="color:#CA8A04; font-weight:700;">300 Doros ${(currentLang === 'en') ? '(3 pcs / week)' : '(3 ks na týždeň)'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            if (rightCol) rightCol.style.display = 'none';
+        }
+    }
+
+    // 8. Track switch in Curriculum section
+    function switchLandingTrack(trackKey, btnEl) {
+        document.querySelectorAll('.curriculum-track-tab, .track-switcher-pill').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+        if (btnEl) {
+            btnEl.classList.add('active');
+            btnEl.setAttribute('aria-selected', 'true');
+        }
+
+        const emptyState = document.getElementById('curriculumEmptyState');
+        if (emptyState) emptyState.style.display = 'none';
+
+        // Reset all module cards inside decks to visible
+        document.querySelectorAll('.curriculum-mod-card').forEach(card => card.style.display = 'flex');
+
+        if (trackKey === 'ALL') {
+            document.querySelectorAll('.track-panel-deck').forEach(p => {
+                p.classList.add('active');
+                p.style.display = 'flex';
+            });
+        } else {
+            document.querySelectorAll('.track-panel-deck').forEach(p => {
+                if (p.getAttribute('data-track') === trackKey || p.id === 'track-panel-' + trackKey) {
+                    p.classList.add('active');
+                    p.style.display = 'flex';
+                } else {
+                    p.classList.remove('active');
+                    p.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    // 9. Instant FAQ Live Search
+    function filterFaq() {
+        const query = (document.getElementById('faqSearchInput').value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.faq-card-item');
+
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            if (!query || text.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function toggleFaqCard(btn) {
+        const card = btn.closest('.faq-card-item');
+        if (card) {
+            card.classList.toggle('open');
+        }
+    }
+
+    // 10. Instant Curriculum Module Search
+    function filterCurriculumModules() {
+        const input = document.getElementById('curriculumSearchInput');
+        const query = (input ? input.value : '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.curriculum-mod-card');
+        const emptyState = document.getElementById('curriculumEmptyState');
+        let visibleCount = 0;
+
+        if (query) {
+            // When user types a search query, show across all decks
+            document.querySelectorAll('.track-panel-deck').forEach(p => {
+                p.classList.add('active');
+                p.style.display = 'flex';
+            });
+
+            cards.forEach(card => {
+                const title = (card.getAttribute('data-title') || '').toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Hide empty deck sections where no cards match
+            document.querySelectorAll('.track-panel-deck').forEach(deck => {
+                const visibleInDeck = deck.querySelectorAll('.curriculum-mod-card:not([style*="display: none"])').length;
+                deck.style.display = visibleInDeck > 0 ? 'flex' : 'none';
+            });
+
+            if (emptyState) {
+                emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        } else {
+            // Restore decks based on the currently selected tab
+            if (emptyState) emptyState.style.display = 'none';
+            cards.forEach(card => card.style.display = 'flex');
+
+            const activeTab = document.querySelector('.curriculum-track-tab.active');
+            const activeKey = activeTab ? activeTab.getAttribute('data-track') : 'ALL';
+            switchLandingTrack(activeKey, activeTab);
+        }
+    }
+
+    // 11. Native Web Share or Link Copy
+    function sharePlatform() {
+        const url = window.location.origin;
+        if (navigator.share) {
+            navigator.share({
+                title: 'Codoro — Interactive Python Education',
+                text: 'Check out Codoro, the gamified Python learning platform for schools!',
+                url: url
+            }).catch(() => {});
+        } else {
+            copyToClipboard(url, (currentLang === 'en') ? "Codoro link copied to clipboard!" : "Odkaz na Codoro skopírovaný do schránky!");
+        }
+    }
+
+    function notifyFileTabFeature() {
+        showToast((currentLang === 'en') ? "Full file manager available in logged-in IDE" : "Plný správca súborov je dostupný po prihlásení v IDE");
+    }
 </script>
 {% endblock %}

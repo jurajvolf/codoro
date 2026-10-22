@@ -1,0 +1,287 @@
+{% load static %}
+<!-- REUSABLE ARTWORK & ILLUSTRATIONS (MINERAL & EMERALD 2D VECTOR DESIGN) -->
+
+<!-- 1. PYTHON ON STONE PEDESTAL (HERO LEFT - CLEAN 2D VECTOR) -->
+{% if illustration == 'python_stone' %}
+<div class="artwork-python-stone" style="position:relative; display:inline-flex; flex-direction:column; align-items:center; width:100%; max-width:290px;">
+    <svg viewBox="0 0 240 210" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <!-- Base Ground Soft Meadow Shadow -->
+        <ellipse cx="120" cy="188" rx="100" ry="14" fill="rgba(0, 135, 103, 0.08)"/>
+        
+        <!-- Upright Standing River Boulder / Stone Monolith -->
+        <!-- Shadow / border tone of the rock -->
+        <path d="M52 182 C 42 120, 56 46, 115 40 C 174 46, 188 120, 178 182 C 168 188, 142 190, 115 190 C 88 190, 62 188, 52 182 Z" fill="#D3DED9"/>
+        <!-- Front illuminated stone face -->
+        <path d="M58 178 C 50 122, 62 52, 115 46 C 168 52, 180 122, 172 178 C 162 184, 138 186, 115 186 C 92 186, 68 184, 58 178 Z" fill="#E8F0EC"/>
+        <!-- Soft Top-Left Highlight Curve -->
+        <path d="M68 172 C 60 125, 70 60, 115 54 C 135 54, 150 64, 158 82 C 146 72, 128 66, 112 66 C 85 66, 75 105, 72 165 C 70 168, 69 170, 68 172 Z" fill="#F6FAF8"/>
+
+        <!-- 2D Python Serpents Logo on the Stone Face -->
+        <g transform="translate(76, 72) scale(0.82)">
+            <!-- Blue Top Snake -->
+            <path d="M47.2 0C21.7 0 23.3 11 23.3 11l.1 11.4h24.3v3.4H13.5S0 24.3 0 49.8c0 25.5 11.8 24.6 11.8 24.6h7.1v-10.3s-.4-12.2 12-12.2h24.1s11.6.2 11.6-11.4V11.8S68.4 0 47.2 0zm-13.3 7.3c2.4 0 4.3 1.9 4.3 4.3s-1.9 4.3-4.3 4.3c-2.4 0-4.3-1.9-4.3-4.3s1.9-4.3 4.3-4.3z" fill="#2B7BB9"/>
+            <circle cx="33.9" cy="11.6" r="3.2" fill="#FFFFFF"/>
+            <circle cx="33.9" cy="11.6" r="1.6" fill="#0F172A"/>
+            <!-- Yellow Bottom Snake -->
+            <path d="M47.8 95c25.5 0 23.9-11 23.9-11l-.1-11.4H47.3v-3.4h34.2S95 70.7 95 45.2c0-25.5-11.8-24.6-11.8-24.6h-7.1v10.3s.4 12.2-12 12.2H40s-11.6-.2-11.6 11.4v24.1S26.6 95 47.8 95zm13.3-7.3c-2.4 0-4.3-1.9-4.3-4.3 0-2.4 1.9-4.3 4.3-4.3 2.4 0 4.3 1.9 4.3 4.3 0 2.4-1.9 4.3-4.3 4.3z" fill="#FACC15"/>
+            <circle cx="61.1" cy="83.4" r="3.2" fill="#FFFFFF"/>
+            <circle cx="61.1" cy="83.4" r="1.6" fill="#0F172A"/>
+        </g>
+
+        <!-- Companion River Pebble Left (Soft Slate Rounded Stone) -->
+        <ellipse cx="44" cy="180" rx="26" ry="14" fill="#94A3B8"/>
+        <ellipse cx="43" cy="177" rx="24" ry="12" fill="#CBD5E1"/>
+        <ellipse cx="41" cy="175" rx="21" ry="9" fill="#E2E8F0"/>
+
+        <!-- Cute 2D Sprouts / Green Leaves on Left (Tall Upright Curved) -->
+        <path d="M16 180 C 8 152, 6 126, 18 120 C 30 114, 28 144, 24 176 Z" fill="#15803D"/>
+        <path d="M28 178 C 24 146, 26 122, 36 116 C 46 110, 48 136, 40 174 Z" fill="#22C55E"/>
+        <path d="M48 176 C 50 152, 58 138, 68 142 C 76 146, 68 164, 58 176 Z" fill="#16A34A"/>
+
+        <!-- Companion River Pebble Right -->
+        <ellipse cx="188" cy="182" rx="24" ry="13" fill="#94A3B8"/>
+        <ellipse cx="187" cy="179" rx="22" ry="11" fill="#CBD5E1"/>
+        <ellipse cx="185" cy="177" rx="19" ry="9" fill="#E2E8F0"/>
+
+        <!-- Cute 2D Sprouts / Leaves on Right -->
+        <path d="M178 180 C 174 154, 178 134, 188 130 C 198 126, 200 148, 194 178 Z" fill="#16A34A"/>
+        <path d="M194 180 C 198 158, 208 144, 218 148 C 226 152, 218 170, 206 182 Z" fill="#22C55E"/>
+        <path d="M208 182 C 214 168, 224 160, 230 164 C 236 168, 228 178, 216 184 Z" fill="#15803D"/>
+    </svg>
+</div>
+{% endif %}
+
+<!-- 2. OFFICIAL CODORO MASCOT WITH LAPTOP & PEBBLES (REPLACES OLD SVG ROBOT) -->
+{% if illustration == 'codo_on_rock' or illustration == 'codo_hero_scene' %}
+<div class="artwork-codo-hero-scene" style="position:relative; display:inline-flex; flex-direction:column; align-items:center; width:100%; max-width:260px;">
+    <!-- Official Codoro Green Avatar Asset -->
+    <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}"
+         alt="Codoro"
+         style="width: 100%; max-width: 210px; height: auto; aspect-ratio: 1/1; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(0, 135, 103, 0.2)); display: block; position: relative; z-index: 2; pointer-events: none; user-select: none;">
+
+    <!-- River Pebbles & Green Sprouts Ground Base -->
+    <div style="width: 100%; margin-top: -18%; position: relative; z-index: 1; pointer-events: none;">
+        <svg viewBox="0 0 240 50" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="120" cy="38" rx="90" ry="10" fill="rgba(0, 135, 103, 0.12)"/>
+            <ellipse cx="44" cy="32" rx="26" ry="13" fill="#94A3B8"/>
+            <ellipse cx="43" cy="29" rx="24" ry="11" fill="#CBD5E1"/>
+            <ellipse cx="41" cy="27" rx="21" ry="9" fill="#E2E8F0"/>
+            <path d="M30 26 C 24 10, 20 2, 30 0 C 40 -2, 40 14, 34 26 Z" fill="#16A34A"/>
+            <path d="M38 25 C 44 12, 54 6, 60 14 C 64 22, 52 26, 42 26 Z" fill="#22C55E"/>
+            <ellipse cx="196" cy="34" rx="24" ry="12" fill="#94A3B8"/>
+            <ellipse cx="195" cy="31" rx="22" ry="10" fill="#CBD5E1"/>
+            <ellipse cx="193" cy="29" rx="19" ry="8" fill="#E2E8F0"/>
+            <path d="M204 28 C 210 16, 220 10, 224 18 C 228 26, 218 30, 208 30 Z" fill="#22C55E"/>
+        </svg>
+    </div>
+</div>
+{% endif %}
+
+<!-- 3. PLAYFUL GAMEFUL STEPPING-STONE CHECKPOINT FLAG (COMPLETED, ACTIVE, LOCKED) -->
+{% if illustration == 'pedestal_flag' %}
+<div class="pedestal-flag-wrapper state-{{ state|default:'completed' }}" title="{% if state == 'completed' %}Dokončený míľnik (100%){% elif state == 'active' %}Aktuálna otvorená lekcia{% else %}Uzamknutý modul{% endif %}">
+    <svg viewBox="0 0 52 56" width="52" height="56" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <!-- Soft Ground Meadow Shadow -->
+        <ellipse cx="26" cy="48" rx="20" ry="6" fill="rgba(0, 135, 103, 0.12)"/>
+
+        <!-- Double Layer Rounded River Stone Pedestal -->
+        <ellipse cx="26" cy="46" rx="19" ry="6" fill="#94A3B8"/>
+        <ellipse cx="26" cy="43" rx="18" ry="5.5" fill="#CBD5E1"/>
+        <ellipse cx="26" cy="41" rx="15" ry="4.5" fill="#E2E8F0"/>
+
+        <!-- Cute Grass Tuft and Tiny Flower at Base -->
+        <path d="M10 44 C 6 38, 5 32, 10 30 C 14 34, 12 41, 12 44 Z" fill="#15803D"/>
+        <path d="M14 43 C 18 36, 22 34, 20 42 Z" fill="#22C55E"/>
+        <circle cx="9" cy="30" r="2.2" fill="#FACC15"/>
+        <circle cx="9" cy="30" r="1" fill="#FFFFFF"/>
+
+        <!-- Right Grass Sprout -->
+        <path d="M37 44 C 41 38, 44 34, 40 43 Z" fill="#22C55E"/>
+
+        <!-- Polished Golden/Silver Flagpole -->
+        <line x1="20" y1="42" x2="20" y2="8" stroke="#475569" stroke-width="2.8" stroke-linecap="round"/>
+        <line x1="20.8" y1="41" x2="20.8" y2="9" stroke="#94A3B8" stroke-width="1" stroke-linecap="round"/>
+
+        <!-- Glowing Star / Golden Finial on top -->
+        <circle cx="20" cy="7" r="3.5" fill="#F59E0B"/>
+        <circle cx="19" cy="6" r="1.5" fill="#FEF08A"/>
+
+        <!-- PLAYFUL WAVING FLAG BANNER (Different by state) -->
+        {% if state == 'completed' %}
+            <path d="M21 9 C 29 5, 36 12, 44 8 L 39 19 L 45 30 C 37 26, 30 33, 21 29 Z" fill="#16A34A" filter="drop-shadow(0 2px 4px rgba(22, 163, 74, 0.25))"/>
+            <path d="M21 21 C 28 25, 35 22, 42 27 L 45 30 C 37 26, 30 33, 21 29 Z" fill="#15803D" opacity="0.6"/>
+            <path d="M26 19 L 29 22 L 35 15" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="43" cy="5" r="1.5" fill="#F59E0B"/>
+            <circle cx="47" cy="18" r="1.2" fill="#EAB308"/>
+        {% elif state == 'active' %}
+            <path d="M21 9 C 29 5, 36 12, 45 8 L 39 19 L 46 30 C 37 26, 30 33, 21 29 Z" fill="#008767" filter="drop-shadow(0 3px 8px rgba(0, 135, 103, 0.35))"/>
+            <path d="M21 21 C 28 25, 35 22, 42 27 L 46 30 C 37 26, 30 33, 21 29 Z" fill="#006E53" opacity="0.6"/>
+            <polygon points="28,15 34,19 28,23" fill="#FACC15"/>
+            <circle cx="45" cy="4" r="2" fill="#5CE1E6"/>
+            <circle cx="49" cy="14" r="1.5" fill="#FDE047"/>
+        {% else %}
+            <path d="M21 9 C 29 6, 36 12, 43 9 L 38 19 L 43 29 C 36 26, 29 32, 21 29 Z" fill="#94A3B8"/>
+            <path d="M21 21 C 28 24, 34 22, 40 26 L 43 29 C 36 26, 29 32, 21 29 Z" fill="#64748B" opacity="0.5"/>
+            <rect x="27" y="18" width="7" height="6" rx="1.5" fill="#E2E8F0"/>
+            <path d="M28.5 18 V 15.5 C 28.5 14.5, 32.5 14.5, 32.5 15.5 V 18" stroke="#E2E8F0" stroke-width="1.3" fill="none"/>
+            <circle cx="30.5" cy="20.5" r="0.8" fill="#64748B"/>
+        {% endif %}
+    </svg>
+</div>
+{% endif %}
+
+<!-- 4. 2D GOLDEN DOROS COIN (VECTOR) -->
+{% if illustration == 'doros_coin_3d' or illustration == 'doros_coin_2d' %}
+<div class="asset-coin-container {% if floating %}float-bob{% endif %}" style="display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px;">
+    <svg viewBox="0 0 36 36" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="17" fill="#D97706"/>
+        <circle cx="18" cy="18" r="15.5" fill="#F59E0B"/>
+        <circle cx="18" cy="18" r="13" fill="#FBBF24"/>
+        <path d="M13 10 H 18 C 22.4 10, 25 13.2, 25 18 C 25 22.8, 22.4 26, 18 26 H 13 V 10 Z M 16 13 V 23 H 18 C 20.8 23, 22.2 21, 22.2 18 C 22.2 15, 20.8 13, 18 13 H 16 Z" fill="#78350F" opacity="0.85"/>
+        <circle cx="18" cy="18" r="1.5" fill="#FDE68A"/>
+    </svg>
+</div>
+{% endif %}
+
+<!-- 5. 2D QUEST TARGET / DARTBOARD (VECTOR) -->
+{% if illustration == 'quest_target_3d' or illustration == 'quest_target_2d' %}
+<div class="asset-target-container {% if floating %}float-bob-alt{% endif %}" style="display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px;">
+    <svg viewBox="0 0 42 42" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="21" cy="21" r="19" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="21" cy="21" r="14" fill="#F97316"/>
+        <circle cx="21" cy="21" r="9" fill="#FFFFFF"/>
+        <circle cx="21" cy="21" r="5" fill="#008767"/>
+        <path d="M21 21 L 34 8" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M30 6 L 36 6 L 36 12" stroke="#EAB308" stroke-width="2" stroke-linecap="round" fill="none"/>
+    </svg>
+</div>
+{% endif %}
+
+<!-- 6. LANDSCAPE NATURE DECORATIONS (BUSHES, PINE TREES, RIVER BOULDERS) -->
+{% if illustration == 'meadow_shrub_stone' %}
+<div class="landscape-decor-stone" style="display:inline-flex; align-items:center; pointer-events:none; user-select:none;">
+    <svg viewBox="0 0 70 42" width="60" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="35" cy="36" rx="30" ry="5" fill="rgba(0, 135, 103, 0.08)"/>
+        <!-- River boulder -->
+        <ellipse cx="24" cy="30" rx="18" ry="9" fill="#94A3B8"/>
+        <ellipse cx="23" cy="28" rx="16" ry="8" fill="#CBD5E1"/>
+        <ellipse cx="22" cy="26" rx="13" ry="6" fill="#E2E8F0"/>
+        <!-- Fluffy green bush -->
+        <circle cx="46" cy="24" r="10" fill="#15803D"/>
+        <circle cx="53" cy="27" r="8" fill="#16A34A"/>
+        <circle cx="43" cy="20" r="9" fill="#22C55E"/>
+        <circle cx="48" cy="18" r="7" fill="#4ADE80"/>
+        <!-- Leaf sprout -->
+        <path d="M12 28 C 8 20, 6 14, 12 12 C 18 10, 18 22, 14 28 Z" fill="#16A34A"/>
+    </svg>
+</div>
+{% endif %}
+
+{% if illustration == 'pine_tree_small' %}
+<div class="landscape-decor-tree" style="display:inline-flex; align-items:center; pointer-events:none; user-select:none;">
+    <svg viewBox="0 0 54 62" width="46" height="52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="27" cy="56" rx="20" ry="4" fill="rgba(0, 135, 103, 0.08)"/>
+        <!-- Trunk -->
+        <rect x="24" y="44" width="6" height="12" rx="2" fill="#78350F"/>
+        <!-- Pine layers -->
+        <polygon points="27,10 10,30 44,30" fill="#15803D"/>
+        <polygon points="27,6 13,22 41,22" fill="#16A34A"/>
+        <polygon points="27,2 17,14 37,14" fill="#22C55E"/>
+        <!-- Companion small stone -->
+        <ellipse cx="40" cy="54" rx="9" ry="4.5" fill="#94A3B8"/>
+        <ellipse cx="40" cy="52" rx="7.5" ry="3.5" fill="#CBD5E1"/>
+    </svg>
+</div>
+{% endif %}
+
+{% if illustration == 'river_stone_cluster' %}
+<div class="landscape-decor-stones" style="display:inline-flex; align-items:center; pointer-events:none; user-select:none;">
+    <svg viewBox="0 0 58 32" width="50" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="29" cy="28" rx="25" ry="4" fill="rgba(0, 135, 103, 0.08)"/>
+        <!-- Main Stone -->
+        <ellipse cx="24" cy="22" rx="16" ry="8" fill="#94A3B8"/>
+        <ellipse cx="23" cy="20" rx="14" ry="7" fill="#CBD5E1"/>
+        <ellipse cx="22" cy="18" rx="11" ry="5" fill="#E2E8F0"/>
+        <!-- Secondary Stone -->
+        <ellipse cx="42" cy="24" rx="11" ry="5.5" fill="#94A3B8"/>
+        <ellipse cx="42" cy="22" rx="9.5" ry="4.5" fill="#CBD5E1"/>
+        <!-- Leaf sprout -->
+        <path d="M12 22 C 6 16, 5 10, 11 8 C 16 7, 16 17, 13 22 Z" fill="#22C55E"/>
+    </svg>
+</div>
+{% endif %}
+
+{% if illustration == 'pine_tree_cluster' %}
+<div class="landscape-decor-cluster" style="display:inline-flex; align-items:center; pointer-events:none; user-select:none;">
+    <svg viewBox="0 0 96 74" width="84" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="48" cy="66" rx="42" ry="6" fill="rgba(0, 135, 103, 0.1)"/>
+        <!-- Left smaller pine -->
+        <rect x="22" y="52" width="5" height="10" rx="1.5" fill="#78350F"/>
+        <polygon points="24,20 10,38 38,38" fill="#15803D"/>
+        <polygon points="24,14 13,30 35,30" fill="#16A34A"/>
+        <polygon points="24,8 16,20 32,20" fill="#22C55E"/>
+        <!-- Right back pine -->
+        <rect x="68" y="50" width="5.5" height="11" rx="1.5" fill="#78350F"/>
+        <polygon points="71,16 56,36 86,36" fill="#14532D"/>
+        <polygon points="71,10 60,28 82,28" fill="#15803D"/>
+        <polygon points="71,4 63,18 79,18" fill="#16A34A"/>
+        <!-- Center tall hero pine -->
+        <rect x="44" y="54" width="7" height="12" rx="2" fill="#78350F"/>
+        <polygon points="47.5,12 26,38 69,38" fill="#15803D"/>
+        <polygon points="47.5,6 30,28 65,28" fill="#16A34A"/>
+        <polygon points="47.5,0 35,16 60,16" fill="#4ADE80"/>
+        <!-- Foreground river boulders & wild flowers -->
+        <ellipse cx="38" cy="64" rx="14" ry="7" fill="#94A3B8"/>
+        <ellipse cx="37" cy="62" rx="12" ry="6" fill="#CBD5E1"/>
+        <ellipse cx="58" cy="65" rx="10" ry="5" fill="#94A3B8"/>
+        <circle cx="28" cy="62" r="2.5" fill="#FACC15"/>
+        <circle cx="68" cy="63" r="2.2" fill="#5CE1E6"/>
+    </svg>
+</div>
+{% endif %}
+
+{% if illustration == 'rocky_meadow_cluster' %}
+<div class="landscape-decor-rocky" style="display:inline-flex; align-items:center; pointer-events:none; user-select:none;">
+    <svg viewBox="0 0 110 50" width="98" height="44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="55" cy="42" rx="50" ry="6" fill="rgba(0, 135, 103, 0.08)"/>
+        <!-- Large Boulder Left -->
+        <path d="M12 40 C 8 26, 20 18, 36 16 C 50 14, 56 28, 52 40 Z" fill="#94A3B8"/>
+        <path d="M16 38 C 12 28, 22 21, 36 19 C 48 17, 52 28, 48 38 Z" fill="#CBD5E1"/>
+        <path d="M22 36 C 20 28, 28 24, 38 23 C 44 22, 47 28, 44 36 Z" fill="#E2E8F0"/>
+        <!-- Fluffy Bushes -->
+        <circle cx="62" cy="28" r="14" fill="#15803D"/>
+        <circle cx="72" cy="30" r="11" fill="#16A34A"/>
+        <circle cx="58" cy="22" r="11" fill="#22C55E"/>
+        <circle cx="66" cy="18" r="9" fill="#4ADE80"/>
+        <!-- Companion Boulder Right -->
+        <ellipse cx="88" cy="38" rx="16" ry="8" fill="#94A3B8"/>
+        <ellipse cx="87" cy="36" rx="14" ry="7" fill="#CBD5E1"/>
+        <ellipse cx="86" cy="34" rx="11" ry="5" fill="#E2E8F0"/>
+        <!-- Wild Flowers -->
+        <circle cx="48" cy="16" r="3" fill="#FACC15"/>
+        <circle cx="48" cy="16" r="1.2" fill="#FFFFFF"/>
+        <circle cx="78" cy="22" r="2.5" fill="#F43F5E"/>
+    </svg>
+</div>
+{% endif %}
+
+{% if illustration == 'mountain_peaks_landscape' %}
+<div class="landscape-decor-mountains" style="width:100%; height:auto; pointer-events:none; user-select:none;">
+    <svg viewBox="0 0 900 120" width="100%" height="100%" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Distant Mountain Ridge -->
+        <path d="M0 80 Q 90 30 180 65 T 360 40 T 540 70 T 720 35 T 900 75 L 900 120 L 0 120 Z" fill="rgba(0, 135, 103, 0.05)"/>
+        <!-- Middle Rolling Green Hills -->
+        <path d="M0 95 Q 120 50 240 85 T 480 60 T 720 90 T 900 70 L 900 120 L 0 120 Z" fill="rgba(0, 135, 103, 0.08)"/>
+        <!-- Foreground Soft Meadow with Tiny Distant Pines -->
+        <path d="M0 108 Q 160 88 320 105 T 640 92 T 900 106 L 900 120 L 0 120 Z" fill="rgba(0, 135, 103, 0.12)"/>
+        <!-- Pine silhouettes scattered across hills -->
+        <polygon points="120,68 114,80 126,80" fill="#15803D" opacity="0.6"/>
+        <polygon points="132,65 125,78 139,78" fill="#16A34A" opacity="0.6"/>
+        <polygon points="410,52 403,66 417,66" fill="#15803D" opacity="0.5"/>
+        <polygon points="422,48 414,64 430,64" fill="#16A34A" opacity="0.6"/>
+        <polygon points="760,42 753,58 767,58" fill="#15803D" opacity="0.5"/>
+        <polygon points="772,38 763,55 781,55" fill="#22C55E" opacity="0.6"/>
+    </svg>
+</div>
+{% endif %}
+

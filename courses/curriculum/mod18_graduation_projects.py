@@ -587,17 +587,17 @@ Gratulujeme k dosiahnutiu záverečnej lekcie vzdelávacej platformy Codoro! Abs
 2. **Funkcie a dátové štruktúry:** funkcie, lambda, rekurzia, zoznamy, n-tice, slovníky, množiny, výnimky a súbory
 3. **OOP a softvérové inžinierstvo:** triedy, objekty, dunder metódy, dedičnosť, polymorfizmus, dataclasses
 4. **Algoritmy, dáta a bezpečnosť:** Big-O, binárne vyhľadávanie, quicksort, regulárne výrazy, SQL v Pythone, REST API a JSON, automatizované testovanie (TDD)
-5. **Maturitný špeciál a projekty:** kryptografia, maturitné praktické zadania a capstone softvérové enginy
+5. **Záverečné projekty a certifikácia:** kryptografia, pokročilé priemyselné zadania a capstone softvérové enginy
 
 #### Prehľad záverečných kritérií
-Po úspešnom vyriešení záverečnej skúšky sa v tvojom študentskom profile sprístupní oficiálny certifikát **Codoro Certified Python Developer** pripravený k tlači a obhajobe maturitnej práce!
+Po úspešnom vyriešení záverečnej skúšky sa v tvojom študentskom profile sprístupní oficiálny certifikát **Codoro Certified Python Developer** pripravený k tlači a overeniu!
 
-> ⚠️ **Častá chyba na maturite:**
-> Podcenenie hraničných prípadov (Edge Cases): prázdny vstupný zoznam, nesprávne dátové typy, delenie nulou. Skutočný softvérový inžinier navrhuje kód odolný voči chybám používateľa!
+> ⚠️ **Častá chyba v praxi a na technických pohovoroch:**
+> Podcenenie hraničných prípadov (Edge Cases): prázdny vstupný zoznam, nesprávne dátové typy, delenie nulou. Skutočný softvérový inžinier navrhuje kód defenzívne a odolný voči chybám používateľa!
 
 #### Zhrnutie
 - Syntéza všetkých konceptov programovacieho jazyka Python.
-- Pripravenosť na praktickú časť odbornej zložky maturitnej skúšky (PČOZ MS).
+- Pripravenosť na samostatný profesionálny vývoj a inžiniersku prax.
 - Získanie certifikátu s unikátnym overovacím ID.
 """,
             'content_en': """### 18.5 Final Capstone Certification

@@ -320,7 +320,7 @@ else:
             'order': 5,
             'title_sk': 'Vnorené cykly, 2D mriežky a zhrnutie modulu',
             'title_en': 'Nested 2D Loops, Grids & Module Summary',
-            'summary_sk': 'Vnorené for cykly pre riadky a stĺpce, generovanie násobilky a komplexná maturitná úloha.',
+            'summary_sk': 'Vnorené for cykly pre riadky a stĺpce, generovanie násobilky a komplexná praktická úloha.',
             'summary_en': 'Nested for loops for matrix rows/columns, multiplication tables, and capstone challenge.',
             'estimated_minutes': 60,
             'xp_reward': 40,

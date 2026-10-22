@@ -57,8 +57,8 @@ def run_seed():
     teacher, _ = User.objects.get_or_create(
         username='ucitel',
         defaults={
-            'first_name': 'Markéta',
-            'last_name': 'Brišová',
+            'first_name': 'Peter',
+            'last_name': 'Novák',
             'email': 'ucitel@codoro.sk',
             'role': User.Role.TEACHER,
             'subscription_tier': User.SubscriptionTier.EDU,

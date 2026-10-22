@@ -1,618 +1,567 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}{% if user.preferred_language == 'en' %}Learning Map — Codoro{% else %}Mapa učiva — Codoro{% endif %}{% endblock %}
+
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-
-<!-- ========================================================================
-     1. HORNY STATUS BANNER: COIN DROP ALEBO ZÁCHRANA STREAKU
-     ======================================================================== -->
-{% if active_drop %}
-<div class="dashboard-alert-banner alert-drop animate-in">
-    <div style="display: flex; align-items: center; gap: 0.85rem;">
-        <span style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; background:var(--ro-indigo-soft); color:var(--ro-indigo);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </span>
-        <div>
-            <strong style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); display:block;">
-                {% if lang == 'en' %}LIVE CLASSROOM DROP: {{ active_drop.title_en }}{% else %}BLESKOVÝ DROP: {{ active_drop.title_sk }}{% endif %}
-            </strong>
-            <span style="font-size: 0.8rem; color: var(--text-secondary);">
-                {% if lang == 'en' %}Bonus {{ active_drop.min_doros }}–{{ active_drop.max_doros }} Doros available now!{% else %}Bonus {{ active_drop.min_doros }}–{{ active_drop.max_doros }} Doros od učiteľa!{% endif %}
-            </span>
-        </div>
-    </div>
-    <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">
-            {% if lang == 'en' %}Claim Drop{% else %}Vyzdvihnúť Coin Drop{% endif %}
-        </button>
-    </form>
-</div>
-{% endif %}
-
+<!-- STREAK REPAIR BANNER IF LOST -->
 {% if user.lost_streak_value > 0 %}
-<div class="dashboard-alert-banner alert-streak animate-in">
-    <div style="display: flex; align-items: center; gap: 0.85rem;">
-        <span style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; background:rgba(244, 63, 94, 0.15); color:var(--flame-text);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.4 1.8-1.5 3.3-2.8 4.6-1.5 1.5-2.8 3.3-3.2 5.4-.6 3.1.6 6.3 3 8.3 1.4 1.2 3.2 1.7 5 1.7 1.8 0 3.6-.5 5-1.7 2.4-2 3.6-5.2 3-8.3-.4-2.1-1.7-3.9-3.2-5.4-1.3-1.3-2.4-2.8-2.8-4.6-.3 1.2-.8 2.2-1.5 3.1-.7.9-1.6 1.7-2.5 2.1.2-1.5 0-3.3-0-5.2z"/></svg>
+<div style="background:var(--streak-orange-bg); border:1px solid rgba(249,115,22,0.3); border-radius:16px; padding:1rem 1.25rem; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+        <span style="color:var(--streak-orange); display:inline-flex; align-items:center;">
+            {% include 'components/icon_svg.html' with name='flame' size='24' %}
         </span>
         <div>
-            <strong style="font-family: var(--font-display); font-size: 0.95rem; color: var(--flame-text); display:block;">
+            <strong style="font-family:var(--font-display); color:var(--streak-orange); display:block; font-size:0.95rem;">
                 {% if lang == 'en' %}Streak Lost: {{ user.lost_streak_value }} Days{% else %}Prerušená séria: {{ user.lost_streak_value }} dní{% endif %}
             </strong>
-            <span style="font-size: 0.8rem; color: var(--text-secondary);">
-                {% if lang == 'en' %}Use 200 Doros to repair and maintain your streak.{% else %}Použi 200 Doros na záchranu svojej série pred vymazaním.{% endif %}
+            <span style="font-size:0.82rem; color:var(--text-secondary);">
+                {% if lang == 'en' %}Use 200 Doros to repair and maintain your study streak.{% else %}Použi 200 Doros na záchranu svojej série pred vymazaním.{% endif %}
             </span>
         </div>
     </div>
     <form method="post" action="{% url 'repair_streak' %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-sm" style="background: var(--flame-text); color:#fff; font-weight: 700; border:none;">
+        <button type="submit" class="btn-pill-emerald" style="background:var(--streak-orange); box-shadow:none; padding:0.45rem 1rem; font-size:0.84rem;">
             {% if lang == 'en' %}Repair Streak (200 Doros){% else %}Zachrániť sériu (200 Doros){% endif %}
         </button>
     </form>
 </div>
 {% endif %}
 
-<!-- ========================================================================
-     2. CONTINUE LEARNING HERO CARD (KOMPAKTNÝ HUB NA VRCHU)
-     ======================================================================== -->
-<section class="hero-continue-card animate-in">
-    <div class="hero-left">
-        <div class="hero-codo-frame">
-            <img src="{% static 'img/codoro-logo-without-letters-transparent.png' %}" alt="Codo" class="hero-codo-img"
-                 onerror="this.style.display='none'; document.getElementById('codo-hero-svg').style.display='inline-flex';">
-            <div id="codo-hero-svg" style="display:none; color:var(--ro-indigo);">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-            </div>
-        </div>
-
-        <div class="hero-meta">
-            {% if next_lesson %}
-            <h1 class="hero-title">
-                {% if lang == 'en' %}Lesson 0{{ next_lesson.order }}: {{ next_lesson.title_en }}{% else %}Lekcia 0{{ next_lesson.order }}: {{ next_lesson.title_sk }}{% endif %}
-            </h1>
-            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem; flex-wrap: wrap;">
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.15rem 0.55rem; border-radius: 6px; border: 1px solid var(--ro-indigo-border); text-transform: uppercase;">
-                    {% if lang == 'en' %}RECOMMENDED LESSON{% else %}ODPORÚČANÁ LEKCIA{% endif %}
-                </span>
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.55rem; border-radius: 6px; font-weight: 600;">
-                    {{ user.subscription_tier }}
-                </span>
-                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums;">
-                    +{{ next_lesson.xp_reward }} XP · {{ next_lesson.estimated_minutes }} min
-                </span>
-            </div>
-            <div class="hero-progress-box">
-                <div class="progress-track" style="height: 7px; flex: 1;">
-                    <div class="progress-fill" data-progress="{{ overall_progress_pct }}"></div>
-                </div>
-                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--ro-indigo); white-space: nowrap; font-variant-numeric: tabular-nums;">
-                    {{ overall_progress_pct }}% ({% if lang == 'en' %}{{ total_completed }}/{{ total_lessons }} done{% else %}{{ total_completed }}/{{ total_lessons }} hotovo{% endif %})
-                </span>
-            </div>
-            {% else %}
-            <h1 class="hero-title" style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
-                <span>{% if lang == 'en' %}All Available Lessons Completed!{% else %}Všetky dostupné lekcie dokončené!{% endif %}</span>
-                <span class="t-shimmer" style="display: inline-flex; align-items: center; color: var(--gold-text);">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M14 14.66V17c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
-                </span>
-            </h1>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
-                {% if lang == 'en' %}Congratulations! Check your graduation certificate or explore the Practice Arena.{% else %}Gratulujeme! Pozri si svoj absolventský certifikát alebo trénuj v Aréne.{% endif %}
-            </p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Hero CTA Button & Stats Quick Pill -->
-    <div style="display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0;">
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--gold-text); font-variant-numeric: tabular-nums;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
-                {{ user.doros }}
-            </div>
-            <div style="padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-hairline); display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--flame-text); font-variant-numeric: tabular-nums;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-.5 2.5-2.5 4.5-4 6-2 2-3 4.5-3 7a7 7 0 0 0 14 0c0-3-2-5.5-4-7.5-1-1-1.8-2.5-2-4.5-.4 1-.8 1.8-1 2.2-.2-1-.2-2.2 0-3.2z"/></svg>
-                {{ user.current_streak }}d
-            </div>
-        </div>
-
-        {% if next_lesson %}
-        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary" style="padding: 0.75rem 1.6rem; font-weight: 800; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 16px rgba(70, 54, 245, 0.35);">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            {% if lang == 'en' %}Continue Lesson {{ next_lesson.module.order }}.{{ next_lesson.order }} →{% else %}Pokračovať v lekcii {{ next_lesson.module.order }}.{{ next_lesson.order }} →{% endif %}
-        </a>
-        {% else %}
-        <a href="{% url 'certificate' %}" class="btn btn-primary" style="padding: 0.75rem 1.6rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-            {% if lang == 'en' %}View Certificate{% else %}Zobraziť Certifikát{% endif %}
-        </a>
-        {% endif %}
-    </div>
-</section>
-
-<!-- ========================================================================
-     3. HORIZONTÁLNY PREPÍNAČ KARIÉRNYCH CIEST (TRACKS) + VYHĽADÁVANIE
-     ======================================================================== -->
-<div class="tracks-bar animate-in delay-1">
-    <div class="track-pills-list" id="trackFiltersList">
-        <button type="button" class="track-pill-btn active" data-track="ALL">
-            {% if lang == 'en' %}All Tracks (18){% else %}Všetky cesty (18){% endif %}
-        </button>
-        <button type="button" class="track-pill-btn" data-track="FUNDAMENTALS">
-            {% if lang == 'en' %}1. Fundamentals (Mod 1–4){% else %}1. Základy a Logika (Moduly 1–4){% endif %}
-        </button>
-        <button type="button" class="track-pill-btn" data-track="DATA_STRUCTURES">
-            {% if lang == 'en' %}2. Data Structures (Mod 5–8){% else %}2. Funkcie a Dáta (Moduly 5–8){% endif %}
-        </button>
-        <button type="button" class="track-pill-btn" data-track="OOP">
-            {% if lang == 'en' %}3. OOP & Architecture (Mod 9–10){% else %}3. OOP & Architektúra (Moduly 9–10){% endif %}
-        </button>
-        <button type="button" class="track-pill-btn" data-track="ALGORITHMS_AND_DATA">
-            {% if lang == 'en' %}4. Algorithms, SQL & APIs (Mod 11–15){% else %}4. Algoritmy, SQL a API (Moduly 11–15){% endif %}
-        </button>
-        <button type="button" class="track-pill-btn" data-track="MATURITA_PREP">
-            {% if lang == 'en' %}5. Maturita Special & Projects (Mod 16–18){% else %}5. Maturitný špeciál & Projekty (Moduly 16–18){% endif %}
-        </button>
-    </div>
-
-    <!-- Živé vyhľadávacie pole -->
-    <div class="search-input-wrapper">
-        <svg class="search-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="curriculumSearchInput" class="search-input-field"
-               placeholder="{% if lang == 'en' %}Search lesson or topic...{% else %}Hľadať lekciu alebo tému...{% endif %}">
-    </div>
-</div>
-
-<!-- ========================================================================
-     4. HLAVNÝ LAYOUT: ZBALITEĽNÉ AKORDEÓNY MODULOV (VĽAVO) + TABS SIDEBAR (VPRAVO)
-     ======================================================================== -->
-<div class="dashboard-grid">
-
-    <!-- ĽAVÁ ČASŤ: ZBALITEĽNÉ AKORDEÓNY MODULOV (ŽIADNA NEKONEČNÁ STENA OBSAHU!) -->
-    <div class="modules-accordion-stack animate-in delay-2" id="modulesStack">
-        {% for card in module_cards %}
-        <div class="module-accordion-card {% if card.module.id == default_open_module_id %}open{% endif %} {% if card.done == card.total and card.total > 0 %}is-completed{% endif %}"
-             data-track="{{ card.module.track }}"
-             data-title="{% if lang == 'en' %}{{ card.module.title_en|lower }}{% else %}{{ card.module.title_sk|lower }}{% endif %}"
-             id="module-card-{{ card.module.id }}">
-
-            <!-- Klikateľná hlavička akordeónu -->
-            <div class="module-accordion-header" onclick="toggleModuleAccordion(this)">
-                <div class="module-header-left">
-                    <div class="module-number-badge">
-                        {% if card.done == card.total and card.total > 0 %}
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        {% else %}
-                        {{ card.module.order|stringformat:"02d" }}
-                        {% endif %}
-                    </div>
-
-                    <div class="module-info-wrap">
-                        <div class="module-chips-row">
-                            <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                                {{ card.module.get_track_display|default:card.module.track }}
-                            </span>
-                            <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 0.1rem 0.45rem; border-radius: 6px;">
-                                {{ card.module.estimated_hours }}h
-                            </span>
-                            {% if card.module.difficulty_level == 'BEGINNER' %}
-                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px; background: var(--emerald-bg); color: var(--emerald-text);">
-                                {{ card.module.get_difficulty_level_display }}
-                            </span>
-                            {% elif card.module.difficulty_level == 'INTERMEDIATE' %}
-                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px; background: var(--gold-bg); color: var(--gold-text);">
-                                {{ card.module.get_difficulty_level_display }}
-                            </span>
-                            {% else %}
-                            <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 6px; background: var(--flame-bg); color: var(--flame-text);">
-                                {{ card.module.get_difficulty_level_display }}
-                            </span>
-                            {% endif %}
-                            {% if card.module.is_pro_only %}
-                            <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; background: var(--gold-bg); color: var(--gold-text); border: 1px solid var(--gold-border); padding: 0.1rem 0.45rem; border-radius: 6px;">
-                                PRO / EDU
-                            </span>
-                            {% else %}
-                            <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; background: var(--bg-subtle); color: var(--text-muted); padding: 0.1rem 0.45rem; border-radius: 6px;">
-                                FREE
-                            </span>
-                            {% endif %}
-                        </div>
-
-                        <h3 class="module-title-h3">
-                            {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
-                        </h3>
-                    </div>
-                </div>
-
-                <div class="module-header-right">
-                    <div class="module-progress-stat">
-                        <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; color: var(--text-primary);">
-                            {{ card.done }} / {{ card.total }} {% if lang == 'en' %}lessons{% else %}lekcií{% endif %}
-                        </span>
-                        <div class="progress-track" style="height: 5px; width: 90px; margin-top: 0.25rem;">
-                            <div class="progress-fill" data-progress="{{ card.pct }}"></div>
-                        </div>
-                    </div>
-
-                    <span class="accordion-chevron">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                    </span>
-                </div>
-            </div>
-
-            <!-- Telo akordeónu s lekciami -->
-            <div class="module-accordion-body">
-                <p class="module-description-text">
-                    {% if lang == 'en' %}{{ card.module.description_en }}{% else %}{{ card.module.description_sk }}{% endif %}
+<!-- 2-COLUMN EMERALD DASHBOARD GRID -->
+<div class="emerald-dashboard-grid">
+    <!-- LEFT / CENTER: WINDING LEARNING MAP -->
+    <div class="learning-map-container">
+        <!-- 1. Header with Kicker, Track Switcher, Title, Subtitle, and Circular Progress Ring -->
+        <div class="learning-map-header">
+            <div class="learning-map-meta">
+                <span class="map-kicker">{% if lang == 'en' %}MY LEARNING MAP{% else %}MOJA MAPA UČIVA{% endif %}</span>
+                <h1 class="map-title" id="activeTrackTitle">
+                    {% if lang == 'en' %}Python Foundations{% else %}Základy Pythonu{% endif %}
+                </h1>
+                <p class="map-subhead" id="activeTrackDesc">
+                    {% if lang == 'en' %}A guided, hands-on journey from basics to real projects.{% else %}Sprevádzaná praktická cesta od základov až po skutočné projekty.{% endif %}
                 </p>
-
-                {% if card.locked %}
-                <div style="padding: 1.5rem; text-align: center; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--gold-border);">
-                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0 0 0.85rem;">
-                        {% if lang == 'en' %}This advanced module requires an active Codoro PRO account or School License key.{% else %}Tento pokročilý modul vyžaduje Codoro PRO účet alebo školskú licenciu.{% endif %}
-                    </p>
-                    <a href="{% url 'shop' %}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
-                        {% if lang == 'en' %}Unlock in Shop{% else %}Odomknúť v Obchode{% endif %}
-                    </a>
-                </div>
-                {% else %}
-                <div class="module-lessons-list">
-                    {% for lesson in card.lessons %}
-                    <a href="{% url 'lesson_detail' lesson.id %}"
-                       class="lesson-item-row {% if next_lesson and lesson.id == next_lesson.id %}is-active{% endif %}"
-                       data-lesson-title="{% if lang == 'en' %}{{ lesson.title_en|lower }}{% else %}{{ lesson.title_sk|lower }}{% endif %}">
-                        <div style="display: flex; align-items: center; gap: 0.85rem; min-width: 0;">
-                            {% if lesson.id in completed_lesson_ids %}
-                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--emerald-bg); color: var(--emerald-text);">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                            </span>
-                            {% elif next_lesson and lesson.id == next_lesson.id %}
-                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--ro-indigo); color: #ffffff;">
-                                {{ lesson.order }}
-                            </span>
-                            {% else %}
-                            <span style="width: 28px; height: 28px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--bg-surface); color: var(--text-muted); border: 1px solid var(--border-hairline);">
-                                {{ lesson.order }}
-                            </span>
-                            {% endif %}
-
-                            <div style="min-width: 0;">
-                                <div style="display: flex; align-items: center; gap: 0.45rem;">
-                                    <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                                        {% if lang == 'en' %}LESSON 0{{ lesson.order }}{% else %}LEKCIA 0{{ lesson.order }}{% endif %}
-                                    </span>
-                                    <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);">
-                                        · {{ lesson.exercises.count }} {% if lang == 'en' %}tasks{% else %}úloh{% endif %}
-                                    </span>
-                                    <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--gold-text);">
-                                        +{{ lesson.xp_reward }} XP
-                                    </span>
-                                </div>
-                                <strong style="font-size: 0.94rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}
-                                </strong>
-                            </div>
-                        </div>
-
-                        <div style="flex-shrink: 0;">
-                            {% if lesson.id in completed_lesson_ids %}
-                            <span style="font-size: 0.76rem; font-weight: 700; color: var(--emerald-text); display: inline-flex; align-items: center; gap: 0.25rem;">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                                {% if lang == 'en' %}Completed{% else %}Dokončené{% endif %}
-                            </span>
-                            {% elif next_lesson and lesson.id == next_lesson.id %}
-                            <span class="btn btn-primary btn-sm" style="font-weight: 800; font-size: 0.74rem; padding: 0.35rem 0.85rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                {% if lang == 'en' %}Continue{% else %}Spustiť{% endif %}
-                            </span>
-                            {% else %}
-                            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
-                                {% if lang == 'en' %}Open →{% else %}Otvoriť →{% endif %}
-                            </span>
-                            {% endif %}
-                        </div>
-                    </a>
-                    {% empty %}
-                    <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0.5rem 0;">
-                        {% if lang == 'en' %}No lessons attached to this module yet.{% else %}Tento modul zatiaľ neobsahuje lekcie.{% endif %}
-                    </p>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {% empty %}
-        <div class="card-surface" style="padding: 3rem; text-align: center; color: var(--text-muted);">
-            {% if lang == 'en' %}No modules configured yet. Run the seed script to populate curriculum.{% else %}Zatiaľ nie sú vytvorené žiadne moduly. Spusti seed_codoro.py.{% endif %}
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- PRAVÝ PANEL: JEDNA ZJEDNOTENÁ KARTA S 3 ZÁLOŽKAMI (BEZ NEKONEČNÉHO SCROLLU) -->
-    <aside class="animate-in delay-2">
-        <div class="sidebar-unified-card">
-
-            <!-- Prepínacie záložky pravého panelu -->
-            <div class="sidebar-tab-nav">
-                <button type="button" class="sidebar-tab-btn active" onclick="switchSidebarTab('quests')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                    {% if lang == 'en' %}Quests{% else %}Výzvy{% endif %}
-                </button>
-                <button type="button" class="sidebar-tab-btn" onclick="switchSidebarTab('classquest')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-                    {% if lang == 'en' %}Class Quest{% else %}Trieda{% endif %}
-                </button>
-                <button type="button" class="sidebar-tab-btn" onclick="switchSidebarTab('leaderboard')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M14 14.66V17c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
-                    {% if lang == 'en' %}Ranks{% else %}Rebríček{% endif %}
-                </button>
             </div>
 
-            <div class="sidebar-tab-content">
+            <!-- Circular Progress Ring (SVG) -->
+            <div class="progress-ring-badge">
+                <svg class="progress-ring-svg" viewBox="0 0 48 48">
+                    <circle class="progress-ring-circle-bg" cx="24" cy="24" r="18"></circle>
+                    <circle class="progress-ring-circle-val" id="mapProgressCircle" cx="24" cy="24" r="18"
+                            stroke-dasharray="113.1" stroke-dashoffset="113.1"></circle>
+                </svg>
+                <div class="progress-ring-text">
+                    <span class="progress-ring-pct" id="mapProgressPct">{{ tracks_data.0.pct|default_if_none:0 }}%</span>
+                    <span class="progress-ring-label">{% if lang == 'en' %}Complete{% else %}Hotovo{% endif %}</span>
+                </div>
+            </div>
+        </div>
 
-                <!-- 1. ZÁLOŽKA: OSOBNÉ VÝZVY (QUESTY) -->
-                <div class="sidebar-panel active" id="sidebar-panel-quests">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                            {% if lang == 'en' %}ACTIVE MISSIONS{% else %}AKTÍVNE VÝZVY{% endif %}
-                        </span>
-                        <span style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: 6px;">
-                            {{ quest_items|length }} {% if lang == 'en' %}active{% else %}aktívnych{% endif %}
-                        </span>
-                    </div>
+        <!-- 2. Responsive Career Track Segmented Pills (Zero Overflow / Zero Scrollbar) -->
+        <div class="track-switcher-pills" id="trackSwitcherPills" role="tablist" aria-label="Kariérne cesty">
+            {% for track in tracks_data %}
+            <button type="button" class="track-switcher-pill {% if forloop.first %}active{% endif %}"
+                    data-track="{{ track.key }}"
+                    data-title-en="{{ track.title_en }}"
+                    data-title-sk="{{ track.title_sk }}"
+                    data-desc-en="{{ track.desc_en }}"
+                    data-desc-sk="{{ track.desc_sk }}"
+                    data-track-pct="{{ track.pct }}"
+                    onclick="switchTrackMap(this)"
+                    role="tab"
+                    aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                <span class="track-tab-icon">
+                    {% if track.icon == 'zap' %}
+                        {% include 'components/icon_svg.html' with name='lightning' size='13' %}
+                    {% elif track.icon == 'layers' %}
+                        {% include 'components/icon_svg.html' with name='layers' size='13' %}
+                    {% elif track.icon == 'box' %}
+                        {% include 'components/icon_svg.html' with name='box' size='13' %}
+                    {% elif track.icon == 'cpu' %}
+                        {% include 'components/icon_svg.html' with name='database' size='13' %}
+                    {% else %}
+                        {% include 'components/icon_svg.html' with name='award' size='13' %}
+                    {% endif %}
+                </span>
+                <span class="track-tab-label">{% if lang == 'en' %}{{ track.short_en|default:track.title_en }}{% else %}{{ track.short_sk|default:track.title_sk }}{% endif %}</span>
+                <span class="track-tab-pct-pill">{{ track.pct }}%</span>
+            </button>
+            {% endfor %}
+        </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 0.65rem; max-height: 480px; overflow-y: auto; padding-right: 2px;">
-                        {% for item in quest_items %}
-                        <div style="padding: 0.8rem 0.85rem; border-radius: var(--radius-sm); background: var(--bg-subtle); border: 1px solid var(--border-hairline);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                                <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                                    {{ item.quest.get_period_display|default:item.quest.period }}
-                                </span>
-                                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--gold-text);">
-                                    +{{ item.quest.reward_doros }} Doros · +{{ item.quest.reward_xp }} XP
+        <!-- 3. Winding Stepping-Stone Path with 3D Pedestals and Flags -->
+        <div class="winding-path-deck" id="windingPathDeck" style="position:relative;">
+            <!-- Panoramic Mountain Ridge & Forest Backdrop in empty space -->
+            <div class="map-hills-backdrop landscape-ridge-backdrop" aria-hidden="true" style="position:absolute; top:-35px; left:0; right:0; height:120px; pointer-events:none; z-index:0; overflow:hidden;">
+                {% include 'components/illustrations_svg.html' with illustration='mountain_peaks_landscape' %}
+            </div>
+
+            {% for card in module_cards %}
+            <!-- Organic Landscape Scenery Clusters in Empty Margins (not on flags) -->
+            {% if forloop.counter == 2 %}
+            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-end; padding-right:1rem; margin:-0.75rem 0; opacity:0.85;">
+                {% include 'components/illustrations_svg.html' with illustration='pine_tree_cluster' %}
+            </div>
+            {% elif forloop.counter == 5 %}
+            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-start; padding-left:1.5rem; margin:-0.75rem 0; opacity:0.85;">
+                {% include 'components/illustrations_svg.html' with illustration='rocky_meadow_cluster' %}
+            </div>
+            {% elif forloop.counter == 9 %}
+            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-end; padding-right:2rem; margin:-0.75rem 0; opacity:0.85;">
+                {% include 'components/illustrations_svg.html' with illustration='meadow_shrub_stone' %}
+            </div>
+            {% elif forloop.counter == 13 %}
+            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-start; padding-left:2.5rem; margin:-0.75rem 0; opacity:0.85;">
+                {% include 'components/illustrations_svg.html' with illustration='pine_tree_cluster' %}
+            </div>
+            {% elif forloop.counter == 16 %}
+            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-end; padding-right:1.5rem; margin:-0.75rem 0; opacity:0.85;">
+                {% include 'components/illustrations_svg.html' with illustration='river_stone_cluster' %}
+            </div>
+            {% endif %}
+
+            <div class="module-path-row" data-track="{{ card.module.track }}" id="module-row-{{ card.module.id }}">
+                <!-- Pedestal with Clean Flag Only -->
+                <div class="path-pedestal-anchor">
+                    {% if card.done == card.total and card.total > 0 %}
+                        {% include 'components/illustrations_svg.html' with illustration='pedestal_flag' state='completed' %}
+                    {% elif card.module.id == default_open_module_id %}
+                        {% include 'components/illustrations_svg.html' with illustration='pedestal_flag' state='active' %}
+                    {% else %}
+                        {% include 'components/illustrations_svg.html' with illustration='pedestal_flag' state='locked' %}
+                    {% endif %}
+
+                    <div class="path-connector-line"></div>
+                </div>
+
+                <!-- Accordion Module Card with Soft Round Corners and Circular Rings -->
+                <div class="module-stone-card {% if card.module.id == default_open_module_id %}active{% else %}collapsed{% endif %}"
+                     id="module-card-{{ card.module.id }}">
+                    <button type="button" class="module-card-header-btn" onclick="toggleModuleStoneCard('{{ card.module.id }}')">
+                        <div class="module-card-header-info">
+                            <div class="module-card-title-row">
+                                <h3 class="module-card-title">
+                                    {{ card.module.order }}. {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
+                                </h3>
+                                <span class="chevron-arrow" id="chevron-{{ card.module.id }}" style="font-size:0.95rem; color:var(--text-muted); transition:transform 0.2s ease;">
+                                    {% if card.module.id == default_open_module_id %}⌃{% else %}⌵{% endif %}
                                 </span>
                             </div>
+                            <p class="module-card-subhead">
+                                {% if lang == 'en' %}{{ card.module.description_en|truncatewords:14 }}{% else %}{{ card.module.description_sk|truncatewords:14 }}{% endif %}
+                            </p>
+                        </div>
 
-                            <div style="font-weight: 700; font-size: 0.84rem; margin-bottom: 0.4rem; color: var(--text-primary); line-height: 1.35;">
-                                {% if lang == 'en' %}{{ item.quest.title_en }}{% else %}{{ item.quest.title_sk }}{% endif %}
+                        <!-- Circular Progress Indicator on Module Card Header -->
+                        <div class="module-card-status-badge">
+                            {% if card.done == card.total and card.total > 0 %}
+                            <div class="badge-round-check" title="{% if lang == 'en' %}Completed{% else %}Dokončené{% endif %}" style="width:34px; height:34px; border-radius:50%; background:var(--pass-green-bg); color:var(--pass-green); display:inline-flex; align-items:center; justify-content:center; box-shadow:var(--shadow-xs);">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                             </div>
-
-                            <div class="progress-track" style="height: 5px; margin-bottom: 0.35rem; background: var(--bg-surface);">
-                                <div class="progress-fill" data-progress="{{ item.progress_pct }}"></div>
+                            {% elif card.pct > 0 %}
+                            <div class="module-circular-ring-badge" title="{{ card.pct }}% {% if lang == 'en' %}completed{% else %}hotovo{% endif %}" style="position:relative; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center;">
+                                <svg viewBox="0 0 36 36" width="36" height="36" style="transform:rotate(-90deg);">
+                                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--border-subtle)" stroke-width="3"></circle>
+                                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--brand-emerald)" stroke-width="3" stroke-dasharray="88" stroke-dashoffset="{{ card.dash_offset|default:29 }}" stroke-linecap="round"></circle>
+                                </svg>
+                                <span style="position:absolute; font-family:var(--font-mono); font-size:0.68rem; font-weight:800; color:var(--brand-emerald); font-variant-numeric:tabular-nums;">{{ card.pct }}%</span>
                             </div>
+                            {% else %}
+                            <div class="module-circular-ring-badge zero" title="0% {% if lang == 'en' %}completed{% else %}hotovo{% endif %}" style="position:relative; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center;">
+                                <svg viewBox="0 0 36 36" width="36" height="36">
+                                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--border-subtle)" stroke-width="2.5"></circle>
+                                </svg>
+                                <span style="position:absolute; font-family:var(--font-mono); font-size:0.68rem; font-weight:700; color:var(--text-muted); font-variant-numeric:tabular-nums;">0%</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </button>
 
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
-                                    {{ item.current_value }} / {{ item.quest.target_value }}
+                    <!-- Inner Lessons List (Expanded for Active) with Soft Circular Indicators -->
+                    <div class="module-card-lessons-body" id="lessons-body-{{ card.module.id }}">
+                        {% for lesson in card.lessons %}
+                        <a href="{% url 'lesson_detail' lesson.id %}" class="lesson-row-item">
+                            <div class="lesson-row-left">
+                                <span class="lesson-play-icon" style="display:inline-flex; align-items:center;">
+                                    {% include 'components/icon_svg.html' with name='play' size='10' %}
                                 </span>
-                                {% if item.is_completed and not item.is_claimed %}
-                                <form method="post" action="{% url 'claim_quest_reward' item.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.25rem 0.65rem; font-size: 0.72rem; font-weight: 800;">
-                                        {% if lang == 'en' %}Claim{% else %}Prevziať{% endif %}
-                                    </button>
-                                </form>
-                                {% elif item.is_claimed %}
-                                <span style="display:inline-flex; align-items:center; gap:0.35rem; font-size: 0.74rem; font-weight: 800; color: var(--emerald-text);">
+                                <span>{{ card.module.order }}.{{ lesson.order }} {% if lang == 'en' %}{{ lesson.title_en }}{% else %}{{ lesson.title_sk }}{% endif %}</span>
+                            </div>
+                            <div>
+                                {% if lesson.is_completed or lesson.progress_pct == 100 %}
+                                <span class="lesson-circular-indicator completed" style="display:inline-flex; align-items:center; gap:0.35rem; color:var(--pass-green); font-weight:700; font-size:0.82rem; font-family:var(--font-mono); font-variant-numeric:tabular-nums;">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                    {% if lang == 'en' %}Claimed{% else %}Prevzaté{% endif %}
+                                    <span>100%</span>
+                                </span>
+                                {% elif lesson.progress_pct > 0 %}
+                                <span class="lesson-circular-indicator in-progress" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--brand-emerald); font-weight:700; font-size:0.82rem; font-family:var(--font-mono); font-variant-numeric:tabular-nums;">
+                                    <svg viewBox="0 0 20 20" width="16" height="16" style="transform:rotate(-90deg);">
+                                        <circle cx="10" cy="10" r="7.5" fill="none" stroke="var(--border-subtle)" stroke-width="2.5"></circle>
+                                        <circle cx="10" cy="10" r="7.5" fill="none" stroke="var(--brand-emerald)" stroke-width="2.5" stroke-dasharray="47.1" stroke-dashoffset="{{ lesson.dash_offset|default:23.5 }}" stroke-linecap="round"></circle>
+                                    </svg>
+                                    <span>{{ lesson.progress_pct }}%</span>
+                                </span>
+                                {% else %}
+                                <span class="lesson-circular-indicator zero" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-muted); font-weight:600; font-size:0.82rem; font-family:var(--font-mono); font-variant-numeric:tabular-nums;">
+                                    <svg viewBox="0 0 20 20" width="16" height="16">
+                                        <circle cx="10" cy="10" r="7.5" fill="none" stroke="var(--border-subtle)" stroke-width="2.2"></circle>
+                                    </svg>
+                                    <span>0%</span>
                                 </span>
                                 {% endif %}
                             </div>
-                        </div>
+                        </a>
                         {% empty %}
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">
-                            {% if lang == 'en' %}No active quests at the moment.{% else %}Žiadne aktívne výzvy.{% endif %}
+                        <p style="font-size:0.84rem; color:var(--text-muted); margin:0;">
+                            {% if lang == 'en' %}No lessons in this module yet.{% else %}Tento modul zatiaľ neobsahuje lekcie.{% endif %}
                         </p>
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+            {% endfor %}
 
-                <!-- 2. ZÁLOŽKA: TRIEDNY QUEST -->
-                <div class="sidebar-panel" id="sidebar-panel-classquest">
-                    {% if class_quest %}
-                    <div style="margin-bottom: 0.85rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                            {% if lang == 'en' %}CLASSROOM RAID{% else %}SPOLOČNÁ TRIEDNA VÝZVA{% endif %}
-                        </span>
-                        <h4 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0;">
-                            {% if lang == 'en' %}{{ class_quest.title_en }}{% else %}{{ class_quest.title_sk }}{% endif %}
-                        </h4>
-                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 0.75rem; line-height: 1.45;">
-                            {% if lang == 'en' %}
-                            Solve <strong>{{ class_quest.target_exercises_count }} tasks</strong> as a class. Reward: +{{ class_quest.reward_doros_per_student }} Doros per student!
-                            {% else %}
-                            Vyriešte spolu <strong>{{ class_quest.target_exercises_count }} úloh</strong>. Odmena: +{{ class_quest.reward_doros_per_student }} Doros každému!
-                            {% endif %}
-                        </p>
-
-                        <div class="progress-track" style="height: 7px; margin-bottom: 0.45rem;">
-                            <div class="progress-fill" data-progress="{{ class_quest.progress_pct }}"></div>
-                        </div>
-
-                        <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
-                            <span>{{ class_quest.current_exercises_count }} / {{ class_quest.target_exercises_count }}</span>
-                            <span style="font-weight: 800; color: var(--ro-indigo);">{{ class_quest.progress_pct }}%</span>
-                        </div>
-                    </div>
-
-                    {% if top_contributors %}
-                    <div style="border-top: 1px solid var(--border-hairline); padding-top: 0.75rem;">
-                        <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-mono); display: block; margin-bottom: 0.45rem;">
-                            {% if lang == 'en' %}Top Contributors:{% else %}Najviac prispeli:{% endif %}
-                        </span>
-                        {% for c in top_contributors %}
-                        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.25rem 0;">
-                            <span style="color: var(--text-primary); font-weight: 600;">{{ c.student.username }}</span>
-                            <span style="font-family: var(--font-mono); color: var(--gold-text); font-weight: 700;">{{ c.amount_contributed }}× úloh</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% else %}
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">
-                        {% if lang == 'en' %}No active classroom quest right now.{% else %}Vaša trieda momentálne nemá vypísaný triedny quest.{% endif %}
-                    </p>
-                    {% endif %}
+            <!-- Mascot cheering at bottom of the learning map -->
+            <div class="learning-map-footer-mascot">
+                <div style="width:135px; height:auto; flex-shrink:0;">
+                    {% include 'components/illustrations_svg.html' with illustration='codo_on_rock' %}
                 </div>
-
-                <!-- 3. ZÁLOŽKA: TRIEDNY REBRÍČEK -->
-                <div class="sidebar-panel" id="sidebar-panel-leaderboard">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ro-indigo); text-transform: uppercase;">
-                            {% if lang == 'en' %}CLASS LEADERBOARD{% else %}TRIEDNY REBRÍČEK{% endif %}
-                        </span>
-                        {% if user.school_class %}
-                        <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--ro-indigo); background: var(--ro-indigo-soft); padding: 0.1rem 0.45rem; border-radius: 4px;">
-                            {{ user.school_class.name }}
-                        </span>
-                        {% endif %}
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 0.35rem;">
-                        {% for s in leaderboard %}
-                        {% if s.id == user.id %}
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.65rem; border-radius:var(--radius-sm); background: var(--ro-indigo-soft); border: 1px solid var(--ro-indigo-border);">
+                <div class="mascot-cheer-speech">
+                    <strong style="color:var(--brand-emerald); font-family:var(--font-display); font-size:0.95rem;">
+                        {% if lang == 'en' %}Codo says:{% else %}Codo ťa povzbudzuje:{% endif %}
+                    </strong>
+                    <p style="margin:0.25rem 0 0; font-size:0.86rem; color:var(--text-secondary); line-height:1.5;">
+                        {% if lang == 'en' %}
+                        "Keep going! Every milestone completed moves your class closer to the weekly Doros reward!"
                         {% else %}
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.65rem; border-radius:var(--radius-sm); background: var(--bg-subtle);">
+                        "Nevzdávaj to! Každý vyriešený test posúva celú tvoju triedu k týždennej odmene v Class Queste!"
                         {% endif %}
-                            <div style="display: flex; align-items: center; gap: 0.6rem;">
-                                <span class="podium-rank-chip {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
-                                    #{{ forloop.counter }}
-                                </span>
-                                <div>
-                                    <strong style="font-size: 0.85rem; color: var(--text-primary); display:block;">
-                                        {{ s.username }} {% if s.id == user.id %}<span style="color: var(--ro-indigo); font-weight: 800;">({% if lang == 'en' %}You{% else %}Ty{% endif %})</span>{% endif %}
-                                    </strong>
-                                    <span style="font-size: 0.72rem; color: var(--text-muted); display:inline-flex; align-items:center; gap:0.3rem;">
-                                        Lvl {{ s.level }} · {{ s.badge_count }} <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align: -1px; display:inline-block;"><circle cx="12" cy="8" r="6"/><path d="M15.4 12.8 17 22l-5-3-5 3 1.6-9.2"/></svg>
-                                    </span>
-                                </div>
-                            </div>
-                            <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 800; color: var(--text-primary);">
-                                {{ s.xp }} XP
-                            </span>
-                        </div>
-                        {% empty %}
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">
-                            {% if lang == 'en' %}No students on the leaderboard yet.{% else %}Rebríček je zatiaľ prázdny.{% endif %}
-                        </p>
-                        {% endfor %}
-                    </div>
+                    </p>
                 </div>
-
             </div>
         </div>
-    </aside>
+    </div>
 
+    <!-- RIGHT COLUMN: 3 WIDGET CARDS -->
+    <aside class="emerald-widgets-deck">
+        <!-- 1. Class Quest Widget Card -->
+        <div class="widget-card" id="class-quest">
+            <div class="widget-header">
+                <div style="width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;">
+                    <span style="display:inline-flex; align-items:center; width:34px; height:34px;" class="float-bob-alt">
+                        {% include 'components/illustrations_svg.html' with illustration='quest_target_2d' %}
+                    </span>
+                </div>
+                <div>
+                    <h3 class="widget-title">{% if lang == 'en' %}Class Quest{% else %}Triedny Quest{% endif %}</h3>
+                </div>
+            </div>
+            <p class="widget-subtext">
+                {% if lang == 'en' %}"Complete this week's goal with your class!"{% else %}"Splňte tohtotýždňový cieľ so svojou triedou!"{% endif %}
+            </p>
+
+            <div class="quest-goal-row">
+                <span>{% if lang == 'en' %}Weekly Goal{% else %}Týždenný cieľ{% endif %}</span>
+                <span>
+                    {% if class_quest %}
+                    {{ class_quest.current_progress }} / {{ class_quest.target_goal }} {% if lang == 'en' %}tasks{% else %}úloh{% endif %}
+                    {% else %}
+                    8 / 10 {% if lang == 'en' %}tasks{% else %}úloh{% endif %}
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="quest-progress-bar-bg">
+                <div class="quest-progress-bar-val" data-pct="{{ class_quest.progress_percentage|default:80 }}"></div>
+            </div>
+
+            <div class="quest-reward-row">
+                <div style="display:flex; align-items:center; gap:0.45rem;">
+                    <span style="display:inline-flex; align-items:center;">
+                        {% include 'components/icon_svg.html' with name='gift' size='15' %}
+                    </span>
+                    <span>{% if lang == 'en' %}Class Reward{% else %}Triedna odmena{% endif %}</span>
+                </div>
+                <span class="reward-pill-orange" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                    {% include 'components/illustrations_svg.html' with illustration='doros_coin_2d' %}
+                    <span>+200 Doros</span>
+                </span>
+            </div>
+
+            {% if active_drop %}
+            <div style="margin-top:0.5rem; padding:0.75rem; background:var(--bg-mint-soft); border-radius:12px; border:1px solid var(--brand-emerald-border); display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--brand-emerald); display:inline-flex; align-items:center; gap:0.35rem;">
+                    {% include 'components/icon_svg.html' with name='lightning' size='14' %}
+                    <span>{% if lang == 'en' %}Live Coin Drop Active!{% else %}Bleskový Coin Drop od učiteľa!{% endif %}</span>
+                </div>
+                <form method="post" action="{% url 'claim_coin_drop' active_drop.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-pill-emerald" style="padding:0.25rem 0.65rem; font-size:0.75rem;">
+                        {% if lang == 'en' %}Claim Drop{% else %}Vyzdvihnúť{% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 2. My Doros Wallet Widget Card -->
+        <div class="widget-card">
+            <div class="widget-header">
+                <div style="width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;">
+                    {% include 'components/illustrations_svg.html' with illustration='doros_coin_2d' %}
+                </div>
+                <div>
+                    <h3 class="widget-title">{% if lang == 'en' %}My Doros Wallet{% else %}Moja Doros peňaženka{% endif %}</h3>
+                </div>
+            </div>
+
+            <div class="wallet-big-val">
+                {% include 'components/illustrations_svg.html' with illustration='doros_coin_2d' %}
+                <span>{{ user.doros|default:'1,240' }} Doros</span>
+            </div>
+
+            <a href="{% url 'shop' %}" class="btn-emerald-full" style="display:inline-flex; align-items:center; justify-content:center; gap:0.45rem;">
+                {% include 'components/icon_svg.html' with name='shop' size='16' %}
+                <span>{% if lang == 'en' %}Spend in Class Shop{% else %}Minúť v školskom obchode{% endif %}</span>
+            </a>
+
+            <button type="button" class="btn-subtle-full" onclick="openEarningTipsModal()" style="display:inline-flex; align-items:center; justify-content:center; gap:0.45rem;">
+                {% include 'components/icon_svg.html' with name='coin' size='16' %}
+                <span>{% if lang == 'en' %}Earning Tips{% else %}Ako získať Doros{% endif %}</span>
+            </button>
+        </div>
+
+        <!-- 3. My Progress Widget Card -->
+        <div class="widget-card">
+            <div class="widget-header">
+                <div class="widget-icon-box green" style="display:inline-flex; align-items:center; justify-content:center;">
+                    {% include 'components/icon_svg.html' with name='chart' size='18' %}
+                </div>
+                <div>
+                    <h3 class="widget-title">{% if lang == 'en' %}My Progress{% else %}Môj postup{% endif %}</h3>
+                </div>
+            </div>
+
+            <!-- Stat 1: Modules Completed -->
+            <div class="progress-stat-row">
+                <div class="progress-stat-labels">
+                    <span>{% if lang == 'en' %}Modules Completed{% else %}Dokončené moduly{% endif %}</span>
+                    <span>{{ modules_completed|default_if_none:0 }} / {{ total_modules }}</span>
+                </div>
+                {% if total_modules > 0 %}
+                    {% widthratio modules_completed|default_if_none:0 total_modules 100 as mod_calc_pct %}
+                {% endif %}
+                <div class="progress-mini-bar-bg">
+                    <div class="progress-mini-bar-val" data-pct="{{ mod_calc_pct|default:0 }}"></div>
+                </div>
+            </div>
+
+            <!-- Stat 2: Lessons Completed -->
+            <div class="progress-stat-row">
+                <div class="progress-stat-labels">
+                    <span>{% if lang == 'en' %}Lessons Completed{% else %}Dokončené lekcie{% endif %}</span>
+                    <span>{{ total_completed|default_if_none:0 }} / {{ total_lessons }}</span>
+                </div>
+                <div class="progress-mini-bar-bg">
+                    <div class="progress-mini-bar-val" data-pct="{{ overall_progress_pct|default_if_none:0 }}"></div>
+                </div>
+            </div>
+
+            <!-- Stat 3: Tests Passed -->
+            <div class="progress-stat-row">
+                <div class="progress-stat-labels">
+                    <span>{% if lang == 'en' %}Tests Passed{% else %}Úspešné testy{% endif %}</span>
+                    <span>{{ solved_count|default_if_none:0 }} / {{ total_exercises }}</span>
+                </div>
+                {% if total_exercises > 0 %}
+                    {% widthratio solved_count|default_if_none:0 total_exercises 100 as test_calc_pct %}
+                {% endif %}
+                <div class="progress-mini-bar-bg">
+                    <div class="progress-mini-bar-val" data-pct="{{ test_calc_pct|default:0 }}"></div>
+                </div>
+            </div>
+
+            {% if leaderboard %}
+            <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; margin-top: 0.25rem;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">
+                    {% if lang == 'en' %}Class Top 3{% else %}Top 3 v triede{% endif %}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    {% for student in leaderboard|slice:":3" %}
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem;">
+                        <span style="font-weight: 600; color: var(--text-primary);">
+                            #{{ forloop.counter }} {{ student.get_full_name|default:student.username }}
+                        </span>
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: var(--gold-text);">
+                            {{ student.xp }} XP
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </aside>
 </div>
 
-<!-- JavaScript pre Akordeóny, Filtrovanie Trackov, Vyhľadávanie a Prepínanie Záložiek -->
+<!-- MODAL: EARNING TIPS -->
+<div class="codoro-modal-backdrop" id="earningTipsModal">
+    <div class="codoro-modal-card">
+        <div class="modal-header-row">
+            <h3 style="display:inline-flex; align-items:center; gap:0.45rem;">
+                {% include 'components/icon_svg.html' with name='coin' size='18' %}
+                <span>{% if lang == 'en' %}How to Earn Doros{% else %}Ako získať Doros mince{% endif %}</span>
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closeEarningTipsModal()" aria-label="Close" style="display:inline-flex; align-items:center;">
+                {% include 'components/icon_svg.html' with name='cross' size='16' %}
+            </button>
+        </div>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin:0;">
+            {% if lang == 'en' %}Doros is the official school economy currency of Codoro. Earn Doros by coding and redeem real classroom perks!{% else %}Doros je oficiálna školská mena Codoro. Získavaj mince za programovanie a vymieňaj ich za skutočné školské výhody!{% endif %}
+        </p>
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:0.65rem 0.85rem; border-radius:12px; background:var(--bg-subtle);">
+                <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.88rem; font-weight:600;">
+                    <span style="display:inline-flex; align-items:center; color:var(--brand-emerald);">
+                        {% include 'components/icon_svg.html' with name='target' size='16' %}
+                    </span>
+                    <span>{% if lang == 'en' %}Solving Exercise on 1st Attempt{% else %}Vyriešenie úlohy na 1. pokus{% endif %}</span>
+                </div>
+                <strong style="color:var(--doros-gold); font-family:var(--font-mono);">+20 Doros</strong>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:0.65rem 0.85rem; border-radius:12px; background:var(--bg-subtle);">
+                <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.88rem; font-weight:600;">
+                    <span style="display:inline-flex; align-items:center; color:var(--streak-orange);">
+                        {% include 'components/icon_svg.html' with name='flame' size='16' %}
+                    </span>
+                    <span>{% if lang == 'en' %}Daily Study Streak Bonus{% else %}Bonus za dennú sériu (Streak){% endif %}</span>
+                </div>
+                <strong style="color:var(--doros-gold); font-family:var(--font-mono);">+15 Doros</strong>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:0.65rem 0.85rem; border-radius:12px; background:var(--bg-subtle);">
+                <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.88rem; font-weight:600;">
+                    <span style="display:inline-flex; align-items:center; color:var(--brand-emerald);">
+                        {% include 'components/icon_svg.html' with name='handshake' size='16' %}
+                    </span>
+                    <span>{% if lang == 'en' %}Completing Weekly Class Quest{% else %}Splnenie týždenného Class Questu{% endif %}</span>
+                </div>
+                <strong style="color:var(--doros-gold); font-family:var(--font-mono);">+200 Doros</strong>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:0.65rem 0.85rem; border-radius:12px; background:var(--bg-subtle);">
+                <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.88rem; font-weight:600;">
+                    <span style="display:inline-flex; align-items:center; color:#EAB308;">
+                        {% include 'components/icon_svg.html' with name='lightning' size='16' %}
+                    </span>
+                    <span>{% if lang == 'en' %}Teacher Live Coin Drop{% else %}Bleskový drop od učiteľa{% endif %}</span>
+                </div>
+                <strong style="color:var(--doros-gold); font-family:var(--font-mono);">+50–200 Doros</strong>
+            </div>
+        </div>
+        <button type="button" class="btn-emerald-full" onclick="closeEarningTipsModal()">
+            {% if lang == 'en' %}Got it! Let's code{% else %}Rozumiem, idem programovať{% endif %}
+        </button>
+    </div>
+</div>
+
 <script>
-    function toggleModuleAccordion(param) {
-        var card = (param && param.closest) ? param.closest('.module-accordion-card') : document.getElementById('module-card-' + param);
-        if (!card) return;
-        var wasOpen = card.classList.contains('open');
+    // Accordion Toggle for Module Cards (Smoothly expands clicked, closes others)
+    function toggleModuleStoneCard(moduleId) {
+        const targetCard = document.getElementById('module-card-' + moduleId);
+        const targetChevron = document.getElementById('chevron-' + moduleId);
+        if (!targetCard) return;
 
-        // Zavri všetky ostatné akordeóny pre čisté kompaktné zobrazenie
-        document.querySelectorAll('.module-accordion-card').forEach(function(c) {
-            c.classList.remove('open');
+        const isCurrentlyActive = targetCard.classList.contains('active');
+
+        // Close all cards first for clean single-view accordion
+        document.querySelectorAll('.module-stone-card').forEach(card => {
+            card.classList.remove('active');
+            card.classList.add('collapsed');
+        });
+        document.querySelectorAll('.chevron-arrow').forEach(ch => {
+            ch.textContent = '⌵';
         });
 
-        if (!wasOpen) {
-            card.classList.add('open');
+        if (!isCurrentlyActive) {
+            targetCard.classList.add('active');
+            targetCard.classList.remove('collapsed');
+            if (targetChevron) targetChevron.textContent = '⌃';
         }
     }
 
-    function switchSidebarTab(tabName) {
-        // Prepnutie tlačidiel
-        document.querySelectorAll('.sidebar-tab-btn').forEach(function(b) {
-            b.classList.remove('active');
-        });
-        // Prepnutie panelov
-        document.querySelectorAll('.sidebar-panel').forEach(function(p) {
-            p.classList.remove('active');
+    // Switch Track Map Filter
+    function switchTrackMap(btn) {
+        document.querySelectorAll('.track-switcher-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const trackKey = btn.getAttribute('data-track');
+        const lang = '{{ lang }}';
+        const title = lang === 'en' ? btn.getAttribute('data-title-en') : btn.getAttribute('data-title-sk');
+        const desc = lang === 'en' ? btn.getAttribute('data-desc-en') : btn.getAttribute('data-desc-sk');
+        const rawPct = btn.getAttribute('data-track-pct');
+        const pct = rawPct !== null && rawPct !== '' ? parseInt(rawPct, 10) : 0;
+
+        if (title) document.getElementById('activeTrackTitle').textContent = title;
+        if (desc) document.getElementById('activeTrackDesc').textContent = desc;
+        
+        // Update circular progress ring
+        const pctEl = document.getElementById('mapProgressPct');
+        const circleEl = document.getElementById('mapProgressCircle');
+        if (pctEl) pctEl.textContent = pct + '%';
+        if (circleEl) {
+            const circumference = 2 * Math.PI * 18; // ~113.1
+            const offset = circumference - (pct / 100) * circumference;
+            circleEl.style.strokeDashoffset = offset;
+        }
+
+        // Filter module rows
+        let firstVisible = null;
+        document.querySelectorAll('.module-path-row').forEach(row => {
+            const rowTrack = row.getAttribute('data-track');
+            if (!trackKey || trackKey === 'ALL' || rowTrack === trackKey) {
+                row.style.display = 'grid';
+                if (!firstVisible) firstVisible = row;
+            } else {
+                row.style.display = 'none';
+            }
         });
 
-        var targetPanel = document.getElementById('sidebar-panel-' + tabName);
-        if (targetPanel) {
-            targetPanel.classList.add('active');
-        }
-        if (event && event.currentTarget) {
-            event.currentTarget.classList.add('active');
+        // Expand the first visible module card
+        if (firstVisible) {
+            const card = firstVisible.querySelector('.module-stone-card');
+            if (card) {
+                const modId = card.id.replace('module-card-', '');
+                toggleModuleStoneCard(modId);
+            }
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Animácia progress barov
-        document.querySelectorAll('.progress-fill').forEach(function (bar) {
-            var pct = bar.getAttribute('data-progress') || 0;
-            setTimeout(function () {
-                bar.style.width = pct + '%';
-            }, 80);
+    // Modal Handlers
+    function openEarningTipsModal() {
+        document.getElementById('earningTipsModal').classList.add('open');
+    }
+    function closeEarningTipsModal() {
+        document.getElementById('earningTipsModal').classList.remove('open');
+    }
+
+    // Initial Progress Ring Set & Progress Bars
+    (function () {
+        document.querySelectorAll('.mini-progress-fill[data-pct], .progress-bar-fill[data-pct], .progress-mini-bar-val[data-pct]').forEach(function (el) {
+            el.style.width = (el.getAttribute('data-pct') || '0') + '%';
         });
-
-        // Filtrovanie podľa kariérnych ciest (Tracks)
-        var trackButtons = document.querySelectorAll('.track-pill-btn');
-        var moduleCards = document.querySelectorAll('.module-accordion-card');
-        var searchInput = document.getElementById('curriculumSearchInput');
-
-        function applyFilters() {
-            var activeTrackBtn = document.querySelector('.track-pill-btn.active');
-            var selectedTrack = activeTrackBtn ? activeTrackBtn.getAttribute('data-track') : 'ALL';
-            var query = (searchInput.value || '').trim().toLowerCase();
-
-            moduleCards.forEach(function(card) {
-                var cardTrack = card.getAttribute('data-track') || '';
-                var cardTitle = card.getAttribute('data-title') || '';
-                var matchesTrack = (selectedTrack === 'ALL') || (cardTrack === selectedTrack);
-
-                var matchesQuery = true;
-                if (query.length > 0) {
-                    var lessonRows = card.querySelectorAll('.lesson-item-row');
-                    var anyLessonMatch = false;
-                    lessonRows.forEach(function(lr) {
-                        var lt = lr.getAttribute('data-lesson-title') || '';
-                        if (lt.indexOf(query) !== -1) {
-                            anyLessonMatch = true;
-                            lr.style.display = 'flex';
-                        } else {
-                            lr.style.display = 'none';
-                        }
-                    });
-                    matchesQuery = (cardTitle.indexOf(query) !== -1) || anyLessonMatch;
-                } else {
-                    card.querySelectorAll('.lesson-item-row').forEach(function(lr) {
-                        lr.style.display = 'flex';
-                    });
-                }
-
-                if (matchesTrack && matchesQuery) {
-                    card.style.display = 'block';
-                    if (query.length > 0) {
-                        card.classList.add('open');
-                    }
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        const firstTab = document.querySelector('.track-switcher-pill.active');
+        const rawFirstPct = firstTab ? firstTab.getAttribute('data-track-pct') : null;
+        const initialPct = (rawFirstPct !== null && rawFirstPct !== '') ? parseInt(rawFirstPct, 10) : (parseInt('{{ tracks_data.0.pct|default_if_none:0 }}', 10) || 0);
+        const circle = document.getElementById('mapProgressCircle');
+        const pctEl = document.getElementById('mapProgressPct');
+        if (pctEl) pctEl.textContent = initialPct + '%';
+        if (circle) {
+            const circumference = 113.1;
+            const offset = circumference - (initialPct / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
         }
-
-        trackButtons.forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                trackButtons.forEach(function(b) { b.classList.remove('active'); });
-                btn.classList.add('active');
-                applyFilters();
-            });
-        });
-
-        if (searchInput) {
-            searchInput.addEventListener('input', applyFilters);
-        }
-    });
+    })();
 </script>
 {% endblock %}

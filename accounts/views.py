@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -278,12 +278,35 @@ def logout_view(request):
 
 def switch_language(request, lang_code):
     """Prepne jazyk rozhrania pre prihláseného aj neprihláseného používateľa."""
-    if lang_code in ['sk', 'en']:
-        request.session['ui_lang'] = lang_code
+    clean_code = (lang_code or '').strip().lower()
+    if clean_code in ['sk', 'en']:
+        request.session['ui_lang'] = clean_code
+        request.session.modified = True
+        try:
+            request.session.save()
+        except Exception:
+            pass
+
         if request.user.is_authenticated:
-            request.user.preferred_language = lang_code
+            request.user.preferred_language = clean_code
             request.user.save(update_fields=['preferred_language'])
-    return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+    
+    # 1. Parameter ?next= má najvyššiu prioritu
+    next_url = request.GET.get('next')
+    if not next_url:
+        referer = request.META.get('HTTP_REFERER')
+        # Zabránime cykleniu, ak by referer smeroval na prepínač jazyka
+        if referer and '/lang/' not in referer:
+            next_url = referer
+
+    fallback = 'dashboard' if request.user.is_authenticated else 'landing_page'
+    response = redirect(next_url or fallback)
+
+    if clean_code in ['sk', 'en']:
+        # path='/' je kritické, aby cookie platila pre celú doménu a všetky podstránky!
+        response.set_cookie('codoro_lang', clean_code, max_age=60*60*24*365, path='/', samesite='Lax')
+
+    return response
 
 
 @login_required
@@ -370,11 +393,12 @@ def profile_view(request):
             valid_avatars = dict(User.AVATAR_CHOICES)
             valid_colors = dict(User.AVATAR_COLORS)
 
-            if avatar in valid_avatars and avatar_color in valid_colors:
+            if avatar in valid_avatars:
                 user.avatar = avatar
-                user.avatar_color = avatar_color
+                if avatar_color and avatar_color in valid_colors:
+                    user.avatar_color = avatar_color
                 user.save(update_fields=['avatar', 'avatar_color'])
-                msg = "Avatar updated successfully!" if lang == 'en' else "Avatar bol úspešne zmenený!"
+                msg = "Avatar updated successfully!" if lang == 'en' else "Profilový avatar bol úspešne zmenený!"
                 messages.success(request, msg)
 
         elif action == 'update_info':
@@ -437,6 +461,13 @@ def profile_view(request):
         'total_badges_count': all_badges.count(),
         'avatar_choices': User.AVATAR_CHOICES,
         'avatar_colors': User.AVATAR_COLORS,
+        'illustrated_avatars': [
+            {'code': 'student_alex', 'name_sk': 'Alex (Programátor)', 'name_en': 'Alex (Coder)', 'img_url': '/static/img/avatars/student_alex.jpg', 'desc_sk': 'Zvedavý Python študent s odhodlaním vyriešiť každý bug', 'desc_en': 'Curious Python coder ready to squash every bug'},
+            {'code': 'student_mia', 'name_sk': 'Mia (Data Scientist)', 'name_en': 'Mia (Data Scientist)', 'img_url': '/static/img/avatars/student_mia.jpg', 'desc_sk': 'Milovníčka dátových štruktúr a analýzy algoritmov', 'desc_en': 'Lover of data structures and algorithmic efficiency'},
+            {'code': 'student_sam', 'name_sk': 'Sam (Full-stack)', 'name_en': 'Sam (Full-stack)', 'img_url': '/static/img/avatars/student_sam.jpg', 'desc_sk': 'Architekt moderných webov a backend logiky', 'desc_en': 'Architect of modern web and backend logic'},
+            {'code': 'cyber_ninja', 'name_sk': 'Cyber Ninja', 'name_en': 'Cyber Ninja', 'img_url': '/static/img/avatars/cyber_ninja.jpg', 'desc_sk': 'Expert na kryptografiu, bezpečnosť a čistý kód', 'desc_en': 'Expert in cryptography, security, and clean code'},
+            {'code': 'codo', 'name_sk': 'Codo (AI Maskot)', 'name_en': 'Codo (AI Mascot)', 'img_url': '/static/img/avatars/codo.png', 'desc_sk': 'Priateľský spoločník a Sokratovský AI tútor', 'desc_en': 'Friendly guide and Socratic AI tutor'},
+        ],
     })
 
 
@@ -457,4 +488,99 @@ def certificate_view(request):
         'stats': stats,
         'today': today,
         'cert_code': cert_code,
-    })
+    })
+
+
+def privacy_policy_view(request):
+    """Zásady ochrany osobných údajov (GDPR compliant)."""
+    lang = get_active_lang(request)
+    return render(request, 'pages/privacy.html', {'ui_lang': lang})
+
+
+def terms_of_service_view(request):
+    """Všeobecné obchodné a licenčné podmienky platformy Codoro."""
+    lang = get_active_lang(request)
+    return render(request, 'pages/terms.html', {'ui_lang': lang})
+
+
+def thank_you_view(request):
+    """Potvrdzovacia stránka po odoslaní žiadosti alebo registrácii."""
+    lang = get_active_lang(request)
+    flow_type = request.GET.get('type', 'general')
+    return render(request, 'pages/thank_you.html', {'ui_lang': lang, 'flow_type': flow_type})
+
+
+def robots_txt(request):
+    """Dynamický robots.txt pre vyhľadávače."""
+    content = """User-agent: *
+Allow: /
+Allow: /welcome/
+Allow: /cheatsheets/
+Allow: /get-license/
+Allow: /privacy/
+Allow: /terms/
+Allow: /login/
+Allow: /register/
+Disallow: /admin/
+Disallow: /admin-panel/
+Disallow: /teacher/
+Disallow: /logout/
+
+Sitemap: https://codoro.sk/sitemap.xml
+"""
+    return HttpResponse(content.strip(), content_type="text/plain")
+
+
+def sitemap_xml(request):
+    """Štruktúrovaná XML mapa stránok pre SEO."""
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://codoro.sk/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/welcome/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/cheatsheets/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/get-license/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/privacy/</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/terms/</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/login/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://codoro.sk/register/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+</urlset>"""
+    return HttpResponse(xml_content.strip(), content_type="application/xml")
+
+
+def custom_404(request, exception=None):
+    """Zákaznícka 404 stránka s maskotom Codoro."""
+    lang = get_active_lang(request)
+    return render(request, '404.html', {'ui_lang': lang}, status=404)
+

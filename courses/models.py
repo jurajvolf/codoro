@@ -19,7 +19,7 @@ class Module(models.Model):
         DATA_STRUCTURES = 'DATA_STRUCTURES', '2. Funkcie a Dátové štruktúry'
         OOP = 'OOP', '3. OOP a Softvérové inžinierstvo'
         ALGORITHMS_AND_DATA = 'ALGORITHMS_AND_DATA', '4. Algoritmy, Dáta a Bezpečnosť'
-        MATURITA_PREP = 'MATURITA_PREP', '5. Maturitný špeciál a Projekty'
+        MATURITA_PREP = 'MATURITA_PREP', '5. Záverečné projekty a certifikácia'
 
     title_sk = models.CharField(max_length=150, verbose_name="Názov modulu (SK)")
     title_en = models.CharField(max_length=150, verbose_name="Názov modulu (EN)")

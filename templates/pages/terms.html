@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+{% if lang == 'en' %}Terms of Service — Codoro{% else %}Všeobecné obchodné a licenčné podmienky — Codoro{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+{% if lang == 'en' %}Terms of Service and Classroom License Agreement for Codoro educational platform.{% else %}Všeobecné podmienky používania a licenčný poriadok vzdelávacej platformy Codoro.{% endif %}
+{% endblock %}
+
+{% block content %}
+{% firstof user.preferred_language ui_lang 'sk' as lang %}
+
+<div class="animate-in" style="max-width: 860px; margin: 2rem auto; padding-bottom: 4rem;">
+    <!-- Breadcrumb / Back button -->
+    <div style="margin-bottom: 1.5rem;">
+        <a href="{% url 'landing_page' %}" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); text-decoration: none;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>{% if lang == 'en' %}Back to Home{% else %}Späť na hlavnú stránku{% endif %}</span>
+        </a>
+    </div>
+
+    <!-- Header Card -->
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 2.25rem 2rem; box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.8rem; border-radius: 9999px; background: var(--bg-mint-soft); color: var(--brand-emerald); font-weight: 700; font-size: 0.82rem; margin-bottom: 0.75rem;">
+            {% include 'components/icon_svg.html' with name='file' size='14' %}
+            <span>LEGAL & CLASSROOM CODE OF CONDUCT</span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem;">
+            {% if lang == 'en' %}Terms of Service{% else %}Všeobecné podmienky používania{% endif %}
+        </h1>
+        <p style="font-size: 0.94rem; color: var(--text-secondary); margin: 0;">
+            {% if lang == 'en' %}
+            Effective date: October 2026 · Fair use guidelines for students and educators
+            {% else %}
+            Účinnosť od: Október 2026 · Pravidlá férového používania pre žiakov a učiteľov
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Content Card -->
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 2.5rem 2rem; box-shadow: var(--shadow-sm); line-height: 1.7; color: var(--text-primary);">
+        {% if lang == 'en' %}
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                1. General Provisions & Scope
+            </h2>
+            <p>
+                These Terms of Service govern the access and use of the <strong>Codoro</strong> educational platform by students, teachers, educational institutions, and independent learners. By creating an account or accessing the system, you agree to comply with these terms.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                2. User Accounts & Security
+            </h2>
+            <p>
+                Users are responsible for maintaining the confidentiality of their credentials. Sharing accounts between multiple students or automating solution submissions via bots is strictly prohibited to ensure an authentic learning curve.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                3. Python Execution Sandbox & Safety Guidelines
+            </h2>
+            <p>
+                Codoro provides an interactive browser-based Python sandbox for solving programming assignments. Users must not attempt to execute malicious scripts, bypass AST evaluation barriers, perform Denial of Service attacks, or compromise server infrastructure.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                4. Virtual Currency (Doros) & Classroom Marketplace
+            </h2>
+            <p>
+                Doros coins are purely educational virtual game tokens with no real-world monetary value. They cannot be exchanged for cash, transferred between non-affiliated accounts, or refunded. Classroom coupons and physical perks are redeemed exclusively under the pedagogical discretion of the supervising teacher.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                5. Intellectual Property
+            </h2>
+            <p>
+                All curriculum texts, illustrations, audio assets, and the Codo mascot are proprietary to Codoro. Student code submissions remain the intellectual creation of the respective author, granting Codoro a royalty-free license to execute, analyze, and test said code in the context of course completion.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                6. Contact Information
+            </h2>
+            <p>
+                Inquiries concerning licenses or terms may be addressed to:
+                <br><strong>Codoro Education Support</strong> · Hattalova 471, 027 43 Nižná, Slovak Republic · <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald);">podpora@codoro.sk</a>
+            </p>
+        </section>
+        {% else %}
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                1. Základné ustanovenia a rozsah platnosti
+            </h2>
+            <p>
+                Tieto Všeobecné zmluvné a licenčné podmienky upravujú práva a povinnosti medzi prevádzkovateľom vzdelávacej platformy <strong>Codoro</strong> a používateľmi (študentmi, pedagógmi a školskými inštitúciami). Vytvorením používateľského konta alebo používaním systému používateľ vyjadruje svoj plný súhlas s týmito podmienkami.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                2. Používateľské kontá a bezpečnosť
+            </h2>
+            <p>
+                Každý používateľ je povinný chrániť svoje prístupové údaje pred zneužitím. Zdieľanie jedného študentského konta medzi viacerými žiakmi alebo automatizované odosielanie riešení robotom bez vlastného pochopenia kódu je zakázané.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                3. Pravidlá používania Python sandboxu
+            </h2>
+            <p>
+                Integrované programovacie prostredie a spúšťač kódu Codoro slúžia výhradne na edukačné účely a overovanie úloh v kurikule. Je prísne zakázané pokúšať sa o obídenie bezpečnostného AST sandboxu, preťažovanie serverových procesov alebo nahrávanie deštruktívnych skriptov.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                4. Virtuálna mena Doros a školský obchod
+            </h2>
+            <p>
+                Virtuálne mince Doros predstavujú motivačný herný prvok a nemajú žiadnu reálnu peňažnú hodnotu. Nie je možné ich vymieňať za hotovosť ani s nimi obchodovať mimo platformy. Uplatňovanie školských odmien (napr. žolíky, nápovedy na teste) prebieha v réžii vyučujúceho a príslušnej školy.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                5. Duševné vlastníctvo a autorské práva
+            </h2>
+            <p>
+                Učebné texty, metodika 18 modulov, grafické ilustrácie, vizuálna identita a maskot Codo sú chránené autorským právom. Kód, ktorý študent vytvorí v rámci cvičení, zostáva jeho duševným vlastníctvom, pričom platforme udeľuje právo na jeho spustenie a vyhodnotenie testovacími skriptami.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.75rem;">
+                6. Kontaktné údaje
+            </h2>
+            <p>
+                V prípade otázok ohľadom školských licencií a prevádzkových podmienok nás kontaktujte:
+                <br><strong>Vzdelávací systém Codoro</strong> · Hattalova 471, 027 43 Nižná, Slovenská republika · <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald);">podpora@codoro.sk</a>
+            </p>
+        </section>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -70,12 +70,12 @@ def landing_page(request):
             'desc_en': 'Big-O notation, binary search, Regex parsing, SQLite in-memory, REST APIs and TDD.',
         },
         Module.Track.MATURITA_PREP: {
-            'sk': '5. Maturitný špeciál a Projekty',
-            'en': '5. Maturita Special & Projects',
+            'sk': '5. Záverečné projekty a certifikácia',
+            'en': '5. Capstone Projects & Certification',
             'icon': 'award',
             'badge': '3 Moduly • 42h',
-            'desc_sk': 'Kryptografia, praktické úlohy PČOZ z elektrotechniky/IMT a záverečné certifikačné projekty.',
-            'desc_en': 'Applied cryptography, vocational matura exam tasks, and graduation boss projects.',
+            'desc_sk': 'Kryptografia, praktické algoritmické zadania a záverečné certifikačné projekty.',
+            'desc_en': 'Applied cryptography, practical software tasks, and graduation boss projects.',
         },
     }
 
@@ -85,7 +85,7 @@ def landing_page(request):
         meta = track_meta.get(track_key, {
             'sk': track_label,
             'en': track_label,
-            'icon': '📘',
+            'icon': 'book',
             'badge': f'{len(mods)} Modulov',
             'desc_sk': '',
             'desc_en': '',
@@ -108,6 +108,7 @@ def landing_page(request):
         'total_lessons': total_lessons,
         'total_exercises': total_exercises,
         'total_hours': total_hours,
+        'is_public_landing': True,
     }
     return render(request, 'landing.html', context)
 
@@ -133,21 +134,39 @@ def dashboard(request):
 
     for module in modules:
         lessons = list(module.lessons.all())
-        done = sum(1 for lesson in lessons if lesson.id in completed_lesson_ids)
+        for lesson in lessons:
+            exercises = list(lesson.exercises.all())
+            done_ex = sum(1 for ex in exercises if ex.id in solved_ids)
+            lesson.is_completed = (lesson.id in completed_lesson_ids)
+            if lesson.is_completed:
+                lesson.progress_pct = 100
+            elif exercises and done_ex > 0:
+                lesson.progress_pct = int(done_ex * 100 / len(exercises))
+            else:
+                lesson.progress_pct = 0
+            # Obvod mini krúžku (r=6): 2 * pi * 6 = 37.7
+            lesson.dash_offset = round(37.7 - (37.7 * lesson.progress_pct / 100), 1)
+
+        done = sum(1 for lesson in lessons if getattr(lesson, 'is_completed', False))
         total_lessons += len(lessons)
         total_completed += done
         locked = module.is_pro_only and not user.has_pro_access()
         if not next_lesson and not locked:
-            next_lesson = next((lesson for lesson in lessons if lesson.id not in completed_lesson_ids), None)
+            next_lesson = next((lesson for lesson in lessons if not getattr(lesson, 'is_completed', False)), None)
         if first_incomplete_module_id is None and not locked and (done < len(lessons) or len(lessons) == 0):
             first_incomplete_module_id = module.id
+
+        pct = int(done * 100 / len(lessons)) if lessons else 0
+        # Obvod modulu (r=14): 2 * pi * 14 = 88
+        dash_offset = round(88 - (88 * pct / 100), 1)
 
         module_cards.append({
             'module': module,
             'lessons': lessons,
             'done': done,
             'total': len(lessons),
-            'pct': int(done * 100 / len(lessons)) if lessons else 0,
+            'pct': pct,
+            'dash_offset': dash_offset,
             'locked': locked,
         })
 
@@ -178,6 +197,88 @@ def dashboard(request):
     for s in leaderboard:
         s.badge_count = badge_counts.get(s.id, 0)
 
+    total_exercises = sum(len(lesson.exercises.all()) for m in modules for lesson in m.lessons.all()) or 28
+    modules_completed = sum(1 for c in module_cards if c['done'] == c['total'] and c['total'] > 0)
+    total_modules = len(modules)
+
+    track_meta = {
+        Module.Track.FUNDAMENTALS: {
+            'sk': 'Základy Pythonu',
+            'en': 'Python Foundations',
+            'short_sk': '1. Základy Pythonu',
+            'short_en': '1. Foundations',
+            'icon': 'zap',
+            'desc_sk': 'Sprevádzaná praktická cesta od základov až po skutočné projekty.',
+            'desc_en': 'A guided, hands-on journey from basics to real projects.',
+        },
+        Module.Track.DATA_STRUCTURES: {
+            'sk': 'Funkcie a Dátové štruktúry',
+            'en': 'Data Structures',
+            'short_sk': '2. Funkcie a Dáta',
+            'short_en': '2. Data Structures',
+            'icon': 'layers',
+            'desc_sk': 'Zoznamy, n-tice, slovníky, množiny a štruktúrované dáta.',
+            'desc_en': 'Lists, tuples, dictionaries, sets and structured data handling.',
+        },
+        Module.Track.OOP: {
+            'sk': 'Objektovo-orientované programovanie',
+            'en': 'OOP & Architecture',
+            'short_sk': '3. OOP a Architektúra',
+            'short_en': '3. OOP Architecture',
+            'icon': 'box',
+            'desc_sk': 'Triedy, inštancie, dedičnosť, polymorfizmus a dunder metódy.',
+            'desc_en': 'Classes, instances, inheritance, polymorphism and dunder methods.',
+        },
+        Module.Track.ALGORITHMS_AND_DATA: {
+            'sk': 'Algoritmy, SQL a Bezpečnosť',
+            'en': 'Algorithms & SQL',
+            'short_sk': '4. Algoritmy a SQL',
+            'short_en': '4. Algorithms & SQL',
+            'icon': 'cpu',
+            'desc_sk': 'Big-O zložitosť, vyhľadávanie, SQLite v pamäti a REST API.',
+            'desc_en': 'Big-O notation, search, in-memory SQLite and REST APIs.',
+        },
+        Module.Track.MATURITA_PREP: {
+            'sk': 'Záverečné projekty a certifikácia',
+            'en': 'Capstone Projects & Certification',
+            'short_sk': '5. Projekty & Certifikácia',
+            'short_en': '5. Capstone Projects',
+            'icon': 'award',
+            'desc_sk': 'Komplexné záverečné projekty, kryptografia a certifikačná skúška Codoro.',
+            'desc_en': 'Comprehensive capstone boss projects, cryptography, and Codoro certification.',
+        },
+    }
+
+    tracks_data = []
+    for track_key, track_label in Module.Track.choices:
+        mods = [c for c in module_cards if c['module'].track == track_key]
+        t_done = sum(c['done'] for c in mods)
+        t_total = sum(c['total'] for c in mods)
+        t_pct = int(t_done * 100 / t_total) if t_total else 0
+        meta = track_meta.get(track_key, {
+            'sk': track_label,
+            'en': track_label,
+            'short_sk': track_label,
+            'short_en': track_label,
+            'icon': 'book',
+            'desc_sk': '',
+            'desc_en': '',
+        })
+        tracks_data.append({
+            'key': track_key,
+            'title_sk': meta['sk'],
+            'title_en': meta['en'],
+            'short_sk': meta.get('short_sk', meta['sk']),
+            'short_en': meta.get('short_en', meta['en']),
+            'icon': meta.get('icon', 'book'),
+            'desc_sk': meta['desc_sk'],
+            'desc_en': meta['desc_en'],
+            'count': len(mods),
+            'done': t_done,
+            'total': t_total,
+            'pct': t_pct,
+        })
+
     context = {
         'modules': modules,
         'module_cards': module_cards,
@@ -186,6 +287,9 @@ def dashboard(request):
         'solved_count': len(solved_ids),
         'total_lessons': total_lessons,
         'total_completed': total_completed,
+        'total_modules': total_modules,
+        'modules_completed': modules_completed,
+        'total_exercises': total_exercises,
         'overall_progress_pct': overall_progress_pct,
         'default_open_module_id': first_incomplete_module_id,
         'quest_items': quest_items,
@@ -194,6 +298,7 @@ def dashboard(request):
         'active_drop': active_drop,
         'leaderboard': leaderboard,
         'ai_hints_remaining': user.ai_hints_remaining(),
+        'tracks_data': tracks_data,
     }
     return render(request, 'courses/dashboard.html', context)
 
