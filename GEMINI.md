@@ -146,6 +146,8 @@ codoro/
 - FÁZA 16: Kompletný architektonický a dizajnový overhaul celej platformy [DOKONČENÉ]
 - FÁZA 17: Modernizácia Landing Page, interaktívne demo štúdio, dynamický progress tracker a systém vlastných avatarov [DOKONČENÉ]
 - FÁZA 18: Oprava renderovania lekcií (Markdown & CodeMirror) a rearchitektúra prírodnej scenérie na Mape učiva [DOKONČENÉ]
+- FÁZA 19: Rearchitektúra prírodnej scenérie mapy, zjednotenie okrajov jazykov a čistenie profilu [DOKONČENÉ]
+- FÁZA 20: Fluidný Apple-Style sticky header s animáciami a transitions [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
@@ -492,4 +494,24 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
     - Odstránené staré hardcoded modré pozadie kariet `rgba(14, 20, 32, 0.94)` a `rgba(14, 20, 32, 0.98)` v `codoro.css` pre `.card-surface` a `.app-sidebar`, ktoré pochádzalo z pôvodného indigo/navy dizajnu.
     - Zjednotené na prémiový Forest Slate token `--bg-surface` (`#15201C`), vďaka čomu majú všetky karty aj formuláre jednotný harmonický tmavozelený bridlicový vzhľad.
     - V šablóne `templates/accounts/get_license.html` bol fialovo-modrý gradient v hero boxe nahradený čistým radiálnym prechodom z mätového povrchu do povrchu karty s jemným smaragdovým okrajom.
+
+- FÁZA 20: FLUIDNÝ APPLE-STYLE STICKY HEADER S ANIMÁCIAMI A TRANSITIONS [DOKONČENÉ]
+  * Aplikácia zručností `apple-design` a `transitions-dev`:
+    - Implementácia fluidného sticky správania s nulovou latenciou a plynulými pružinovými prechodmi (`cubic-bezier(0.16, 1, 0.3, 1)`).
+    - Hardvérovo akcelerovaný scroll engine v `templates/base.html` využívajúci `window.requestAnimationFrame` s pasívnym počúvačom (`{ passive: true }`) pre plynulých 60/120 fps bez trhania (zero jank).
+  * Adaptívne mikro-zhustenie (Micro-compaction) a hĺbka materiálu (Frosted Glass Depth):
+    - `.emerald-top-bar` (interná aplikácia a verejné podstránky):
+      * Štandardná výška 64px pri polohe hore; pri odscrollovaní (`scrollY > 15px`) sa plynule kompaktizuje na **52px** so zmenšením paddingu a jemnou mierkou ikony/loga (`scale(0.92)`).
+      * Priesvitný matný materiál s hĺbkovým rozostrením: `backdrop-filter: blur(20px) saturate(180%)`, podklad `rgba(255, 255, 255, 0.88)` (v tmavom režime `rgba(21, 32, 28, 0.88)`).
+      * Prémiový vrstvený tieň: `box-shadow: 0 10px 28px -4px rgba(14, 30, 24, 0.08), 0 2px 6px -1px rgba(14, 30, 24, 0.04)` (v tmavom režime `rgba(0, 0, 0, 0.45)`).
+    - `.floating-pill-navbar` (Landing Page):
+      * Pôvodná statická poloha zmenená na `position: sticky; top: 16px; z-index: 100;`.
+      * V skrolovacom stave (`.header-scrolled`) sa plynule posúva na `top: 10px; max-width: 1040px; height: 54px;`, s hlbším rozostrením `blur(24px) saturate(200%)` a kompaktným rozostupom položiek navigácie.
+  * Inteligentné smerové skrývanie a odhaľovanie (Smart Directional Hide / Reveal):
+    - Pri rýchlom scrollovaní nadol za hranicu 140px (`delta > 5`) sa header plynule zasunie nahor (`transform: translateY(-100%)` resp. `-120%`), čím uvoľní maximálnu plochu pre štúdium a prácu.
+    - Pri akomkoľvek pohybe nahor (`delta < -5`) alebo návrate k vrcholu stránky (`scrollY <= 60px`) header okamžite a pružne vypláva späť do zorného poľa.
+  * Žiarivý smaragdový indikátor priebehu čítania (`#scrollProgressBar`):
+    - Zvýšená hrúbka na 3px s energickým prechodom `linear-gradient(90deg, var(--brand-emerald), #22C55E, #5CE1E6)` a jemnou neónovou žiarou `box-shadow: 0 0 10px rgba(0, 135, 103, 0.45)`.
+  * Prístupnosť (Accessibility & Reduced Motion):
+    - Zahrnuté pravidlo `@media (prefers-reduced-motion: reduce)`, ktoré pri preferencii zníženého pohybu eliminuje transformácie a zaručuje trvalé zobrazenie navigácie bez neželaného miznutia.
 ================================================================================

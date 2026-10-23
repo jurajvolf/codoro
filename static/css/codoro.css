@@ -205,6 +205,10 @@ html[data-theme="dark"] {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+    .emerald-top-bar.header-hidden,
+    .floating-pill-navbar.header-hidden {
+        transform: none !important;
+    }
 }
 
 *,
@@ -2456,10 +2460,13 @@ html[data-theme="light"] .track-pill-btn.active {
     position: fixed;
     top: 0;
     left: 0;
-    height: 2px;
-    background: var(--ro-indigo);
-    z-index: 999;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-emerald), #22C55E, #5CE1E6);
+    box-shadow: 0 0 10px rgba(0, 135, 103, 0.45);
+    z-index: 1050;
     width: 0%;
+    pointer-events: none;
+    transition: width 100ms linear;
 }
 
 /* Markdown and Rich Content Support */
@@ -4775,11 +4782,11 @@ html[data-theme="light"] .track-pill-btn.active {
 }
 
 /* TOP APP BAR (HEADER) */
-/* TOP APP BAR (HEADER) - STRICT SINGLE PLANE (NO SECOND ROW WRAP) */
+/* TOP APP BAR (HEADER) - STRICT SINGLE PLANE & FLUID STICKY COMPACT TRANSITIONS */
 .emerald-top-bar {
     position: sticky;
     top: 0;
-    z-index: 90;
+    z-index: 100;
     background: var(--bg-navbar);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -4792,6 +4799,37 @@ html[data-theme="light"] .track-pill-btn.active {
     margin-bottom: 1.5rem;
     flex-wrap: nowrap;
     white-space: nowrap;
+    transition: height 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                padding 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                background 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: height, transform, box-shadow;
+}
+
+/* Scrolled compact state with frosted glass depth (Apple-style) */
+.emerald-top-bar.header-scrolled {
+    height: 52px;
+    padding: 0 1.5rem;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom-color: var(--border-strong);
+    box-shadow: 0 10px 28px -4px rgba(14, 30, 24, 0.08), 0 2px 6px -1px rgba(14, 30, 24, 0.04);
+}
+
+[data-theme="dark"] .emerald-top-bar.header-scrolled {
+    background: rgba(21, 32, 28, 0.88);
+    border-bottom-color: #2b3d36;
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45);
+}
+
+/* Directional smart hide when scrolling fast down */
+.emerald-top-bar.header-hidden {
+    transform: translateY(-100%);
+    box-shadow: none;
 }
 
 .emerald-brand-link {
@@ -4801,6 +4839,7 @@ html[data-theme="light"] .track-pill-btn.active {
     text-decoration: none;
     color: var(--text-primary);
     flex-shrink: 0;
+    transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .emerald-brand-icon {
@@ -4808,6 +4847,7 @@ html[data-theme="light"] .track-pill-btn.active {
     height: 32px;
     border-radius: 8px;
     object-fit: contain;
+    transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .emerald-brand-text {
@@ -4816,6 +4856,25 @@ html[data-theme="light"] .track-pill-btn.active {
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--text-primary);
+    transition: font-size 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.emerald-top-bar.header-scrolled .emerald-brand-icon {
+    transform: scale(0.92);
+}
+
+.emerald-top-bar.header-scrolled .emerald-brand-text {
+    font-size: 1.22rem;
+}
+
+.emerald-top-bar.header-scrolled .pill-stat-badge {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.84rem;
+}
+
+.emerald-top-bar.header-scrolled .btn-icon-circle {
+    width: 34px;
+    height: 34px;
 }
 
 .emerald-top-actions {
@@ -5931,13 +5990,15 @@ html[data-theme="light"] .track-pill-btn.active {
     display: none !important;
 }
 
-/* Floating Pill Navbar - STRICT SINGLE ROW / SINGLE PLANE (NO SECOND ROW) */
+/* Floating Pill Navbar - STRICT SINGLE ROW / SINGLE PLANE & FLUID STICKY COMPACT */
 .floating-pill-navbar {
     width: 100%;
     max-width: 1140px;
     margin: 1.25rem auto 0;
     height: 64px;
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
     border: 1px solid var(--border-subtle);
     border-radius: 9999px;
     box-shadow: 0 8px 28px -4px rgba(14, 30, 24, 0.07);
@@ -5947,15 +6008,61 @@ html[data-theme="light"] .track-pill-btn.active {
     padding: 0 1.25rem 0 1.5rem;
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
-    position: relative;
-    z-index: 50;
-    transition: all var(--duration-fast) var(--ease-smooth-out);
+    position: sticky;
+    top: 16px;
+    z-index: 100;
+    transition: top 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                height 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                padding 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                background 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: top, max-width, height, transform, box-shadow;
 }
 
 [data-theme="dark"] .floating-pill-navbar {
-    background: #15201C;
+    background: rgba(21, 32, 28, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-color: #23332D;
-    box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.4);
+}
+
+.floating-pill-navbar.header-scrolled {
+    top: 10px;
+    max-width: 1040px;
+    height: 54px;
+    padding: 0 1rem 0 1.25rem;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border-color: var(--border-strong);
+    box-shadow: 0 16px 36px -6px rgba(14, 30, 24, 0.12), 0 4px 10px -2px rgba(14, 30, 24, 0.04);
+}
+
+[data-theme="dark"] .floating-pill-navbar.header-scrolled {
+    background: rgba(21, 32, 28, 0.94);
+    border-color: #2d4239;
+    box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.55);
+}
+
+.floating-pill-navbar.header-scrolled .emerald-brand-icon {
+    transform: scale(0.92);
+}
+
+.floating-pill-navbar.header-scrolled .emerald-brand-text {
+    font-size: 1.22rem;
+}
+
+.floating-pill-navbar.header-scrolled .floating-pill-links {
+    gap: 1.4rem;
+}
+
+.floating-pill-navbar.header-hidden {
+    transform: translateY(calc(-100% - 24px));
+    box-shadow: none;
 }
 
 .floating-pill-navbar .emerald-brand-link {
