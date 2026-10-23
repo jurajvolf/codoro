@@ -1,11 +1,55 @@
 from django.contrib import admin
 from django.urls import path, include
+import hashlib
+import hmac
+import subprocess
+import os
+from django.http import HttpResponse, HttpResponseForbidden
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 from accounts import views as acc_views
 from courses import views as course_views
 from gamification import views as game_views
 from teacher_panel import views as teacher_views
 
+
+@csrf_exempt
+def git_webhook_update(request):
+    """Automaticky stiahne zmeny z GitHubu po každom git push a reštartuje PythonAnywhere."""
+    if request.method != 'POST':
+        return HttpResponseForbidden("Iba POST požiadavky sú povolené.")
+
+    # Overenie podpisu z GitHubu (aby cudzí človek nemohol spustiť update)
+    signature = request.headers.get('X-Hub-Signature-256', '')
+    secret = getattr(settings, 'GITHUB_WEBHOOK_SECRET', 'codoro-maturita-secret-2027').encode('utf-8')
+    expected_sig = 'sha256=' + hmac.new(secret, request.body, hashlib.sha256).hexdigest()
+
+    if not hmac.compare_digest(signature, expected_sig):
+        return HttpResponseForbidden("Neplatný bezpečnostný podpis Webhooku.")
+
+    repo_dir = str(settings.BASE_DIR)
+    # 1. Stiahnutie zmien z GitHubu
+    subprocess.run(['git', '-C', repo_dir, 'pull'], check=False)
+
+    # 2. Spustenie migrácií a collectstatic
+    python_bin = os.path.join(repo_dir, 'venv', 'bin', 'python')
+    manage_py = os.path.join(repo_dir, 'manage.py')
+    if os.path.exists(python_bin):
+        subprocess.run([python_bin, manage_py, 'migrate', '--noinput'], check=False)
+        subprocess.run([python_bin, manage_py, 'collectstatic', '--noinput'], check=False)
+
+    # 3. Automatický reštart WSGI súboru na PythonAnywhere
+    wsgi_dir = '/var/www'
+    if os.path.exists(wsgi_dir):
+        for fname in os.listdir(wsgi_dir):
+            if fname.endswith('_wsgi.py'):
+                os.utime(os.path.join(wsgi_dir, fname), None)
+
+    return HttpResponse("Codoro server bol úspešne aktualizovaný a reštartovaný!", status=200)
+
+
 urlpatterns = [
+    path('git-update/', git_webhook_update, name='git_webhook_update'),
     path('admin/', admin.site.urls),
     path('admin-panel/', include('admin_panel.urls')),
 

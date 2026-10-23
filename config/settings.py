@@ -174,3 +174,27 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '.pythonanywhere.com',
+    'codoro.app',
+    'www.codoro.app',
+    'codoro.org',
+    'www.codoro.org',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.pythonanywhere.com',
+    'https://codoro.app',
+    'https://www.codoro.app',
+    'https://codoro.org',
+    'https://www.codoro.org',
+]
+
+# Priečinok, do ktorého sa zozbierajú statické súbory na serveri
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Tajné heslo pre GitHub Webhook (rovnaké zadáš aj na GitHube)
+GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', 'codoro-maturita-secret-2027')
