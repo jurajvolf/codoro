@@ -382,55 +382,73 @@
             {% endif %}
         </div>
 
-        <!-- 4. Scenic Nature Sanctuary Column (Fills the right-hand empty void alongside the 18 modules) -->
-        <div class="scenic-nature-column" aria-hidden="true">
-            <div class="scenic-nature-card">
-                <div class="scenic-nature-card-header">
-                    <span style="color:var(--brand-emerald); display:inline-flex; align-items:center;">
-                        {% include 'components/icon_svg.html' with name='map' size='15' %}
+        <!-- 4. Codo AI Dojo & Daily Brain-Teaser Lab (Creative Interactive Gamified Widget) -->
+        <div class="codo-dojo-column">
+            <div class="codo-dojo-card" id="codoDojoCard">
+                <div class="codo-dojo-header">
+                    <div style="display:flex; align-items:center;">
+                        <div class="codo-dojo-avatar-wrap">
+                            {% include 'components/codo_mascot_svg.html' %}
+                        </div>
+                        <div class="codo-dojo-title-box">
+                            <span class="codo-dojo-title">
+                                <span>Codo AI Dojo</span>
+                            </span>
+                            <span class="codo-dojo-subtitle">{% if lang == 'en' %}Daily Python Brain-Teaser{% else %}Denná Python mini-výzva{% endif %}</span>
+                        </div>
+                    </div>
+                    <span class="codo-dojo-reward-badge" id="codoDojoBadge">
+                        {% include 'components/icon_svg.html' with name='coin' size='12' %}
+                        <span>+5 Doros</span>
                     </span>
-                    <span>{% if lang == 'en' %}Scenic Nature Trail{% else %}Horská cesta poznania{% endif %}</span>
                 </div>
-                
-                <div class="scenic-nature-art-stack">
-                    <!-- Distant Mountain Peaks & Pine Ridges -->
-                    <div style="width:100%; height:84px; overflow:hidden; border-radius:14px; background:radial-gradient(ellipse at 50% 100%, rgba(227, 245, 238, 0.7) 0%, transparent 80%);">
-                        {% include 'components/illustrations_svg.html' with illustration='mountain_peaks_landscape' %}
-                    </div>
-                    
-                    <!-- Pine Forest Grove & Rocky Meadow -->
-                    <div style="display:flex; justify-content:space-around; align-items:flex-end; padding:0.5rem 0.25rem 0; margin-top:-1rem;">
-                        {% include 'components/illustrations_svg.html' with illustration='pine_tree_cluster' %}
-                        {% include 'components/illustrations_svg.html' with illustration='rocky_meadow_cluster' %}
-                    </div>
 
-                    <!-- Flowing Meadow Grass, River Stones & Wildflowers -->
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.35rem 0.5rem 0;">
-                        {% include 'components/illustrations_svg.html' with illustration='river_stone_cluster' %}
-                        {% include 'components/illustrations_svg.html' with illustration='meadow_shrub_stone' %}
-                    </div>
-                    
-                    <!-- Trail Altitude Milestones -->
-                    <div class="nature-trail-milestones">
-                        <div class="trail-milestone-pill">
-                            <span class="milestone-dot"></span>
-                            <span>{% if lang == 'en' %}Alpine Summit — Mod. 18{% else %}Vrchol kurikula — Mod. 18{% endif %}</span>
-                        </div>
-                        <div class="trail-milestone-connector"></div>
-                        <div class="trail-milestone-pill">
-                            <span class="milestone-dot"></span>
-                            <span>{% if lang == 'en' %}Algorithmic Ridge — Mod. 11{% else %}Algoritmický hrebeň — Mod. 11{% endif %}</span>
-                        </div>
-                        <div class="trail-milestone-connector"></div>
-                        <div class="trail-milestone-pill active">
-                            <span class="milestone-dot active"></span>
-                            <span>{% if lang == 'en' %}Green Valley — Mod. 1{% else %}Zelené údolie — Mod. 1{% endif %}</span>
-                        </div>
-                    </div>
+                <!-- Riddle Topic & Counter -->
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem; font-size:0.75rem; color:var(--text-muted);">
+                    <span id="dojoRiddleTitle" style="font-weight:700; color:var(--text-primary);">...</span>
+                    <span id="dojoRiddleCounter" style="font-family:var(--font-mono); font-weight:600;">1 / 6</span>
+                </div>
 
-                    <!-- Python on Stone Pedestal Monolith -->
-                    <div style="display:flex; justify-content:center; margin-top:0.5rem;">
-                        {% include 'components/illustrations_svg.html' with illustration='python_stone' %}
+                <!-- Code Snippet -->
+                <div class="codo-dojo-codebox" id="dojoCodeBox"></div>
+
+                <!-- Interactive Answer Options -->
+                <div class="codo-dojo-options" id="dojoOptionsContainer">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <!-- Socratic Feedback Bubble -->
+                <div class="codo-dojo-feedback" id="dojoFeedbackBox"></div>
+
+                <!-- Action Footer -->
+                <div class="codo-dojo-footer">
+                    <button type="button" class="btn-dojo-cycle" onclick="cycleDojoRiddle(1)">
+                        <span>🔄</span>
+                        <span>{% if lang == 'en' %}Next Riddle{% else %}Ďalší rébus{% endif %}</span>
+                    </button>
+                    <span id="dojoStreakStatus" style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">
+                        {% if lang == 'en' %}Solve to earn Doros{% else %}Vyrieš a získaj Doros{% endif %}
+                    </span>
+                </div>
+
+                <!-- Python Pro-Tip Section -->
+                <div class="codo-dojo-tip-section">
+                    <button type="button" class="codo-dojo-tip-toggle" onclick="toggleDojoTip()">
+                        <span style="display:flex; align-items:center; gap:0.35rem;">
+                            <span>💡</span>
+                            <span style="font-weight:700; color:var(--brand-emerald);">{% if lang == 'en' %}Pro-Tip of the Day{% else %}Kódový trik dňa{% endif %}</span>
+                        </span>
+                        <span id="dojoTipChevron" style="font-size:0.75rem;">⌵</span>
+                    </button>
+                    <div class="codo-dojo-tip-body" id="dojoTipBody">
+                        <div id="dojoTipTitle" style="font-weight:700; color:var(--text-primary); margin-bottom:0.3rem;">...</div>
+                        <div class="codo-dojo-codebox" id="dojoTipCode" style="margin-bottom:0.4rem; padding:0.5rem 0.65rem; font-size:0.75rem;"></div>
+                        <div id="dojoTipDesc" style="color:var(--text-secondary); line-height:1.4; margin-bottom:0.45rem;">...</div>
+                        <div style="display:flex; justify-content:flex-end;">
+                            <button type="button" class="btn-dojo-cycle" onclick="cycleDojoTip()" style="font-size:0.7rem;">
+                                <span>{% if lang == 'en' %}Another Tip →{% else %}Ďalší trik →{% endif %}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -594,5 +612,275 @@
             circle.style.strokeDashoffset = offset;
         }
     })();
+
+    // =========================================================================
+    // CODO AI DOJO — INTERACTIVE PYTHON RIDDLES & PRO-TIPS
+    // =========================================================================
+    const DOJO_RIDDLES = [
+        {
+            id: 1,
+            title_sk: "Násobenie zoznamov",
+            title_en: "List Multiplication",
+            code: "a = [1, 2]\nb = a * 2\nprint(b)",
+            options: [
+                { text: "[2, 4]", correct: false },
+                { text: "[1, 2, 1, 2]", correct: true },
+                { text: "TypeError", correct: false }
+            ],
+            hint_sk: "💡 Presne tak! Operátor * na zoznamoch v Pythone prvky nenásobí číselne, ale zreťazuje (opakuje) celý zoznam.",
+            hint_en: "💡 Exactly! The * operator on lists concatenates (repeats) the elements rather than multiplying numerically.",
+            wrong_sk: "Pozor na chyták! Operátor * na zoznamoch nekalkuluje matematicky každý prvok. Skús to znova!",
+            wrong_en: "Watch out! The * operator on lists does not multiply element-wise like in math. Try again!"
+        },
+        {
+            id: 2,
+            title_sk: "Pravdivostná hodnota prázdnych dát",
+            title_en: "Truthy vs Falsy Values",
+            code: "print(bool([]), bool([0]))",
+            options: [
+                { text: "False, False", correct: false },
+                { text: "False, True", correct: true },
+                { text: "True, True", correct: false }
+            ],
+            hint_sk: "💡 Správne! Prázdny zoznam [] je vždy Falsy, ale zoznam [0] obsahuje číslo 0, takže je neprázdny a Truthy!",
+            hint_en: "💡 Correct! Empty list [] is Falsy, but [0] has an item (zero), so it is non-empty and Truthy!",
+            wrong_sk: "Chyták: Skontroluj, či je zoznam [0] prázdny alebo obsahuje prvok!",
+            wrong_en: "Catch: Check if [0] is empty or actually contains an element!"
+        },
+        {
+            id: 3,
+            title_sk: "Zisťovanie podreťazca (in)",
+            title_en: "Substring Membership (in)",
+            code: "print('py' in 'python')",
+            options: [
+                { text: "True", correct: true },
+                { text: "False", correct: false },
+                { text: "TypeError", correct: false }
+            ],
+            hint_sk: "💡 Výborne! Operátor 'in' elegantne overuje prítomnosť podreťazca priamo v O(N) čase.",
+            hint_en: "💡 Great job! The 'in' operator checks substring membership cleanly and concisely.",
+            wrong_sk: "Pozri sa na začiatok slova 'python' — začína písmenami 'py'!",
+            wrong_en: "Take a look at the start of 'python' — it starts with 'py'!"
+        },
+        {
+            id: 4,
+            title_sk: "Nemennosť N-tíc (Tuples)",
+            title_en: "Tuple Immutability",
+            code: "t = (1, 2)\nt[0] = 9\nprint(t)",
+            options: [
+                { text: "(9, 2)", correct: false },
+                { text: "TypeError: 'tuple' object...", correct: true },
+                { text: "(1, 2)", correct: false }
+            ],
+            hint_sk: "💡 Skvelé! N-tice (tuple) sú nemenné (immutable). Po vytvorení nie je možné prepísať ich prvky.",
+            hint_en: "💡 Spot on! Tuples are immutable. Elements cannot be reassigned after initialization.",
+            wrong_sk: "Tuples sú immutable (nemenné)! Vyvolá sa výnimka TypeError.",
+            wrong_en: "Tuples are immutable! Reassignment raises a TypeError."
+        },
+        {
+            id: 5,
+            title_sk: "Bezpečné čítanie zo slovníka",
+            title_en: "Safe Dict Lookup (.get)",
+            code: "d = {'a': 1}\nprint(d.get('b', 42))",
+            options: [
+                { text: "KeyError: 'b'", correct: false },
+                { text: "None", correct: false },
+                { text: "42", correct: true }
+            ],
+            hint_sk: "💡 Presne! Metóda .get(kľúč, default) vráti zadanú predvolenú hodnotu namiesto výnimky KeyError.",
+            hint_en: "💡 Exactly! Method .get(key, default) returns the fallback argument instead of KeyError.",
+            wrong_sk: "Metóda .get() nevyhadzuje KeyError, ak zadáš druhý parameter ako fallback!",
+            wrong_en: ".get() does not raise KeyError when a default value parameter is given!"
+        },
+        {
+            id: 6,
+            title_sk: "Obrátenie reťazca cez slicing",
+            title_en: "String Reversal via Slicing",
+            code: "s = 'codo'\nprint(s[::-1])",
+            options: [
+                { text: "'odoc'", correct: true },
+                { text: "'codo'", correct: false },
+                { text: "IndexError", correct: false }
+            ],
+            hint_sk: "💡 Geniálne! Krok -1 v rozšírenom slicingu [start:stop:step] číta sekvenciu v opačnom smere.",
+            hint_en: "💡 Brilliant! Step -1 in slice [start:stop:step] reverses sequence iteration.",
+            wrong_sk: "Záporný krok (step = -1) prechádza reťazec odzadu!",
+            wrong_en: "Negative step (-1) traverses the string backwards!"
+        }
+    ];
+
+    const DOJO_PRO_TIPS = [
+        {
+            title_sk: "F-string debug výpis (Python 3.8+)",
+            title_en: "F-string Debugging Syntax",
+            code: "x = 42\nprint(f'{x=}')  # Vypíše: x=42",
+            desc_sk: "Znak '=' vo formátovanom reťazci f'{var=}' vypíše názov premennej aj jej aktuálnu hodnotu. Najlepší trik na rýchle ladenie kódu!",
+            desc_en: "The '=' sign in f'{var=}' prints both variable name and value. Best trick for quick debugging!"
+        },
+        {
+            title_sk: "Zlúčenie slovníkov operátorom | (Python 3.9+)",
+            title_en: "Dictionary Merge Operator |",
+            code: "d1 = {'a': 1}\nd2 = {'b': 2}\nd3 = d1 | d2  # {'a': 1, 'b': 2}",
+            desc_sk: "Namiesto volania d1.update(d2) môžeš vytvoriť nový zlúčený slovník jedným znakom zvislej čiary |.",
+            desc_en: "Instead of calling update(), create a newly merged dictionary with a single pipe operator |."
+        },
+        {
+            title_sk: "Prehodenie dvoch premenných (Swap)",
+            title_en: "Two-Variable Swap (No Temp)",
+            code: "a, b = 10, 20\na, b = b, a  # a=20, b=10",
+            desc_sk: "Python využíva automatické zabalenie a rozbalenie N-tice (tuple packing/unpacking). Netreba žiadnu pomocnú premennú temp!",
+            desc_en: "Python uses automatic tuple packing and unpacking. No temporary variable needed!"
+        },
+        {
+            title_sk: "Viacnásobné porovnanie (Chained comparison)",
+            title_en: "Chained Comparisons",
+            code: "x = 5\nif 1 < x < 10:\n    print('V rozsahu')",
+            desc_sk: "V Pythone môžeš písať elegantné matematické reťazce ako 0 <= x <= 100 bez potreby spojky 'and'.",
+            desc_en: "In Python, write mathematical expressions like 0 <= x <= 100 without explicit 'and'."
+        }
+    ];
+
+    let currentDojoRiddleIndex = 0;
+    let currentDojoTipIndex = 0;
+    const currentLang = '{{ lang }}';
+
+    function renderDojoRiddle() {
+        const r = DOJO_RIDDLES[currentDojoRiddleIndex];
+        const titleEl = document.getElementById('dojoRiddleTitle');
+        const counterEl = document.getElementById('dojoRiddleCounter');
+        const codeEl = document.getElementById('dojoCodeBox');
+        const optionsContainer = document.getElementById('dojoOptionsContainer');
+        const feedbackBox = document.getElementById('dojoFeedbackBox');
+        const badgeEl = document.getElementById('codoDojoBadge');
+
+        if (!r || !titleEl) return;
+
+        titleEl.textContent = (currentLang === 'en' ? r.title_en : r.title_sk);
+        counterEl.textContent = `${currentDojoRiddleIndex + 1} / ${DOJO_RIDDLES.length}`;
+        codeEl.textContent = r.code;
+
+        feedbackBox.className = 'codo-dojo-feedback';
+        feedbackBox.style.display = 'none';
+        feedbackBox.textContent = '';
+
+        const isSolved = localStorage.getItem(`codoro_dojo_riddle_${r.id}`) === 'solved';
+        if (isSolved && badgeEl) {
+            badgeEl.innerHTML = `✓ ${currentLang === 'en' ? 'Solved' : 'Vyriešené'}`;
+            badgeEl.style.background = 'var(--pass-green-bg)';
+            badgeEl.style.color = 'var(--pass-green)';
+            badgeEl.style.borderColor = 'var(--pass-green-border)';
+        } else if (badgeEl) {
+            badgeEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg> <span>+5 Doros</span>`;
+            badgeEl.style.background = 'var(--doros-gold-bg)';
+            badgeEl.style.color = 'var(--gold-text)';
+            badgeEl.style.borderColor = 'var(--doros-gold-border)';
+        }
+
+        optionsContainer.innerHTML = '';
+        const letters = ['A', 'B', 'C'];
+        r.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'codo-dojo-opt-btn';
+            btn.innerHTML = `<span><strong>${letters[idx]}:</strong> ${escapeHtml(opt.text)}</span> <span class="opt-status-icon"></span>`;
+            btn.onclick = () => handleDojoAnswer(idx, opt.correct, btn);
+            if (isSolved && opt.correct) {
+                btn.classList.add('correct');
+            }
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function handleDojoAnswer(optionIndex, isCorrect, btnElement) {
+        const r = DOJO_RIDDLES[currentDojoRiddleIndex];
+        const feedbackBox = document.getElementById('dojoFeedbackBox');
+        const badgeEl = document.getElementById('codoDojoBadge');
+        const statusEl = document.getElementById('dojoStreakStatus');
+
+        if (isCorrect) {
+            btnElement.classList.add('correct');
+            btnElement.querySelector('.opt-status-icon').innerHTML = '✓';
+            feedbackBox.className = 'codo-dojo-feedback correct';
+            feedbackBox.textContent = (currentLang === 'en' ? r.hint_en : r.hint_sk);
+            feedbackBox.style.display = 'block';
+
+            const alreadySolved = localStorage.getItem(`codoro_dojo_riddle_${r.id}`) === 'solved';
+            if (!alreadySolved) {
+                localStorage.setItem(`codoro_dojo_riddle_${r.id}`, 'solved');
+                // Celebrate & Award Doros visually in the top bar
+                if (badgeEl) {
+                    badgeEl.innerHTML = `✓ ${currentLang === 'en' ? '+5 Doros Claimed!' : '+5 Doros Získaných!'}`;
+                    badgeEl.style.background = 'var(--pass-green-bg)';
+                    badgeEl.style.color = 'var(--pass-green)';
+                }
+                const topBarDoros = document.querySelector('.emerald-doros-count');
+                if (topBarDoros) {
+                    const currentVal = parseInt(topBarDoros.textContent, 10) || 0;
+                    topBarDoros.textContent = currentVal + 5;
+                    topBarDoros.style.transform = 'scale(1.2)';
+                    topBarDoros.style.transition = 'transform 0.3s ease';
+                    setTimeout(() => { topBarDoros.style.transform = 'scale(1)'; }, 350);
+                }
+                if (statusEl) {
+                    statusEl.textContent = currentLang === 'en' ? '🎉 Great job! +5 Doros' : '🎉 Výborne! +5 Doros';
+                    statusEl.style.color = 'var(--pass-green)';
+                }
+            }
+        } else {
+            btnElement.classList.add('wrong');
+            btnElement.querySelector('.opt-status-icon').innerHTML = '✕';
+            feedbackBox.className = 'codo-dojo-feedback wrong';
+            feedbackBox.textContent = (currentLang === 'en' ? r.wrong_en : r.wrong_sk);
+            feedbackBox.style.display = 'block';
+            setTimeout(() => {
+                btnElement.classList.remove('wrong');
+            }, 1200);
+        }
+    }
+
+    function cycleDojoRiddle(delta) {
+        currentDojoRiddleIndex = (currentDojoRiddleIndex + delta + DOJO_RIDDLES.length) % DOJO_RIDDLES.length;
+        renderDojoRiddle();
+    }
+
+    function toggleDojoTip() {
+        const body = document.getElementById('dojoTipBody');
+        const chevron = document.getElementById('dojoTipChevron');
+        if (!body) return;
+        const isOpen = body.classList.contains('open');
+        if (isOpen) {
+            body.classList.remove('open');
+            if (chevron) chevron.textContent = '⌵';
+        } else {
+            body.classList.add('open');
+            if (chevron) chevron.textContent = '⌃';
+            renderDojoTip();
+        }
+    }
+
+    function renderDojoTip() {
+        const t = DOJO_PRO_TIPS[currentDojoTipIndex];
+        const titleEl = document.getElementById('dojoTipTitle');
+        const codeEl = document.getElementById('dojoTipCode');
+        const descEl = document.getElementById('dojoTipDesc');
+        if (!t || !titleEl) return;
+        titleEl.textContent = currentLang === 'en' ? t.title_en : t.title_sk;
+        codeEl.textContent = t.code;
+        descEl.textContent = currentLang === 'en' ? t.desc_en : t.desc_sk;
+    }
+
+    function cycleDojoTip() {
+        currentDojoTipIndex = (currentDojoTipIndex + 1) % DOJO_PRO_TIPS.length;
+        renderDojoTip();
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Initialize Codo AI Dojo on Load
+    document.addEventListener('DOMContentLoaded', function () {
+        renderDojoRiddle();
+    });
 </script>
 {% endblock %}

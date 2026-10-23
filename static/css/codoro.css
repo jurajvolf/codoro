@@ -224,6 +224,11 @@ body {
     max-width: 100%;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 body {
     zoom: 0.9;
     background-color: var(--bg-canvas);
@@ -238,9 +243,27 @@ body {
     transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Firefox / Universal Engine Scaling Fallback */
+@-moz-document url-prefix() {
+    html {
+        font-size: 14.4px;
+    }
+}
+
+@supports not (zoom: 0.9) {
+    html {
+        font-size: 14.4px;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         zoom: 1;
+    }
+    @-moz-document url-prefix() {
+        html {
+            font-size: 16px;
+        }
     }
 }
 
@@ -7916,86 +7939,266 @@ input.is-invalid {
     opacity: 0.3;
 }
 
-/* Scenic Nature Sanctuary Column (Fills right-hand empty void on Learning Map) */
-.scenic-nature-column {
+/* ==========================================================================
+   CODO AI DOJO WIDGET (REPLACES OLD SCENIC NATURE TRAIL)
+   ========================================================================== */
+.codo-dojo-column {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
     margin-top: 0.5rem;
 }
 
-.scenic-nature-card {
+.codo-dojo-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 22px;
-    padding: 1.25rem;
-    box-shadow: var(--shadow-xs);
+    border-radius: 20px;
+    padding: 1.15rem;
+    box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.scenic-nature-card-header {
+.codo-dojo-card:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-md);
+}
+
+.codo-dojo-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    justify-content: space-between;
     margin-bottom: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--border-hairline);
 }
 
-.scenic-nature-art-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-}
-
-.nature-trail-milestones {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    padding: 0.75rem 0.85rem;
-    background: var(--bg-subtle);
-    border-radius: 14px;
-    border: 1px solid var(--border-hairline);
-    margin-top: 0.5rem;
-}
-
-.trail-milestone-pill {
+.codo-dojo-avatar-wrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--bg-mint-soft);
+    border: 1px solid var(--brand-emerald-border);
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-secondary);
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    animation: codoDojoFloat 3s ease-in-out infinite alternate;
 }
 
-.trail-milestone-pill.active {
+@keyframes codoDojoFloat {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-3px); }
+}
+
+.codo-dojo-title-box {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.65rem;
+    flex: 1;
+}
+
+.codo-dojo-title {
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.codo-dojo-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.codo-dojo-reward-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    background: var(--doros-gold-bg);
+    color: var(--gold-text);
+    border: 1px solid var(--doros-gold-border);
+    border-radius: 999px;
+}
+
+/* Code Snippet Box */
+.codo-dojo-codebox {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #F8FAFC;
+    line-height: 1.45;
+    position: relative;
+    overflow-x: auto;
+    margin-bottom: 0.85rem;
+    white-space: pre;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Riddle Options */
+.codo-dojo-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 0.85rem;
+}
+
+.codo-dojo-opt-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.8rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.codo-dojo-opt-btn:hover:not(:disabled) {
+    background: var(--bg-mint-soft);
+    border-color: var(--brand-emerald-border);
     color: var(--brand-emerald);
+    transform: translateY(-1px);
+}
+
+.codo-dojo-opt-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.codo-dojo-opt-btn.correct {
+    background: var(--pass-green-bg) !important;
+    border-color: var(--pass-green) !important;
+    color: var(--pass-green) !important;
     font-weight: 700;
 }
 
-.trail-milestone-connector {
-    width: 2px;
-    height: 10px;
-    background: #C7EADB;
-    margin-left: 5px;
-    border-radius: 2px;
+.codo-dojo-opt-btn.wrong {
+    background: var(--streak-orange-bg) !important;
+    border-color: var(--streak-orange) !important;
+    color: var(--streak-orange) !important;
+    animation: optShake 0.35s ease;
 }
 
-.milestone-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #CBD5E1;
-    border: 2px solid var(--bg-surface);
-    flex-shrink: 0;
+@keyframes optShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
 }
 
-.milestone-dot.active {
-    background: var(--brand-emerald);
-    box-shadow: 0 0 0 3px rgba(0, 135, 103, 0.2);
+/* Feedback bubble */
+.codo-dojo-feedback {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    display: none;
+    animation: fadeInSlide 0.25s ease;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.codo-dojo-feedback.correct {
+    display: block;
+    border-color: var(--pass-green-border);
+    background: var(--pass-green-bg);
+    color: var(--pass-green);
+}
+
+.codo-dojo-feedback.wrong {
+    display: block;
+    border-color: var(--streak-orange-border);
+    background: var(--streak-orange-bg);
+    color: var(--streak-orange);
+}
+
+/* Action footer */
+.codo-dojo-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border-subtle);
+}
+
+.btn-dojo-cycle {
+    background: none;
+    border: none;
+    color: var(--brand-emerald);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+}
+
+.btn-dojo-cycle:hover {
+    background: var(--bg-mint-soft);
+}
+
+/* Pro tip toggle accordion */
+.codo-dojo-tip-section {
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border-hairline);
+    padding-top: 0.65rem;
+}
+
+.codo-dojo-tip-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.2rem 0;
+}
+
+.codo-dojo-tip-toggle:hover {
+    color: var(--text-primary);
+}
+
+.codo-dojo-tip-body {
+    display: none;
+    margin-top: 0.5rem;
+    background: var(--bg-subtle);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.74rem;
+}
+
+.codo-dojo-tip-body.open {
+    display: block;
+    animation: fadeInSlide 0.2s ease;
 }
 

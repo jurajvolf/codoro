@@ -149,6 +149,7 @@ codoro/
 - FÁZA 19: Rearchitektúra prírodnej scenérie mapy, zjednotenie okrajov jazykov a čistenie profilu [DOKONČENÉ]
 - FÁZA 20: Fluidný Apple-Style sticky header s animáciami a transitions [DOKONČENÉ]
 - FÁZA 21: Štýlovanie cookie consent banneru, animácie a optimálny globálny zoom (90 %) [DOKONČENÉ]
+- FÁZA 22: Codo AI Dojo widget s kódovými hádankami (náhrada Horskej cesty), kódové triky dňa a univerzálne cross-browser škálovanie [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
