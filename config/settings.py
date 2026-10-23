@@ -179,6 +179,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '.pythonanywhere.com',
+    'codoro.eu.pythonanywhere.com',
     'codoro.app',
     'www.codoro.app',
     'codoro.org',
@@ -186,6 +187,8 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://codoro.eu.pythonanywhere.com',
+    'https://*.eu.pythonanywhere.com',
     'https://*.pythonanywhere.com',
     'https://codoro.app',
     'https://www.codoro.app',
