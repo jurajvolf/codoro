@@ -205,10 +205,6 @@ html[data-theme="dark"] {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-    .emerald-top-bar.header-hidden,
-    .floating-pill-navbar.header-hidden {
-        transform: none !important;
-    }
 }
 
 *,
@@ -224,7 +220,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
 }
 
@@ -4786,7 +4782,7 @@ html[data-theme="light"] .track-pill-btn.active {
 .emerald-top-bar {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
     background: var(--bg-navbar);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -4804,9 +4800,8 @@ html[data-theme="light"] .track-pill-btn.active {
                 background 280ms cubic-bezier(0.16, 1, 0.3, 1),
                 backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 280ms cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 280ms cubic-bezier(0.16, 1, 0.3, 1),
-                transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: height, transform, box-shadow;
+                border-color 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: height, box-shadow;
 }
 
 /* Scrolled compact state with frosted glass depth (Apple-style) */
@@ -4824,12 +4819,6 @@ html[data-theme="light"] .track-pill-btn.active {
     background: rgba(21, 32, 28, 0.88);
     border-bottom-color: #2b3d36;
     box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45);
-}
-
-/* Directional smart hide when scrolling fast down */
-.emerald-top-bar.header-hidden {
-    transform: translateY(-100%);
-    box-shadow: none;
 }
 
 .emerald-brand-link {
@@ -6010,16 +5999,15 @@ html[data-theme="light"] .track-pill-btn.active {
     white-space: nowrap !important;
     position: sticky;
     top: 16px;
-    z-index: 100;
+    z-index: 1000;
     transition: top 320ms cubic-bezier(0.16, 1, 0.3, 1),
                 max-width 320ms cubic-bezier(0.16, 1, 0.3, 1),
                 height 320ms cubic-bezier(0.16, 1, 0.3, 1),
                 padding 320ms cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1),
                 background 320ms cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 320ms cubic-bezier(0.16, 1, 0.3, 1),
-                transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: top, max-width, height, transform, box-shadow;
+                border-color 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: top, max-width, height, box-shadow;
 }
 
 [data-theme="dark"] .floating-pill-navbar {
@@ -6058,11 +6046,6 @@ html[data-theme="light"] .track-pill-btn.active {
 
 .floating-pill-navbar.header-scrolled .floating-pill-links {
     gap: 1.4rem;
-}
-
-.floating-pill-navbar.header-hidden {
-    transform: translateY(calc(-100% - 24px));
-    box-shadow: none;
 }
 
 .floating-pill-navbar .emerald-brand-link {

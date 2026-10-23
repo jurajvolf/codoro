@@ -475,11 +475,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // High-Performance Sticky Header & Scroll Depth Controller (Apple WWDC 60/120fps rAF)
-        let lastScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        // High-Performance Sticky Header Controller (Apple WWDC 60/120fps rAF)
         let isScrollTicking = false;
-        const SCROLL_DOWN_HIDE_THRESHOLD = 140;
-        const SCROLL_DELTA_TOLERANCE = 5;
 
         function updateStickyHeaderState() {
             const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
@@ -500,35 +497,19 @@
                 }
             }
 
-            // 3. Fluid Sticky Headers (both App Top Bar & Landing Pill Navbar)
+            // 3. Fluid Sticky Header Compaction (Always follows the screen!)
             const headers = document.querySelectorAll('.emerald-top-bar, .floating-pill-navbar');
             if (headers.length > 0) {
                 const isScrolled = currentScrollY > 15;
-                const delta = currentScrollY - lastScrollY;
-
                 headers.forEach(header => {
-                    // Compaction & Frosted Glass Depth
                     if (isScrolled) {
                         header.classList.add('header-scrolled');
                     } else {
                         header.classList.remove('header-scrolled');
                     }
-
-                    // Smart Directional Hide / Reveal
-                    if (currentScrollY <= 60) {
-                        // At or near top: always fully reveal
-                        header.classList.remove('header-hidden');
-                    } else if (delta > SCROLL_DELTA_TOLERANCE && currentScrollY > SCROLL_DOWN_HIDE_THRESHOLD) {
-                        // Scrolling downwards past threshold: slide out
-                        header.classList.add('header-hidden');
-                    } else if (delta < -SCROLL_DELTA_TOLERANCE) {
-                        // Scrolling upwards: spring back in
-                        header.classList.remove('header-hidden');
-                    }
                 });
             }
 
-            lastScrollY = currentScrollY;
             isScrollTicking = false;
         }
 
