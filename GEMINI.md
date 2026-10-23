@@ -152,6 +152,7 @@ codoro/
 - FÁZA 22: Codo AI Dojo widget s kódovými hádankami (náhrada Horskej cesty), kódové triky dňa a univerzálne cross-browser škálovanie [DOKONČENÉ]
 - FÁZA 23: Vysokokontrastný syntax highlighting pre CodeMirror v tmavom režime (luminous cyan, rose, crisp white/mint) a dynamická synchronizácia tém [DOKONČENÉ]
 - FÁZA 24: Kompletný systém obnovy zabudnutého hesla (Password Reset) s duálnym vyhľadaním podľa mena alebo e-mailu a Django 6 MAILERS architektúrou [DOKONČENÉ]
+- FÁZA 25: Lokalizácia formulárov (SK), 3-úrovňový live indikátor sily hesla s checklistom a zákaz opakovania posledných 3 hesiel [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
@@ -549,4 +550,27 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
       4. `password_reset_complete.html`: Zelený štít úspechu a priame tlačidlo na prihlásenie.
   * 100% automatizované testovacie pokrytie:
     - Pridaná testovacia trieda `PasswordResetTests` pokrývajúca overenie GET formulára, reset podľa mena, reset podľa e-mailu, odolnosť voči neexistujúcemu účtu, kontrolu nezhodných hesiel a úspešnú zmenu hesla (spolu 81 úspešných unit testov projektu).
+
+- FÁZA 25: LOKALIZÁCIA FORMULÁROV (SK), 3-ÚROVŇOVÝ LIVE INDIKÁTOR SILY HESLA S CHECKLISTOM A ZÁKAZ OPAKOVANIA POSLEDNÝCH 3 HESIEL [DOKONČENÉ]
+  * Globálna lokalizácia HTML5 validačných hlášok v slovenčine (`templates/base.html`):
+    - Implementovaný engine `initLocalizedFormValidation`, ktorý odchytáva natívne udalosti `invalid` na všetkých formulárových prvkoch (`input`, `select`, `textarea`).
+    - Ak je jazyk nastavený na slovenčinu (`document.documentElement.lang === 'sk'`), namiesto predvolenej angličtiny prehliadača ("Please fill out this field") zobrazí čisté slovenské texty:
+      * `valueMissing`: "Prosím, vyplň toto pole."
+      * `typeMismatch` (email): "Zadaj platnú e-mailovú adresu."
+      * `tooShort`: "Hodnota musí mať aspoň X znakov (teraz má Y)."
+      * `patternMismatch`: "Zadaj hodnotu v požadovanom formáte."
+    - Podpora pre dynamicky vkladané prvky cez `MutationObserver`.
+  * Interaktívny 3-úrovňový indikátor sily hesla (Password Strength Meter):
+    - Nasadený na študentskej registrácii, učiteľskej registrácii (`templates/accounts/register.html`), obnove hesla (`templates/accounts/password_reset_confirm.html`) a v profile používateľa (`templates/accounts/profile.html`).
+    - 3 úrovne s farebnou vizualizáciou:
+      1. Slabé (1 červený pásik `#EF4444`, tlačidlo odoslania zablokované),
+      2. Stredné (2 oranžové pásiky `#F59E0B`, tlačidlo odoslania zablokované),
+      3. Silné (3 smaragdovo-zelené pásiky `#008767`, tlačidlo odoslania odomknuté).
+    - Živý dynamický checklist 4 bezpečnostných kritérií (aspoň 8 znakov, veľké/malé písmená, číslica 0–9, špeciálny znak !@#$...), ktorý pri písaní prepína ikony na zelené fajky `✓`.
+    - Striktné blokovanie registrácie a zmeny hesla: Používateľ je pustený ďalej IBA pri dosiahnutí Úrovne 3 (Silné), na klientskej aj serverovej strane (`evaluate_password_strength` v `accounts/views.py`).
+  * Bezpečnostná história posledných 3 hesiel (Password History Policy):
+    - Vytvorený databázový model `PasswordHistory` (`accounts/models.py`) s migráciou `0005_alter_user_avatar_passwordhistory`.
+    - Metóda `user.is_password_in_history(raw_password)` overuje zhodu s aktuálnym heslom aj s poslednými 3 predchádzajúcimi heslami.
+    - Metóda `user.record_password_change(new_raw_password)` ukladá predchádzajúci hash a udržiava históriu.
+    - Pri pokuse o opätovné použitie hesla systém okamžite vráti chybové hlásenie: "Nové heslo sa nesmie zhodovať s aktuálnym ani so žiadnym z tvojich posledných 3 predchádzajúcich hesiel."
 ================================================================================

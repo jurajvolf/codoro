@@ -622,7 +622,64 @@
             }, 180);
         }
 
+        // Automatická lokalizácia natívnych validačných hlásení HTML5 (SK / EN)
+        function initLocalizedFormValidation() {
+            const isSlovak = (document.documentElement.lang || 'sk').toLowerCase().startsWith('sk');
+            const selector = 'input, select, textarea';
+            
+            function attachToField(field) {
+                if (field._codoroValidationAttached) return;
+                field._codoroValidationAttached = true;
+
+                field.addEventListener('invalid', function () {
+                    if (isSlovak) {
+                        if (this.validity.valueMissing) {
+                            this.setCustomValidity('Prosím, vyplň toto pole.');
+                        } else if (this.validity.typeMismatch && this.type === 'email') {
+                            this.setCustomValidity('Zadaj platnú e-mailovú adresu.');
+                        } else if (this.validity.tooShort) {
+                            this.setCustomValidity('Hodnota musí mať aspoň ' + this.minLength + ' znakov (teraz má ' + this.value.length + ').');
+                        } else if (this.validity.patternMismatch) {
+                            this.setCustomValidity('Zadaj hodnotu v požadovanom formáte.');
+                        }
+                    } else {
+                        if (this.validity.valueMissing) {
+                            this.setCustomValidity('Please fill out this field.');
+                        } else if (this.validity.typeMismatch && this.type === 'email') {
+                            this.setCustomValidity('Please enter a valid email address.');
+                        } else if (this.validity.tooShort) {
+                            this.setCustomValidity('Please lengthen this text to ' + this.minLength + ' characters or more (you are currently using ' + this.value.length + ' characters).');
+                        }
+                    }
+                });
+
+                field.addEventListener('input', function () {
+                    this.setCustomValidity('');
+                });
+                field.addEventListener('change', function () {
+                    this.setCustomValidity('');
+                });
+            }
+
+            document.querySelectorAll(selector).forEach(attachToField);
+
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (m) {
+                        m.addedNodes.forEach(function (node) {
+                            if (node.nodeType === 1) {
+                                if (node.matches && node.matches(selector)) attachToField(node);
+                                if (node.querySelectorAll) node.querySelectorAll(selector).forEach(attachToField);
+                            }
+                        });
+                    });
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            initLocalizedFormValidation();
             if (!localStorage.getItem('codoro_cookies_accepted')) {
                 const banner = document.getElementById('codoroCookieBanner');
                 if (banner) banner.style.display = 'block';

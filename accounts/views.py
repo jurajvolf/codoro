@@ -14,9 +14,56 @@ from django.conf import settings
 import hashlib
 import secrets
 import re
-from .models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest
+from .models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest, PasswordHistory
 from gamification.models import DorosTransaction, Badge, StudentBadge
 from gamification.services import get_student_stats, award_badges, ensure_badges_exist
+
+
+def evaluate_password_strength(password):
+    """
+    Vyhodnotí silu hesla na 3 úrovne:
+    1: Slabé (nespĺňa dĺžku 8 alebo málo kritérií)
+    2: Stredné (dĺžka 8+ a spĺňa časť kritérií)
+    3: Silné (dĺžka 8+, veľké aj malé písmená, aspoň 1 číslo, aspoň 1 špeciálny znak)
+    Používateľa pustí do registrácie / zmeny hesla iba pri úrovni 3 (Silné).
+    """
+    if not password:
+        return 1, False, ["Zadaj heslo."], ["Please enter a password."]
+
+    has_len = len(password) >= 8
+    has_upper = bool(re.search(r'[A-Z]', password))
+    has_lower = bool(re.search(r'[a-z]', password))
+    has_digit = bool(re.search(r'[0-9]', password))
+    has_special = bool(re.search(r'[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?~`]', password))
+
+    errors_sk = []
+    errors_en = []
+    if not has_len:
+        errors_sk.append("Heslo musí mať aspoň 8 znakov.")
+        errors_en.append("Password must be at least 8 characters long.")
+    if not (has_upper and has_lower):
+        errors_sk.append("Heslo musí obsahovať veľké aj malé písmená.")
+        errors_en.append("Password must contain both uppercase and lowercase letters.")
+    if not has_digit:
+        errors_sk.append("Heslo musí obsahovať aspoň jednu číslicu (0–9).")
+        errors_en.append("Password must contain at least one digit (0–9).")
+    if not has_special:
+        errors_sk.append("Heslo musí obsahovať aspoň jeden špeciálny znak (!@#$%...).")
+        errors_en.append("Password must contain at least one special character (!@#$%...).")
+
+    components_met = sum([has_upper and has_lower, has_digit, has_special])
+
+    if has_len and components_met == 3:
+        level = 3
+        is_strong = True
+    elif has_len or components_met >= 2:
+        level = 2
+        is_strong = False
+    else:
+        level = 1
+        is_strong = False
+
+    return level, is_strong, errors_sk, errors_en
 
 
 def generate_unique_join_code(base_name="CLASS"):
@@ -82,6 +129,12 @@ def register_view(request):
             messages.error(request, "Vyplň používateľské meno a heslo." if pref_lang == 'sk' else "Please fill in username and password.")
             return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': account_type})
 
+        level, is_strong, errs_sk, errs_en = evaluate_password_strength(password)
+        if not is_strong:
+            err = " ".join(errs_en) if pref_lang == 'en' else " ".join(errs_sk)
+            messages.error(request, err)
+            return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': account_type})
+
         if User.objects.filter(username=username).exists():
             err = "This username is already taken." if pref_lang == 'en' else "Toto používateľské meno sa už používa."
             messages.error(request, err)
@@ -141,6 +194,7 @@ def register_view(request):
                 avatar='wizard',
                 avatar_color='indigo'
             )
+            PasswordHistory.objects.create(user=teacher_user, password_hash=teacher_user.password)
 
             created_class = None
             if initial_class_name:
@@ -195,6 +249,7 @@ def register_view(request):
             preferred_language=pref_lang,
             doros=100
         )
+        PasswordHistory.objects.create(user=user, password_hash=user.password)
         DorosTransaction.objects.create(
             student=user,
             amount=100,
@@ -425,18 +480,26 @@ def profile_view(request):
             new_pass = request.POST.get('new_password', '')
             confirm_pass = request.POST.get('confirm_password', '')
 
+            level, is_strong, errs_sk, errs_en = evaluate_password_strength(new_pass)
+
             if not user.check_password(old_pass):
                 err = "Current password is not correct." if lang == 'en' else "Pôvodné heslo nie je správne."
                 messages.error(request, err)
-            elif len(new_pass) < 6:
-                err = "New password must be at least 6 characters long." if lang == 'en' else "Nové heslo musí mať aspoň 6 znakov."
+            elif not is_strong:
+                err = " ".join(errs_en) if lang == 'en' else " ".join(errs_sk)
                 messages.error(request, err)
             elif new_pass != confirm_pass:
                 err = "New passwords do not match." if lang == 'en' else "Nové heslá sa nezhodujú."
                 messages.error(request, err)
+            elif user.is_password_in_history(new_pass):
+                err = (
+                    "New password cannot be the same as your current or any of your last 3 previous passwords."
+                    if lang == 'en'
+                    else "Nové heslo sa nesmie zhodovať s aktuálnym ani so žiadnym z tvojich posledných 3 predchádzajúcich hesiel."
+                )
+                messages.error(request, err)
             else:
-                user.set_password(new_pass)
-                user.save()
+                user.record_password_change(new_pass)
                 update_session_auth_hash(request, user)
                 msg = "Password changed successfully!" if lang == 'en' else "Heslo bolo úspešne zmenené!"
                 messages.success(request, msg)
@@ -728,18 +791,27 @@ def password_reset_confirm_view(request, uidb64, token):
         password = (request.POST.get('password') or request.POST.get('new_password') or '').strip()
         password_confirm = (request.POST.get('password_confirm') or request.POST.get('confirm_password') or '').strip()
 
-        if len(password) < 6:
-            err = "Password must be at least 6 characters long." if lang == 'en' else "Heslo musí mať aspoň 6 znakov."
+        level, is_strong, errs_sk, errs_en = evaluate_password_strength(password)
+        if not is_strong:
+            err = " ".join(errs_en) if lang == 'en' else " ".join(errs_sk)
             messages.error(request, err)
-            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True})
+            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True, 'reset_user': user})
 
         if password != password_confirm:
             err = "Passwords do not match." if lang == 'en' else "Zadané heslá sa nezhodujú."
             messages.error(request, err)
-            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True})
+            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True, 'reset_user': user})
 
-        user.set_password(password)
-        user.save()
+        if user.is_password_in_history(password):
+            err = (
+                "New password cannot be the same as your current or any of your last 3 previous passwords."
+                if lang == 'en'
+                else "Nové heslo sa nesmie zhodovať s aktuálnym ani so žiadnym z tvojich posledných 3 predchádzajúcich hesiel."
+            )
+            messages.error(request, err)
+            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True, 'reset_user': user})
+
+        user.record_password_change(password)
         return redirect('password_reset_complete')
 
     return render(request, 'accounts/password_reset_confirm.html', {

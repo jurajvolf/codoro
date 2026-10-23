@@ -220,6 +220,18 @@ class TeacherRegistrationAndLicenseTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username='fake_ucitel').exists())
 
+    def test_registration_weak_password_fails(self):
+        # Pokus o registráciu so slabým heslom (krátke, bez číslic a špeciálnych znakov)
+        response = self.client.post(reverse('register'), {
+            'role': 'STUDENT',
+            'username': 'slabos_ziak',
+            'email': 'slabos@skola.sk',
+            'password': 'slabe',
+            'class_code': 'IVC-TEST',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username='slabos_ziak').exists())
+
     def test_get_license_portal_view(self):
         # GET
         response = self.client.get(reverse('get_license'))
@@ -375,17 +387,24 @@ class PasswordResetTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.context['validlink'])
 
-        # POST mismatched password
+        # 1. POST weak password (no digits, no special char)
+        resp_weak = self.client.post(confirm_url, {
+            'password': 'WeakPassword',
+            'password_confirm': 'WeakPassword'
+        })
+        self.assertEqual(resp_weak.status_code, 200)
+
+        # 2. POST mismatched password
         resp_bad = self.client.post(confirm_url, {
-            'password': 'NewPassword123',
-            'password_confirm': 'DifferentPassword123'
+            'password': 'StrongPassword123!',
+            'password_confirm': 'DifferentPassword123!'
         })
         self.assertEqual(resp_bad.status_code, 200)
 
-        # POST valid new password
+        # 3. POST valid strong new password
         resp_ok = self.client.post(confirm_url, {
-            'password': 'NewPassword123',
-            'password_confirm': 'NewPassword123'
+            'password': 'StrongPassword123!',
+            'password_confirm': 'StrongPassword123!'
         })
         self.assertEqual(resp_ok.status_code, 302)
         self.assertRedirects(resp_ok, reverse('password_reset_complete'))
@@ -393,6 +412,54 @@ class PasswordResetTests(TestCase):
         # Verify old password no longer works, new password works
         self.user.refresh_from_db()
         self.assertFalse(self.user.check_password('oldpassword123'))
-        self.assertTrue(self.user.check_password('NewPassword123'))
+        self.assertTrue(self.user.check_password('StrongPassword123!'))
+
+    def test_password_reset_rejects_previous_3_passwords(self):
+        from django.utils.http import urlsafe_base64_encode
+        from django.utils.encoding import force_bytes
+        from django.contrib.auth.tokens import default_token_generator
+
+        # 1. Pôvodné heslo je v histórii
+        self.user.record_password_change('FirstSecretPass1!')
+        self.user.record_password_change('SecondSecretPass2!')
+        self.user.record_password_change('ThirdSecretPass3!')
+
+        # Vygenerujeme nový reset token
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = default_token_generator.make_token(self.user)
+        confirm_url = reverse('password_reset_confirm', kwargs={'uidb64': uidb64, 'token': token})
+
+        # Pokus o nastavenie hesla zhodného s ThirdSecretPass3! (aktuálne heslo)
+        resp_cur = self.client.post(confirm_url, {
+            'password': 'ThirdSecretPass3!',
+            'password_confirm': 'ThirdSecretPass3!'
+        })
+        self.assertEqual(resp_cur.status_code, 200)
+        self.assertContains(resp_cur, 'posledn')
+
+        # Pokus o nastavenie hesla zhodného so SecondSecretPass2! (1. z histórie)
+        resp_hist1 = self.client.post(confirm_url, {
+            'password': 'SecondSecretPass2!',
+            'password_confirm': 'SecondSecretPass2!'
+        })
+        self.assertEqual(resp_hist1.status_code, 200)
+        self.assertContains(resp_hist1, 'posledn')
+
+        # Pokus o nastavenie hesla zhodného s FirstSecretPass1! (2. z histórie)
+        resp_hist2 = self.client.post(confirm_url, {
+            'password': 'FirstSecretPass1!',
+            'password_confirm': 'FirstSecretPass1!'
+        })
+        self.assertEqual(resp_hist2.status_code, 200)
+        self.assertContains(resp_hist2, 'posledn')
+
+        # Nové, úplne odlišné silné heslo musí prejsť
+        resp_fresh = self.client.post(confirm_url, {
+            'password': 'BrandNewStrongPass4!',
+            'password_confirm': 'BrandNewStrongPass4!'
+        })
+        self.assertEqual(resp_fresh.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('BrandNewStrongPass4!'))
 
 

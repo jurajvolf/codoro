@@ -271,8 +271,55 @@ class User(AbstractUser):
     def has_pro_access(self):
         return self.subscription_tier in [self.SubscriptionTier.PRO, self.SubscriptionTier.EDU] or self.is_teacher() or self.is_admin()
 
+    def is_password_in_history(self, raw_password):
+        """
+        Overí, či sa navrhované heslo nezhoduje s aktuálnym heslom
+        alebo ktorýmkoľvek z posledných 3 predchádzajúcich hesiel.
+        """
+        from django.contrib.auth.hashers import check_password
+        if self.password and check_password(raw_password, self.password):
+            return True
+        for ph in self.password_history.all()[:3]:
+            if check_password(raw_password, ph.password_hash):
+                return True
+        return False
+
+    def record_password_change(self, new_raw_password):
+        """
+        Uloží hash doterajšieho hesla do histórie, oreže históriu na max 5 záznamov
+        a nastaví používateľovi nové heslo.
+        """
+        if self.password:
+            PasswordHistory.objects.create(user=self, password_hash=self.password)
+            # Ponecháme najviac 5 posledných záznamov
+            old_ids = list(self.password_history.order_by('-created_at').values_list('id', flat=True)[5:])
+            if old_ids:
+                self.password_history.filter(id__in=old_ids).delete()
+        self.set_password(new_raw_password)
+        self.save()
+
     def __str__(self):
         return f"{self.username} ({self.get_role_display()} - Lvl {self.level})"
+
+
+class PasswordHistory(models.Model):
+    """História predchádzajúcich hesiel pre zamedzenie opätovného použitia rovnakého hesla."""
+    user = models.ForeignKey(
+        'User',
+        on_delete=models.CASCADE,
+        related_name='password_history',
+        verbose_name="Používateľ"
+    )
+    password_hash = models.CharField(max_length=255, verbose_name="Hash hesla")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Dátum zmeny")
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "História hesla"
+        verbose_name_plural = "História hesiel"
+
+    def __str__(self):
+        return f"{self.user.username} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"
 
 
 class SubscriptionLicense(models.Model):
