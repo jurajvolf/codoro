@@ -100,29 +100,6 @@
             </div>
 
             {% for card in module_cards %}
-            <!-- Organic Landscape Scenery Clusters in Empty Margins (not on flags) -->
-            {% if forloop.counter == 2 %}
-            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-end; padding-right:1rem; margin:-0.75rem 0; opacity:0.85;">
-                {% include 'components/illustrations_svg.html' with illustration='pine_tree_cluster' %}
-            </div>
-            {% elif forloop.counter == 5 %}
-            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-start; padding-left:1.5rem; margin:-0.75rem 0; opacity:0.85;">
-                {% include 'components/illustrations_svg.html' with illustration='rocky_meadow_cluster' %}
-            </div>
-            {% elif forloop.counter == 9 %}
-            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-end; padding-right:2rem; margin:-0.75rem 0; opacity:0.85;">
-                {% include 'components/illustrations_svg.html' with illustration='meadow_shrub_stone' %}
-            </div>
-            {% elif forloop.counter == 13 %}
-            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-start; padding-left:2.5rem; margin:-0.75rem 0; opacity:0.85;">
-                {% include 'components/illustrations_svg.html' with illustration='pine_tree_cluster' %}
-            </div>
-            {% elif forloop.counter == 16 %}
-            <div class="landscape-ambient-cluster" style="display:flex; justify-content:flex-end; padding-right:1.5rem; margin:-0.75rem 0; opacity:0.85;">
-                {% include 'components/illustrations_svg.html' with illustration='river_stone_cluster' %}
-            </div>
-            {% endif %}
-
             <div class="module-path-row" data-track="{{ card.module.track }}" id="module-row-{{ card.module.id }}">
                 <!-- Pedestal with Clean Flag Only -->
                 <div class="path-pedestal-anchor">
@@ -403,6 +380,60 @@
                 </div>
             </div>
             {% endif %}
+        </div>
+
+        <!-- 4. Scenic Nature Sanctuary Column (Fills the right-hand empty void alongside the 18 modules) -->
+        <div class="scenic-nature-column" aria-hidden="true">
+            <div class="scenic-nature-card">
+                <div class="scenic-nature-card-header">
+                    <span style="color:var(--brand-emerald); display:inline-flex; align-items:center;">
+                        {% include 'components/icon_svg.html' with name='map' size='15' %}
+                    </span>
+                    <span>{% if lang == 'en' %}Scenic Nature Trail{% else %}Horská cesta poznania{% endif %}</span>
+                </div>
+                
+                <div class="scenic-nature-art-stack">
+                    <!-- Distant Mountain Peaks & Pine Ridges -->
+                    <div style="width:100%; height:84px; overflow:hidden; border-radius:14px; background:radial-gradient(ellipse at 50% 100%, rgba(227, 245, 238, 0.7) 0%, transparent 80%);">
+                        {% include 'components/illustrations_svg.html' with illustration='mountain_peaks_landscape' %}
+                    </div>
+                    
+                    <!-- Pine Forest Grove & Rocky Meadow -->
+                    <div style="display:flex; justify-content:space-around; align-items:flex-end; padding:0.5rem 0.25rem 0; margin-top:-1rem;">
+                        {% include 'components/illustrations_svg.html' with illustration='pine_tree_cluster' %}
+                        {% include 'components/illustrations_svg.html' with illustration='rocky_meadow_cluster' %}
+                    </div>
+
+                    <!-- Flowing Meadow Grass, River Stones & Wildflowers -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.35rem 0.5rem 0;">
+                        {% include 'components/illustrations_svg.html' with illustration='river_stone_cluster' %}
+                        {% include 'components/illustrations_svg.html' with illustration='meadow_shrub_stone' %}
+                    </div>
+                    
+                    <!-- Trail Altitude Milestones -->
+                    <div class="nature-trail-milestones">
+                        <div class="trail-milestone-pill">
+                            <span class="milestone-dot"></span>
+                            <span>{% if lang == 'en' %}Alpine Summit — Mod. 18{% else %}Vrchol kurikula — Mod. 18{% endif %}</span>
+                        </div>
+                        <div class="trail-milestone-connector"></div>
+                        <div class="trail-milestone-pill">
+                            <span class="milestone-dot"></span>
+                            <span>{% if lang == 'en' %}Algorithmic Ridge — Mod. 11{% else %}Algoritmický hrebeň — Mod. 11{% endif %}</span>
+                        </div>
+                        <div class="trail-milestone-connector"></div>
+                        <div class="trail-milestone-pill active">
+                            <span class="milestone-dot active"></span>
+                            <span>{% if lang == 'en' %}Green Valley — Mod. 1{% else %}Zelené údolie — Mod. 1{% endif %}</span>
+                        </div>
+                    </div>
+
+                    <!-- Python on Stone Pedestal Monolith -->
+                    <div style="display:flex; justify-content:center; margin-top:0.5rem;">
+                        {% include 'components/illustrations_svg.html' with illustration='python_stone' %}
+                    </div>
+                </div>
+            </div>
         </div>
     </aside>
 </div>

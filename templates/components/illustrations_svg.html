@@ -51,27 +51,63 @@
 </div>
 {% endif %}
 
-<!-- 2. OFFICIAL CODORO MASCOT WITH LAPTOP & PEBBLES (REPLACES OLD SVG ROBOT) -->
+<!-- 2. OFFICIAL CODORO MASCOT WITH SCENIC MEADOW LANDSCAPE (BUSHES, PINES, HILLS & STONES) -->
 {% if illustration == 'codo_on_rock' or illustration == 'codo_hero_scene' %}
-<div class="artwork-codo-hero-scene" style="position:relative; display:inline-flex; flex-direction:column; align-items:center; width:100%; max-width:260px;">
+<div class="artwork-codo-hero-scene" style="position:relative; display:inline-flex; flex-direction:column; align-items:center; width:100%; max-width:270px;">
+    <!-- Scenic Background Hills, Pines & Meadow Bushes behind Codo -->
+    <div style="position:absolute; top:-10px; left:0; right:0; height:100%; pointer-events:none; z-index:1; overflow:visible;">
+        <svg viewBox="0 0 270 200" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+            <!-- Soft Distant Rolling Green Hill -->
+            <path d="M0 160 Q 60 90 140 120 T 270 110 L 270 200 L 0 200 Z" fill="rgba(0, 135, 103, 0.08)"/>
+            <path d="M0 175 Q 90 130 180 150 T 270 140 L 270 200 L 0 200 Z" fill="rgba(0, 135, 103, 0.12)"/>
+            
+            <!-- Left Scenic Pine Tree Pair (behind Codo's left shoulder) -->
+            <rect x="22" y="115" width="4.5" height="12" rx="1.5" fill="#78350F"/>
+            <polygon points="24,65 10,95 38,95" fill="#15803D"/>
+            <polygon points="24,52 13,78 35,78" fill="#16A34A"/>
+            <polygon points="24,40 16,62 32,62" fill="#22C55E"/>
+
+            <rect x="36" y="125" width="3.5" height="10" rx="1" fill="#78350F"/>
+            <polygon points="38,85 27,108 49,108" fill="#14532D"/>
+            <polygon points="38,72 29,94 47,94" fill="#15803D"/>
+            <polygon points="38,60 31,80 45,80" fill="#16A34A"/>
+
+            <!-- Right Fluffy Bush & Wildflowers (behind Codo's right shoulder) -->
+            <circle cx="232" cy="118" r="18" fill="#15803D"/>
+            <circle cx="246" cy="125" r="14" fill="#16A34A"/>
+            <circle cx="222" cy="110" r="13" fill="#22C55E"/>
+            <circle cx="236" cy="102" r="11" fill="#4ADE80"/>
+            <circle cx="242" cy="100" r="3" fill="#FACC15"/>
+            <circle cx="242" cy="100" r="1.2" fill="#FFFFFF"/>
+            <circle cx="218" cy="106" r="2.5" fill="#F43F5E"/>
+        </svg>
+    </div>
+
     <!-- Official Codoro Green Avatar Asset -->
     <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}"
          alt="Codoro"
-         style="width: 100%; max-width: 210px; height: auto; aspect-ratio: 1/1; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(0, 135, 103, 0.2)); display: block; position: relative; z-index: 2; pointer-events: none; user-select: none;">
+         style="width: 100%; max-width: 205px; height: auto; aspect-ratio: 1/1; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(0, 135, 103, 0.22)); display: block; position: relative; z-index: 2; pointer-events: none; user-select: none;">
 
-    <!-- River Pebbles & Green Sprouts Ground Base -->
-    <div style="width: 100%; margin-top: -18%; position: relative; z-index: 1; pointer-events: none;">
-        <svg viewBox="0 0 240 50" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="120" cy="38" rx="90" ry="10" fill="rgba(0, 135, 103, 0.12)"/>
-            <ellipse cx="44" cy="32" rx="26" ry="13" fill="#94A3B8"/>
-            <ellipse cx="43" cy="29" rx="24" ry="11" fill="#CBD5E1"/>
-            <ellipse cx="41" cy="27" rx="21" ry="9" fill="#E2E8F0"/>
-            <path d="M30 26 C 24 10, 20 2, 30 0 C 40 -2, 40 14, 34 26 Z" fill="#16A34A"/>
-            <path d="M38 25 C 44 12, 54 6, 60 14 C 64 22, 52 26, 42 26 Z" fill="#22C55E"/>
-            <ellipse cx="196" cy="34" rx="24" ry="12" fill="#94A3B8"/>
-            <ellipse cx="195" cy="31" rx="22" ry="10" fill="#CBD5E1"/>
-            <ellipse cx="193" cy="29" rx="19" ry="8" fill="#E2E8F0"/>
-            <path d="M204 28 C 210 16, 220 10, 224 18 C 228 26, 218 30, 208 30 Z" fill="#22C55E"/>
+    <!-- River Pebbles, Boulders & Green Sprouts Ground Base -->
+    <div style="width: 100%; margin-top: -18%; position: relative; z-index: 3; pointer-events: none;">
+        <svg viewBox="0 0 260 55" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="130" cy="42" rx="110" ry="11" fill="rgba(0, 135, 103, 0.14)"/>
+            <!-- Left River Stones -->
+            <ellipse cx="48" cy="36" rx="28" ry="14" fill="#94A3B8"/>
+            <ellipse cx="47" cy="33" rx="25" ry="12" fill="#CBD5E1"/>
+            <ellipse cx="45" cy="31" rx="22" ry="10" fill="#E2E8F0"/>
+            <path d="M32 30 C 26 14, 22 6, 32 4 C 42 2, 42 18, 36 30 Z" fill="#16A34A"/>
+            <path d="M40 29 C 46 16, 56 10, 62 18 C 66 26, 54 30, 44 30 Z" fill="#22C55E"/>
+            <circle cx="28" cy="26" r="2.5" fill="#FACC15"/>
+            <!-- Center Stone under laptop -->
+            <ellipse cx="130" cy="40" rx="34" ry="11" fill="#94A3B8"/>
+            <ellipse cx="130" cy="37" rx="30" ry="9" fill="#CBD5E1"/>
+            <!-- Right River Stones -->
+            <ellipse cx="212" cy="37" rx="26" ry="13" fill="#94A3B8"/>
+            <ellipse cx="211" cy="34" rx="24" ry="11" fill="#CBD5E1"/>
+            <ellipse cx="209" cy="32" rx="21" ry="9" fill="#E2E8F0"/>
+            <path d="M220 30 C 226 18, 236 12, 240 20 C 244 28, 234 32, 224 32 Z" fill="#22C55E"/>
+            <circle cx="228" cy="18" r="2.2" fill="#5CE1E6"/>
         </svg>
     </div>
 </div>

@@ -292,37 +292,7 @@
                     {% endfor %}
                 </div>
 
-                <!-- Secondary Classic Emoji Avatars -->
-                <details style="margin-bottom: 1.5rem; font-size: 0.85rem;">
-                    <summary style="cursor: pointer; color: var(--brand-emerald); font-weight: 600; padding: 0.35rem 0;">
-                        {% if lang == 'en' %}Prefer a classic emoji avatar? Click to expand{% else %}Preferuješ klasický retro emoji avatar? Rozbaľ ponuku{% endif %}
-                    </summary>
-                    <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 0.75rem; padding: 0.75rem; background: var(--bg-subtle); border-radius: var(--radius-md);">
-                        {% for code, label in avatar_choices %}
-                        {% if code != 'student_alex' and code != 'student_mia' and code != 'student_sam' and code != 'cyber_ninja' and code != 'codo' %}
-                        <label style="cursor: pointer;">
-                            <input type="radio" name="avatar" value="{{ code }}" {% if user.avatar == code %}checked{% endif %} style="display: none;" onchange="document.querySelectorAll('.avatar-portrait-card').forEach(c => c.classList.remove('selected')); document.querySelectorAll('.avatar-option-btn').forEach(b => b.classList.remove('selected')); this.nextElementSibling.classList.add('selected');">
-                            <span class="avatar-option-btn {% if user.avatar == code %}selected{% endif %}" title="{{ label }}">
-                                {{ label|slice:":2" }}
-                            </span>
-                        </label>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </details>
-
-                <label class="form-label">{% if lang == 'en' %}Color Accent{% else %}Farba motívu{% endif %}</label>
-                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-                    {% for code, hex in avatar_colors %}
-                    <label style="cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-hairline); background: var(--bg-subtle);">
-                        <input type="radio" name="avatar_color" value="{{ code }}" {% if user.avatar_color == code %}checked{% endif %}>
-                        <span class="color-swatch color-swatch-{{ code }}"></span>
-                        <span style="font-size: 0.82rem; font-weight: 600;">{{ code|title }}</span>
-                    </label>
-                    {% endfor %}
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <button type="submit" class="btn btn-primary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.25rem;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     {% if lang == 'en' %}Save Avatar{% else %}Uložiť avatara{% endif %}
                 </button>
@@ -332,7 +302,10 @@
         <!-- Zmena hesla -->
         <section class="card-surface" style="padding: 2rem; border-radius: var(--radius-lg);">
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-emerald)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
                 <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
                     {% if lang == 'en' %}Change Password{% else %}Zmena hesla{% endif %}
                 </h2>
@@ -360,8 +333,12 @@
                     <input type="password" name="confirm_password" class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-secondary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21 2-2 2m-6 6 7 7-3 3-2-2-2 2-3-3 2-2-2-2 7-7Zm0 0-4-4"/></svg>
+                <button type="submit" class="btn btn-secondary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="7.5" cy="15.5" r="5.5"/>
+                        <path d="m21 2-9.6 9.6"/>
+                        <path d="m15.5 7.5 3 3L22 7l-3-3"/>
+                    </svg>
                     {% if lang == 'en' %}Update Password{% else %}Zmeniť heslo{% endif %}
                 </button>
             </form>

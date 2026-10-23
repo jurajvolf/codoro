@@ -469,4 +469,23 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
     - Ľavý bočný panel (`emerald-sidebar`) nastavený ako `position: sticky` na výšku obrazovky, čím sa zamedzilo vzniku prázdneho bieleho vákua pod navigáciou.
   * Validácia celistvosti systému:
     - Všetkých 76 automatizovaných testov Django ORM a biznis logiky úspešne prebehlo: `Ran 76 tests in 309.113s - OK`.
+
+- FÁZA 19: REARCHITEKTÚRA PRÍRODNEJ SCENÉRIE MAPY, ZLÚČENIE OKRAJOV JAZYKOV A ČISTENIE PROFILU [DOKONČENÉ]
+  * Úplné odstránenie horizontálneho scrollbaru na Welcome page:
+    - Globálne `overflow-x: hidden; max-width: 100%;` pridané pre selektor `html, body`.
+    - Kontajner `.public-hero-canvas-root` zabezpečený vlastnosťou `overflow-x: clip;`.
+    - Odstránená nesprávna šírka `width: 100vw;` z prvkov `.scenic-ambient-glow` a `.scenic-hero-hills-backdrop` (spôsobovala 17px presah kvôli vertikálnemu scrollbaru) a nahradená bezpečným `width: 100%; max-width: 100%;`.
+  * Rearchitektúra prírodných scenérií na Mape učiva (`templates/courses/dashboard.html` & `illustrations_svg.html`):
+    - Odstránené náhodne vložené zhluky borovíc a kameňov (`landscape-ambient-cluster`), ktoré neprimerane prekrývali ľavý horný roh Modulu 1.
+    - Zelená prírodná oáza vľavo (okolie maskota Codo v bočnom paneli): Maskot Codo bol zakotvený do prírodnej lúčnej scenérie s vlnitými kopcami v pozadí, borovicovým hájom, rozkvitnutým kríkom a riečnymi balvanmi s trsom trávy pod nohami (`codo_on_rock` / `codo_hero_scene`).
+    - Horská cesta poznania vpravo (vyplnenie bieleho prázdna v pravom stĺpci pozdĺž 18 modulov): Do pravého panelu widgetov pridaná `.scenic-nature-column` s kartou `.scenic-nature-card`, ktorá obsahuje horský hrebeň, borovicový lesík, skalnú lúčku, výškové míľniky postupu (Zelené údolie -> Algoritmický hrebeň -> Vrchol kurikula) a kamenný Python monolit.
+  * Odstránenie nefunkčných retro emoji avatarov a výberu farby motívu (`templates/accounts/profile.html`):
+    - Odstránený blok `<details>` so zastaranými emoji a výber farebného motívu `avatar_colors`.
+    - Ponechaný výhradne prémiový systém 5 vlastných autorských edtech avatarov (`student_alex`, `student_mia`, `student_sam`, `cyber_ninja`, `codo`).
+  * Oprava ikony pri zmene hesla v profile:
+    - Nahradená neforemná deformovaná čiara v tlačidle čistou autorskou vektorovou ikonou kľúča (`key`) so zaoblenými hranami.
+    - Hlavička sekcie osadená čistou smaragdovou ikonou bezpečnostného zámku (`lock`).
+  * Precízne koncentrické zlúčenie okrajov prepínača jazykov (`SK | EN`):
+    - Prebudované CSS pre `.lang-segmented` a `.lang-pill`: kontajner s rovnomerným paddingom 3px a vnútorná kapsula s pevnou výškou 24px a `border-radius: 9999px`.
+    - Vonkajší a vnútorný oblúk do seba matematicky presne zapadajú s identickým 3px odstupom vo všetkých uhloch, bez akýchkoľvek zubov alebo nepekných medzier.
 ================================================================================
