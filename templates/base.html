@@ -81,7 +81,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     
     <!-- Codoro Unified Mineral & Emerald Design System -->
-    <link rel="stylesheet" href="{% static 'css/codoro.css' %}?v=3.0.0">
+    <link rel="stylesheet" href="{% static 'css/codoro.css' %}?v=3.1.0">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -555,6 +555,22 @@
             document.documentElement.setAttribute('data-theme', nextTheme);
             localStorage.setItem('codoro_theme', nextTheme);
             updateThemeIcons(nextTheme);
+
+            // Synchronize any active CodeMirror editors (workbench, teacher forms, etc.)
+            const cmTheme = (nextTheme === 'dark') ? 'material-darker' : 'eclipse';
+            if (window.codoroEditor && typeof window.codoroEditor.setOption === 'function') {
+                window.codoroEditor.setOption('theme', cmTheme);
+                window.codoroEditor.refresh();
+            }
+            if (window.cmStarter && typeof window.cmStarter.setOption === 'function') {
+                window.cmStarter.setOption('theme', cmTheme);
+                window.cmStarter.refresh();
+            }
+            if (window.cmSolution && typeof window.cmSolution.setOption === 'function') {
+                window.cmSolution.setOption('theme', cmTheme);
+                window.cmSolution.refresh();
+            }
+            window.dispatchEvent(new CustomEvent('codoro-theme-changed', { detail: { theme: nextTheme, cmTheme: cmTheme } }));
         }
 
         document.addEventListener('DOMContentLoaded', function() {

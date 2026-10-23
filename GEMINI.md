@@ -150,6 +150,7 @@ codoro/
 - FÁZA 20: Fluidný Apple-Style sticky header s animáciami a transitions [DOKONČENÉ]
 - FÁZA 21: Štýlovanie cookie consent banneru, animácie a optimálny globálny zoom (90 %) [DOKONČENÉ]
 - FÁZA 22: Codo AI Dojo widget s kódovými hádankami (náhrada Horskej cesty), kódové triky dňa a univerzálne cross-browser škálovanie [DOKONČENÉ]
+- FÁZA 23: Vysokokontrastný syntax highlighting pre CodeMirror v tmavom režime (luminous cyan, rose, crisp white/mint) a dynamická synchronizácia tém [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU

@@ -7623,49 +7623,185 @@ input.is-invalid {
     line-height: 1.6 !important;
     height: 100% !important;
     min-height: 330px;
-    background: #FAFCFB !important;
-    color: #111C18 !important;
     border: none !important;
 }
 
-[data-theme="dark"] .CodeMirror {
-    background: #111C18 !important;
-    color: #E2ECE7 !important;
+/* Base Light Mode CodeMirror */
+[data-theme="light"] .CodeMirror,
+[data-theme="light"] .CodeMirror pre.CodeMirror-line,
+[data-theme="light"] .CodeMirror-lines {
+    background: #FAFCFB !important;
+    color: #111C18 !important;
 }
 
-.CodeMirror-gutters {
+[data-theme="light"] .CodeMirror-gutters {
     background: #F3F7F5 !important;
-    border-right: 1px solid var(--border-subtle) !important;
+    border-right: 1px solid #E2ECE7 !important;
     padding-right: 4px;
 }
 
-[data-theme="dark"] .CodeMirror-gutters {
-    background: #141E1A !important;
-    border-right: 1px solid #23332D !important;
-}
-
-.CodeMirror-linenumber {
-    color: var(--text-muted) !important;
+[data-theme="light"] .CodeMirror-linenumber {
+    color: #788B83 !important;
     font-size: 0.78rem !important;
     padding: 0 8px 0 6px !important;
 }
 
-.CodeMirror-cursor {
+[data-theme="light"] .CodeMirror-cursor {
     border-left: 2px solid var(--brand-emerald) !important;
 }
 
-.CodeMirror-selected {
-    background: rgba(0, 135, 103, 0.16) !important;
+[data-theme="light"] .CodeMirror span.cm-keyword {
+    color: #BE185D !important;
+    font-weight: 700 !important;
 }
 
-.CodeMirror-focused .CodeMirror-selected {
-    background: rgba(0, 135, 103, 0.22) !important;
+[data-theme="light"] .CodeMirror span.cm-def {
+    color: #0284C7 !important;
+    font-weight: 700 !important;
 }
 
-.CodeMirror-matchingbracket {
-    color: var(--brand-emerald) !important;
+[data-theme="light"] .CodeMirror span.cm-variable {
+    color: #111C18 !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-variable-2 {
+    color: #065F46 !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-property {
+    color: #0369A1 !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-operator {
+    color: #008767 !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-comment {
+    color: #047857 !important;
+    font-style: italic !important;
+    opacity: 0.85;
+}
+
+[data-theme="light"] .CodeMirror span.cm-string,
+[data-theme="light"] .CodeMirror span.cm-string-2 {
+    color: #B45309 !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-number {
+    color: #D97706 !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-builtin {
+    color: #7C3AED !important;
+}
+
+[data-theme="light"] .CodeMirror span.cm-atom {
+    color: #9333EA !important;
+}
+
+/* ==========================================================================
+   HIGH-CONTRAST DARK MODE CODEMIRROR SYNTAX (PREVENTS INVISIBLE BLACK TEXT)
+   ========================================================================== */
+[data-theme="dark"] .CodeMirror,
+[data-theme="dark"] .CodeMirror pre.CodeMirror-line,
+[data-theme="dark"] .CodeMirror pre.CodeMirror-line-like,
+[data-theme="dark"] .CodeMirror-lines,
+[data-theme="dark"] .cm-s-eclipse,
+[data-theme="dark"] .cm-s-material-darker,
+[data-theme="dark"] .cm-s-default {
+    background: #0F1714 !important;
+    color: #F1F7F4 !important;
+}
+
+[data-theme="dark"] .CodeMirror-gutters {
+    background: #0B120F !important;
+    border-right: 1px solid #1E2E27 !important;
+    padding-right: 4px;
+}
+
+[data-theme="dark"] .CodeMirror-linenumber {
+    color: #5E7A6E !important;
+    font-size: 0.78rem !important;
+    padding: 0 8px 0 6px !important;
+}
+
+[data-theme="dark"] .CodeMirror-cursor {
+    border-left: 2px solid #34D399 !important;
+}
+
+[data-theme="dark"] .CodeMirror-selected {
+    background: rgba(16, 185, 129, 0.22) !important;
+}
+
+[data-theme="dark"] .CodeMirror-focused .CodeMirror-selected {
+    background: rgba(16, 185, 129, 0.32) !important;
+}
+
+[data-theme="dark"] .CodeMirror-matchingbracket {
+    color: #34D399 !important;
     font-weight: 800 !important;
-    outline: 1px solid var(--brand-emerald);
+    outline: 1px solid #34D399;
+}
+
+/* Syntax Token Colors in Dark Mode */
+[data-theme="dark"] .CodeMirror span.cm-keyword {
+    color: #F472B6 !important; /* Luminous rose/pink (def, pass, return, if, for) */
+    font-weight: 700 !important;
+}
+
+[data-theme="dark"] .CodeMirror span.cm-def {
+    color: #38BDF8 !important; /* Brilliant sky cyan (formatuj_datum) */
+    font-weight: 700 !important;
+}
+
+[data-theme="dark"] .CodeMirror span.cm-variable {
+    color: #F1F7F4 !important; /* Crisp luminous text for parameters & vars (den, mesiac, rok) */
+}
+
+[data-theme="dark"] .CodeMirror span.cm-variable-2 {
+    color: #A7F3D0 !important; /* Mint emerald for local vars */
+}
+
+[data-theme="dark"] .CodeMirror span.cm-variable-3 {
+    color: #6EE7B7 !important;
+}
+
+[data-theme="dark"] .CodeMirror span.cm-property {
+    color: #7DD3FC !important;
+}
+
+[data-theme="dark"] .CodeMirror span.cm-operator {
+    color: #34D399 !important; /* Radiant emerald green for operators */
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .CodeMirror span.cm-comment {
+    color: #6EE7B7 !important; /* Readable mint green, italicized */
+    opacity: 0.85;
+    font-style: italic !important;
+}
+
+[data-theme="dark"] .CodeMirror span.cm-string,
+[data-theme="dark"] .CodeMirror span.cm-string-2 {
+    color: #FCD34D !important; /* Warm gold for strings */
+}
+
+[data-theme="dark"] .CodeMirror span.cm-number {
+    color: #FB923C !important; /* Warm orange for numbers */
+}
+
+[data-theme="dark"] .CodeMirror span.cm-builtin {
+    color: #C084FC !important; /* Luminous lavender/purple for builtins (print, len, range, int) */
+}
+
+[data-theme="dark"] .CodeMirror span.cm-atom {
+    color: #E879F9 !important; /* True, False, None */
+}
+
+[data-theme="dark"] .CodeMirror span.cm-bracket,
+[data-theme="dark"] .CodeMirror span.cm-punctuation {
+    color: #94A3B8 !important;
 }
 
 /* ==========================================================================

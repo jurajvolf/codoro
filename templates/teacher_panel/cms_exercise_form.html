@@ -489,6 +489,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         cmSolution.setSize("100%", 280);
     }
+
+    window.cmStarter = cmStarter;
+    window.cmSolution = cmSolution;
+
+    window.addEventListener('codoro-theme-changed', function(e) {
+        const nextCmTheme = e.detail && e.detail.theme === 'dark' ? 'material-darker' : 'eclipse';
+        if (window.cmStarter) {
+            window.cmStarter.setOption('theme', nextCmTheme);
+            window.cmStarter.refresh();
+        }
+        if (window.cmSolution) {
+            window.cmSolution.setOption('theme', nextCmTheme);
+            window.cmSolution.refresh();
+        }
+    });
 });
 
 function submitExerciseForm() {

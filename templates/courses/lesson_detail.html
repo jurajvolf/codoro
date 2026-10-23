@@ -431,6 +431,15 @@
         setTimeout(function() {
             if (window.codoroEditor) window.codoroEditor.refresh();
         }, 80);
+
+        // Dynamically respond to theme toggles
+        window.addEventListener('codoro-theme-changed', function(e) {
+            if (window.codoroEditor) {
+                const newCmTheme = e.detail && e.detail.theme === 'dark' ? 'material-darker' : 'eclipse';
+                window.codoroEditor.setOption('theme', newCmTheme);
+                window.codoroEditor.refresh();
+            }
+        });
     }
 
     // Submit form helper
