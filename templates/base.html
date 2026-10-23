@@ -81,7 +81,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     
     <!-- Codoro Unified Mineral & Emerald Design System -->
-    <link rel="stylesheet" href="{% static 'css/codoro.css' %}?v=2.6">
+    <link rel="stylesheet" href="{% static 'css/codoro.css' %}?v=2.7">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -586,11 +586,24 @@
             if (sidebar) sidebar.classList.toggle('open');
         }
 
-        // Cookie Banner
+        // Cookie Banner with Smooth Apple Spring Exit Animation
         function acceptCodoroCookies() {
-            localStorage.setItem('codoro_cookies_accepted', 'true');
+            const btn = document.getElementById('cookieAcceptBtn');
             const banner = document.getElementById('codoroCookieBanner');
-            if (banner) banner.style.display = 'none';
+            if (btn) btn.classList.add('clicked');
+            
+            try {
+                localStorage.setItem('codoro_cookies_accepted', 'true');
+            } catch (e) {}
+
+            setTimeout(function() {
+                if (banner) {
+                    banner.classList.add('cookie-hiding');
+                    setTimeout(function() {
+                        banner.style.display = 'none';
+                    }, 340);
+                }
+            }, 180);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -601,12 +614,12 @@
         });
     </script>
 
-    <!-- Cookie Consent Banner (GDPR Compliant) -->
+    <!-- Cookie Consent Banner (GDPR Compliant & Mineral Emerald Design) -->
     <div id="codoroCookieBanner" class="cookie-consent-bar" style="display:none;" role="dialog" aria-label="Cookie consent">
         <div class="cookie-consent-inner">
-            <div style="display:flex; align-items:center; gap:0.65rem;">
-                <span style="font-size:1.3rem;">🍪</span>
-                <p style="margin:0; font-size:0.86rem; color:var(--text-primary); line-height:1.45;">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span class="cookie-pulse-icon" style="font-size:1.4rem; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">🍪</span>
+                <p style="margin:0; font-size:0.86rem; color:var(--text-primary); line-height:1.5;">
                     {% if lang == 'en' %}
                     Codoro uses strictly essential cookies and local preferences (theme, language) to provide optimal learning. No advertising trackers.
                     <a href="{% url 'privacy_policy' %}" style="color:var(--brand-emerald); font-weight:600; text-decoration:underline;">Privacy Policy</a>.
@@ -617,8 +630,9 @@
                 </p>
             </div>
             <div style="display:flex; gap:0.5rem; align-items:center; flex-shrink:0;">
-                <button type="button" class="btn-emerald-solid btn-sm" onclick="acceptCodoroCookies()" style="padding:0.4rem 1rem; font-size:0.84rem; cursor:pointer;">
-                    {% if lang == 'en' %}Accept & Continue{% else %}Rozumiem a súhlasím{% endif %}
+                <button type="button" class="btn-cookie-accept" id="cookieAcceptBtn" onclick="acceptCodoroCookies()" aria-label="{% if lang == 'en' %}Accept and continue{% else %}Rozumiem a súhlasím{% endif %}">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cookie-btn-check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>{% if lang == 'en' %}Accept & Continue{% else %}Rozumiem a súhlasím{% endif %}</span>
                 </button>
             </div>
         </div>

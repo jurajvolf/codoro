@@ -148,6 +148,7 @@ codoro/
 - FÁZA 18: Oprava renderovania lekcií (Markdown & CodeMirror) a rearchitektúra prírodnej scenérie na Mape učiva [DOKONČENÉ]
 - FÁZA 19: Rearchitektúra prírodnej scenérie mapy, zjednotenie okrajov jazykov a čistenie profilu [DOKONČENÉ]
 - FÁZA 20: Fluidný Apple-Style sticky header s animáciami a transitions [DOKONČENÉ]
+- FÁZA 21: Štýlovanie cookie consent banneru, animácie a optimálny globálny zoom (90 %) [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
@@ -513,4 +514,17 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
     - Zvýšená hrúbka na 3px s energickým prechodom `linear-gradient(90deg, var(--brand-emerald), #22C55E, #5CE1E6)` a jemnou neónovou žiarou `box-shadow: 0 0 10px rgba(0, 135, 103, 0.45)`.
   * Prístupnosť (Accessibility & Reduced Motion):
     - Zahrnuté pravidlo `@media (prefers-reduced-motion: reduce)`, ktoré pri preferencii zníženého pohybu eliminuje animácie a prechody.
+
+- FÁZA 21: ŠTÝLOVANIE COOKIE CONSENT BANNERU, ANIMÁCIE A OPTIMÁLNY GLOBÁLNY ZOOM (90 %) [DOKONČENÉ]
+  * Prémiové tlačidlo "Rozumiem a súhlasím" (`.btn-cookie-accept`):
+    - Tlačidlo kompletne zosúladené s Mineral & Emerald dizajn systémom: žiarivá smaragdovo-zelená farba (`var(--brand-emerald)`), biely text, zaoblený pill tvar (`border-radius: 9999px`), jemný biely lem a mäkký smaragdový tieň `box-shadow: 0 4px 14px -2px rgba(0, 135, 103, 0.45)`.
+    - Vložená čistá SVG ikona fajky (`✓`), ktorá sa pri prechode myšou (hover) dynamicky zväčší.
+    - Mikro-interakcia po stlačení (Click Feedback): pružinový pulzný odraz tlačidla (`btnCookieClickFeedback` cez `cubic-bezier(0.16, 1, 0.3, 1)`).
+    - Plynulá výstupná animácia banneru: celá lišta po kliknutí hladko skĺzne nadol s fade-outom (`cookieSlideDown` s posunom 30px a mierkou 0.95), pred uložením stavu do `localStorage`.
+  * Hĺbka materiálu a mikro-pulz ikony:
+    - Karta cookie banneru vyhotovená v Apple frosted glass štýle (`backdrop-filter: blur(20px) saturate(180%)`), zaoblenie 20px, jemný okraj a vrstvený tieň.
+    - Ikona sušienky 🍪 doplnená o jemný 3-sekundový organický rotačný pulz (`cookieIconPulse`).
+  * Globálna optimalizácia mierky (Zoom 90 %):
+    - Nastavená vlastnosť `zoom: 0.9` na selektor `body` pre displeje od 769px vyššie, čím sa odstránil pocit "prílišného priblíženia" a celá platforma získala modernú, kompaktnú a prehľadnú SaaS hustotu informácií.
+    - Pre mobilné zariadenia (`max-width: 768px`) je garantovaný natívny `zoom: 1`, aby zostali zachované pohodlné dotykové ciele pre prsty.
 ================================================================================
