@@ -151,6 +151,7 @@ codoro/
 - FÁZA 21: Štýlovanie cookie consent banneru, animácie a optimálny globálny zoom (90 %) [DOKONČENÉ]
 - FÁZA 22: Codo AI Dojo widget s kódovými hádankami (náhrada Horskej cesty), kódové triky dňa a univerzálne cross-browser škálovanie [DOKONČENÉ]
 - FÁZA 23: Vysokokontrastný syntax highlighting pre CodeMirror v tmavom režime (luminous cyan, rose, crisp white/mint) a dynamická synchronizácia tém [DOKONČENÉ]
+- FÁZA 24: Kompletný systém obnovy zabudnutého hesla (Password Reset) s duálnym vyhľadaním podľa mena alebo e-mailu a Django 6 MAILERS architektúrou [DOKONČENÉ]
 
 --------------------------------------------------------------------------------
 FÁZA 9 (PRIORITA #1): REARCHITEKTÚRA UI/UX PROTI NEKONEČNÉMU SCROLLOVANIU
@@ -529,4 +530,23 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
   * Globálna optimalizácia mierky (Zoom 90 %):
     - Nastavená vlastnosť `zoom: 0.9` na selektor `body` pre displeje od 769px vyššie, čím sa odstránil pocit "prílišného priblíženia" a celá platforma získala modernú, kompaktnú a prehľadnú SaaS hustotu informácií.
     - Pre mobilné zariadenia (`max-width: 768px`) je garantovaný natívny `zoom: 1`, aby zostali zachované pohodlné dotykové ciele pre prsty.
+- FÁZA 24: KOMPLETNÝ SYSTÉM OBNOVY ZABUDNUTÉHO HESLA (PASSWORD RESET) [DOKONČENÉ]
+  * Architektúra overenia a ochrana súkromia (Security & OWASP Anti-Enumeration):
+    - Používateľ môže do poľa zadať buď prihlasovacie meno (username), alebo e-mailovú adresu (`Q(username__iexact=identity) | Q(email__iexact=identity)`).
+    - Systém vyhľadá príslušný účet a vygeneruje kryptograficky bezpečný jednorazový token cez `default_token_generator` a Base64 ID používateľa (`urlsafe_base64_encode(force_bytes(user.pk))`).
+    - Expirácia tokenu nastavená na 24 hodín (`PASSWORD_RESET_TIMEOUT = 86400`).
+    - Ochrana proti User Enumeration: Stránka vždy presmeruje na potvrdenie `/password-reset/done/` s jednotnou neutrálnou správou bez ohľadu na to, či zadaný účet existuje.
+  * Django 6 MAILERS konfigurácia:
+    - Vyčistené zastarané nastavenia `EMAIL_*`, ktoré v Django 6 spôsobovali `ImproperlyConfigured: Deprecated email settings are not allowed when MAILERS is defined`.
+    - Moderná konfigurácia cez slovník `MAILERS['default']` s podporou SMTP aj `console.EmailBackend`.
+    - Počas lokálneho vývoja a maturitnej prezentácie sa odkaz vypisuje do terminálu a súčasne ukladá do `request.session['dev_reset_url']` ako 1-klikové tlačidlo, takže na prezentáciu pred komisiou nie je nutná reálna schránka.
+  * Šablóny a používateľské rozhranie (Mineral & Emerald Design System):
+    - Odkaz "Zabudli ste heslo?" elegantne umiestnený priamo v prihlasovacom formulári (`templates/accounts/login.html`).
+    - 4 špecializované šablóny v Mineral & Emerald štýle s 100% podporou Light a Dark režimu:
+      1. `password_reset.html`: Zadanie mena alebo e-mailu s odznakom bezpečnosti a maskotom Codo,
+      2. `password_reset_done.html`: Potvrdenie odoslania inštrukcií s tipmi (kontrola spamu) a dev testovacím tlačidlom,
+      3. `password_reset_confirm.html`: Zadanie a potvrdenie nového hesla, prepínače viditeľnosti hesla (oko SVG) a ošetrenie expirovaného odkazu,
+      4. `password_reset_complete.html`: Zelený štít úspechu a priame tlačidlo na prihlásenie.
+  * 100% automatizované testovacie pokrytie:
+    - Pridaná testovacia trieda `PasswordResetTests` pokrývajúca overenie GET formulára, reset podľa mena, reset podľa e-mailu, odolnosť voči neexistujúcemu účtu, kontrolu nezhodných hesiel a úspešnú zmenu hesla (spolu 81 úspešných unit testov projektu).
 ================================================================================

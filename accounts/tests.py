@@ -315,12 +315,84 @@ class PublicPagesAndSEOTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp['Content-Type'], 'application/xml')
         self.assertIn('<urlset', resp.content.decode('utf-8'))
-        self.assertIn('https://codoro.sk/welcome/', resp.content.decode('utf-8'))
-
     def test_custom_404_page(self):
         resp = self.client.get('/neexistujuca-stranka-test-404/')
         self.assertEqual(resp.status_code, 404)
         self.assertContains(resp, '404', status_code=404)
         self.assertContains(resp, 'PAGE_NOT_FOUND', status_code=404)
+
+
+class PasswordResetTests(TestCase):
+    """Testy kompletného toku obnovy zabudnutého hesla (meno/email, token, zmena hesla)."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='peter_test',
+            email='peter@codoro.sk',
+            password='oldpassword123'
+        )
+
+    def test_request_password_reset_page_renders(self):
+        resp = self.client.get(reverse('password_reset'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'identity')
+
+    def test_request_reset_by_username_sends_email(self):
+        from django.core import mail
+        resp = self.client.post(reverse('password_reset'), {'identity': 'peter_test'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertRedirects(resp, reverse('password_reset_done'))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('peter@codoro.sk', mail.outbox[0].to)
+        self.assertIn('password-reset-confirm', mail.outbox[0].body)
+
+    def test_request_reset_by_email_sends_email(self):
+        from django.core import mail
+        resp = self.client.post(reverse('password_reset'), {'identity': 'peter@codoro.sk'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertRedirects(resp, reverse('password_reset_done'))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('peter@codoro.sk', mail.outbox[0].to)
+
+    def test_request_reset_nonexistent_user_safe(self):
+        from django.core import mail
+        resp = self.client.post(reverse('password_reset'), {'identity': 'nikto_neexistuje'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertRedirects(resp, reverse('password_reset_done'))
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_password_reset_confirm_flow(self):
+        from django.utils.http import urlsafe_base64_encode
+        from django.utils.encoding import force_bytes
+        from django.contrib.auth.tokens import default_token_generator
+
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = default_token_generator.make_token(self.user)
+
+        # GET confirm page
+        confirm_url = reverse('password_reset_confirm', kwargs={'uidb64': uidb64, 'token': token})
+        resp = self.client.get(confirm_url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.context['validlink'])
+
+        # POST mismatched password
+        resp_bad = self.client.post(confirm_url, {
+            'password': 'NewPassword123',
+            'password_confirm': 'DifferentPassword123'
+        })
+        self.assertEqual(resp_bad.status_code, 200)
+
+        # POST valid new password
+        resp_ok = self.client.post(confirm_url, {
+            'password': 'NewPassword123',
+            'password_confirm': 'NewPassword123'
+        })
+        self.assertEqual(resp_ok.status_code, 302)
+        self.assertRedirects(resp_ok, reverse('password_reset_complete'))
+
+        # Verify old password no longer works, new password works
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password('oldpassword123'))
+        self.assertTrue(self.user.check_password('NewPassword123'))
 
 

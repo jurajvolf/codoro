@@ -3,7 +3,14 @@ from django.contrib.auth import login, logout, authenticate, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
 import hashlib
 import secrets
 import re
@@ -583,4 +590,168 @@ def custom_404(request, exception=None):
     """Zákaznícka 404 stránka s maskotom Codoro."""
     lang = get_active_lang(request)
     return render(request, '404.html', {'ui_lang': lang}, status=404)
+
+
+# =========================================================================
+# ZABUDNUTÉ HESLO / PASSWORD RESET FLOW (MENO ALEBO EMAIL)
+# =========================================================================
+
+def password_reset_request_view(request):
+    """
+    Formulár na vyžiadanie odkazu na obnovenie hesla.
+    Používateľ môže zadať buď prihlasovacie meno, alebo e-mailovú adresu.
+    """
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    lang = get_active_lang(request)
+
+    if request.method == 'POST':
+        identity = request.POST.get('identity', '').strip()
+        if not identity:
+            err = "Please enter your username or email." if lang == 'en' else "Zadaj svoje prihlasovacie meno alebo e-mail."
+            messages.error(request, err)
+            return render(request, 'accounts/password_reset.html', {'ui_lang': lang})
+
+        user = User.objects.filter(
+            Q(username__iexact=identity) | Q(email__iexact=identity)
+        ).first()
+
+        if user and user.is_active and user.email:
+            token = default_token_generator.make_token(user)
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_url = request.build_absolute_uri(
+                reverse('password_reset_confirm', kwargs={'uidb64': uidb64, 'token': token})
+            )
+
+            subject = "Obnovenie hesla — Codoro" if lang == 'sk' else "Password Reset — Codoro"
+            text_content = (
+                f"Ahoj {user.username},\n\n"
+                f"obdržali sme žiadosť o obnovenie hesla pre tvoj účet na platforme Codoro.\n\n"
+                f"Pre nastavenie nového hesla klikni na nasledujúci odkaz (platný 24 hodín):\n"
+                f"{reset_url}\n\n"
+                f"Ak si o zmenu hesla nežiadal(a), túto správu môžeš ignorovať. Tvoje heslo zostane nezmenené.\n\n"
+                f"S pozdravom,\nTím Codoro\nhttps://codoro.sk\n"
+            ) if lang == 'sk' else (
+                f"Hello {user.username},\n\n"
+                f"we received a password reset request for your Codoro account.\n\n"
+                f"Click the link below to set a new password (valid for 24 hours):\n"
+                f"{reset_url}\n\n"
+                f"If you did not request this, safely ignore this message. Your password remains unchanged.\n\n"
+                f"Best regards,\nCodoro Team\nhttps://codoro.sk\n"
+            )
+
+            html_content = f"""
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #F3F7F5; margin: 0; padding: 24px; color: #111C18;">
+  <div style="max-width: 540px; margin: 0 auto; background: #FFFFFF; border-radius: 16px; border: 1px solid #E2ECE7; padding: 32px; box-shadow: 0 8px 24px rgba(14,30,24,0.06);">
+    <div style="margin-bottom: 20px;">
+      <span style="font-size: 26px; font-weight: 800; color: #008767; letter-spacing: -0.5px;">codo<span style="color: #111C18;">ro</span></span>
+    </div>
+    <h2 style="font-size: 20px; font-weight: 800; color: #111C18; margin: 0 0 12px;">{'Obnovenie hesla do účtu' if lang == 'sk' else 'Password Reset for Your Account'}</h2>
+    <p style="font-size: 14px; line-height: 1.6; color: #4B5E57; margin: 0 0 20px;">
+      {'Ahoj' if lang == 'sk' else 'Hello'} <strong>{user.username}</strong>,<br>
+      {'obdržali sme žiadosť o vytvorenie nového hesla pre tvoj účet Codoro. Kliknutím na tlačidlo nižšie si nastav nové heslo:' if lang == 'sk' else 'we received a request to create a new password for your Codoro account. Click the button below to set a new password:'}
+    </p>
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="{reset_url}" style="display: inline-block; background: #008767; color: #FFFFFF; font-weight: 700; font-size: 15px; padding: 12px 28px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,135,103,0.25);">
+        {'Nastaviť nové heslo →' if lang == 'sk' else 'Set New Password →'}
+      </a>
+    </div>
+    <p style="font-size: 12px; line-height: 1.5; color: #788B83; margin: 20px 0 0; border-top: 1px solid #E2ECE7; padding-top: 16px;">
+      {'Tento odkaz je platný 24 hodín. Ak si o zmenu nežiadal(a), môžeš tento e-mail bez obáv ignorovať.' if lang == 'sk' else 'This link is valid for 24 hours. If you did not request a reset, you can safely ignore this email.'}
+    </p>
+  </div>
+</body>
+</html>
+"""
+            try:
+                send_mail(
+                    subject=subject,
+                    message=text_content,
+                    from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'podpora@codoro.sk'),
+                    recipient_list=[user.email],
+                    html_message=html_content,
+                    fail_silently=True,
+                )
+            except Exception:
+                pass
+
+            # Pre vývoj a ukážku na obhajobe (aby nebolo nutné čakať na reálnu schránku):
+            if settings.DEBUG:
+                request.session['dev_reset_url'] = reset_url
+                request.session['dev_reset_user'] = user.username
+                request.session['dev_reset_email'] = user.email
+
+        # Bezpečnostná ochrana (ochrana proti User Enumeration): vždy redirect na done
+        return redirect('password_reset_done')
+
+    return render(request, 'accounts/password_reset.html', {'ui_lang': lang})
+
+
+def password_reset_done_view(request):
+    """Informačná stránka o odoslaní odkazu na obnovenie hesla."""
+    lang = get_active_lang(request)
+    dev_reset_url = request.session.pop('dev_reset_url', None) if settings.DEBUG else None
+    dev_reset_user = request.session.pop('dev_reset_user', None) if settings.DEBUG else None
+    dev_reset_email = request.session.pop('dev_reset_email', None) if settings.DEBUG else None
+    return render(request, 'accounts/password_reset_done.html', {
+        'ui_lang': lang,
+        'dev_reset_url': dev_reset_url,
+        'dev_reset_user': dev_reset_user,
+        'dev_reset_email': dev_reset_email,
+    })
+
+
+def password_reset_confirm_view(request, uidb64, token):
+    """
+    Formulár na zadanie nového hesla po kliknutí na aktivačný odkaz.
+    """
+    lang = get_active_lang(request)
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    validlink = bool(user and default_token_generator.check_token(user, token))
+
+    if not validlink:
+        return render(request, 'accounts/password_reset_confirm.html', {
+            'ui_lang': lang,
+            'validlink': False,
+        })
+
+    if request.method == 'POST':
+        password = (request.POST.get('password') or request.POST.get('new_password') or '').strip()
+        password_confirm = (request.POST.get('password_confirm') or request.POST.get('confirm_password') or '').strip()
+
+        if len(password) < 6:
+            err = "Password must be at least 6 characters long." if lang == 'en' else "Heslo musí mať aspoň 6 znakov."
+            messages.error(request, err)
+            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True})
+
+        if password != password_confirm:
+            err = "Passwords do not match." if lang == 'en' else "Zadané heslá sa nezhodujú."
+            messages.error(request, err)
+            return render(request, 'accounts/password_reset_confirm.html', {'ui_lang': lang, 'validlink': True})
+
+        user.set_password(password)
+        user.save()
+        return redirect('password_reset_complete')
+
+    return render(request, 'accounts/password_reset_confirm.html', {
+        'ui_lang': lang,
+        'validlink': True,
+        'reset_user': user,
+    })
+
+
+def password_reset_complete_view(request):
+    """Potvrdenie o úspešnej zmene hesla s tlačidlom na prihlásenie."""
+    lang = get_active_lang(request)
+    return render(request, 'accounts/password_reset_complete.html', {'ui_lang': lang})
+
 

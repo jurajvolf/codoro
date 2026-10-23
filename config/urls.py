@@ -53,10 +53,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin-panel/', include('admin_panel.urls')),
 
-    # Autentifikácia, jazyk, záchrana Streaku a licencie
+    # Autentifikácia, obnovenie hesla, jazyk, záchrana Streaku a licencie
     path('login/', acc_views.login_view, name='login'),
     path('register/', acc_views.register_view, name='register'),
     path('logout/', acc_views.logout_view, name='logout'),
+    path('password-reset/', acc_views.password_reset_request_view, name='password_reset'),
+    path('password-reset/done/', acc_views.password_reset_done_view, name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', acc_views.password_reset_confirm_view, name='password_reset_confirm'),
+    path('password-reset/complete/', acc_views.password_reset_complete_view, name='password_reset_complete'),
     path('lang/<str:lang_code>/', acc_views.switch_language, name='switch_language'),
     path('streak/repair/', acc_views.repair_streak, name='repair_streak'),
     path('license/activate/', acc_views.activate_license, name='activate_license'),

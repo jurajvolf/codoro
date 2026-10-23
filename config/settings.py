@@ -166,13 +166,25 @@ SANDBOX_TIMEOUT_SECONDS = 3
 SANDBOX_MAX_OUTPUT_CHARS = 2000
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+# Django 6 MAILERS konfigurácia (podpora pre konzolu v dev prostredí a SMTP v produkcii)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Codoro Podpora <podpora@codoro.sk>')
+PASSWORD_RESET_TIMEOUT = 86400  # Bezpečnostný odkaz na obnovenie hesla platí 24 hodín
+
+_mail_backend = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+_mail_config = {
+    'BACKEND': _mail_backend,
+}
+if 'smtp' in _mail_backend.lower():
+    _mail_config.update({
+        'HOST': os.environ.get('EMAIL_HOST', 'smtp.gmail.com'),
+        'PORT': int(os.environ.get('EMAIL_PORT', 587)),
+        'USE_TLS': os.environ.get('EMAIL_USE_TLS', 'True') == 'True',
+        'USERNAME': os.environ.get('EMAIL_HOST_USER', ''),
+        'PASSWORD': os.environ.get('EMAIL_HOST_PASSWORD', ''),
+    })
 
 MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
+    'default': _mail_config,
 }
 
 ALLOWED_HOSTS = [

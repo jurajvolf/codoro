@@ -82,9 +82,14 @@
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;" for="loginPassword">
-                    {% if lang == 'en' %}Password{% else %}Heslo{% endif %}
-                </label>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                    <label style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-primary); margin: 0;" for="loginPassword">
+                        {% if lang == 'en' %}Password{% else %}Heslo{% endif %}
+                    </label>
+                    <a href="{% url 'password_reset' %}" style="font-size: 0.8rem; color: var(--brand-emerald); text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                        {% if lang == 'en' %}Forgot password?{% else %}Zabudli ste heslo?{% endif %}
+                    </a>
+                </div>
                 <div style="position:relative;">
                     <input type="password" name="password" id="loginPassword" required
                            style="width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.92rem; outline: none; transition: border-color 0.15s ease;"
