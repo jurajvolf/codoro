@@ -13,9 +13,9 @@
     <!-- ========================================================================
          HERO SECTION: ZAOBSTARANIE ŠKOLSKEJ LICENCIE
          ======================================================================== -->
-    <div style="background: linear-gradient(135deg, rgba(70, 54, 245, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%);
-                border: 1px solid var(--ro-indigo-border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem; text-align: center;">
-        <span style="background: var(--ro-indigo); color: #FFFFFF; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; padding: 0.2rem 0.65rem; border-radius: 999px; letter-spacing: 0.05em; display: inline-block; margin-bottom: 0.75rem;">
+    <div class="card-surface" style="background: radial-gradient(ellipse at 50% 0%, var(--bg-mint-soft) 0%, var(--bg-surface) 90%);
+                border: 1.5px solid var(--brand-emerald-border); border-radius: var(--radius-lg); padding: 2.25rem 2rem; margin-bottom: 2rem; text-align: center;">
+        <span style="background: var(--brand-emerald); color: #FFFFFF; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px; letter-spacing: 0.05em; display: inline-block; margin-bottom: 0.85rem;">
             CODORO FOR EDUCATION (EDU)
         </span>
         <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem 0;">
@@ -43,11 +43,11 @@
             {% if lang == 'en' %}Institution:{% else %}Pre inštitúciu:{% endif %} <strong>{{ school_name }}</strong> · {% if lang == 'en' %}Educator:{% else %}Vyučujúci:{% endif %} <strong>{{ contact_name }}</strong>
         </p>
 
-        <div style="background: var(--bg-surface); border: 2px dashed var(--ro-indigo); border-radius: var(--radius-md); padding: 1.25rem; max-width: 420px; margin: 0 auto 1.5rem;">
+        <div style="background: var(--bg-surface); border: 2px dashed var(--brand-emerald); border-radius: var(--radius-md); padding: 1.25rem; max-width: 420px; margin: 0 auto 1.5rem;">
             <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
                 {% if lang == 'en' %}Your School License Key{% else %}Váš licenčný kód do školy{% endif %}
             </div>
-            <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: var(--ro-indigo); letter-spacing: 0.06em; font-variant-numeric: tabular-nums;">
+            <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: var(--brand-emerald); letter-spacing: 0.06em; font-variant-numeric: tabular-nums;">
                 {{ generated_license.code }}
             </div>
             <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.35rem; font-variant-numeric: tabular-nums;">
@@ -67,7 +67,7 @@
         <div style="display: flex; flex-direction: column; gap: 1rem;">
             <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
                 <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
-                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--ro-indigo-soft); color: var(--ro-indigo); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--bg-mint-soft); color: var(--brand-emerald); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     </div>
                     <div>
@@ -83,7 +83,7 @@
 
             <div class="card-surface" style="padding: 1.25rem; border-radius: var(--radius-md);">
                 <div style="display: flex; gap: 0.85rem; align-items: flex-start;">
-                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--visor-cyan-bg); color: var(--visor-cyan); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--bg-mint-soft); color: var(--brand-emerald); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="12" x="3" y="6" rx="2"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M12 2v4M8 2h8"/></svg>
                     </div>
                     <div>

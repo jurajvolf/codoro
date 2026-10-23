@@ -488,4 +488,8 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
   * Precízne koncentrické zlúčenie okrajov prepínača jazykov (`SK | EN`):
     - Prebudované CSS pre `.lang-segmented` a `.lang-pill`: kontajner s rovnomerným paddingom 3px a vnútorná kapsula s pevnou výškou 24px a `border-radius: 9999px`.
     - Vonkajší a vnútorný oblúk do seba matematicky presne zapadajú s identickým 3px odstupom vo všetkých uhloch, bez akýchkoľvek zubov alebo nepekných medzier.
+  * Oprava tmavého režimu na stránke zaobstarania licencie (`/get-license/` a `.card-surface`):
+    - Odstránené staré hardcoded modré pozadie kariet `rgba(14, 20, 32, 0.94)` a `rgba(14, 20, 32, 0.98)` v `codoro.css` pre `.card-surface` a `.app-sidebar`, ktoré pochádzalo z pôvodného indigo/navy dizajnu.
+    - Zjednotené na prémiový Forest Slate token `--bg-surface` (`#15201C`), vďaka čomu majú všetky karty aj formuláre jednotný harmonický tmavozelený bridlicový vzhľad.
+    - V šablóne `templates/accounts/get_license.html` bol fialovo-modrý gradient v hero boxe nahradený čistým radiálnym prechodom z mätového povrchu do povrchu karty s jemným smaragdovým okrajom.
 ================================================================================
