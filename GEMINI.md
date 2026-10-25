@@ -599,3 +599,21 @@ Cieľ: Posunúť vizuálne a hmatové spracovanie platformy Codoro na úroveň �
     - Mobilné vysúvacie menu (Off-Canvas Drawer): Ľavý bočný panel (`.emerald-sidebar`) sa na `<= 960px` mení na plynulé vysúvacie menu s tmavým pozadím (`#sidebarBackdrop`), tlačidlom `☰` v hornej lište (`.exec-mob-toggle`) a tlačidlom `✕` vo vnútri menu.
     - Automatické prispôsobenie mriežok, tabuliek a tlačidiel: Všetky viacstĺpcové inline gridy sa na mobile plynule skladajú do 1 stĺpca (`grid-template-columns: 1fr`), tabuľky majú horizontálny touch-scroll a tlačidlá sa na úzkych displejoch (`<= 480px`) prispôsobujú na celú šírku s povoleným zalamovaním textu (`white-space: normal`).
 ================================================================================
+- FÁZA 27: PRÉMIOVÉ VIZUÁLNE VYLADENIE, PLYNULÉ ANIMÁCIE A MOBILNÁ RESPONZIVITA [DOKONČENÉ] (2026-10-25)
+  * Celoplošná atmosféra verejnej Landing Page (`templates/landing.html`, `static/css/codoro-polish.css`):
+    - Krajinné pozadie sa rozprestiera cez celú šírku stránky a všetky hlavné sekcie; vrstvy terénnych vrstevníc, trasy učenia, kontrolné body a jemné svetelné polia prepájajú obsah do jednotného prostredia.
+    - Hrdinská sekcia dostala jemné detaily lúky a cesty, kódový mikrotext, odmenu XP, checkpoint a postupné odhalenie textov a kariet.
+    - Porovnanie, kurikulum, školy, FAQ a päta majú vlastné široké atmosférické pozadia. Na mobile sa porovnávacia tabuľka mení na čitateľné skladané karty a dekorácie sa prispôsobujú úzkym viewportom.
+    - Pridané scroll-reveal pre obsahové sekcie s pomocou `IntersectionObserver`; dekoratívna animácia hero scény sa pozastaví mimo viewportu.
+  * Plynulejší scroll a stabilný header (`templates/base.html`, `static/css/codoro-polish.css`):
+    - Scroll obsluha plánuje najviac jednu aktualizáciu na animačný frame, výšku scrollovateľnej oblasti prepočítava len po zmene obsahu alebo viewportu a priebeh stránky vykresľuje cez `transform: scaleX()`.
+    - Stav zmenšeného headera sa mení iba pri prekročení prahu scrollu. Header nemení geometriu ani nákladné efekty rozmazania; prechod používa ľahké transformácie, farbu, okraj a tieň.
+    - Odstránené nepoužívané CDN importy GSAP/ScrollTrigger; doplnená podpora `prefers-reduced-motion` a pozastavenie mimoobrazovkových dekoratívnych animácií.
+    - Zvýšený kontrast offline indikátora a upravený kontrast štítkov EDU/FREE.
+  * Responzívne správanie spoločných šablón (`static/css/codoro-polish.css`):
+    - Zjednotené pravidlá pre mobilné rozloženie formulárov, mriežok, kariet a kontajnerov vrátane šablón s pevnými inline šírkami; navigácia rešpektuje bezpečné zóny zariadení a verejné menu ostáva použiteľné aj na šírke 320px.
+    - Mobilná pracovná plocha používa vlastné rozloženie a zalamovanie namiesto zmenšenia desktopového rozhrania; obsah nepresahuje viewport.
+  * Spracovanie zmien a nasadenie:
+    - Predchádzajúci lokálny commit `4eeb810` obsahuje súvisiacu menšiu vizuálnu obnovu a mobilnú optimalizáciu; táto fáza zahŕňa aj nadväzujúce úpravy animácií a scrollu.
+    - Overené v prehliadači na šírkach 320px, 390px, 768px a 1280px: bez horizontálneho presahu v dostupných verejných obrazovkách, navigácia a sticky header fungujú; konzola bez chýb. Chránené obrazovky bez prihlásenia presmerujú na login.
+    - `git diff --check` bez chýb; automatizované testy v tejto fáze neboli spustené.

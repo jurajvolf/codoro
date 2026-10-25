@@ -1201,6 +1201,389 @@ button:not(:disabled):active,
     }
 }
 
+/* The learning world belongs to the whole viewport, not the content column. */
+body.page-emerald-landing .public-hero-canvas-root {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: clamp(18px, 3vw, 48px);
+    box-sizing: border-box;
+    isolation: isolate;
+    background-color: var(--bg-page);
+    background-image:
+        radial-gradient(ellipse 68rem 42rem at 1% 8%, rgba(73, 176, 132, 0.17), transparent 74%),
+        radial-gradient(ellipse 66rem 46rem at 101% 28%, rgba(115, 197, 155, 0.15), transparent 74%),
+        radial-gradient(ellipse 74rem 48rem at 0% 67%, rgba(94, 173, 131, 0.13), transparent 72%),
+        radial-gradient(ellipse 72rem 48rem at 100% 91%, rgba(63, 158, 117, 0.13), transparent 73%),
+        linear-gradient(180deg, rgba(232, 247, 239, 0.72), rgba(247, 251, 248, 0.35) 24%, rgba(239, 248, 242, 0.48) 68%, rgba(230, 245, 236, 0.68));
+}
+
+[data-theme="dark"] body.page-emerald-landing .public-hero-canvas-root {
+    background-image:
+        radial-gradient(ellipse 68rem 42rem at 1% 8%, rgba(26, 125, 88, 0.21), transparent 74%),
+        radial-gradient(ellipse 66rem 46rem at 101% 28%, rgba(34, 125, 88, 0.2), transparent 74%),
+        radial-gradient(ellipse 74rem 48rem at 0% 67%, rgba(27, 106, 76, 0.19), transparent 72%),
+        radial-gradient(ellipse 72rem 48rem at 100% 91%, rgba(29, 122, 85, 0.18), transparent 73%),
+        linear-gradient(180deg, rgba(11, 30, 23, 0.68), rgba(12, 25, 20, 0.3) 24%, rgba(13, 31, 23, 0.42) 68%, rgba(10, 29, 21, 0.72));
+}
+
+.public-hero-canvas-root > .codoro-page-ambience {
+    z-index: -1;
+}
+
+.page-terrain-contours {
+    fill: none;
+    stroke: var(--brand-emerald);
+    stroke-width: 1.35;
+    opacity: 0.18;
+}
+
+.page-terrain-contours path {
+    animation: terrain-breath 11s ease-in-out infinite alternate;
+}
+
+.page-terrain-contours path:nth-child(2n) {
+    animation-delay: -5.5s;
+    opacity: 0.72;
+}
+
+.page-journey-trail {
+    animation: page-route-drift 48s linear infinite;
+}
+
+.page-journey-markers circle {
+    animation: checkpoint-breathe 4.8s ease-in-out infinite alternate;
+}
+
+.page-journey-markers circle:nth-child(2n) {
+    animation-delay: -2.4s;
+}
+
+@keyframes terrain-breath {
+    from { opacity: 0.48; }
+    to { opacity: 1; }
+}
+
+@keyframes page-route-drift {
+    to { stroke-dashoffset: -152px; }
+}
+
+@keyframes checkpoint-breathe {
+    from { opacity: 0.24; }
+    to { opacity: 0.52; }
+}
+
+/* Broad atmospheric fields continue behind each chapter edge to edge. */
+body.page-emerald-landing .landing-section-deck {
+    position: relative;
+    isolation: isolate;
+}
+
+body.page-emerald-landing .landing-section-deck::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -3.25rem calc(50% - 50vw);
+    pointer-events: none;
+    background: radial-gradient(ellipse 75% 82% at 50% 50%, rgba(107, 190, 145, 0.105), transparent 78%);
+}
+
+body.page-emerald-landing #comparison::before {
+    background:
+        radial-gradient(ellipse 48% 82% at 5% 40%, rgba(67, 174, 129, 0.15), transparent 100%),
+        radial-gradient(ellipse 44% 80% at 98% 60%, rgba(127, 199, 159, 0.16), transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(231, 246, 237, 0.46) 36%, rgba(231, 246, 237, 0.18) 66%, transparent 100%);
+}
+
+body.page-emerald-landing #curriculum::before {
+    background:
+        radial-gradient(ellipse 42% 70% at 1% 22%, rgba(62, 167, 123, 0.16), transparent 100%),
+        radial-gradient(ellipse 46% 72% at 100% 68%, rgba(107, 188, 144, 0.16), transparent 100%),
+        radial-gradient(ellipse 80% 35% at 52% 54%, rgba(220, 241, 228, 0.46), transparent 100%);
+}
+
+body.page-emerald-landing #schools::before {
+    background:
+        radial-gradient(ellipse 43% 100% at 0% 48%, rgba(220, 180, 91, 0.12), transparent 100%),
+        radial-gradient(ellipse 46% 100% at 100% 52%, rgba(66, 169, 124, 0.15), transparent 100%),
+        linear-gradient(90deg, rgba(250, 244, 226, 0.22), transparent 50%, rgba(225, 244, 233, 0.38));
+}
+
+body.page-emerald-landing #faq::before {
+    background:
+        radial-gradient(ellipse 54% 86% at 8% 50%, rgba(81, 175, 132, 0.14), transparent 100%),
+        radial-gradient(ellipse 55% 86% at 96% 45%, rgba(113, 192, 151, 0.13), transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(233, 246, 238, 0.5) 50%, transparent 100%);
+}
+
+/* Keep the learning controls comfortably readable on wide displays. */
+body.page-emerald-landing #comparison > :not(.landing-section-header),
+body.page-emerald-landing #curriculum > :not(.landing-section-header),
+body.page-emerald-landing #faq > :not(.landing-section-header) {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    box-sizing: border-box;
+}
+
+body.page-emerald-landing footer {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] body.page-emerald-landing .landing-section-deck::before {
+    background: radial-gradient(ellipse 76% 82% at 50% 50%, rgba(26, 123, 87, 0.2), transparent 78%);
+}
+
+[data-theme="dark"] body.page-emerald-landing #comparison::before {
+    background:
+        radial-gradient(ellipse 48% 82% at 5% 40%, rgba(27, 122, 86, 0.21), transparent 100%),
+        radial-gradient(ellipse 44% 80% at 98% 60%, rgba(39, 127, 91, 0.2), transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(14, 44, 32, 0.42) 36%, rgba(14, 44, 32, 0.18) 66%, transparent 100%);
+}
+
+[data-theme="dark"] body.page-emerald-landing #curriculum::before {
+    background:
+        radial-gradient(ellipse 42% 70% at 1% 22%, rgba(25, 112, 79, 0.22), transparent 100%),
+        radial-gradient(ellipse 46% 72% at 100% 68%, rgba(30, 117, 82, 0.22), transparent 100%),
+        radial-gradient(ellipse 80% 35% at 52% 54%, rgba(12, 47, 33, 0.38), transparent 100%);
+}
+
+[data-theme="dark"] body.page-emerald-landing #schools::before {
+    background:
+        radial-gradient(ellipse 43% 100% at 0% 48%, rgba(143, 112, 46, 0.13), transparent 100%),
+        radial-gradient(ellipse 46% 100% at 100% 52%, rgba(27, 118, 82, 0.2), transparent 100%),
+        linear-gradient(90deg, rgba(58, 47, 24, 0.17), transparent 50%, rgba(14, 46, 33, 0.3));
+}
+
+[data-theme="dark"] body.page-emerald-landing #faq::before {
+    background:
+        radial-gradient(ellipse 54% 86% at 8% 50%, rgba(28, 117, 83, 0.2), transparent 100%),
+        radial-gradient(ellipse 55% 86% at 96% 45%, rgba(31, 113, 81, 0.18), transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(13, 43, 31, 0.46) 50%, transparent 100%);
+}
+
+@media (max-width: 700px) {
+    body.page-emerald-landing .public-hero-canvas-root {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        padding-inline: 16px;
+        background-image:
+            radial-gradient(ellipse 34rem 30rem at -8% 8%, rgba(73, 176, 132, 0.16), transparent 78%),
+            radial-gradient(ellipse 35rem 32rem at 112% 47%, rgba(115, 197, 155, 0.14), transparent 78%),
+            radial-gradient(ellipse 35rem 30rem at -7% 90%, rgba(63, 158, 117, 0.13), transparent 78%),
+            linear-gradient(180deg, rgba(232, 247, 239, 0.64), rgba(247, 251, 248, 0.26) 28%, rgba(232, 247, 239, 0.58));
+    }
+
+    [data-theme="dark"] body.page-emerald-landing .public-hero-canvas-root {
+        background-image:
+            radial-gradient(ellipse 34rem 30rem at -8% 8%, rgba(26, 125, 88, 0.2), transparent 78%),
+            radial-gradient(ellipse 35rem 32rem at 112% 47%, rgba(34, 125, 88, 0.19), transparent 78%),
+            radial-gradient(ellipse 35rem 30rem at -7% 90%, rgba(29, 122, 85, 0.17), transparent 78%),
+            linear-gradient(180deg, rgba(11, 30, 23, 0.62), rgba(12, 25, 20, 0.24) 28%, rgba(10, 29, 21, 0.64));
+    }
+
+    .page-terrain-contours {
+        stroke-width: 1.05;
+        opacity: 0.14;
+    }
+
+    .page-journey-halo,
+    .page-journey-trail {
+        opacity: 0.75;
+    }
+
+    body.page-emerald-landing .landing-section-deck::before {
+        inset-inline: calc(50% - 50vw);
+    }
+
+    body.page-emerald-landing #comparison .comparison-table-wrapper {
+        max-width: 100%;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table {
+        display: block;
+        border-collapse: separate;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table thead {
+        display: none;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table tbody {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+        padding: 0.9rem;
+        border: 1px solid var(--border-subtle);
+        border-radius: 18px;
+        background: var(--bg-surface);
+        box-shadow: var(--shadow-sm);
+    }
+
+    body.page-emerald-landing #comparison .comparison-table td {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 0.42rem;
+        padding: 0.8rem;
+        border: 0;
+        border-radius: 12px;
+        font-size: 0.83rem;
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table td::before {
+        content: attr(data-label);
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        line-height: 1.3;
+        text-transform: uppercase;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table td:first-child {
+        grid-column: 1 / -1;
+        padding: 0.15rem 0.1rem 0.65rem;
+        border-bottom: 1px solid var(--border-subtle);
+        border-radius: 0;
+        font-size: 0.94rem;
+        line-height: 1.4;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table td:first-child::before {
+        display: none;
+    }
+
+    body.page-emerald-landing #comparison .comparison-table td:nth-child(2) {
+        background: var(--bg-subtle);
+    }
+
+    body.page-emerald-landing #comparison .comparison-table td.col-codoro {
+        background: var(--bg-mint-soft);
+        font-weight: 650;
+    }
+
+    .hero-stage::before {
+        opacity: 0.26;
+        mask-image: linear-gradient(to bottom, #000 0%, #000 54%, transparent 82%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-terrain-contours path,
+    .page-journey-trail,
+    .page-journey-markers circle {
+        animation: none !important;
+    }
+}
+
+.workbench-demo-panel--map {
+    gap: 0.45rem;
+    padding: 1.15rem clamp(1rem, 2vw, 1.6rem) 1rem;
+    background:
+        radial-gradient(ellipse at 88% 8%, rgba(65, 168, 124, 0.09), transparent 26rem),
+        linear-gradient(135deg, color-mix(in srgb, var(--bg-surface) 92%, var(--bg-mint-soft)), var(--bg-surface) 76%);
+}
+
+.workbench-demo-panel-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.workbench-demo-panel-heading strong {
+    color: var(--brand-emerald);
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+}
+
+.workbench-demo-panel-copy {
+    max-width: 62rem;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.workbench-map-route {
+    display: flex;
+    min-height: 76px;
+    flex: 1;
+    align-items: center;
+    overflow: hidden;
+}
+
+.workbench-map-route svg {
+    display: block;
+    width: 100%;
+    height: 90px;
+    overflow: visible;
+}
+
+.workbench-map-path-halo,
+.workbench-map-path {
+    fill: none;
+    stroke: var(--brand-emerald);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.workbench-map-path-halo {
+    stroke-width: 8;
+    opacity: 0.08;
+}
+
+.workbench-map-path {
+    stroke-width: 2.4;
+    stroke-dasharray: 2 13;
+    opacity: 0.62;
+}
+
+.studio-workbench-container.is-scene-active #workbenchCenterCol .workbench-map-path {
+    animation: workbenchMapTravel 16s linear infinite;
+}
+
+.workbench-map-nodes circle {
+    fill: var(--bg-surface);
+    stroke: var(--brand-emerald);
+    stroke-width: 2.5;
+    filter: drop-shadow(0 3px 5px rgba(0, 87, 66, 0.18));
+}
+
+.workbench-map-tracks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+@keyframes workbenchMapTravel {
+    to { stroke-dashoffset: -90; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workbench-trio-body,
+    .studio-workbench-container.is-scene-active #workbenchCenterCol .workbench-map-path {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
 @media (max-width: 380px) {
     .floating-pill-navbar {
         width: calc(100% - 1rem);
@@ -1456,5 +1839,1368 @@ button:not(:disabled):active,
     .faq-card-item,
     .faq-chevron {
         transition: none !important;
+    }
+}
+
+/* A connected Codoro landscape: progress runs from the first line to the lesson map. */
+.public-hero-canvas-root {
+    position: relative;
+    background-color: var(--bg-page);
+    background-image:
+        radial-gradient(ellipse at 48% 4%, rgba(113, 191, 150, 0.17), transparent 42rem),
+        radial-gradient(ellipse at 96% 25%, rgba(53, 151, 113, 0.09), transparent 38rem),
+        radial-gradient(ellipse at 3% 67%, rgba(89, 170, 127, 0.08), transparent 34rem),
+        linear-gradient(180deg, rgba(233, 246, 239, 0.3), transparent 20%, transparent 74%, rgba(227, 243, 234, 0.34));
+    background-size: auto, auto, auto, auto;
+}
+
+[data-theme="dark"] .public-hero-canvas-root {
+    background-image:
+        radial-gradient(ellipse at 48% 4%, rgba(37, 148, 105, 0.17), transparent 42rem),
+        radial-gradient(ellipse at 96% 25%, rgba(30, 117, 85, 0.14), transparent 38rem),
+        radial-gradient(ellipse at 3% 67%, rgba(35, 111, 79, 0.11), transparent 34rem),
+        linear-gradient(180deg, rgba(11, 30, 23, 0.24), transparent 20%, transparent 74%, rgba(11, 30, 23, 0.34));
+}
+
+.codoro-page-ambience {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.codoro-page-ambience svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.page-journey-halo,
+.page-journey-trail {
+    fill: none;
+    stroke: var(--brand-emerald);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.page-journey-halo {
+    stroke-width: 34;
+    opacity: 0.035;
+}
+
+.page-journey-trail {
+    stroke-width: 1.5;
+    stroke-dasharray: 2 17;
+    opacity: 0.14;
+}
+
+.page-journey-markers circle {
+    fill: var(--bg-page);
+    stroke: var(--brand-emerald);
+    stroke-width: 2.5;
+    opacity: 0.24;
+}
+
+.hero-stage::before {
+    background:
+        radial-gradient(ellipse at 50% 23%, rgba(255, 255, 255, 0.54), transparent 62%),
+        repeating-radial-gradient(ellipse at 50% 98%, transparent 0 52px, rgba(0, 135, 103, 0.045) 53px 54px, transparent 55px 106px);
+    background-size: auto, 100% 100%;
+    opacity: 0.82;
+}
+
+[data-theme="dark"] .hero-stage::before {
+    background:
+        radial-gradient(ellipse at 50% 23%, rgba(220, 255, 238, 0.045), transparent 62%),
+        repeating-radial-gradient(ellipse at 50% 98%, transparent 0 52px, rgba(90, 196, 144, 0.055) 53px 54px, transparent 55px 106px);
+}
+
+.hero-learning-route {
+    z-index: 2;
+}
+
+.hero-route-line,
+.hero-route-spark,
+.hero-code-note,
+.hero-code-note-coin,
+.hero-world-checkpoint,
+.hero-reed {
+    animation-play-state: paused;
+}
+
+.hero-stage.is-scene-active .hero-route-line,
+.hero-stage.is-scene-active .hero-route-spark,
+.hero-stage.is-scene-active .hero-code-note,
+.hero-stage.is-scene-active .hero-code-note-coin,
+.hero-stage.is-scene-active .hero-world-checkpoint,
+.hero-stage.is-scene-active .hero-reed {
+    animation-play-state: running;
+}
+
+.hero-code-note--left::after,
+.hero-code-note--right::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    width: clamp(2rem, 5vw, 4.5rem);
+    border-top: 1px solid rgba(0, 135, 103, 0.24);
+}
+
+.hero-code-note--left::after {
+    left: 100%;
+    transform-origin: left center;
+    transform: rotate(-13deg);
+}
+
+.hero-code-note--right::after {
+    right: 100%;
+    transform-origin: right center;
+    transform: rotate(13deg);
+}
+
+.hero-code-note-coin {
+    display: block;
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(125, 82, 4, 0.2));
+    animation: dorosCoinTurn 8s ease-in-out infinite;
+}
+
+.hero-world-checkpoint {
+    position: absolute;
+    z-index: 2;
+    top: 44%;
+    right: clamp(6rem, 11vw, 9rem);
+    width: clamp(64px, 7vw, 92px);
+    height: auto;
+    filter: drop-shadow(0 10px 12px rgba(22, 80, 51, 0.2));
+    transform-origin: 50% 88%;
+    animation: checkpointSway 5.4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.hero-meadow-reeds {
+    opacity: 0.74;
+}
+
+.hero-reed {
+    animation: meadowReed 4.8s ease-in-out infinite alternate;
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+}
+
+.hero-reed--two,
+.hero-reed--six {
+    animation-delay: -1.8s;
+}
+
+.hero-cta-btn-emerald:active,
+.workbench-tool-btn:active:not(:disabled),
+.mode-tab-item:active {
+    scale: 0.96;
+}
+
+.studio-workbench-container.is-scene-active .studio-workbench-window {
+    box-shadow: 0 34px 78px -46px rgba(14, 62, 45, 0.62),
+                0 2px 7px rgba(14, 30, 24, 0.055),
+                inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.studio-workbench-window {
+    transition: box-shadow var(--duration-medium) var(--ease-smooth-out);
+}
+
+#workbenchCenterCol {
+    transform-origin: 50% 22%;
+}
+
+#workbenchCenterCol.workbench-mode-enter {
+    animation: workbenchModeEnter var(--duration-fast) var(--ease-smooth-out) both;
+}
+
+#demoRunBtn.is-running {
+    cursor: progress;
+    box-shadow: 0 0 0 3px rgba(0, 135, 103, 0.13), 0 8px 18px -12px rgba(0, 87, 66, 0.9);
+}
+
+#workbenchTestsList,
+.all-tests-pass-card {
+    transition: opacity var(--duration-quick) ease,
+                background-color var(--duration-fast) ease,
+                box-shadow var(--duration-fast) var(--ease-smooth-out);
+}
+
+.test-row-pill.is-test-replaying {
+    animation: testPassedBeat 520ms var(--ease-smooth-out) both;
+}
+
+.all-tests-pass-card::after {
+    opacity: 0;
+    animation: none;
+}
+
+.all-tests-pass-card.is-celebrating::after {
+    animation: successGlint 1.1s var(--ease-smooth-out) both;
+}
+
+.curriculum-track-tab,
+.track-switcher-pill {
+    transition: color var(--duration-quick) ease,
+                background-color var(--duration-quick) ease,
+                border-color var(--duration-quick) ease,
+                box-shadow var(--duration-fast) var(--ease-smooth-out),
+                transform var(--duration-quick) var(--ease-smooth-out);
+}
+
+.curriculum-track-tab:active,
+.track-switcher-pill:active {
+    scale: 0.98;
+}
+
+@keyframes dorosCoinTurn {
+    0%, 100% { transform: translateY(0) rotate(-7deg); }
+    50% { transform: translateY(-6px) rotate(7deg); }
+}
+
+@keyframes meadowReed {
+    from { transform: rotate(-3deg); }
+    to { transform: rotate(3deg); }
+}
+
+@keyframes checkpointSway {
+    0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+    50% { transform: translateY(-5px) rotate(1.5deg); }
+}
+
+@keyframes workbenchModeEnter {
+    from { opacity: 0.58; transform: translateY(8px); filter: blur(2px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes testPassedBeat {
+    0% { transform: translateX(4px) scale(0.985); background-color: var(--pass-green-bg); }
+    64% { transform: translateX(0) scale(1.015); }
+    100% { transform: translateX(0) scale(1); background-color: var(--bg-surface); }
+}
+
+@media (max-width: 900px) {
+    .codoro-page-ambience {
+        opacity: 0.4;
+    }
+
+    .hero-world-checkpoint,
+    .hero-code-note-coin {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .public-hero-canvas-root {
+        background-image:
+            radial-gradient(ellipse at 50% 4%, rgba(113, 191, 150, 0.15), transparent 28rem),
+            radial-gradient(ellipse at 4% 66%, rgba(89, 170, 127, 0.07), transparent 26rem),
+            linear-gradient(180deg, rgba(233, 246, 239, 0.22), transparent 26%, transparent 74%, rgba(227, 243, 234, 0.22));
+        background-size: auto, auto, auto;
+    }
+
+    [data-theme="dark"] .public-hero-canvas-root {
+        background-image:
+            radial-gradient(ellipse at 50% 4%, rgba(37, 148, 105, 0.15), transparent 28rem),
+            radial-gradient(ellipse at 4% 66%, rgba(35, 111, 79, 0.1), transparent 26rem),
+            linear-gradient(180deg, rgba(11, 30, 23, 0.18), transparent 26%, transparent 74%, rgba(11, 30, 23, 0.24));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-route-line,
+    .hero-route-spark,
+    .hero-code-note,
+    .hero-code-note-coin,
+    .hero-world-checkpoint,
+    .hero-reed,
+    #workbenchCenterCol.workbench-mode-enter,
+    .test-row-pill.is-test-replaying,
+    .all-tests-pass-card.is-celebrating::after {
+        animation: none !important;
+    }
+
+    .hero-code-note-coin,
+    .hero-world-checkpoint {
+        transform: none !important;
+    }
+
+    #workbenchTestsList,
+    .all-tests-pass-card,
+    .curriculum-track-tab,
+    .track-switcher-pill {
+        transition: none !important;
+    }
+}
+
+/* A more finished Codoro atmosphere: river stones, learning trails, and live code. */
+:root {
+    --stagger-dur: 560ms;
+    --stagger-distance: 12px;
+    --stagger-stagger: 75ms;
+    --stagger-blur: 3px;
+    --stagger-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --section-reveal-duration: 760ms;
+}
+
+.public-hero-canvas-root {
+    isolation: isolate;
+    background-image:
+        radial-gradient(circle at 14% 10%, rgba(0, 135, 103, 0.075), transparent 24rem),
+        radial-gradient(circle at 88% 17%, rgba(86, 169, 130, 0.085), transparent 22rem),
+        radial-gradient(circle at 18% 14%, rgba(0, 135, 103, 0.14) 1px, transparent 1.7px);
+    background-size: auto, auto, 42px 42px;
+}
+
+.hero-stage {
+    isolation: isolate;
+}
+
+.hero-stage::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0.5rem 2.5% 1.2rem;
+    pointer-events: none;
+    border-radius: 48% 48% 28% 28% / 22% 22% 12% 12%;
+    background:
+        radial-gradient(ellipse at 50% 24%, rgba(255, 255, 255, 0.58), transparent 62%),
+        radial-gradient(circle at 50% 24%, rgba(0, 135, 103, 0.08) 1px, transparent 1.7px);
+    background-size: auto, 34px 34px;
+    opacity: 0.75;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+}
+
+.hero-stage::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 11%;
+    left: 50%;
+    width: min(42vw, 520px);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(156, 217, 184, 0.2), rgba(156, 217, 184, 0) 68%);
+}
+
+.hero-learning-route {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.hero-learning-route svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.hero-route-halo,
+.hero-route-line {
+    fill: none;
+    stroke: var(--brand-emerald);
+    stroke-linecap: round;
+}
+
+.hero-route-halo {
+    stroke-width: 11;
+    opacity: 0.055;
+}
+
+.hero-route-line {
+    stroke-width: 1.7;
+    stroke-dasharray: 2 11;
+    opacity: 0.36;
+    animation: heroRouteTravel 24s linear infinite;
+}
+
+.hero-route-node {
+    fill: var(--bg-surface);
+    stroke: var(--brand-emerald);
+    stroke-width: 2;
+    opacity: 0.72;
+}
+
+.hero-route-spark {
+    fill: var(--brand-emerald);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: heroSpark 2.8s ease-in-out infinite alternate;
+}
+
+.hero-route-spark:last-child {
+    animation-delay: -1.3s;
+}
+
+.hero-code-note {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    align-items: center;
+    gap: 0.3rem 0.55rem;
+    min-width: 150px;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--brand-emerald-border) 72%, var(--border-subtle));
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--bg-surface) 94%, transparent);
+    box-shadow: 0 12px 26px -21px rgba(12, 72, 55, 0.68), 0 2px 4px rgba(14, 30, 24, 0.045);
+    animation: heroNoteFloat 6.5s var(--ease-codoro) infinite alternate;
+    pointer-events: none;
+}
+
+.hero-code-note--left {
+    top: 34%;
+    left: clamp(1.25rem, 6.8vw, 6.25rem);
+    grid-template-columns: 7px auto;
+}
+
+.hero-code-note--right {
+    top: 31%;
+    right: clamp(1.25rem, 6.8vw, 6.25rem);
+    grid-template-columns: 28px auto;
+    animation-delay: -2.2s;
+}
+
+.hero-code-note code {
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.77rem;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.hero-code-note-caption {
+    grid-column: 2;
+    color: var(--text-muted);
+    font-size: 0.67rem;
+    line-height: 1.2;
+}
+
+.hero-code-note-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #32A879;
+    box-shadow: 0 0 0 4px rgba(50, 168, 121, 0.12);
+}
+
+.hero-code-note-icon {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--doros-gold-bg);
+    color: #9A6700;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.hero-code-note--right strong,
+.hero-code-note--right small {
+    display: block;
+}
+
+.hero-code-note--right strong {
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    line-height: 1.25;
+}
+
+.hero-code-note--right small {
+    margin-top: 0.12rem;
+    color: var(--text-muted);
+    font-size: 0.67rem;
+}
+
+.hero-cta-btn-emerald {
+    box-shadow: 0 2px 0 rgba(0, 80, 59, 0.42), 0 12px 22px -12px rgba(0, 103, 76, 0.72);
+}
+
+.hero-cta-btn-emerald:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 0 rgba(0, 80, 59, 0.42), 0 18px 28px -14px rgba(0, 103, 76, 0.8);
+}
+
+.hero-cta-btn-emerald svg,
+.hero-content-wrapper .btn-secondary svg {
+    transition: transform 220ms var(--ease-codoro);
+}
+
+.hero-cta-btn-emerald:hover svg {
+    transform: translateX(4px);
+}
+
+.hero-content-wrapper .btn-secondary:hover svg {
+    transform: translateX(2px);
+}
+
+.studio-workbench-window {
+    border-color: color-mix(in srgb, var(--brand-emerald-border) 56%, var(--border-subtle));
+    border-radius: 24px;
+    box-shadow: 0 30px 72px -44px rgba(14, 62, 45, 0.55),
+                0 2px 7px rgba(14, 30, 24, 0.055),
+                inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.workbench-mac-titlebar {
+    background: linear-gradient(180deg, var(--bg-surface), var(--bg-subtle));
+}
+
+.workbench-tool-btn {
+    min-height: 40px;
+    box-shadow: 0 1px 2px rgba(14, 30, 24, 0.04);
+    transition: color var(--motion-control) ease,
+                background-color var(--motion-control) ease,
+                border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease,
+                transform var(--motion-press) var(--ease-codoro);
+}
+
+.workbench-tool-btn:hover:not(.btn-run) {
+    border-color: var(--brand-emerald-border);
+    color: var(--brand-emerald);
+    transform: translateY(-1px);
+}
+
+.workbench-col-modes {
+    background-image: radial-gradient(circle at 12% 12%, rgba(0, 135, 103, 0.07), transparent 12rem);
+}
+
+.mode-tab-item {
+    min-height: 58px;
+    transition: color var(--motion-control) ease,
+                background-color var(--motion-control) ease,
+                border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease,
+                transform var(--motion-control) var(--ease-codoro);
+}
+
+.mode-tab-item:hover {
+    transform: translateX(3px);
+}
+
+.mode-tab-item.active {
+    box-shadow: inset 3px 0 0 var(--brand-emerald), 0 6px 14px -12px rgba(0, 87, 66, 0.62);
+}
+
+.mode-tab-icon svg {
+    transition: transform var(--motion-control) var(--ease-codoro),
+                color var(--motion-control) ease;
+}
+
+.mode-tab-item:hover .mode-tab-icon svg {
+    transform: translateY(-1px) scale(1.08);
+}
+
+.workbench-col-tests {
+    background-image: radial-gradient(circle at 92% 8%, rgba(0, 135, 103, 0.055), transparent 12rem);
+}
+
+.test-row-pill {
+    transition: transform var(--motion-control) var(--ease-codoro),
+                box-shadow var(--motion-control) ease,
+                border-color var(--motion-control) ease;
+}
+
+.test-row-pill:hover {
+    transform: translateX(3px);
+    border-color: var(--pass-green-border);
+    box-shadow: 0 4px 12px -10px rgba(20, 83, 45, 0.62);
+}
+
+.all-tests-pass-card {
+    position: relative;
+    overflow: hidden;
+    border-color: var(--pass-green-border);
+    box-shadow: inset 3px 0 0 var(--pass-green), 0 6px 16px -14px rgba(20, 83, 45, 0.48);
+}
+
+.all-tests-pass-card::after {
+    content: "";
+    position: absolute;
+    inset: -30% auto -30% -40%;
+    width: 28%;
+    transform: skewX(-18deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+    animation: successGlint 1.1s var(--ease-codoro) 650ms both;
+    pointer-events: none;
+}
+
+.faq-card-item {
+    transition: border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease,
+                transform var(--motion-control) var(--ease-codoro);
+}
+
+.faq-card-item:hover {
+    transform: translateY(-2px);
+}
+
+/* Progressive enhancement: reveal the real content only when the observer is ready. */
+.t-stagger-line {
+    display: block;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: opacity var(--stagger-dur) var(--stagger-ease),
+                transform var(--stagger-dur) var(--stagger-ease),
+                filter var(--stagger-dur) var(--stagger-ease);
+}
+
+.t-stagger-line--2 {
+    transition-delay: var(--stagger-stagger);
+}
+
+.t-stagger-line--3 {
+    transition-delay: calc(var(--stagger-stagger) * 2);
+}
+
+.codoro-motion-ready .t-stagger:not(.is-shown) .t-stagger-line {
+    opacity: 0;
+    transform: translateY(var(--stagger-distance));
+    filter: blur(var(--stagger-blur));
+}
+
+.codoro-motion-ready .t-stagger.is-shown .t-stagger-line {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+[data-scroll-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+}
+
+.codoro-motion-ready [data-scroll-reveal]:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(2px);
+    transition: opacity var(--section-reveal-duration) var(--ease-codoro),
+                transform var(--section-reveal-duration) var(--ease-codoro),
+                filter var(--section-reveal-duration) var(--ease-codoro);
+    transition-delay: var(--scroll-reveal-delay, 0ms);
+}
+
+.codoro-motion-ready [data-scroll-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+@keyframes heroRouteTravel {
+    to { stroke-dashoffset: -52; }
+}
+
+@keyframes heroSpark {
+    from { opacity: 0.35; transform: scale(0.82); }
+    to { opacity: 0.95; transform: scale(1.18); }
+}
+
+@keyframes heroNoteFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-7px); }
+}
+
+@keyframes successGlint {
+    from { transform: translateX(0) skewX(-18deg); opacity: 0; }
+    18% { opacity: 1; }
+    to { transform: translateX(640%) skewX(-18deg); opacity: 0; }
+}
+
+@media (max-width: 1180px) {
+    .hero-code-note--left { left: 1rem; }
+    .hero-code-note--right { right: 1rem; }
+}
+
+@media (max-width: 900px) {
+    .hero-learning-route,
+    .hero-code-note { display: none; }
+
+    .public-hero-canvas-root {
+        background-size: auto, auto, 34px 34px;
+    }
+}
+
+@media (max-width: 760px) {
+    .hero-stage::before {
+        inset-inline: 0.3rem;
+        opacity: 0.45;
+    }
+
+    .hero-stage::after {
+        top: 8%;
+        width: min(86vw, 360px);
+    }
+
+    .studio-workbench-window {
+        border-radius: 18px;
+        box-shadow: 0 20px 44px -30px rgba(14, 62, 45, 0.5),
+                    0 2px 6px rgba(14, 30, 24, 0.05);
+    }
+
+    .mode-tab-item:hover,
+    .faq-card-item:hover,
+    .test-row-pill:hover {
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-route-line,
+    .hero-route-spark,
+    .hero-code-note,
+    .all-tests-pass-card::after {
+        animation: none !important;
+    }
+
+    .hero-cta-btn-emerald,
+    .hero-cta-btn-emerald svg,
+    .hero-content-wrapper .btn-secondary svg,
+    .workbench-tool-btn,
+    .mode-tab-item,
+    .mode-tab-icon svg,
+    .test-row-pill,
+    .faq-card-item {
+        transition: none !important;
+    }
+
+    .t-stagger-line,
+    [data-scroll-reveal],
+    .codoro-motion-ready .t-stagger:not(.is-shown) .t-stagger-line,
+    .codoro-motion-ready [data-scroll-reveal]:not(.is-revealed) {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+    }
+}
+
+/* Tie the full page to the same topographic learning landscape as the hero. */
+.public-hero-canvas-root {
+    background-image:
+        radial-gradient(ellipse at 14% 9%, rgba(0, 135, 103, 0.075), transparent 26rem),
+        radial-gradient(ellipse at 88% 27%, rgba(53, 151, 113, 0.07), transparent 32rem),
+        radial-gradient(ellipse at 9% 63%, rgba(89, 170, 127, 0.07), transparent 31rem),
+        radial-gradient(ellipse at 92% 84%, rgba(0, 135, 103, 0.055), transparent 34rem),
+        repeating-radial-gradient(ellipse 510px 330px at 4% 25%, transparent 0 54px, rgba(0, 135, 103, 0.035) 55px 56px, transparent 57px 110px),
+        repeating-radial-gradient(ellipse 520px 350px at 96% 72%, transparent 0 58px, rgba(0, 135, 103, 0.03) 59px 60px, transparent 61px 118px),
+        radial-gradient(circle at 18% 11%, rgba(0, 135, 103, 0.12) 1px, transparent 1.7px);
+    background-size: auto, auto, auto, auto, auto, auto, 42px 42px;
+}
+
+[data-theme="dark"] .public-hero-canvas-root {
+    background-image:
+        radial-gradient(ellipse at 14% 9%, rgba(37, 148, 105, 0.16), transparent 26rem),
+        radial-gradient(ellipse at 88% 27%, rgba(30, 117, 85, 0.14), transparent 32rem),
+        radial-gradient(ellipse at 9% 63%, rgba(35, 111, 79, 0.14), transparent 31rem),
+        radial-gradient(ellipse at 92% 84%, rgba(37, 148, 105, 0.12), transparent 34rem),
+        repeating-radial-gradient(ellipse 510px 330px at 4% 25%, transparent 0 54px, rgba(90, 196, 144, 0.045) 55px 56px, transparent 57px 110px),
+        repeating-radial-gradient(ellipse 520px 350px at 96% 72%, transparent 0 58px, rgba(90, 196, 144, 0.04) 59px 60px, transparent 61px 118px),
+        radial-gradient(circle at 18% 11%, rgba(90, 196, 144, 0.14) 1px, transparent 1.7px);
+}
+
+/* Keep the landscape edge-to-edge and blend each chapter into the next. */
+body.page-emerald-landing .landing-section-deck::before {
+    inset-block: -3.25rem;
+    inset-inline: auto;
+    left: 50%;
+    right: auto;
+    width: 111.111vw;
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+}
+
+body.page-emerald-landing .scenic-hero-hills-backdrop {
+    left: 50%;
+    right: auto;
+    width: 111.111vw;
+    max-width: none;
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+}
+
+body.page-emerald-landing .scenic-hills-workbench-backdrop {
+    left: 50%;
+    right: auto;
+    width: 111.111vw;
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 34%, #000 68%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 34%, #000 68%, transparent 100%);
+}
+
+/* Keep movement on the small interactive scene; large SVG canvases stay still. */
+.page-terrain-contours path,
+.page-journey-trail,
+.page-journey-markers circle,
+.workbench-map-path,
+.hero-route-line {
+    animation: none !important;
+}
+
+.page-terrain-contours path {
+    opacity: 0.62;
+}
+
+:root {
+    --stagger-dur: 440ms;
+    --stagger-distance: 10px;
+    --stagger-stagger: 46ms;
+    --section-reveal-duration: 480ms;
+}
+
+.t-stagger-line {
+    filter: none;
+    transition-property: opacity, transform;
+    transition-duration: var(--stagger-dur);
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.codoro-motion-ready .t-stagger:not(.is-shown) .t-stagger-line {
+    transform: translateY(var(--stagger-distance));
+    filter: none;
+}
+
+[data-scroll-reveal] {
+    filter: none;
+    transition-property: opacity, transform;
+    transition-duration: var(--section-reveal-duration);
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.codoro-motion-ready [data-scroll-reveal]:not(.is-revealed) {
+    transform: translateY(14px);
+    filter: none;
+    transition-property: opacity, transform;
+    transition-duration: var(--section-reveal-duration);
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.codoro-motion-ready [data-scroll-reveal].is-revealed {
+    transform: translateY(0);
+    filter: none;
+}
+
+.codoro-motion-ready [data-scroll-reveal].landing-curriculum-card,
+.codoro-motion-ready [data-scroll-reveal].faq-card-item {
+    transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+    transition-duration: 320ms;
+}
+
+.landing-curriculum-card {
+    transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+    transition-duration: 260ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-card-item {
+    transition-property: border-color, box-shadow, transform, opacity;
+    transition-duration: 250ms;
+}
+
+.test-row-pill {
+    transition-property: transform, box-shadow, border-color;
+    transition-duration: 220ms;
+}
+
+.mode-tab-item,
+.workbench-tool-btn {
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: 220ms;
+}
+
+.hero-cta-btn-emerald,
+.hero-content-wrapper .btn-secondary {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes workbenchModeEnter {
+    from { opacity: 0.62; transform: translateY(7px) scale(0.99); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.page-emerald-landing .landing-curriculum-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 34px -22px rgba(0, 87, 66, 0.3);
+    }
+}
+
+@media (max-width: 768px) {
+    body.page-emerald-landing .landing-section-deck::before,
+    body.page-emerald-landing .scenic-hero-hills-backdrop,
+    body.page-emerald-landing .scenic-hills-workbench-backdrop {
+        width: 100vw;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-terrain-contours path,
+    .page-journey-trail,
+    .page-journey-markers circle,
+    .workbench-map-path,
+    .hero-route-line,
+    .hero-route-spark,
+    .hero-code-note,
+    .hero-code-note-coin,
+    .hero-world-checkpoint,
+    .hero-reed,
+    .all-tests-pass-card::after {
+        animation: none !important;
+    }
+
+    .t-stagger-line,
+    [data-scroll-reveal],
+    .landing-curriculum-card,
+    .faq-card-item,
+    .test-row-pill,
+    .mode-tab-item,
+    .workbench-tool-btn,
+    .hero-cta-btn-emerald,
+    .hero-content-wrapper .btn-secondary {
+        transition: none !important;
+    }
+}
+
+.page-journey-halo {
+    opacity: 0.06;
+}
+
+.page-journey-trail {
+    stroke-width: 1.8;
+    opacity: 0.22;
+}
+
+.page-journey-markers circle {
+    opacity: 0.36;
+    filter: drop-shadow(0 2px 5px rgba(0, 87, 66, 0.12));
+}
+
+.workbench-trio-body {
+    transition: grid-template-columns var(--duration-medium) var(--ease-smooth-out);
+}
+
+.workbench-trio-body.is-secondary-panel-hidden {
+    grid-template-columns: 220px minmax(0, 1fr);
+}
+
+.workbench-trio-body.is-secondary-panel-hidden .workbench-col-editor {
+    border-right: 0;
+}
+
+@media (max-width: 900px) {
+    .workbench-trio-body.is-secondary-panel-hidden {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .public-hero-canvas-root {
+        background-image:
+            radial-gradient(ellipse at 50% 4%, rgba(113, 191, 150, 0.15), transparent 28rem),
+            radial-gradient(ellipse at 4% 66%, rgba(89, 170, 127, 0.07), transparent 26rem),
+            repeating-radial-gradient(ellipse 390px 250px at 0% 48%, transparent 0 62px, rgba(0, 135, 103, 0.026) 63px 64px, transparent 65px 124px),
+            linear-gradient(180deg, rgba(233, 246, 239, 0.22), transparent 26%, transparent 74%, rgba(227, 243, 234, 0.22)),
+            radial-gradient(circle at 18% 11%, rgba(0, 135, 103, 0.09) 1px, transparent 1.7px);
+        background-size: auto, auto, auto, auto, 42px 42px;
+    }
+
+    [data-theme="dark"] .public-hero-canvas-root {
+        background-image:
+            radial-gradient(ellipse at 50% 4%, rgba(37, 148, 105, 0.15), transparent 28rem),
+            radial-gradient(ellipse at 4% 66%, rgba(35, 111, 79, 0.1), transparent 26rem),
+            repeating-radial-gradient(ellipse 390px 250px at 0% 48%, transparent 0 62px, rgba(90, 196, 144, 0.04) 63px 64px, transparent 65px 124px),
+            linear-gradient(180deg, rgba(11, 30, 23, 0.18), transparent 26%, transparent 74%, rgba(11, 30, 23, 0.24)),
+            radial-gradient(circle at 18% 11%, rgba(90, 196, 144, 0.11) 1px, transparent 1.7px);
+    }
+}
+
+/* Scroll performance and responsive safety net for every page family. */
+.scroll-progress-bar {
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: none;
+}
+
+.emerald-top-bar,
+.emerald-top-bar.header-scrolled {
+    height: 64px;
+    min-height: 64px;
+    padding-inline: 1.75rem;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    will-change: auto;
+    transition: background-color 180ms ease,
+                border-color 180ms ease,
+                box-shadow 220ms ease,
+                transform 220ms var(--ease-codoro);
+}
+
+.emerald-top-bar.header-scrolled {
+    transform: translateY(-1px);
+}
+
+.floating-pill-navbar,
+.floating-pill-navbar.header-scrolled {
+    width: min(1200px, calc(100% - 3rem));
+    max-width: 1200px;
+    height: 68px;
+    top: 16px;
+    padding-inline: 1.5rem;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    will-change: auto;
+    transition: transform 220ms var(--ease-codoro),
+                background-color 180ms ease,
+                border-color 180ms ease,
+                box-shadow 220ms ease;
+}
+
+.floating-pill-navbar.header-scrolled {
+    transform: scale(0.985);
+    background: var(--bg-navbar);
+    border-color: var(--border-strong);
+    box-shadow: 0 14px 32px -20px rgba(14, 30, 24, 0.42);
+}
+
+.floating-pill-navbar.header-scrolled .emerald-brand-icon {
+    transform: scale(0.96);
+}
+
+.floating-pill-navbar.header-scrolled .emerald-brand-text {
+    font-size: inherit;
+}
+
+.floating-pill-navbar.header-scrolled .floating-pill-links {
+    gap: clamp(1.1rem, 2vw, 1.8rem);
+}
+
+.public-main-wrapper,
+.public-inner-content,
+.emerald-app-shell,
+.emerald-main-content,
+.main-container,
+.layout-2col,
+.layout-workbench,
+.layout-auth,
+.animate-in {
+    min-width: 0;
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    /* Keep the viewport as the scroll container so sticky headers remain sticky. */
+    html {
+        overflow-x: clip !important;
+    }
+
+    body {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+    }
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+}
+
+@media (max-width: 960px) {
+    .emerald-top-bar,
+    .emerald-top-bar.header-scrolled {
+        height: 60px;
+        min-height: 60px;
+        padding-inline: 1rem;
+    }
+}
+
+@media (max-width: 760px) {
+    .emerald-top-bar,
+    .emerald-top-bar.header-scrolled {
+        height: 56px;
+        min-height: 56px;
+        padding-inline: 0.7rem;
+    }
+
+    .emerald-top-bar.header-scrolled {
+        transform: none;
+    }
+
+    .emerald-top-bar-public {
+        padding-inline: 0.8rem;
+        gap: 0.25rem;
+    }
+
+    .emerald-top-bar-public > div:first-child {
+        flex: 0 0 auto;
+    }
+
+    .emerald-top-bar-public .emerald-top-actions {
+        gap: 0.2rem !important;
+    }
+
+    .floating-pill-navbar,
+    .floating-pill-navbar.header-scrolled {
+        width: calc(100% - 1.5rem);
+        max-width: none;
+        height: 58px;
+        top: 10px;
+        margin-top: 0.65rem;
+        padding-inline: 0.8rem;
+        border-radius: 17px;
+    }
+
+    .floating-pill-navbar.header-scrolled {
+        transform: scale(0.99);
+    }
+
+    .public-main-wrapper,
+    .public-inner-content,
+    .emerald-app-shell,
+    .emerald-main-content,
+    .main-container {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .public-inner-content {
+        padding-inline: clamp(0.7rem, 3vw, 1.1rem) !important;
+    }
+
+    body.page-emerald-landing .public-hero-canvas-root {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .emerald-app-shell,
+    .emerald-app-shell.shell-2col {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 0.85rem;
+        padding: 0.75rem clamp(0.65rem, 3vw, 1rem) 2.75rem !important;
+    }
+
+    .emerald-main-content,
+    .layout-2col,
+    .layout-workbench,
+    .layout-auth,
+    .emerald-dashboard-grid,
+    .lesson-split-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        min-width: 0;
+    }
+
+    .layout-2col,
+    .layout-workbench,
+    .layout-auth,
+    .emerald-dashboard-grid {
+        gap: 1rem;
+    }
+
+    .studio-workbench-container,
+    .lesson-workbench-container,
+    .comparison-table-wrapper,
+    .table-responsive,
+    .card-surface {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .studio-workbench-container,
+    .lesson-workbench-container {
+        overflow-x: clip;
+    }
+
+    .mobile-student-nav {
+        padding-bottom: calc(0.45rem + env(safe-area-inset-bottom));
+    }
+
+    .mobile-student-nav-item {
+        min-height: 44px;
+    }
+
+    .hero-big-title,
+    .landing-section-title,
+    .map-title {
+        overflow-wrap: anywhere;
+    }
+
+    table,
+    .markdown-content table {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    body [style*="grid-template-columns: 1fr 1fr"],
+    body [style*="grid-template-columns: 1.1fr 1fr"],
+    body [style*="grid-template-columns: 1.2fr 1fr"],
+    body [style*="grid-template-columns: 1fr 1.4fr"],
+    body [style*="grid-template-columns: 1.1fr 1fr 1fr auto"],
+    body [style*="minmax(320px"],
+    body [style*="minmax(360px"],
+    body [style*="minmax(280px"],
+    body [style*="minmax(240px"] {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    body [style*="min-width: 280px"],
+    body [style*="min-width: 260px"],
+    body [style*="min-width: 240px"],
+    body [style*="min-width: 220px"] {
+        min-width: 0 !important;
+    }
+
+    .emerald-dashboard-grid,
+    .landing-curriculum-grid,
+    .curriculum-mod-grid,
+    .practice-card-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .form-control,
+    .form-select,
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        max-width: 100%;
+    }
+
+    .button-row,
+    .action-row,
+    .form-actions {
+        flex-wrap: wrap;
+    }
+
+    .mobile-student-nav {
+        left: max(0.5rem, env(safe-area-inset-left));
+        right: max(0.5rem, env(safe-area-inset-right));
+    }
+}
+
+@media (max-width: 380px) {
+    .emerald-top-bar-public {
+        padding-inline: 0.55rem;
+    }
+
+    .emerald-top-bar-public .btn-icon-circle {
+        display: none !important;
+    }
+
+    .emerald-top-bar-public .emerald-brand-icon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .emerald-top-bar-public .emerald-brand-text {
+        font-size: 0.98rem;
+    }
+
+    .emerald-top-bar-public .lang-segmented {
+        gap: 0;
+        padding: 0.08rem;
+    }
+
+    .emerald-top-bar-public .lang-pill {
+        min-width: 22px;
+        min-height: 28px;
+        padding: 0.25rem 0.27rem;
+        font-size: 0.64rem;
+    }
+
+    .emerald-top-bar-public .public-header-btn {
+        min-height: 40px;
+        padding: 0.28rem 0.34rem !important;
+        font-size: 0.64rem !important;
+    }
+
+    .floating-pill-navbar,
+    .floating-pill-navbar.header-scrolled {
+        width: calc(100% - 1rem);
+        height: 56px;
+        top: 8px;
+        margin-top: 0.5rem;
+        padding-inline: 0.65rem;
+        border-radius: 16px;
+    }
+
+    .floating-pill-navbar.header-scrolled {
+        transform: scale(0.99);
+    }
+
+    .floating-pill-navbar .emerald-brand-link {
+        gap: 0.2rem;
+        margin-right: 0.05rem;
+    }
+
+    .floating-pill-navbar .emerald-brand-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .floating-pill-navbar .emerald-brand-text {
+        font-size: 0.98rem;
+    }
+
+    .floating-pill-actions {
+        gap: 0.14rem;
+    }
+
+    .floating-pill-actions .lang-segmented {
+        gap: 0;
+        padding: 0.08rem;
+    }
+
+    .floating-pill-actions .lang-pill {
+        min-width: 22px;
+        min-height: 28px;
+        padding: 0.25rem 0.27rem;
+        font-size: 0.64rem;
+    }
+
+    .floating-pill-actions .btn-pill-emerald {
+        min-height: 36px;
+        padding-inline: 0.52rem;
+        font-size: 0.68rem;
+    }
+}
+
+.hero-stage:not(.is-scene-active) .hero-route-line,
+.hero-stage:not(.is-scene-active) .hero-route-spark,
+.hero-stage:not(.is-scene-active) .hero-code-note {
+    animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
     }
 }
