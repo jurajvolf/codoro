@@ -15,6 +15,14 @@ import hashlib
 import secrets
 import re
 from .models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest, PasswordHistory
+from .security import (
+    is_rate_limited,
+    reset_rate_limit,
+    check_honeypot,
+    safe_int,
+    sanitize_text,
+    safe_redirect_url,
+)
 from gamification.models import DorosTransaction, Badge, StudentBadge
 from gamification.services import get_student_stats, award_badges, ensure_badges_exist
 
@@ -93,10 +101,26 @@ def login_view(request):
 
     lang = get_active_lang(request)
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
+        if not check_honeypot(request):
+            err = "Bot activity detected." if lang == 'en' else "Zistená automatizovaná aktivita."
+            messages.error(request, err)
+            return render(request, 'accounts/login.html', {'ui_lang': lang})
+
+        username = sanitize_text(request.POST.get('username', ''), max_length=150)
         password = request.POST.get('password', '')
+
+        if is_rate_limited(request, 'login', limit=10, window_seconds=300, identifier=username.lower()):
+            err = (
+                "Too many login attempts. Please wait a few minutes and try again."
+                if lang == 'en'
+                else "Príliš veľa neúspešných pokusov o prihlásenie. Počkaj prosím pár minút a skús to znova."
+            )
+            messages.error(request, err)
+            return render(request, 'accounts/login.html', {'ui_lang': lang}, status=429)
+
         user = authenticate(request, username=username, password=password)
         if user:
+            reset_rate_limit(request, 'login', identifier=username.lower())
             if 'ui_lang' in request.session:
                 user.preferred_language = request.session['ui_lang']
                 user.save(update_fields=['preferred_language'])
@@ -118,12 +142,29 @@ def register_view(request):
 
     if request.method == 'POST':
         account_type = (request.POST.get('account_type') or request.POST.get('role') or 'student').lower()
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip()
-        first_name = request.POST.get('first_name', '').strip()
-        last_name = request.POST.get('last_name', '').strip()
-        password = request.POST.get('password', '')
         pref_lang = request.POST.get('preferred_language', lang)
+        if pref_lang not in ('sk', 'en'):
+            pref_lang = lang
+
+        if not check_honeypot(request):
+            err = "Bot activity detected." if pref_lang == 'en' else "Zistená automatizovaná aktivita."
+            messages.error(request, err)
+            return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': account_type})
+
+        if is_rate_limited(request, 'register', limit=12, window_seconds=600):
+            err = (
+                "Too many registration attempts. Please try again later."
+                if pref_lang == 'en'
+                else "Príliš veľa pokusov o registráciu. Skús to prosím o chvíľu."
+            )
+            messages.error(request, err)
+            return render(request, 'accounts/register.html', {'ui_lang': lang, 'active_tab': account_type}, status=429)
+
+        username = sanitize_text(request.POST.get('username', ''), max_length=150)
+        email = sanitize_text(request.POST.get('email', ''), max_length=254)
+        first_name = sanitize_text(request.POST.get('first_name', ''), max_length=150)
+        last_name = sanitize_text(request.POST.get('last_name', ''), max_length=150)
+        password = request.POST.get('password', '')
 
         if not username or not password:
             messages.error(request, "Vyplň používateľské meno a heslo." if pref_lang == 'sk' else "Please fill in username and password.")
@@ -144,8 +185,8 @@ def register_view(request):
         # A) REGISTRÁCIA UČITEĽA (TEACHER & SCHOOL ECOSYSTEM)
         # ==========================================================
         if account_type == 'teacher':
-            license_code = (request.POST.get('teacher_license_code') or request.POST.get('school_license_key') or '').strip().upper()
-            initial_class_name = request.POST.get('initial_class_name', '').strip()
+            license_code = sanitize_text(request.POST.get('teacher_license_code') or request.POST.get('school_license_key') or '', max_length=64).upper()
+            initial_class_name = sanitize_text(request.POST.get('initial_class_name', ''), max_length=100)
 
             lic = None
             if license_code:
@@ -226,7 +267,7 @@ def register_view(request):
         # ==========================================================
         # B) REGISTRÁCIA ŠTUDENTA (STUDENT)
         # ==========================================================
-        join_code = (request.POST.get('join_code') or request.POST.get('class_code') or '').strip().upper()
+        join_code = sanitize_text(request.POST.get('join_code') or request.POST.get('class_code') or '', max_length=32).upper()
         school_class = None
         if join_code:
             school_class = SchoolClass.objects.filter(join_code=join_code).first()
@@ -280,12 +321,31 @@ def get_license_view(request):
     lang = get_active_lang(request)
 
     if request.method == 'POST':
-        school_name = request.POST.get('school_name', '').strip()
-        contact_name = (request.POST.get('contact_name') or request.POST.get('contact_person') or '').strip()
-        email = request.POST.get('email', '').strip()
-        phone = request.POST.get('phone', '').strip()
-        estimated_students = int(request.POST.get('estimated_students') or request.POST.get('expected_students') or 30)
-        note = request.POST.get('note', '').strip()
+        if not check_honeypot(request):
+            err = "Bot activity detected." if lang == 'en' else "Zistená automatizovaná aktivita."
+            messages.error(request, err)
+            return render(request, 'accounts/get_license.html', {'ui_lang': lang})
+
+        if is_rate_limited(request, 'get_license', limit=8, window_seconds=600):
+            err = (
+                "Too many license requests. Please try again in a few minutes."
+                if lang == 'en'
+                else "Príliš veľa žiadostí o licenciu. Skúste to prosím o niekoľko minút."
+            )
+            messages.error(request, err)
+            return render(request, 'accounts/get_license.html', {'ui_lang': lang}, status=429)
+
+        school_name = sanitize_text(request.POST.get('school_name', ''), max_length=200)
+        contact_name = sanitize_text(request.POST.get('contact_name') or request.POST.get('contact_person') or '', max_length=150)
+        email = sanitize_text(request.POST.get('email', ''), max_length=254)
+        phone = sanitize_text(request.POST.get('phone', ''), max_length=40)
+        estimated_students = safe_int(
+            request.POST.get('estimated_students') or request.POST.get('expected_students'),
+            default=30,
+            min_val=1,
+            max_val=5000,
+        )
+        note = sanitize_text(request.POST.get('note', ''), max_length=1000)
 
         if not school_name or not contact_name or not email:
             messages.error(request, "Vyplňte prosím všetky povinné polia (škola, vyučujúci, e-mail).")
@@ -352,14 +412,14 @@ def switch_language(request, lang_code):
         if request.user.is_authenticated:
             request.user.preferred_language = clean_code
             request.user.save(update_fields=['preferred_language'])
-    
-    # 1. Parameter ?next= má najvyššiu prioritu
-    next_url = request.GET.get('next')
+
+    # 1. Parameter ?next= má najvyššiu prioritu (chránené proti Open Redirect)
+    raw_next = request.GET.get('next')
+    next_url = safe_redirect_url(request, raw_next, fallback=None) if raw_next else None
     if not next_url:
         referer = request.META.get('HTTP_REFERER')
-        # Zabránime cykleniu, ak by referer smeroval na prepínač jazyka
         if referer and '/lang/' not in referer:
-            next_url = referer
+            next_url = safe_redirect_url(request, referer, fallback=None)
 
     fallback = 'dashboard' if request.user.is_authenticated else 'landing_page'
     response = redirect(next_url or fallback)
@@ -418,7 +478,12 @@ def repair_streak(request):
 def activate_license(request):
     if request.method == 'POST':
         lang = request.user.preferred_language
-        code = request.POST.get('license_code', '').strip().upper()
+        if is_rate_limited(request, 'activate_license', limit=10, window_seconds=300, identifier=str(request.user.id)):
+            err = "Too many license activation attempts. Please wait." if lang == 'en' else "Príliš veľa pokusov o aktiváciu licencie. Počkaj prosím chvíľu."
+            messages.error(request, err)
+            return redirect('shop')
+
+        code = sanitize_text(request.POST.get('license_code', ''), max_length=64).upper()
         lic = SubscriptionLicense.objects.select_for_update().filter(code=code, is_active=True).first()
 
         if not lic or lic.current_uses >= lic.max_uses:
@@ -464,8 +529,8 @@ def profile_view(request):
                 messages.success(request, msg)
 
         elif action == 'update_info':
-            first_name = request.POST.get('first_name', '').strip()
-            last_name = request.POST.get('last_name', '').strip()
+            first_name = sanitize_text(request.POST.get('first_name', ''), max_length=150)
+            last_name = sanitize_text(request.POST.get('last_name', ''), max_length=150)
             preferred_language = request.POST.get('preferred_language', 'sk')
             if preferred_language in ['sk', 'en']:
                 user.preferred_language = preferred_language
@@ -649,10 +714,56 @@ def sitemap_xml(request):
     return HttpResponse(xml_content.strip(), content_type="application/xml")
 
 
+def custom_400(request, exception=None):
+    """Zákaznícka 400 stránka bez surových technických chýb."""
+    lang = get_active_lang(request)
+    return render(request, '404.html', {
+        'ui_lang': lang,
+        'error_code': '400',
+        'error_title_sk': 'Neplatná požiadavka',
+        'error_title_en': 'Bad Request',
+        'error_desc_sk': 'Odoslané údaje mali nesprávny formát. Skontroluj prosím formulár a skús to znova.',
+        'error_desc_en': 'The submitted data could not be processed. Please check your input and try again.',
+    }, status=400)
+
+
+def custom_403(request, exception=None):
+    """Zákaznícka 403 stránka pri zamietnutí prístupu."""
+    lang = get_active_lang(request)
+    return render(request, '404.html', {
+        'ui_lang': lang,
+        'error_code': '403',
+        'error_title_sk': 'Prístup zamietnutý',
+        'error_title_en': 'Access Denied',
+        'error_desc_sk': 'Na zobrazenie tejto sekcie nemáš dostatočné oprávnenia.',
+        'error_desc_en': 'You do not have permission to access this section.',
+    }, status=403)
+
+
 def custom_404(request, exception=None):
     """Zákaznícka 404 stránka s maskotom Codoro."""
     lang = get_active_lang(request)
-    return render(request, '404.html', {'ui_lang': lang}, status=404)
+    return render(request, '404.html', {
+        'ui_lang': lang,
+        'error_code': '404',
+    }, status=404)
+
+
+def custom_500(request):
+    """Zákaznícka 500 stránka bez odhalenia interného stacktrace."""
+    lang = 'sk'
+    try:
+        lang = get_active_lang(request)
+    except Exception:
+        pass
+    return render(request, '404.html', {
+        'ui_lang': lang,
+        'error_code': '500',
+        'error_title_sk': 'Chyba na strane servera',
+        'error_title_en': 'Server Error',
+        'error_desc_sk': 'Nastala neočakávaná chyba pri spracovaní požiadavky. Skús obnoviť stránku o chvíľu.',
+        'error_desc_en': 'An unexpected error occurred while processing your request. Please try again shortly.',
+    }, status=500)
 
 
 # =========================================================================
@@ -670,7 +781,19 @@ def password_reset_request_view(request):
     lang = get_active_lang(request)
 
     if request.method == 'POST':
-        identity = request.POST.get('identity', '').strip()
+        if not check_honeypot(request):
+            return redirect('password_reset_done')
+
+        if is_rate_limited(request, 'password_reset', limit=8, window_seconds=600):
+            err = (
+                "Too many password reset requests. Please wait a few minutes."
+                if lang == 'en'
+                else "Príliš veľa žiadostí o obnovu hesla. Počkaj prosím pár minút."
+            )
+            messages.error(request, err)
+            return render(request, 'accounts/password_reset.html', {'ui_lang': lang}, status=429)
+
+        identity = sanitize_text(request.POST.get('identity', ''), max_length=254)
         if not identity:
             err = "Please enter your username or email." if lang == 'en' else "Zadaj svoje prihlasovacie meno alebo e-mail."
             messages.error(request, err)
@@ -825,5 +948,3 @@ def password_reset_complete_view(request):
     """Potvrdenie o úspešnej zmene hesla s tlačidlom na prihlásenie."""
     lang = get_active_lang(request)
     return render(request, 'accounts/password_reset_complete.html', {'ui_lang': lang})
-
-

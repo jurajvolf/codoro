@@ -11,6 +11,14 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.utils import timezone
 
 from accounts.models import User, SchoolClass, SubscriptionLicense
+from accounts.security import (
+    safe_int,
+    sanitize_text,
+    safe_redirect_url,
+    can_teacher_access_student,
+    can_teacher_access_class,
+    is_rate_limited,
+)
 from courses.models import Module, Lesson, Exercise, TestCase, Submission, QuizQuestion
 from gamification.models import (
     RewardItem, RewardPurchase, DorosTransaction, ClassQuest, CoinDrop, Quest
@@ -96,16 +104,16 @@ def cms_modules(request):
 def cms_module_create(request):
     """Vytvorenie nového vzdelávacieho modulu."""
     if request.method == 'POST':
-        title_sk = request.POST.get('title_sk', '').strip()
-        title_en = request.POST.get('title_en', '').strip() or title_sk
-        desc_sk = request.POST.get('description_sk', '').strip()
-        desc_en = request.POST.get('description_en', '').strip() or desc_sk
-        lang = request.POST.get('programming_language', 'python')
-        hours = int(request.POST.get('estimated_hours', 10))
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
+        title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or title_sk
+        desc_sk = sanitize_text(request.POST.get('description_sk', ''), max_length=2000)
+        desc_en = sanitize_text(request.POST.get('description_en', ''), max_length=2000) or desc_sk
+        lang = sanitize_text(request.POST.get('programming_language', 'python'), max_length=40) or 'python'
+        hours = safe_int(request.POST.get('estimated_hours'), default=10, min_val=1, max_val=500)
         difficulty = request.POST.get('difficulty_level', 'BEGINNER')
         is_pro = request.POST.get('is_pro_only') == 'on'
         is_published = request.POST.get('is_published') == 'on'
-        icon = request.POST.get('icon_name', 'bi-terminal').strip() or 'bi-terminal'
+        icon = sanitize_text(request.POST.get('icon_name', 'bi-terminal'), max_length=80) or 'bi-terminal'
 
         next_order = (Module.objects.order_by('-order').values_list('order', flat=True).first() or 0) + 1
 
@@ -131,14 +139,14 @@ def cms_module_edit(request, module_id):
     """Úprava existujúceho modulu."""
     module = get_object_or_404(Module, id=module_id)
     if request.method == 'POST':
-        module.title_sk = request.POST.get('title_sk', '').strip() or module.title_sk
-        module.title_en = request.POST.get('title_en', '').strip() or module.title_en
-        module.description_sk = request.POST.get('description_sk', '').strip()
-        module.description_en = request.POST.get('description_en', '').strip() or module.description_sk
-        module.programming_language = request.POST.get('programming_language', module.programming_language)
-        module.estimated_hours = int(request.POST.get('estimated_hours', module.estimated_hours))
+        module.title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200) or module.title_sk
+        module.title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or module.title_en
+        module.description_sk = sanitize_text(request.POST.get('description_sk', ''), max_length=2000)
+        module.description_en = sanitize_text(request.POST.get('description_en', ''), max_length=2000) or module.description_sk
+        module.programming_language = sanitize_text(request.POST.get('programming_language', module.programming_language), max_length=40)
+        module.estimated_hours = safe_int(request.POST.get('estimated_hours'), default=module.estimated_hours, min_val=1, max_val=500)
         module.difficulty_level = request.POST.get('difficulty_level', module.difficulty_level)
-        module.icon_name = request.POST.get('icon_name', module.icon_name).strip() or 'bi-terminal'
+        module.icon_name = sanitize_text(request.POST.get('icon_name', module.icon_name), max_length=80) or 'bi-terminal'
         module.is_pro_only = request.POST.get('is_pro_only') == 'on'
         module.is_published = request.POST.get('is_published') == 'on'
         module.save()
@@ -216,14 +224,14 @@ def cms_lesson_create(request, module_id):
     """Vytvorenie novej lekcie v danom module."""
     module = get_object_or_404(Module, id=module_id)
     if request.method == 'POST':
-        title_sk = request.POST.get('title_sk', '').strip()
-        title_en = request.POST.get('title_en', '').strip() or title_sk
-        summary_sk = request.POST.get('summary_sk', '').strip()
-        summary_en = request.POST.get('summary_en', '').strip() or summary_sk
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
+        title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or title_sk
+        summary_sk = sanitize_text(request.POST.get('summary_sk', ''), max_length=1000)
+        summary_en = sanitize_text(request.POST.get('summary_en', ''), max_length=1000) or summary_sk
         content_sk = request.POST.get('content_sk', '### Úvod do lekcie\n\nNapíš výklad sem.').strip()
         content_en = request.POST.get('content_en', '### Introduction\n\nWrite explanation here.').strip()
-        minutes = int(request.POST.get('estimated_minutes', 45))
-        xp = int(request.POST.get('xp_reward', 25))
+        minutes = safe_int(request.POST.get('estimated_minutes'), default=45, min_val=1, max_val=600)
+        xp = safe_int(request.POST.get('xp_reward'), default=25, min_val=0, max_val=5000)
         is_published = request.POST.get('is_published') == 'on'
 
         next_order = (module.lessons.order_by('-order').values_list('order', flat=True).first() or 0) + 1
@@ -259,20 +267,20 @@ def cms_lesson_edit(request, lesson_id):
     if request.method == 'POST':
         action = request.POST.get('action', 'save_lesson')
         if action == 'save_lesson':
-            lesson.title_sk = request.POST.get('title_sk', '').strip() or lesson.title_sk
-            lesson.title_en = request.POST.get('title_en', '').strip() or lesson.title_en
-            lesson.summary_sk = request.POST.get('summary_sk', '').strip()
-            lesson.summary_en = request.POST.get('summary_en', '').strip() or lesson.summary_sk
+            lesson.title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200) or lesson.title_sk
+            lesson.title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or lesson.title_en
+            lesson.summary_sk = sanitize_text(request.POST.get('summary_sk', ''), max_length=1000)
+            lesson.summary_en = sanitize_text(request.POST.get('summary_en', ''), max_length=1000) or lesson.summary_sk
             lesson.content_sk = request.POST.get('content_sk', '').strip()
             lesson.content_en = request.POST.get('content_en', '').strip() or lesson.content_sk
-            lesson.estimated_minutes = int(request.POST.get('estimated_minutes', lesson.estimated_minutes))
-            lesson.xp_reward = int(request.POST.get('xp_reward', lesson.xp_reward))
-            lesson.order = int(request.POST.get('order', lesson.order))
+            lesson.estimated_minutes = safe_int(request.POST.get('estimated_minutes'), default=lesson.estimated_minutes, min_val=1, max_val=600)
+            lesson.xp_reward = safe_int(request.POST.get('xp_reward'), default=lesson.xp_reward, min_val=0, max_val=5000)
+            lesson.order = safe_int(request.POST.get('order'), default=lesson.order, min_val=1, max_val=999)
             lesson.is_published = request.POST.get('is_published') == 'on'
 
             new_module_id = request.POST.get('module_id')
             if new_module_id and str(new_module_id) != str(lesson.module_id):
-                lesson.module = get_object_or_404(Module, id=new_module_id)
+                lesson.module = get_object_or_404(Module, id=safe_int(new_module_id, default=lesson.module_id))
 
             lesson.save()
             messages.success(request, f"Lekcia '{lesson.title_sk}' bola úspešne uložená.")
@@ -298,7 +306,6 @@ def cms_lesson_delete(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     if request.method == 'POST':
         title = lesson.title_sk
-        module_id = lesson.module_id
         lesson.delete()
         messages.success(request, f"Lekcia '{title}' bola vymazaná.")
         return redirect('cms_modules')
@@ -385,19 +392,21 @@ def cms_quiz_create(request, lesson_id):
     """Pridanie novej kvízovej otázky do lekcie."""
     lesson = get_object_or_404(Lesson, id=lesson_id)
     if request.method == 'POST':
-        q_sk = request.POST.get('question_sk', '').strip()
-        q_en = request.POST.get('question_en', '').strip() or q_sk
-        a_sk = request.POST.get('option_a_sk', '').strip()
-        a_en = request.POST.get('option_a_en', '').strip() or a_sk
-        b_sk = request.POST.get('option_b_sk', '').strip()
-        b_en = request.POST.get('option_b_en', '').strip() or b_sk
-        c_sk = request.POST.get('option_c_sk', '').strip()
-        c_en = request.POST.get('option_c_en', '').strip() or c_sk
-        d_sk = request.POST.get('option_d_sk', '').strip()
-        d_en = request.POST.get('option_d_en', '').strip() or d_sk
+        q_sk = sanitize_text(request.POST.get('question_sk', ''), max_length=500)
+        q_en = sanitize_text(request.POST.get('question_en', ''), max_length=500) or q_sk
+        a_sk = sanitize_text(request.POST.get('option_a_sk', ''), max_length=300)
+        a_en = sanitize_text(request.POST.get('option_a_en', ''), max_length=300) or a_sk
+        b_sk = sanitize_text(request.POST.get('option_b_sk', ''), max_length=300)
+        b_en = sanitize_text(request.POST.get('option_b_en', ''), max_length=300) or b_sk
+        c_sk = sanitize_text(request.POST.get('option_c_sk', ''), max_length=300)
+        c_en = sanitize_text(request.POST.get('option_c_en', ''), max_length=300) or c_sk
+        d_sk = sanitize_text(request.POST.get('option_d_sk', ''), max_length=300)
+        d_en = sanitize_text(request.POST.get('option_d_en', ''), max_length=300) or d_sk
         correct = request.POST.get('correct_option', 'A')
-        exp_sk = request.POST.get('explanation_sk', '').strip()
-        exp_en = request.POST.get('explanation_en', '').strip() or exp_sk
+        if correct not in ('A', 'B', 'C', 'D'):
+            correct = 'A'
+        exp_sk = sanitize_text(request.POST.get('explanation_sk', ''), max_length=1000)
+        exp_en = sanitize_text(request.POST.get('explanation_en', ''), max_length=1000) or exp_sk
 
         next_order = (lesson.quiz_questions.order_by('-order').values_list('order', flat=True).first() or 0) + 1
 
@@ -427,19 +436,21 @@ def cms_quiz_edit(request, quiz_id):
     """Úprava existujúcej kvízovej otázky."""
     quiz = get_object_or_404(QuizQuestion, id=quiz_id)
     if request.method == 'POST':
-        quiz.question_sk = request.POST.get('question_sk', quiz.question_sk).strip()
-        quiz.question_en = request.POST.get('question_en', quiz.question_en).strip()
-        quiz.option_a_sk = request.POST.get('option_a_sk', quiz.option_a_sk).strip()
-        quiz.option_a_en = request.POST.get('option_a_en', quiz.option_a_en).strip()
-        quiz.option_b_sk = request.POST.get('option_b_sk', quiz.option_b_sk).strip()
-        quiz.option_b_en = request.POST.get('option_b_en', quiz.option_b_en).strip()
-        quiz.option_c_sk = request.POST.get('option_c_sk', quiz.option_c_sk).strip()
-        quiz.option_c_en = request.POST.get('option_c_en', quiz.option_c_en).strip()
-        quiz.option_d_sk = request.POST.get('option_d_sk', '').strip()
-        quiz.option_d_en = request.POST.get('option_d_en', '').strip()
-        quiz.correct_option = request.POST.get('correct_option', quiz.correct_option)
-        quiz.explanation_sk = request.POST.get('explanation_sk', '').strip()
-        quiz.explanation_en = request.POST.get('explanation_en', '').strip()
+        quiz.question_sk = sanitize_text(request.POST.get('question_sk', quiz.question_sk), max_length=500)
+        quiz.question_en = sanitize_text(request.POST.get('question_en', quiz.question_en), max_length=500)
+        quiz.option_a_sk = sanitize_text(request.POST.get('option_a_sk', quiz.option_a_sk), max_length=300)
+        quiz.option_a_en = sanitize_text(request.POST.get('option_a_en', quiz.option_a_en), max_length=300)
+        quiz.option_b_sk = sanitize_text(request.POST.get('option_b_sk', quiz.option_b_sk), max_length=300)
+        quiz.option_b_en = sanitize_text(request.POST.get('option_b_en', quiz.option_b_en), max_length=300)
+        quiz.option_c_sk = sanitize_text(request.POST.get('option_c_sk', quiz.option_c_sk), max_length=300)
+        quiz.option_c_en = sanitize_text(request.POST.get('option_c_en', quiz.option_c_en), max_length=300)
+        quiz.option_d_sk = sanitize_text(request.POST.get('option_d_sk', ''), max_length=300)
+        quiz.option_d_en = sanitize_text(request.POST.get('option_d_en', ''), max_length=300)
+        correct = request.POST.get('correct_option', quiz.correct_option)
+        if correct in ('A', 'B', 'C', 'D'):
+            quiz.correct_option = correct
+        quiz.explanation_sk = sanitize_text(request.POST.get('explanation_sk', ''), max_length=1000)
+        quiz.explanation_en = sanitize_text(request.POST.get('explanation_en', ''), max_length=1000)
         quiz.save()
         messages.success(request, "Kvízová otázka bola upravená.")
     return redirect('cms_lesson_edit', lesson_id=quiz.lesson_id)
@@ -465,15 +476,15 @@ def cms_exercise_create(request, lesson_id):
     """Vytvorenie nového cvičenia v lekcii a presmerovanie do CodeMirror editora."""
     lesson = get_object_or_404(Lesson, id=lesson_id)
     if request.method == 'POST':
-        title_sk = request.POST.get('title_sk', '').strip()
-        title_en = request.POST.get('title_en', '').strip() or title_sk
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
+        title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or title_sk
         instructions_sk = request.POST.get('instructions_sk', 'Zadanie úlohy...').strip()
         instructions_en = request.POST.get('instructions_en', instructions_sk).strip()
         starter_code = request.POST.get('starter_code', '# Napíš svoj kód sem\n')
         solution_code = request.POST.get('solution_code', starter_code)
         difficulty = request.POST.get('difficulty', Exercise.Difficulty.EASY)
-        xp_reward = int(request.POST.get('xp_reward', 50))
-        doros_reward = int(request.POST.get('doros_reward', 25))
+        xp_reward = safe_int(request.POST.get('xp_reward'), default=50, min_val=0, max_val=5000)
+        doros_reward = safe_int(request.POST.get('doros_reward'), default=25, min_val=0, max_val=5000)
 
         next_order = (lesson.exercises.order_by('-order').values_list('order', flat=True).first() or 0) + 1
 
@@ -494,7 +505,7 @@ def cms_exercise_create(request, lesson_id):
         if test_code:
             TestCase.objects.create(
                 exercise=ex,
-                input_data=request.POST.get('input_data', 'Základný test'),
+                input_data=sanitize_text(request.POST.get('input_data', 'Základný test'), max_length=255),
                 expected_output='True',
                 test_code=test_code,
                 is_hidden=False,
@@ -518,8 +529,8 @@ def cms_exercise_edit(request, exercise_id):
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'save_exercise':
-            exercise.title_sk = request.POST.get('title_sk', '').strip() or exercise.title_sk
-            exercise.title_en = request.POST.get('title_en', '').strip() or exercise.title_en
+            exercise.title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200) or exercise.title_sk
+            exercise.title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or exercise.title_en
             exercise.instructions_sk = request.POST.get('instructions_sk', '').strip()
             exercise.instructions_en = request.POST.get('instructions_en', '').strip() or exercise.instructions_sk
             exercise.starter_code = request.POST.get('starter_code', exercise.starter_code)
@@ -528,15 +539,15 @@ def cms_exercise_edit(request, exercise_id):
             exercise.explanation_en = request.POST.get('explanation_en', '').strip() or exercise.explanation_sk
             exercise.hint_sk = request.POST.get('hint_sk', '').strip()
             exercise.hint_en = request.POST.get('hint_en', '').strip() or exercise.hint_sk
-            exercise.hint_cost_doros = int(request.POST.get('hint_cost_doros', exercise.hint_cost_doros))
+            exercise.hint_cost_doros = safe_int(request.POST.get('hint_cost_doros'), default=exercise.hint_cost_doros, min_val=0, max_val=1000)
             exercise.difficulty = request.POST.get('difficulty', exercise.difficulty)
-            exercise.xp_reward = int(request.POST.get('xp_reward', exercise.xp_reward))
-            exercise.doros_reward = int(request.POST.get('doros_reward', exercise.doros_reward))
-            exercise.order = int(request.POST.get('order', exercise.order))
+            exercise.xp_reward = safe_int(request.POST.get('xp_reward'), default=exercise.xp_reward, min_val=0, max_val=5000)
+            exercise.doros_reward = safe_int(request.POST.get('doros_reward'), default=exercise.doros_reward, min_val=0, max_val=5000)
+            exercise.order = safe_int(request.POST.get('order'), default=exercise.order, min_val=1, max_val=999)
 
             new_lesson_id = request.POST.get('lesson_id')
             if new_lesson_id and str(new_lesson_id) != str(exercise.lesson_id):
-                exercise.lesson = get_object_or_404(Lesson, id=new_lesson_id)
+                exercise.lesson = get_object_or_404(Lesson, id=safe_int(new_lesson_id, default=exercise.lesson_id))
 
             exercise.save()
             messages.success(request, f"Cvičenie '{exercise.title_sk}' bolo úspešne uložené.")
@@ -571,8 +582,8 @@ def cms_testcase_create(request, exercise_id):
     """Pridanie nového TestCase prípadu k cvičeniu."""
     exercise = get_object_or_404(Exercise, id=exercise_id)
     if request.method == 'POST':
-        input_data = request.POST.get('input_data', '').strip()
-        expected = request.POST.get('expected_output', '').strip() or 'OK'
+        input_data = sanitize_text(request.POST.get('input_data', ''), max_length=255)
+        expected = sanitize_text(request.POST.get('expected_output', ''), max_length=255) or 'OK'
         test_code = request.POST.get('test_code', '').strip()
         is_hidden = request.POST.get('is_hidden') == 'on'
 
@@ -595,11 +606,11 @@ def cms_testcase_edit(request, testcase_id):
     """Úprava existujúceho testovacieho prípadu."""
     tc = get_object_or_404(TestCase, id=testcase_id)
     if request.method == 'POST':
-        tc.input_data = request.POST.get('input_data', tc.input_data).strip()
-        tc.expected_output = request.POST.get('expected_output', tc.expected_output).strip()
+        tc.input_data = sanitize_text(request.POST.get('input_data', tc.input_data), max_length=255)
+        tc.expected_output = sanitize_text(request.POST.get('expected_output', tc.expected_output), max_length=255)
         tc.test_code = request.POST.get('test_code', tc.test_code).strip()
         tc.is_hidden = request.POST.get('is_hidden') == 'on'
-        tc.order = int(request.POST.get('order', tc.order))
+        tc.order = safe_int(request.POST.get('order'), default=tc.order, min_val=1, max_val=999)
         tc.save()
         messages.success(request, "Testovací prípad bol upravený.")
     return redirect('cms_exercise_edit', exercise_id=tc.exercise_id)
@@ -625,7 +636,16 @@ def cms_test_solution(request):
     if request.method != 'POST':
         return HttpResponseBadRequest("POST required")
 
-    solution_code = request.POST.get('solution_code', '')
+    if is_rate_limited(request, 'cms_test_solution', limit=30, window_seconds=60, identifier=str(request.user.id)):
+        return JsonResponse({
+            'success': False,
+            'passed': False,
+            'status': 'RATE_LIMIT',
+            'output_log': 'Príliš veľa spustení testov. Počkaj pár sekúnd.',
+            'execution_time_ms': 0,
+        }, status=429)
+
+    solution_code = request.POST.get('solution_code', '')[:20000]
     exercise_id = request.POST.get('exercise_id')
     raw_tests = request.POST.get('tests_json') or request.POST.get('custom_test_cases')
 
@@ -642,13 +662,13 @@ def cms_test_solution(request):
                         'input_data': t.get('input_data', ''),
                         'is_hidden': t.get('is_hidden', False),
                     }
-                    for t in parsed if t.get('test_code')
+                    for t in parsed if isinstance(t, dict) and t.get('test_code')
                 ]
         except (ValueError, TypeError):
             pass
 
     if exercise_id:
-        exercise = get_object_or_404(Exercise, id=exercise_id)
+        exercise = get_object_or_404(Exercise, id=safe_int(exercise_id, default=0))
 
     eval_result = evaluate_python_code(
         exercise=exercise,
@@ -677,15 +697,15 @@ def cms_reward_edit(request, reward_id):
     """Úprava existujúcej položky obchodu."""
     reward = get_object_or_404(RewardItem, id=reward_id)
     if request.method == 'POST':
-        reward.title_sk = request.POST.get('title_sk', reward.title_sk).strip()
-        reward.title_en = request.POST.get('title_en', reward.title_en).strip() or reward.title_sk
-        reward.description_sk = request.POST.get('description_sk', reward.description_sk).strip()
-        reward.description_en = request.POST.get('description_en', reward.description_en).strip() or reward.description_sk
-        reward.cost_doros = int(request.POST.get('cost_doros', reward.cost_doros))
-        reward.max_stock = int(request.POST.get('max_stock', reward.max_stock))
+        reward.title_sk = sanitize_text(request.POST.get('title_sk', reward.title_sk), max_length=200)
+        reward.title_en = sanitize_text(request.POST.get('title_en', reward.title_en), max_length=200) or reward.title_sk
+        reward.description_sk = sanitize_text(request.POST.get('description_sk', reward.description_sk), max_length=1000)
+        reward.description_en = sanitize_text(request.POST.get('description_en', reward.description_en), max_length=1000) or reward.description_sk
+        reward.cost_doros = safe_int(request.POST.get('cost_doros'), default=reward.cost_doros, min_val=1, max_val=100000)
+        reward.max_stock = safe_int(request.POST.get('max_stock'), default=reward.max_stock, min_val=1, max_val=1000)
         reward.current_stock = min(reward.current_stock, reward.max_stock)
         reward.restock_period = request.POST.get('restock_period', reward.restock_period)
-        reward.limit_per_student_per_period = int(request.POST.get('limit_per_student', reward.limit_per_student_per_period))
+        reward.limit_per_student_per_period = safe_int(request.POST.get('limit_per_student'), default=reward.limit_per_student_per_period, min_val=1, max_val=100)
         reward.is_active = request.POST.get('is_active') == 'on'
         reward.save()
         messages.success(request, f"Odmena '{reward.title_sk}' bola upravená.")
@@ -735,11 +755,11 @@ def cms_quest_edit(request, quest_id):
     """Úprava osobného questu."""
     q = get_object_or_404(Quest, id=quest_id)
     if request.method == 'POST':
-        q.title_sk = request.POST.get('title_sk', q.title_sk).strip()
-        q.title_en = request.POST.get('title_en', q.title_en).strip() or q.title_sk
-        q.target_value = int(request.POST.get('target_value', q.target_value))
-        q.reward_doros = int(request.POST.get('reward_doros', q.reward_doros))
-        q.reward_xp = int(request.POST.get('reward_xp', q.reward_xp))
+        q.title_sk = sanitize_text(request.POST.get('title_sk', q.title_sk), max_length=200)
+        q.title_en = sanitize_text(request.POST.get('title_en', q.title_en), max_length=200) or q.title_sk
+        q.target_value = safe_int(request.POST.get('target_value'), default=q.target_value, min_val=1, max_val=10000)
+        q.reward_doros = safe_int(request.POST.get('reward_doros'), default=q.reward_doros, min_val=0, max_val=10000)
+        q.reward_xp = safe_int(request.POST.get('reward_xp'), default=q.reward_xp, min_val=0, max_val=10000)
         q.is_active = request.POST.get('is_active') == 'on'
         q.save()
         messages.success(request, f"Výzva '{q.title_sk}' bola upravená.")
@@ -762,11 +782,11 @@ def cms_classquest_edit(request, class_quest_id):
     """Úprava kolektívneho triedneho questu."""
     cq = get_object_or_404(ClassQuest, id=class_quest_id)
     if request.method == 'POST':
-        cq.title_sk = request.POST.get('title_sk', cq.title_sk).strip()
-        cq.title_en = request.POST.get('title_en', cq.title_en).strip() or cq.title_sk
-        cq.target_exercises_count = int(request.POST.get('target_exercises_count', cq.target_exercises_count))
-        cq.reward_doros_per_student = int(request.POST.get('reward_doros_per_student', cq.reward_doros_per_student))
-        cq.min_contribution_required = int(request.POST.get('min_contribution_required', cq.min_contribution_required))
+        cq.title_sk = sanitize_text(request.POST.get('title_sk', cq.title_sk), max_length=200)
+        cq.title_en = sanitize_text(request.POST.get('title_en', cq.title_en), max_length=200) or cq.title_sk
+        cq.target_exercises_count = safe_int(request.POST.get('target_exercises_count'), default=cq.target_exercises_count, min_val=1, max_val=10000)
+        cq.reward_doros_per_student = safe_int(request.POST.get('reward_doros_per_student'), default=cq.reward_doros_per_student, min_val=0, max_val=10000)
+        cq.min_contribution_required = safe_int(request.POST.get('min_contribution_required'), default=cq.min_contribution_required, min_val=0, max_val=1000)
         cq.save()
         messages.success(request, f"Triedna výzva '{cq.title_sk}' bola upravená.")
     return redirect('teacher_dashboard')
@@ -804,10 +824,10 @@ def cms_classquest_distribute(request, class_quest_id):
 def cms_class_create(request):
     """Vytvorenie novej školskej triedy s unikátnym kódom."""
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        join_code = request.POST.get('join_code', '').strip().upper()
+        name = sanitize_text(request.POST.get('name', ''), max_length=100)
+        join_code = sanitize_text(request.POST.get('join_code', ''), max_length=32).upper()
         if not join_code:
-            join_code = f"{name.replace('.', '').replace(' ', '').upper()}-{timezone.now().year}"
+            join_code = f"{name.replace('.', '').replace(' ', '').upper()}-{timezone.now().year}"[:32]
 
         if SchoolClass.objects.filter(join_code=join_code).exists():
             messages.error(request, f"Kód triedy '{join_code}' už existuje. Zvoľ iný kód.")
@@ -822,7 +842,7 @@ def cms_class_create(request):
 def cms_class_delete(request, class_id):
     """Zmazanie školskej triedy (žiaci zostanú v systéme, len sa odhlásia z triedy)."""
     sc = get_object_or_404(SchoolClass, id=class_id)
-    if sc.teacher != request.user and not request.user.is_admin():
+    if not can_teacher_access_class(request.user, sc):
         messages.error(request, "Nemáte oprávnenie zmazať túto triedu.")
         return redirect('teacher_dashboard')
 
@@ -844,14 +864,14 @@ def cms_class_batch_students(request, class_id):
     import unicodedata
     import re
     sc = get_object_or_404(SchoolClass, id=class_id)
-    if sc.teacher != request.user and not request.user.is_admin():
+    if not can_teacher_access_class(request.user, sc):
         messages.error(request, "Nemáte oprávnenie spravovať túto triedu.")
         return redirect('teacher_dashboard')
 
     if request.method == 'POST':
         raw_names = request.POST.get('student_names', '').strip()
         default_pwd = request.POST.get('default_password', '').strip() or 'Codoro2027!'
-        lines = [line.strip() for line in raw_names.split('\n') if line.strip()]
+        lines = [line.strip() for line in raw_names.split('\n') if line.strip()][:100]
 
         if not lines:
             messages.warning(request, "Nezadali ste žiadne mená žiakov.")
@@ -860,8 +880,8 @@ def cms_class_batch_students(request, class_id):
         created_students = []
         for full_name in lines:
             parts = full_name.split(None, 1)
-            first_name = parts[0]
-            last_name = parts[1] if len(parts) > 1 else ''
+            first_name = sanitize_text(parts[0], max_length=80)
+            last_name = sanitize_text(parts[1], max_length=80) if len(parts) > 1 else ''
 
             # Vyčistenie diakritiky pre login
             clean_first = unicodedata.normalize('NFKD', first_name).encode('ASCII', 'ignore').decode('utf-8').lower()
@@ -908,7 +928,7 @@ def cms_class_batch_students(request, class_id):
 def cms_class_remove_student(request, class_id, student_id):
     """Odstránenie žiaka z triedy."""
     sc = get_object_or_404(SchoolClass, id=class_id)
-    if sc.teacher != request.user and not request.user.is_admin():
+    if not can_teacher_access_class(request.user, sc):
         messages.error(request, "Nemáte oprávnenie spravovať túto triedu.")
         return redirect('teacher_dashboard')
 
@@ -925,8 +945,10 @@ def cms_license_create(request):
     """Generovanie nového licenčného kľúča pre EDU alebo PRO predplatné."""
     if request.method == 'POST':
         tier = request.POST.get('tier', User.SubscriptionTier.EDU)
-        max_uses = int(request.POST.get('max_uses', 30))
-        code = request.POST.get('code', '').strip().upper()
+        if tier not in User.SubscriptionTier.values:
+            tier = User.SubscriptionTier.EDU
+        max_uses = safe_int(request.POST.get('max_uses'), default=30, min_val=1, max_val=5000)
+        code = sanitize_text(request.POST.get('code', ''), max_length=64).upper()
 
         if not code:
             suffix = secrets.token_hex(3).upper()
@@ -944,11 +966,15 @@ def cms_license_create(request):
 @teacher_required
 def cms_student_assign_class(request, student_id):
     """Priradenie alebo zmena triedy študenta."""
-    student = get_object_or_404(User, id=student_id, role=User.Role.STUDENT)
+    student = get_object_or_404(User.objects.select_related('school_class'), id=student_id, role=User.Role.STUDENT)
+    if not can_teacher_access_student(request.user, student):
+        messages.error(request, "Nemáte oprávnenie upravovať tohto študenta.")
+        return redirect('teacher_dashboard')
+
     if request.method == 'POST':
         class_id = request.POST.get('school_class_id')
         if class_id:
-            sc = get_object_or_404(SchoolClass, id=class_id)
+            sc = get_object_or_404(SchoolClass, id=safe_int(class_id, default=0))
             student.school_class = sc
             messages.success(request, f"Študent {student.username} bol zaradený do triedy {sc.name}.")
         else:
@@ -962,6 +988,10 @@ def cms_student_assign_class(request, student_id):
 def student_detail(request, student_id):
     """Detailný profil žiaka s históriou odovzdaných kódov a Code Review komentármi."""
     student = get_object_or_404(User.objects.select_related('school_class'), id=student_id, role=User.Role.STUDENT)
+    if not can_teacher_access_student(request.user, student):
+        messages.error(request, "Nemáte oprávnenie prezerať profil tohto študenta.")
+        return redirect('teacher_dashboard')
+
     submissions = Submission.objects.filter(student=student).select_related('exercise__lesson__module').order_by('-created_at')
 
     total_submissions = submissions.count()
@@ -991,12 +1021,16 @@ def student_detail(request, student_id):
 def manage_student_economy(request, student_id):
     """Umožní učiteľovi pridať/odobrať Doros, upraviť Streak alebo prepnúť PRO/EDU licenciu."""
     if request.method == 'POST':
-        student = get_object_or_404(User, id=student_id, role=User.Role.STUDENT)
+        student = get_object_or_404(User.objects.select_related('school_class'), id=student_id, role=User.Role.STUDENT)
+        if not can_teacher_access_student(request.user, student):
+            messages.error(request, "Nemáte oprávnenie upravovať ekonomiku tohto študenta.")
+            return redirect('teacher_dashboard')
+
         action = request.POST.get('action')
 
         if action == 'adjust_doros':
-            amount = int(request.POST.get('amount', 0))
-            reason = request.POST.get('reason', 'Úprava od učiteľa').strip()
+            amount = safe_int(request.POST.get('amount'), default=0, min_val=-100000, max_val=100000)
+            reason = sanitize_text(request.POST.get('reason', 'Úprava od učiteľa'), max_length=255)
             student.doros = max(0, student.doros + amount)
             student.save()
 
@@ -1010,7 +1044,7 @@ def manage_student_economy(request, student_id):
             messages.success(request, f"Mince Doros pre študenta {student.username} boli upravené o {amount}.")
 
         elif action == 'set_streak':
-            new_streak = int(request.POST.get('streak_value', 1))
+            new_streak = safe_int(request.POST.get('streak_value'), default=1, min_val=0, max_val=3650)
             student.current_streak = max(0, new_streak)
             student.lost_streak_value = 0
             student.save()
@@ -1031,7 +1065,11 @@ def manage_student_economy(request, student_id):
 def process_coupon(request, purchase_id):
     """Schválenie uplatnenia kupónu na hodine alebo jeho zamietnutie s vrátením Doros."""
     if request.method == 'POST':
-        purchase = get_object_or_404(RewardPurchase.objects.select_for_update(), id=purchase_id)
+        purchase = get_object_or_404(RewardPurchase.objects.select_for_update().select_related('student__school_class'), id=purchase_id)
+        if not can_teacher_access_student(request.user, purchase.student):
+            messages.error(request, "Nemáte oprávnenie spracovať tento kupón.")
+            return redirect('teacher_dashboard')
+
         decision = request.POST.get('decision') or request.POST.get('action')
 
         if purchase.status != RewardPurchase.Status.PENDING:
@@ -1071,13 +1109,13 @@ def process_coupon(request, purchase_id):
 def create_reward_item(request):
     """Vytvorenie novej odmeny do obchodu."""
     if request.method == 'POST':
-        title_sk = request.POST.get('title_sk', '').strip()
-        title_en = request.POST.get('title_en', '').strip() or title_sk
-        desc_sk = request.POST.get('description_sk', '').strip()
-        cost = int(request.POST.get('cost_doros', 100))
-        max_stock = int(request.POST.get('max_stock', 2))
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
+        title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or title_sk
+        desc_sk = sanitize_text(request.POST.get('description_sk', ''), max_length=1000)
+        cost = safe_int(request.POST.get('cost_doros'), default=100, min_val=1, max_val=100000)
+        max_stock = safe_int(request.POST.get('max_stock'), default=2, min_val=1, max_val=1000)
         restock_period = request.POST.get('restock_period', RewardItem.RestockPeriod.WEEKLY)
-        limit_per_student = int(request.POST.get('limit_per_student', 1))
+        limit_per_student = safe_int(request.POST.get('limit_per_student'), default=1, min_val=1, max_val=100)
 
         RewardItem.objects.create(
             title_sk=title_sk,
@@ -1099,11 +1137,11 @@ def create_reward_item(request):
 def create_coin_drop(request):
     """Spustenie nového časovaného Coin Dropu pre študentov."""
     if request.method == 'POST':
-        title = request.POST.get('title_sk', 'Bonusový Coin Drop!').strip()
-        duration_minutes = int(request.POST.get('duration_minutes', 60))
-        max_claims = int(request.POST.get('max_claims', 5))
-        min_doros = int(request.POST.get('min_doros', 30))
-        max_doros = int(request.POST.get('max_doros', 100))
+        title = sanitize_text(request.POST.get('title_sk', 'Bonusový Coin Drop!'), max_length=200) or 'Bonusový Coin Drop!'
+        duration_minutes = safe_int(request.POST.get('duration_minutes'), default=60, min_val=1, max_val=10080)
+        max_claims = safe_int(request.POST.get('max_claims'), default=5, min_val=1, max_val=500)
+        min_doros = safe_int(request.POST.get('min_doros'), default=30, min_val=1, max_val=10000)
+        max_doros = safe_int(request.POST.get('max_doros'), default=100, min_val=min_doros, max_val=10000)
 
         now = timezone.now()
         CoinDrop.objects.create(
@@ -1125,13 +1163,13 @@ def create_exercise(request):
     """Rýchle pridanie cvičenia z dashboardu."""
     if request.method == 'POST':
         lesson_id = request.POST.get('lesson_id')
-        lesson = get_object_or_404(Lesson, id=lesson_id)
-        title_sk = request.POST.get('title_sk', '').strip()
+        lesson = get_object_or_404(Lesson, id=safe_int(lesson_id, default=0))
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
         instructions_sk = request.POST.get('instructions_sk', '').strip()
         starter_code = request.POST.get('starter_code', '# Napíš svoj kód sem\n')
         test_code = request.POST.get('test_code', '').strip()
-        xp_reward = int(request.POST.get('xp_reward', 50))
-        doros_reward = int(request.POST.get('doros_reward', 30))
+        xp_reward = safe_int(request.POST.get('xp_reward'), default=50, min_val=0, max_val=5000)
+        doros_reward = safe_int(request.POST.get('doros_reward'), default=30, min_val=0, max_val=5000)
 
         ex = Exercise.objects.create(
             lesson=lesson,
@@ -1161,15 +1199,21 @@ def create_exercise(request):
 def comment_submission(request, submission_id):
     """Učiteľ pridá alebo aktualizuje Code Review komentár k študentskému riešeniu."""
     if request.method == 'POST':
-        sub = get_object_or_404(Submission, id=submission_id)
-        comment = request.POST.get('teacher_comment', '').strip()
+        sub = get_object_or_404(Submission.objects.select_related('student__school_class'), id=submission_id)
+        if not can_teacher_access_student(request.user, sub.student):
+            messages.error(request, "Nemáte oprávnenie komentovať toto riešenie.")
+            return redirect('teacher_dashboard')
+
+        comment = sanitize_text(request.POST.get('teacher_comment', ''), max_length=2000)
         sub.teacher_comment = comment
         sub.save(update_fields=['teacher_comment'])
         messages.success(request, f"Komentár pre študenta {sub.student.username} bol uložený.")
 
         redirect_to = request.POST.get('next')
         if redirect_to:
-            return redirect(redirect_to)
+            safe_next = safe_redirect_url(request, redirect_to, fallback=None)
+            if safe_next:
+                return redirect(safe_next)
     return redirect('teacher_dashboard')
 
 
@@ -1177,12 +1221,12 @@ def comment_submission(request, submission_id):
 def create_quest(request):
     """Učiteľ vytvorí novú osobnú alebo triednu výzvu (Quest)."""
     if request.method == 'POST':
-        title_sk = request.POST.get('title_sk', '').strip()
-        title_en = request.POST.get('title_en', '').strip() or title_sk
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
+        title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or title_sk
         metric_type = request.POST.get('metric_type', Quest.MetricType.SOLVE_EXERCISES)
-        target_value = int(request.POST.get('target_value', 3))
-        reward_doros = int(request.POST.get('reward_doros', 50))
-        reward_xp = int(request.POST.get('reward_xp', 40))
+        target_value = safe_int(request.POST.get('target_value'), default=3, min_val=1, max_val=10000)
+        reward_doros = safe_int(request.POST.get('reward_doros'), default=50, min_val=0, max_val=10000)
+        reward_xp = safe_int(request.POST.get('reward_xp'), default=40, min_val=0, max_val=10000)
         period = request.POST.get('period', Quest.Period.TEACHER)
 
         Quest.objects.create(
@@ -1205,13 +1249,13 @@ def create_class_quest(request):
     """Učiteľ vytvorí novú kolektívnu výzvu pre triedu."""
     if request.method == 'POST':
         class_id = request.POST.get('school_class_id')
-        school_class = get_object_or_404(SchoolClass, id=class_id)
-        title_sk = request.POST.get('title_sk', '').strip()
-        title_en = request.POST.get('title_en', '').strip() or title_sk
-        target = int(request.POST.get('target_exercises_count', 20))
-        reward = int(request.POST.get('reward_doros_per_student', 60))
-        min_contrib = int(request.POST.get('min_contribution_required', 1))
-        days = int(request.POST.get('days_duration', 7))
+        school_class = get_object_or_404(SchoolClass, id=safe_int(class_id, default=0))
+        title_sk = sanitize_text(request.POST.get('title_sk', ''), max_length=200)
+        title_en = sanitize_text(request.POST.get('title_en', ''), max_length=200) or title_sk
+        target = safe_int(request.POST.get('target_exercises_count'), default=20, min_val=1, max_val=10000)
+        reward = safe_int(request.POST.get('reward_doros_per_student'), default=60, min_val=0, max_val=10000)
+        min_contrib = safe_int(request.POST.get('min_contribution_required'), default=1, min_val=0, max_val=1000)
+        days = safe_int(request.POST.get('days_duration'), default=7, min_val=1, max_val=365)
         policy = request.POST.get('reward_policy', ClassQuest.RewardPolicy.ALL_STUDENTS)
 
         deadline = timezone.now() + timedelta(days=days)
@@ -1232,8 +1276,10 @@ def create_class_quest(request):
 @teacher_required
 def ai_generate_exercise(request):
     """API endpoint: Gemini AI vygeneruje kompletné cvičenie podľa zadanej témy."""
-    topic = request.GET.get('topic', 'Podmienky if-else')
-    difficulty = request.GET.get('difficulty', 'EASY')
+    if is_rate_limited(request, 'ai_generate', limit=15, window_seconds=300, identifier=str(request.user.id)):
+        return JsonResponse({'error': 'Príliš veľa AI požiadaviek. Skús to o chvíľu.'}, status=429)
+    topic = sanitize_text(request.GET.get('topic', 'Podmienky if-else'), max_length=200)
+    difficulty = sanitize_text(request.GET.get('difficulty', 'EASY'), max_length=20)
     data = generate_exercise_with_ai(topic, difficulty)
     return JsonResponse(data)
 
@@ -1241,10 +1287,12 @@ def ai_generate_exercise(request):
 @teacher_required
 def ai_translate_exercise(request):
     """API endpoint: Preloží texty zo slovenčiny do angličtiny."""
-    title_sk = request.GET.get('title_sk', '')
-    instructions_sk = request.GET.get('instructions_sk', '')
-    hint_sk = request.GET.get('hint_sk', '')
-    explanation_sk = request.GET.get('explanation_sk', '')
+    if is_rate_limited(request, 'ai_translate', limit=20, window_seconds=300, identifier=str(request.user.id)):
+        return JsonResponse({'error': 'Príliš veľa AI požiadaviek. Skús to o chvíľu.'}, status=429)
+    title_sk = sanitize_text(request.GET.get('title_sk', ''), max_length=200)
+    instructions_sk = sanitize_text(request.GET.get('instructions_sk', ''), max_length=4000)
+    hint_sk = sanitize_text(request.GET.get('hint_sk', ''), max_length=1000)
+    explanation_sk = sanitize_text(request.GET.get('explanation_sk', ''), max_length=2000)
     data = translate_to_english({
         'title_en': title_sk,
         'instructions_en': instructions_sk,

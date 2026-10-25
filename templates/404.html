@@ -3,33 +3,26 @@
 
 {% block title %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
-{% if lang == 'en' %}404 — Page Not Found | Codoro{% else %}404 — Stránka sa nenašla | Codoro{% endif %}
+{% if lang == 'en' %}{{ error_code|default:'404' }} — {{ error_title_en|default:'Page Not Found' }} | Codoro{% else %}{{ error_code|default:'404' }} — {{ error_title_sk|default:'Stránka sa nenašla' }} | Codoro{% endif %}
 {% endblock %}
 
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
-<div class="animate-in" style="max-width: 680px; margin: 4rem auto; text-align: center; padding: 2rem 1.5rem;">
-    <!-- Mascot Codo 404 Illustration -->
-    <div style="width: 140px; height: 140px; margin: 0 auto 1.75rem; position: relative;">
+<div class="animate-in" style="max-width: 680px; margin: 3rem auto; text-align: center; padding: 1.5rem 1rem;">
+    <!-- Mascot Codo Error Illustration -->
+    <div style="width: 140px; height: 140px; margin: 0 auto 1.5rem; position: relative;">
         <div style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(0, 135, 103, 0.18) 0%, rgba(0,0,0,0) 70%); border-radius: 50%;"></div>
         <div style="position: relative; z-index: 2; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
             <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Drop shadow -->
                 <ellipse cx="50" cy="92" rx="34" ry="7" fill="rgba(14, 30, 24, 0.12)"/>
-                <!-- Hood outer -->
                 <path d="M50 14 C32 14 22 28 22 46 C22 64 26 78 50 78 C74 78 78 64 78 46 C78 28 68 14 50 14 Z" fill="#008767"/>
-                <!-- Hood inner shadow -->
                 <path d="M50 18 C35 18 26 30 26 46 C26 62 30 74 50 74 C70 74 74 62 74 46 C74 30 65 18 50 18 Z" fill="#006E53"/>
-                <!-- Face screen dark slate -->
                 <path d="M50 23 C38 23 30 33 30 46 C30 59 36 68 50 68 C64 68 70 59 70 46 C70 33 62 23 50 23 Z" fill="#111C18"/>
-                <!-- Expressive Question Mark / Eyes -->
                 <circle cx="42" cy="46" r="3.5" fill="#5CE1E6"/>
                 <circle cx="58" cy="46" r="3.5" fill="#5CE1E6"/>
-                <!-- Puzzled brow -->
                 <path d="M38 39 Q42 37 46 39" stroke="#5CE1E6" stroke-width="2" stroke-linecap="round"/>
                 <path d="M54 39 Q58 41 62 39" stroke="#5CE1E6" stroke-width="2" stroke-linecap="round"/>
-                <!-- Laptop -->
                 <rect x="34" y="66" width="32" height="18" rx="3" fill="#E2ECE7" stroke="#CBD5E1" stroke-width="1.5"/>
                 <path d="M42 75 L46 71 L42 67" stroke="#008767" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M50 75 L56 75" stroke="#008767" stroke-width="1.8" stroke-linecap="round"/>
@@ -40,22 +33,22 @@
 
     <!-- Error Code Badge -->
     <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: rgba(239, 68, 68, 0.1); color: #DC2626; font-family: var(--font-mono); font-weight: 800; font-size: 0.82rem; margin-bottom: 1rem;">
-        <span>HTTP 404: PAGE_NOT_FOUND</span>
+        <span>HTTP {{ error_code|default:'404' }} • {% if error_code == '403' %}ACCESS_DENIED{% elif error_code == '500' %}SERVER_ERROR{% elif error_code == '400' %}BAD_REQUEST{% else %}PAGE_NOT_FOUND{% endif %}</span>
     </div>
 
-    <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 2.6rem); font-weight: 800; color: var(--text-primary); margin: 0 0 1rem; line-height: 1.2;">
+    <h1 style="font-family: var(--font-display); font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 800; color: var(--text-primary); margin: 0 0 1rem; line-height: 1.2;">
         {% if lang == 'en' %}
-        Oops! This page ran into a SyntaxError.
+        {{ error_title_en|default:"Oops! This page ran into a SyntaxError." }}
         {% else %}
-        Ups! Táto stránka narazila na SyntaxError.
+        {{ error_title_sk|default:"Ups! Táto stránka narazila na SyntaxError." }}
         {% endif %}
     </h1>
 
-    <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6; margin: 0 auto 2.25rem; max-width: 48ch;">
+    <p style="font-size: 1rem; color: var(--text-secondary); line-height: 1.6; margin: 0 auto 2rem; max-width: 48ch;">
         {% if lang == 'en' %}
-        The URL you navigated to does not exist or may have been relocated. Let's get you back on track with your Python learning journey!
+        {{ error_desc_en|default:"The URL you navigated to does not exist or may have been relocated. Let's get you back on track with your Python learning journey!" }}
         {% else %}
-        Adresa, ktorú hľadáš, v našom kóde neexistuje alebo bola presunutá. Poďme ťa vrátiť späť k praktickej výučbe Pythonu!
+        {{ error_desc_sk|default:"Adresa, ktorú hľadáš, v našom kóde neexistuje alebo bola presunutá. Poďme ťa vrátiť späť k praktickej výučbe Pythonu!" }}
         {% endif %}
     </p>
 

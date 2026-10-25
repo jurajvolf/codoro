@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.conf import settings
 
 from accounts.models import User, SchoolClass, SubscriptionLicense, SchoolLicenseRequest
+from accounts.security import safe_int, sanitize_text
 from courses.models import Module, Lesson, Exercise, TestCase, Submission, QuizQuestion, LessonProgress
 from gamification.models import (
     RewardItem, RewardPurchase, DorosTransaction, ClassQuest, CoinDrop, Quest, Badge, StudentBadge
@@ -43,9 +44,9 @@ def admin_dashboard(request):
     Centrálny riadiaci panel pre hlavného administrátora.
     Poskytuje okamžitý Support Helpdesk, správu licencií, databázy, kurikula a logov.
     """
-    active_tab = request.GET.get('tab', 'users')
-    search_q = request.GET.get('q', '').strip()
-    role_filter = request.GET.get('role', '')
+    active_tab = sanitize_text(request.GET.get('tab', 'users'), max_length=32) or 'users'
+    search_q = sanitize_text(request.GET.get('q', ''), max_length=120)
+    role_filter = sanitize_text(request.GET.get('role', ''), max_length=20)
 
     # 1. POUŽÍVATELIA PRE SUPPORT DESK
     users_qs = User.objects.select_related('school_class').order_by('-date_joined')
@@ -102,7 +103,7 @@ def admin_dashboard(request):
     }
 
     # 5. ŽIVÝ MONITOR ODOVZDANÍ (POSLEDNÝCH 50 SUBMISSIONS)
-    submission_filter = request.GET.get('sub_status', '')
+    submission_filter = sanitize_text(request.GET.get('sub_status', ''), max_length=20)
     sub_qs = Submission.objects.select_related('student', 'exercise__lesson__module').order_by('-created_at')
     if submission_filter:
         sub_qs = sub_qs.filter(status=submission_filter)
@@ -194,9 +195,9 @@ def admin_user_economy(request, user_id):
     """Úprava Doros a XP pre používateľa (s prepočtom levelu)."""
     target_user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
-        doros_change = int(request.POST.get('doros_change', 0))
-        xp_change = int(request.POST.get('xp_change', 0))
-        reason = request.POST.get('reason', 'Support zásah').strip()
+        doros_change = safe_int(request.POST.get('doros_change'), default=0, min_val=-1000000, max_val=1000000)
+        xp_change = safe_int(request.POST.get('xp_change'), default=0, min_val=-1000000, max_val=1000000)
+        reason = sanitize_text(request.POST.get('reason', 'Support zásah'), max_length=255) or 'Support zásah'
 
         if doros_change != 0:
             target_user.doros = max(0, target_user.doros + doros_change)
@@ -225,7 +226,7 @@ def admin_user_streak(request, user_id):
     """Support oprava vyhasnutého alebo prerušeného Streaku."""
     target_user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
-        streak_val = max(0, int(request.POST.get('streak_value', 1)))
+        streak_val = safe_int(request.POST.get('streak_value'), default=1, min_val=0, max_val=3650)
         target_user.current_streak = streak_val
         target_user.longest_streak = max(target_user.longest_streak, streak_val)
         target_user.lost_streak_value = 0
@@ -253,9 +254,9 @@ def admin_user_assign_class(request, user_id):
     """Priradenie alebo odhlásenie používateľa zo školskej triedy."""
     target_user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
-        class_id = request.POST.get('school_class_id')
+        class_id = request.POST.get('school_class_id') or request.POST.get('class_id')
         if class_id:
-            sc = get_object_or_404(SchoolClass, id=class_id)
+            sc = get_object_or_404(SchoolClass, id=safe_int(class_id, default=0))
             target_user.school_class = sc
             messages.success(request, f"Používateľ '{target_user.username}' bol zaradený do triedy {sc.name}.")
         else:
@@ -305,8 +306,10 @@ def admin_license_create(request):
     """Vytvorenie nového licenčného kľúča (EDU / PRO)."""
     if request.method == 'POST':
         tier = request.POST.get('tier', User.SubscriptionTier.EDU)
-        max_uses = int(request.POST.get('max_uses', 30))
-        code = request.POST.get('code', '').strip().upper()
+        if tier not in User.SubscriptionTier.values:
+            tier = User.SubscriptionTier.EDU
+        max_uses = safe_int(request.POST.get('max_uses'), default=30, min_val=1, max_val=5000)
+        code = sanitize_text(request.POST.get('code', ''), max_length=64).upper()
 
         if not code:
             suffix = secrets.token_hex(3).upper()
@@ -349,11 +352,11 @@ def admin_license_delete(request, license_id):
 def admin_license_quick_assign(request):
     """Rýchla aktivácia licencie pre konkrétneho používateľa zadaním mena."""
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
+        username = sanitize_text(request.POST.get('username', ''), max_length=150)
         license_id = request.POST.get('license_id')
 
         target_user = User.objects.filter(username=username).first()
-        lic = get_object_or_404(SubscriptionLicense.objects.select_for_update(), id=license_id)
+        lic = get_object_or_404(SubscriptionLicense.objects.select_for_update(), id=safe_int(license_id, default=0))
 
         if not target_user:
             messages.error(request, f"Používateľ s menom '{username}' neexistuje.")
@@ -381,7 +384,7 @@ def admin_license_request_approve(request, request_id):
     """Schválenie žiadosti školy a vygenerovanie/predĺženie oficiálnej EDU licencie."""
     req_obj = get_object_or_404(SchoolLicenseRequest, id=request_id)
     if request.method == 'POST':
-        max_students = int(request.POST.get('max_uses', req_obj.estimated_students or 35))
+        max_students = safe_int(request.POST.get('max_uses'), default=req_obj.estimated_students or 35, min_val=1, max_val=5000)
 
         if not req_obj.generated_license:
             clean_prefix = re.sub(r'[^A-Za-z0-9]', '', req_obj.school_name).upper()[:4] or "EDU"

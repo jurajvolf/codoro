@@ -19,12 +19,16 @@ def git_webhook_update(request):
     if request.method != 'POST':
         return HttpResponseForbidden("Iba POST požiadavky sú povolené.")
 
-    # Overenie podpisu z GitHubu (aby cudzí človek nemohol spustiť update)
+    # Overenie podpisu z GitHubu (vyžaduje nakonfigurovaný GITHUB_WEBHOOK_SECRET v prostredí)
+    secret_str = (getattr(settings, 'GITHUB_WEBHOOK_SECRET', '') or '').strip()
+    if not secret_str:
+        return HttpResponseForbidden("Webhook nie je nakonfigurovaný (chýba GITHUB_WEBHOOK_SECRET).")
+
     signature = request.headers.get('X-Hub-Signature-256', '')
-    secret = getattr(settings, 'GITHUB_WEBHOOK_SECRET', 'codoro-maturita-secret-2027').encode('utf-8')
+    secret = secret_str.encode('utf-8')
     expected_sig = 'sha256=' + hmac.new(secret, request.body, hashlib.sha256).hexdigest()
 
-    if not hmac.compare_digest(signature, expected_sig):
+    if not signature or not hmac.compare_digest(signature, expected_sig):
         return HttpResponseForbidden("Neplatný bezpečnostný podpis Webhooku.")
 
     repo_dir = str(settings.BASE_DIR)
@@ -149,4 +153,7 @@ urlpatterns = [
     path('teacher/classquest/<int:class_quest_id>/distribute/', teacher_views.cms_classquest_distribute, name='cms_classquest_distribute'),
 ]
 
+handler400 = 'accounts.views.custom_400'
+handler403 = 'accounts.views.custom_403'
 handler404 = 'accounts.views.custom_404'
+handler500 = 'accounts.views.custom_500'

@@ -463,3 +463,124 @@ class PasswordResetTests(TestCase):
         self.assertTrue(self.user.check_password('BrandNewStrongPass4!'))
 
 
+
+
+class SecurityAndMobileUXTests(TestCase):
+    """
+    FÁZA 26: Testy bezpečnosti (OWASP, CSP hlavičky, Rate Limiting, Honeypot,
+    Open Redirect, Row-Level Security, šifrovanie dát, validácia uploadov)
+    a mobilnej responzivity.
+    """
+
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+        self.student = User.objects.create_user(
+            username='sec_student', password='Password123!', role=User.Role.STUDENT
+        )
+
+    def tearDown(self):
+        from django.core.cache import cache
+        cache.clear()
+
+    def test_security_headers_present_on_responses(self):
+        resp = self.client.get(reverse('landing_page'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('Content-Security-Policy', resp.headers)
+        self.assertIn("frame-ancestors 'none'", resp.headers['Content-Security-Policy'])
+        self.assertEqual(resp.headers.get('X-Content-Type-Options'), 'nosniff')
+        self.assertEqual(resp.headers.get('X-Frame-Options'), 'DENY')
+        self.assertEqual(resp.headers.get('Referrer-Policy'), 'strict-origin-when-cross-origin')
+        self.assertIn('Permissions-Policy', resp.headers)
+        self.assertEqual(resp.headers.get('Cross-Origin-Opener-Policy'), 'same-origin')
+
+    def test_honeypot_blocks_bot_login_and_registration(self):
+        # Bot vyplní skryté pole website_url pri prihlásení
+        resp_login = self.client.post(reverse('login'), {
+            'username': 'sec_student',
+            'password': 'Password123!',
+            'website_url': 'http://spam-bot.example.com',
+        })
+        self.assertEqual(resp_login.status_code, 200)
+        self.assertFalse(resp_login.wsgi_request.user.is_authenticated)
+
+        # Bot vyplní skryté pole website_url pri registrácii
+        resp_reg = self.client.post(reverse('register'), {
+            'role': 'STUDENT',
+            'username': 'bot_account',
+            'email': 'bot@spam.com',
+            'password': 'Password123!',
+            'website_url': 'http://spam-bot.example.com',
+        })
+        self.assertEqual(resp_reg.status_code, 200)
+        self.assertFalse(User.objects.filter(username='bot_account').exists())
+
+    def test_login_rate_limiting_blocks_brute_force(self):
+        for _ in range(10):
+            self.client.post(reverse('login'), {
+                'username': 'sec_student',
+                'password': 'WrongPassword!',
+            })
+        # 11. pokus musí byť zablokovaný rate limiterom (HTTP 429 Too Many Requests) aj so správnym heslom
+        resp = self.client.post(reverse('login'), {
+            'username': 'sec_student',
+            'password': 'Password123!',
+        })
+        self.assertEqual(resp.status_code, 429)
+        self.assertFalse(resp.wsgi_request.user.is_authenticated)
+
+    def test_open_redirect_protection_on_language_switch(self):
+        resp = self.client.get(reverse('switch_language', kwargs={'lang_code': 'en'}) + '?next=https://evil-phishing.com')
+        self.assertEqual(resp.status_code, 302)
+        self.assertNotIn('evil-phishing.com', resp['Location'])
+
+    def test_row_level_security_prevents_cross_teacher_student_access(self):
+        teacher_a = User.objects.create_user(username='teacher_a', password='Password123!', role=User.Role.TEACHER)
+        teacher_b = User.objects.create_user(username='teacher_b', password='Password123!', role=User.Role.TEACHER)
+        class_a = SchoolClass.objects.create(name='IV.A', join_code='IVA-RLS', teacher=teacher_a)
+        class_b = SchoolClass.objects.create(name='IV.B', join_code='IVB-RLS', teacher=teacher_b)
+
+        student_b = User.objects.create_user(
+            username='student_in_b', password='Password123!', role=User.Role.STUDENT, school_class=class_b
+        )
+
+        # Teacher A sa pokúsi zobraziť detail študenta z triedy Teacher B (IDOR pokus)
+        self.client.login(username='teacher_a', password='Password123!')
+        resp = self.client.get(reverse('teacher_student_detail', kwargs={'student_id': student_b.id}))
+        self.assertEqual(resp.status_code, 302)
+        self.assertRedirects(resp, reverse('teacher_dashboard'))
+
+    def test_admin_route_protected_against_students(self):
+        self.client.login(username='sec_student', password='Password123!')
+        resp = self.client.get('/admin/')
+        self.assertEqual(resp.status_code, 302)
+
+    def test_safe_int_and_encrypt_decrypt_helpers(self):
+        from accounts.security import (
+            safe_int, sanitize_text, encrypt_sensitive_data, decrypt_sensitive_data, validate_uploaded_file
+        )
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        self.assertEqual(safe_int('not-a-number', default=42), 42)
+        self.assertEqual(safe_int('999999', default=10, min_val=1, max_val=100), 100)
+        self.assertEqual(sanitize_text('Hello\x00World', max_length=20), 'HelloWorld')
+
+        # Šifrovanie a dešifrovanie citlivých údajov
+        secret_note = 'Citlivý záznam študenta IV.C'
+        token = encrypt_sensitive_data(secret_note)
+        self.assertNotEqual(token, secret_note)
+        self.assertEqual(decrypt_sensitive_data(token), secret_note)
+        self.assertIsNone(decrypt_sensitive_data(token + 'tampered'))
+
+        # Validácia nahrávaných súborov (Magic Bytes & Extension Allowlist)
+        bad_file = SimpleUploadedFile('malware.exe', b'MZ\x90\x00\x03', content_type='application/octet-stream')
+        ok_bad, _ = validate_uploaded_file(bad_file)
+        self.assertFalse(ok_bad)
+
+        fake_png = SimpleUploadedFile('avatar.png', b'not-a-real-png-header', content_type='image/png')
+        ok_fake, _ = validate_uploaded_file(fake_png)
+        self.assertFalse(ok_fake)
+
+        valid_png = SimpleUploadedFile('avatar.png', b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR', content_type='image/png')
+        ok_valid, _ = validate_uploaded_file(valid_png)
+        self.assertTrue(ok_valid)

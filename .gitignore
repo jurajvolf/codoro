@@ -222,3 +222,10 @@ __marimo__/
 # Django collected static files
 staticfiles/
 
+
+# Extra secret & certificate patterns
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.*

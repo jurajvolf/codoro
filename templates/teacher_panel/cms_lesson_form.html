@@ -607,7 +607,8 @@ function updateLivePreview() {
 
     var previewEl = document.getElementById('markdown-preview');
     if (typeof marked !== 'undefined') {
-        previewEl.innerHTML = marked.parse(sourceText || '');
+        var rawHtml = marked.parse(sourceText || '');
+        previewEl.innerHTML = window.sanitizeCodoroHtml ? window.sanitizeCodoroHtml(rawHtml) : rawHtml;
     } else {
         previewEl.innerText = sourceText || '';
     }

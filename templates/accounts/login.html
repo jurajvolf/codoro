@@ -5,7 +5,7 @@
 {% block content %}
 {% firstof ui_lang 'sk' as lang %}
 
-<div style="max-width: 980px; margin: 3rem auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+<div class="codoro-auth-grid" style="max-width: 980px; margin: 2rem auto;">
 
     <!-- Left intro column -->
     <div>
@@ -14,7 +14,7 @@
             <span>{% if lang == 'en' %}Codoro Classroom Ecosystem{% else %}Ekosystém tried a výučby Pythonu{% endif %}</span>
         </div>
 
-        <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 3.2vw, 2.7rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 1.25rem; color: var(--text-primary);">
+        <h1 style="font-family: var(--font-display); font-size: clamp(1.75rem, 3.2vw, 2.7rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 1.25rem; color: var(--text-primary);">
             {% if lang == 'en' %}
             Learn Python by Doing, Earning, and Building.
             {% else %}
@@ -22,7 +22,7 @@
             {% endif %}
         </h1>
 
-        <p style="font-size: 1.02rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; max-width: 48ch;">
+        <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.75rem; line-height: 1.6; max-width: 48ch;">
             {% if lang == 'en' %}
             Step into the guided visual learning map, solve hands-on Python exercises in real time, and earn Doros to redeem classroom rewards with your peers.
             {% else %}
@@ -31,7 +31,7 @@
         </p>
 
         <!-- Python Workbench snippet card -->
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 1.25rem 1.5rem; box-shadow: var(--shadow-sm);">
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 1.25rem 1.5rem; box-shadow: var(--shadow-sm); overflow-x: auto;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
                 <div style="display: flex; gap: 6px;">
                     <span style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444;"></span>
@@ -47,13 +47,13 @@
         </div>
     </div>
 
-    <!-- Right login card -->
-    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 2.5rem 2.25rem; box-shadow: 0 16px 40px -12px rgba(14, 30, 24, 0.08);">
+    <!-- Right login card (orders FIRST on mobile screens via .auth-form-card) -->
+    <div class="auth-form-card" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 2.25rem 2rem; box-shadow: 0 16px 40px -12px rgba(14, 30, 24, 0.08);">
         <!-- Clickable Brand Link & Back Home Navigation -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
             <a href="{% url 'landing_page' %}" class="emerald-brand-link" title="{% if lang == 'en' %}Back to home page{% else %}Návrat na hlavnú stránku{% endif %}">
-                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="height: 38px; width: 38px; object-fit: contain;">
-                <span class="emerald-brand-text" style="font-size: 1.6rem;">codo<span class="brand-ro">ro</span></span>
+                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" width="38" height="38" decoding="async" style="height: 38px; width: 38px; object-fit: contain;">
+                <span class="emerald-brand-text" style="font-size: 1.5rem;">codo<span class="brand-ro">ro</span></span>
             </a>
             <a href="{% url 'landing_page' %}" style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.8rem; color:var(--text-muted); text-decoration:none; font-weight:600; padding:0.3rem 0.65rem; border-radius:9999px; background:var(--bg-subtle);" title="{% if lang == 'en' %}Back to home page{% else %}Späť na hlavnú stránku{% endif %}">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -72,17 +72,22 @@
 
         <form method="post">
             {% csrf_token %}
+            <div class="hp-trap-field" aria-hidden="true">
+                <label for="login_website_url">Website</label>
+                <input type="text" name="website_url" id="login_website_url" tabindex="-1" autocomplete="off">
+            </div>
+
             <div style="margin-bottom: 1.15rem;">
                 <label style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;" for="loginUsername">
                     {% if lang == 'en' %}Username{% else %}Používateľské meno{% endif %}
                 </label>
-                <input type="text" name="username" id="loginUsername" required
-                       style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.92rem; outline: none; transition: border-color 0.15s ease;"
+                <input type="text" name="username" id="loginUsername" required autocomplete="username"
+                       style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; outline: none; transition: border-color 0.15s ease;"
                        onfocus="this.style.borderColor='var(--brand-emerald)'" onblur="this.style.borderColor='var(--border-subtle)'">
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.25rem;">
                     <label style="display: block; font-size: 0.84rem; font-weight: 700; color: var(--text-primary); margin: 0;" for="loginPassword">
                         {% if lang == 'en' %}Password{% else %}Heslo{% endif %}
                     </label>
@@ -91,8 +96,8 @@
                     </a>
                 </div>
                 <div style="position:relative;">
-                    <input type="password" name="password" id="loginPassword" required
-                           style="width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.92rem; outline: none; transition: border-color 0.15s ease;"
+                    <input type="password" name="password" id="loginPassword" required autocomplete="current-password"
+                           style="width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; outline: none; transition: border-color 0.15s ease;"
                            onfocus="this.style.borderColor='var(--brand-emerald)'" onblur="this.style.borderColor='var(--border-subtle)'">
                     <button type="button" onclick="togglePasswordVisibility('loginPassword', this)"
                             style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-muted); display:inline-flex; align-items:center;"

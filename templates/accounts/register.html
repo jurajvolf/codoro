@@ -12,10 +12,10 @@
     <div class="card-surface" style="padding: 2.25rem; border-radius: var(--radius-lg); border: 1px solid var(--border-hairline); box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);">
 
         <!-- Clickable Brand Link & Back Home Navigation -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
             <a href="{% url 'landing_page' %}" class="emerald-brand-link" title="{% if lang == 'en' %}Back to home page{% else %}Návrat na hlavnú stránku{% endif %}">
-                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="height: 38px; width: 38px; object-fit: contain;">
-                <span class="emerald-brand-text" style="font-size: 1.6rem;">codo<span class="brand-ro">ro</span></span>
+                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" width="38" height="38" decoding="async" style="height: 38px; width: 38px; object-fit: contain;">
+                <span class="emerald-brand-text" style="font-size: 1.5rem;">codo<span class="brand-ro">ro</span></span>
             </a>
             <a href="{% url 'landing_page' %}" style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.8rem; color:var(--text-muted); text-decoration:none; font-weight:600; padding:0.3rem 0.65rem; border-radius:9999px; background:var(--bg-subtle);" title="{% if lang == 'en' %}Back to home page{% else %}Späť na hlavnú stránku{% endif %}">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -25,7 +25,7 @@
 
         <!-- Hlavička -->
         <div style="margin-bottom: 1.25rem;">
-            <h1 style="font-family: var(--font-display); font-size: 1.55rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.35rem; color: var(--text-primary);">
+            <h1 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.35rem; color: var(--text-primary);">
                 {% if lang == 'en' %}Join the Codoro Platform{% else %}Vytvorenie účtu v Codoro{% endif %}
             </h1>
             <span style="font-size: 0.82rem; color: var(--brand-emerald); font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">
@@ -34,14 +34,14 @@
         </div>
 
         <!-- Prepínač rolí (Segmented Role Switcher) -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); margin-bottom: 1.5rem;">
+        <div class="role-switcher-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); margin-bottom: 1.5rem;">
             <button type="button" class="role-tab-btn active" id="btn-role-student" onclick="switchRole('student')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                {% if lang == 'en' %}I am a Student{% else %}Som študent{% endif %}
+                <span>{% if lang == 'en' %}I am a Student{% else %}Som študent{% endif %}</span>
             </button>
             <button type="button" class="role-tab-btn" id="btn-role-teacher" onclick="switchRole('teacher')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                {% if lang == 'en' %}I am a Teacher / School{% else %}Som učiteľ / škola{% endif %}
+                <span>{% if lang == 'en' %}I am a Teacher / School{% else %}Som učiteľ / škola{% endif %}</span>
             </button>
         </div>
 
@@ -60,26 +60,30 @@
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="account_type" value="student">
+                <div class="hp-trap-field" aria-hidden="true">
+                    <label for="reg_student_website_url">Website</label>
+                    <input type="text" name="website_url" id="reg_student_website_url" tabindex="-1" autocomplete="off">
+                </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
                         <label class="form-label">{% if lang == 'en' %}First name *{% else %}Krstné meno *{% endif %}</label>
-                        <input type="text" name="first_name" class="form-control" required>
+                        <input type="text" name="first_name" class="form-control" required autocomplete="given-name">
                     </div>
                     <div>
                         <label class="form-label">{% if lang == 'en' %}Last name *{% else %}Priezvisko *{% endif %}</label>
-                        <input type="text" name="last_name" class="form-control" required>
+                        <input type="text" name="last_name" class="form-control" required autocomplete="family-name">
                     </div>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">{% if lang == 'en' %}Username (login) *{% else %}Prihlasovacie meno (login) *{% endif %}</label>
-                    <input type="text" name="username" class="form-control" required>
+                    <input type="text" name="username" class="form-control" required autocomplete="username">
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">{% if lang == 'en' %}Email address *{% else %}E-mailová adresa *{% endif %}</label>
-                    <input type="email" name="email" class="form-control" required>
+                    <input type="email" name="email" class="form-control" required autocomplete="email">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
@@ -114,7 +118,7 @@
                             <div id="regStudentPassword_bar_2" style="flex:1; height:6px; border-radius:9999px; background:var(--border-subtle); transition:background-color 0.25s ease;"></div>
                             <div id="regStudentPassword_bar_3" style="flex:1; height:6px; border-radius:9999px; background:var(--border-subtle); transition:background-color 0.25s ease;"></div>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.45rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.25rem; margin-bottom:0.45rem;">
                             <span id="regStudentPassword_label" style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">
                                 {% if lang == 'en' %}Password strength: Not entered{% else %}Sila hesla: Nezadané{% endif %}
                             </span>
@@ -164,31 +168,35 @@
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="account_type" value="teacher">
+                <div class="hp-trap-field" aria-hidden="true">
+                    <label for="reg_teacher_website_url">Website</label>
+                    <input type="text" name="website_url" id="reg_teacher_website_url" tabindex="-1" autocomplete="off">
+                </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
                         <label class="form-label">{% if lang == 'en' %}First name *{% else %}Krstné meno *{% endif %}</label>
-                        <input type="text" name="first_name" class="form-control" required placeholder="napr. Peter">
+                        <input type="text" name="first_name" class="form-control" required placeholder="napr. Peter" autocomplete="given-name">
                     </div>
                     <div>
                         <label class="form-label">{% if lang == 'en' %}Last name *{% else %}Priezvisko *{% endif %}</label>
-                        <input type="text" name="last_name" class="form-control" required placeholder="napr. Novák">
+                        <input type="text" name="last_name" class="form-control" required placeholder="napr. Novák" autocomplete="family-name">
                     </div>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">{% if lang == 'en' %}Username (login) *{% else %}Prihlasovacie meno (login) *{% endif %}</label>
-                    <input type="text" name="username" class="form-control" required placeholder="ucitel_novak">
+                    <input type="text" name="username" class="form-control" required placeholder="ucitel_novak" autocomplete="username">
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">{% if lang == 'en' %}School Email address *{% else %}Školská e-mailová adresa *{% endif %}</label>
-                    <input type="email" name="email" class="form-control" required placeholder="meno@skola.sk">
+                    <input type="email" name="email" class="form-control" required placeholder="meno@skola.sk" autocomplete="email">
                 </div>
 
                 <!-- Licenčný kľúč pre učiteľa -->
                 <div style="margin-bottom: 1rem; background: var(--bg-subtle); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.35rem;">
                         <label class="form-label" style="margin: 0; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
                             {% if lang == 'en' %}School License Key{% else %}Školský licenčný kľúč{% endif %}
@@ -251,7 +259,7 @@
                             <div id="regTeacherPassword_bar_2" style="flex:1; height:6px; border-radius:9999px; background:var(--border-subtle); transition:background-color 0.25s ease;"></div>
                             <div id="regTeacherPassword_bar_3" style="flex:1; height:6px; border-radius:9999px; background:var(--border-subtle); transition:background-color 0.25s ease;"></div>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.45rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.25rem; margin-bottom:0.45rem;">
                             <span id="regTeacherPassword_label" style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">
                                 {% if lang == 'en' %}Password strength: Not entered{% else %}Sila hesla: Nezadané{% endif %}
                             </span>
@@ -300,9 +308,9 @@
     .role-tab-btn {
         background: none;
         border: none;
-        padding: 0.65rem 1rem;
+        padding: 0.65rem 0.75rem;
         font-family: var(--font-sans);
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 700;
         color: var(--text-muted);
         cursor: pointer;
@@ -348,7 +356,6 @@
         }
     }
 
-    // Interaktívny hodnotiteľ sily hesla (3 úrovne, live checklist, gating tlačidla)
     function attachPasswordStrengthMeter(inputId, submitBtnId) {
         var input = document.getElementById(inputId);
         var submitBtn = document.getElementById(submitBtnId);
@@ -409,7 +416,6 @@
                 submitBtn.style.opacity = '0.55';
                 submitBtn.style.cursor = 'not-allowed';
             } else if (hasLen && compCount === 3) {
-                // Úroveň 3: Silné heslo (Pripravené)
                 bar1.style.backgroundColor = greenColor;
                 bar2.style.backgroundColor = greenColor;
                 bar3.style.backgroundColor = greenColor;
@@ -420,7 +426,6 @@
                 submitBtn.style.opacity = '1';
                 submitBtn.style.cursor = 'pointer';
             } else if (hasLen || compCount >= 2) {
-                // Úroveň 2: Stredné heslo
                 bar1.style.backgroundColor = orangeColor;
                 bar2.style.backgroundColor = orangeColor;
                 bar3.style.backgroundColor = neutralColor;
@@ -431,7 +436,6 @@
                 submitBtn.style.opacity = '0.55';
                 submitBtn.style.cursor = 'not-allowed';
             } else {
-                // Úroveň 1: Slabé heslo
                 bar1.style.backgroundColor = redColor;
                 bar2.style.backgroundColor = neutralColor;
                 bar3.style.backgroundColor = neutralColor;
@@ -447,7 +451,6 @@
         input.addEventListener('input', evaluate);
         input.addEventListener('focus', evaluate);
 
-        // Ochrana pri odoslaní formulára
         var form = input.closest('form');
         if (form) {
             form.addEventListener('submit', function(e) {
@@ -460,13 +463,12 @@
                     e.preventDefault();
                     evaluate();
                     input.focus();
-                    alert(isEn ? 'Password must reach Level 3 (Strong) before submitting.' : 'Heslo musí dosiahnuť Úroveň 3 (Silné) pred odoslaním.');
+                    showToast(isEn ? 'Password must reach Level 3 (Strong) before submitting.' : 'Heslo musí dosiahnuť Úroveň 3 (Silné) pred odoslaním.', 'error');
                 }
             });
         }
     }
 
-    // Inicializácia
     document.addEventListener('DOMContentLoaded', function() {
         attachPasswordStrengthMeter('regStudentPassword', 'regStudentSubmitBtn');
         attachPasswordStrengthMeter('regTeacherPassword', 'regTeacherSubmitBtn');

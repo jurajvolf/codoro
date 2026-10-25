@@ -23,7 +23,7 @@
          ==================================================================== -->
     <header class="floating-pill-navbar">
         <a href="{% url 'landing_page' %}" class="emerald-brand-link" title="Codoro">
-            <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" class="emerald-brand-icon">
+            <img decoding="async" src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" class="emerald-brand-icon">
             <span class="emerald-brand-text">codo<span class="brand-ro">ro</span></span>
         </a>
 
@@ -172,7 +172,7 @@
         <div class="hero-art-right" title="Codoro Mascot">
             <div class="codo-hero-unit">
                 <!-- Official Codoro Green Avatar -->
-                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}"
+                <img decoding="async" src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}"
                      alt="Codoro"
                      class="codo-official-avatar-img">
 
@@ -734,7 +734,7 @@
     <footer style="margin-top:4rem; padding-top:2.5rem; padding-bottom:3rem; border-top:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:1.75rem; align-items:center; text-align:center;">
         <div style="display:flex; align-items:center; gap:0.65rem;">
             <a href="{% url 'landing_page' %}" style="display:inline-flex; align-items:center; gap:0.65rem; text-decoration:none;">
-                <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="width:32px; height:32px; object-fit:contain;">
+                <img decoding="async" src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="width:32px; height:32px; object-fit:contain;">
                 <span class="emerald-brand-text" style="font-size:1.4rem;">codo<span class="brand-ro">ro</span></span>
             </a>
         </div>
@@ -778,7 +778,7 @@
     <!-- STICKY MOBILE CTA BAR (Visible on screens <= 768px) -->
     <div class="sticky-mobile-cta" role="complementary" aria-label="Quick registration">
         <div style="display:flex; align-items:center; gap:0.6rem; min-width:0;">
-            <img src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="width:28px; height:28px; object-fit:contain; flex-shrink:0;">
+            <img decoding="async" src="{% static 'img/codoro_logo_without_letters_transparent_green.png' %}" alt="Codoro" style="width:28px; height:28px; object-fit:contain; flex-shrink:0;">
             <div style="display:flex; flex-direction:column; min-width:0;">
                 <strong style="font-size:0.84rem; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                     {% if lang == 'en' %}Master Python Today{% else %}Nauč sa Python zadarmo{% endif %}

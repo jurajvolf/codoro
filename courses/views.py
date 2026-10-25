@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.views.decorators.http import require_POST
 
 from accounts.models import User
+from accounts.security import is_rate_limited, sanitize_text
 from accounts.utils import tr
 from .models import Module, Lesson, Exercise, Submission, LessonProgress, HintUnlock
 from .services import evaluate_python_code, get_codo_ai_feedback
@@ -399,6 +400,14 @@ def lesson_detail(request, lesson_id):
         action = request.POST.get('action')
 
         if action == 'run_code' and current_exercise:
+            if is_rate_limited(request, 'code_run', limit=30, window_seconds=60, identifier=str(user.id)):
+                messages.warning(request, tr(
+                    lang,
+                    "Spúšťaš kód príliš rýchlo za sebou. Počkaj pár sekúnd a skús to znova.",
+                    "You are running code too quickly. Please wait a few seconds and try again."
+                ))
+                return redirect(f"{request.path}?exercise={current_exercise.id}#workbench")
+
             submitted_code = request.POST.get('submitted_code', '')[:20000]
             already_passed = Submission.objects.filter(
                 student=user, exercise=current_exercise, status=Submission.Status.PASSED
@@ -582,7 +591,7 @@ def practice_arena(request):
     difficulty = request.GET.get('difficulty', '').strip().upper()
     module_id = request.GET.get('module', '').strip()
     status = request.GET.get('status', '').strip().lower()
-    q = request.GET.get('q', '').strip()
+    q = sanitize_text(request.GET.get('q', ''), max_length=120)
 
     exercises_qs = Exercise.objects.select_related('lesson', 'lesson__module').all()
 

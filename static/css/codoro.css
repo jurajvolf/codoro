@@ -8338,3 +8338,492 @@ input.is-invalid {
     animation: fadeInSlide 0.2s ease;
 }
 
+
+
+/* ==========================================================================
+   PHASE 26: FULL MOBILE RESPONSIVENESS, UX STABILITY & ACCESSIBILITY OVERHAUL
+   ========================================================================== */
+
+/* 1. Bot Honeypot Field (Invisible to humans, traps automated bots) */
+.hp-trap-field {
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+}
+
+/* 2. Touch & Interaction Responsiveness (Eliminates 300ms tap delay) */
+a, button, .btn, input, select, textarea, label, [role="button"] {
+    touch-action: manipulation;
+}
+
+/* Prevent double-submit button visual state */
+button[data-submitting="true"],
+.btn[data-submitting="true"] {
+    opacity: 0.72 !important;
+    pointer-events: none !important;
+    cursor: wait !important;
+}
+
+/* Desktop default hides mobile toggle & mobile-only elements */
+.exec-mob-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    transition: all 0.15s ease;
+}
+
+.exec-mob-toggle:hover {
+    border-color: var(--brand-emerald);
+    color: var(--brand-emerald);
+    background: var(--bg-mint-soft);
+}
+
+.mobile-drawer-close-row {
+    display: none;
+}
+
+.exec-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(14, 30, 24, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 2050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s ease;
+}
+
+.exec-drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Reusable responsive auth & 2-col grids */
+.codoro-auth-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+/* ==========================================================================
+   TABLET & MOBILE BREAKPOINT (<= 960px)
+   ========================================================================== */
+@media (max-width: 960px) {
+    /* Reset 90% desktop zoom on mobile/tablet so 1:1 native viewport scaling works properly */
+    html {
+        zoom: 1 !important;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    /* Show mobile hamburger menu button */
+    .exec-mob-toggle {
+        display: inline-flex !important;
+    }
+
+    /* Convert Left Sidebar into a smooth Off-Canvas Slide-Out Drawer */
+    .emerald-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: min(300px, 84vw) !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        background: var(--bg-surface) !important;
+        border-right: 1px solid var(--border-subtle) !important;
+        padding: 1.15rem 1rem 2rem !important;
+        z-index: 2100 !important;
+        overflow-y: auto !important;
+        transform: translateX(-105%) !important;
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35) !important;
+        justify-content: flex-start !important;
+        gap: 1.25rem !important;
+    }
+
+    .emerald-sidebar.drawer-open {
+        transform: translateX(0) !important;
+    }
+
+    .mobile-drawer-close-row {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.25rem;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* Main 3-column shell becomes single full-width column */
+    .emerald-app-shell,
+    .emerald-app-shell.shell-2col {
+        grid-template-columns: minmax(0, 1fr) !important;
+        padding: 1rem 0.85rem 3rem !important;
+        gap: 1.25rem !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Top Header Bar compacting for mobile/tablet */
+    .emerald-top-bar,
+    .emerald-top-bar-public {
+        padding: 0 0.75rem !important;
+        height: 60px !important;
+        gap: 0.45rem !important;
+    }
+
+    .emerald-top-bar.is-scrolled,
+    .emerald-top-bar-public.is-scrolled {
+        height: 56px !important;
+        padding: 0 0.75rem !important;
+    }
+
+    .top-search-pill,
+    .public-nav-center {
+        display: none !important;
+    }
+
+    .top-bar-right {
+        gap: 0.35rem !important;
+        min-width: 0;
+    }
+
+    .brand-logo-wrap img {
+        height: 26px !important;
+    }
+
+    .brand-wordmark {
+        font-size: 1.2rem !important;
+    }
+
+    /* Landing page floating pill navbar mobile layout */
+    .floating-pill-header-wrap {
+        padding: 0.5rem 0.65rem 0 !important;
+    }
+
+    .floating-pill-navbar {
+        padding: 0.45rem 0.75rem !important;
+        gap: 0.4rem !important;
+        border-radius: 16px !important;
+    }
+
+    .pill-nav-links {
+        display: none !important;
+    }
+
+    .pill-nav-actions {
+        gap: 0.35rem !important;
+    }
+
+    /* Lesson detail split-screen unconstrained height on tablet/mobile */
+    .lesson-split-grid {
+        grid-template-columns: 1fr !important;
+        min-height: auto !important;
+        gap: 1.25rem !important;
+    }
+
+    .lesson-theory-panel,
+    .lesson-workbench-container {
+        max-height: none !important;
+        min-height: auto !important;
+        height: auto !important;
+        padding: 1.25rem !important;
+    }
+}
+
+/* ==========================================================================
+   MOBILE PHONE BREAKPOINT (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Prevent iOS/Android auto-zoom on input focus and ensure keyboard never covers inputs */
+    input,
+    select,
+    textarea,
+    .input,
+    .select,
+    .textarea {
+        font-size: 16px !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        scroll-margin-top: 84px;
+        scroll-margin-bottom: 160px;
+    }
+
+    /* Allow buttons with long SK/EN text to wrap cleanly instead of overflowing off-screen */
+    .btn,
+    .btn-emerald-full,
+    .btn-subtle-full,
+    button[type="submit"] {
+        white-space: normal !important;
+        word-break: break-word;
+        text-align: center;
+        line-height: 1.35 !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 42px;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+    }
+
+    /* Collapse all 2-col / multi-col grids (including inline template grids) to 1 column */
+    .codoro-auth-grid,
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .split-2,
+    .exec-split-2,
+    .exec-kpi-strip,
+    [style*="grid-template-columns: 1fr 1fr"],
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns: 1fr 1.4fr"],
+    [style*="grid-template-columns: 1.4fr 1fr"],
+    [style*="grid-template-columns: 1.1fr 1fr 1fr auto"],
+    [style*="grid-template-columns: 2fr 1fr"],
+    [style*="grid-template-columns: 1fr 2fr"],
+    [style*="minmax(360px"],
+    [style*="minmax(340px"],
+    [style*="minmax(320px"],
+    [style*="minmax(300px"] {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 1.15rem !important;
+    }
+
+    /* On auth pages (Login, Register, Reset, License), put the form card FIRST on mobile! */
+    .codoro-auth-grid > .card,
+    .auth-form-card {
+        order: -1;
+    }
+
+    /* Reduce oversized inline card paddings on mobile */
+    .card,
+    .widget-card,
+    [style*="padding: 2.5rem"],
+    [style*="padding: 2.25rem"],
+    [style*="padding: 2rem"] {
+        padding: 1.25rem !important;
+        border-radius: 16px !important;
+    }
+
+    /* Top bar stats & profile pill compacting */
+    .stat-pill.level,
+    .user-profile-pill span {
+        display: none !important;
+    }
+
+    .user-profile-pill {
+        padding: 0.2rem !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .stat-pill {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+        gap: 0.25rem !important;
+    }
+
+    /* Winding Path & Module Cards on Mobile */
+    .winding-path-deck {
+        padding: 0.85rem 0.65rem 1.25rem !important;
+        border-radius: 18px !important;
+    }
+
+    .module-path-row {
+        grid-template-columns: 44px minmax(0, 1fr) !important;
+        gap: 0.65rem !important;
+    }
+
+    .path-pedestal-anchor svg {
+        width: 38px !important;
+        height: 42px !important;
+    }
+
+    .path-connector-line {
+        left: 20px !important;
+        width: 4px !important;
+    }
+
+    .module-card-header-btn {
+        padding: 0.95rem 1rem !important;
+        flex-wrap: wrap;
+        gap: 0.65rem !important;
+    }
+
+    .module-card-title {
+        font-size: 1rem !important;
+    }
+
+    .module-card-lessons-body {
+        padding: 0.75rem 0.85rem 1rem !important;
+    }
+
+    .lesson-row-item {
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        padding: 0.6rem 0.75rem !important;
+    }
+
+    /* Horizontal scrollable tabs / pills on mobile without breaking layout */
+    .track-switcher-pills,
+    .curriculum-track-segmented-bar,
+    .tabs-bar {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start !important;
+        padding-bottom: 0.45rem !important;
+        scrollbar-width: none;
+    }
+
+    .track-switcher-pills::-webkit-scrollbar,
+    .curriculum-track-segmented-bar::-webkit-scrollbar,
+    .tabs-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Tables scroll horizontally inside their container */
+    .markdown-content table,
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Modals scroll cleanly when virtual keyboard is open */
+    .modal-backdrop {
+        align-items: flex-start !important;
+        overflow-y: auto !important;
+        padding: 1rem 0.65rem 4rem !important;
+    }
+
+    .modal-card {
+        margin: auto 0;
+        max-height: none !important;
+        width: 100% !important;
+        padding: 1.25rem !important;
+    }
+
+    /* Certificate responsive scaling on mobile */
+    .cert-paper {
+        padding: 1.5rem 1rem !important;
+    }
+}
+
+/* ==========================================================================
+   SMALL MOBILE PHONE BREAKPOINT (<= 480px, e.g. 360px - 390px screens)
+   ========================================================================== */
+@media (max-width: 480px) {
+    .emerald-app-shell,
+    .emerald-app-shell.shell-2col {
+        padding: 0.75rem 0.6rem 2.5rem !important;
+    }
+
+    .brand-wordmark {
+        display: none !important;
+    }
+
+    /* Hide pedestal column on very narrow phones so module cards get 100% width */
+    .module-path-row {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .path-pedestal-anchor,
+    .path-connector-line {
+        display: none !important;
+    }
+
+    /* Landing page top navbar ultra-compact */
+    .pill-nav-actions .pill-btn-ghost {
+        padding: 0.35rem 0.6rem !important;
+        font-size: 0.78rem !important;
+    }
+
+    .pill-nav-actions .pill-btn-emerald {
+        padding: 0.4rem 0.7rem !important;
+        font-size: 0.78rem !important;
+    }
+
+    .pill-nav-actions .pill-btn-emerald svg {
+        display: none;
+    }
+}
+
+/* Additional Mobile Header & Modal Refinements */
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+
+    .emerald-top-actions {
+        gap: 0.35rem !important;
+    }
+
+    .pill-stat-badge {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.76rem !important;
+        gap: 0.25rem !important;
+    }
+
+    .public-inner-content {
+        padding: 1rem 0.75rem 3rem !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    .codoro-modal-backdrop {
+        align-items: flex-start !important;
+        overflow-y: auto !important;
+        padding: 1rem 0.65rem 4rem !important;
+    }
+
+    .codoro-modal-card {
+        margin: auto 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.25rem !important;
+        box-sizing: border-box !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hide-on-xs {
+        display: none !important;
+    }
+
+    .emerald-brand-text {
+        font-size: 1.15rem !important;
+    }
+
+    .pill-stat-badge.streak-badge {
+        display: none !important;
+    }
+
+    .public-header-btn {
+        padding: 0.35rem 0.55rem !important;
+        font-size: 0.76rem !important;
+    }
+}

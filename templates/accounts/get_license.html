@@ -14,14 +14,14 @@
          HERO SECTION: ZAOBSTARANIE ŠKOLSKEJ LICENCIE
          ======================================================================== -->
     <div class="card-surface" style="background: radial-gradient(ellipse at 50% 0%, var(--bg-mint-soft) 0%, var(--bg-surface) 90%);
-                border: 1.5px solid var(--brand-emerald-border); border-radius: var(--radius-lg); padding: 2.25rem 2rem; margin-bottom: 2rem; text-align: center;">
+                border: 1.5px solid var(--brand-emerald-border); border-radius: var(--radius-lg); padding: 2rem 1.5rem; margin-bottom: 1.75rem; text-align: center;">
         <span style="background: var(--brand-emerald); color: #FFFFFF; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px; letter-spacing: 0.05em; display: inline-block; margin-bottom: 0.85rem;">
             CODORO FOR EDUCATION (EDU)
         </span>
-        <h1 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem 0;">
+        <h1 style="font-family: var(--font-display); font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem 0;">
             {% if lang == 'en' %}Empower Your Classroom with Python{% else %}Zaobstarajte pre svoju triedu vzdelávací systém Codoro{% endif %}
         </h1>
-        <p style="font-size: 0.96rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto; line-height: 1.6;">
+        <p style="font-size: 0.94rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto; line-height: 1.6;">
             {% if lang == 'en' %}
             Complete classroom management, live code reviews, anti-inflation school reward economy, and unlimited Socratic AI Tutor Codo. Request a pilot license for your school in 30 seconds.
             {% else %}
@@ -32,7 +32,7 @@
 
     <!-- Ak bol kľúč vygenerovaný (Success Box) -->
     {% if generated_license %}
-    <div class="card-surface" style="padding: 2rem; border-color: #10B981; background: rgba(16, 185, 129, 0.06); margin-bottom: 2rem; text-align: center; border-radius: var(--radius-lg);">
+    <div class="card-surface" style="padding: 1.5rem; border-color: #10B981; background: rgba(16, 185, 129, 0.06); margin-bottom: 2rem; text-align: center; border-radius: var(--radius-lg);">
         <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--emerald-bg); color: var(--emerald-text); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
@@ -43,11 +43,11 @@
             {% if lang == 'en' %}Institution:{% else %}Pre inštitúciu:{% endif %} <strong>{{ school_name }}</strong> · {% if lang == 'en' %}Educator:{% else %}Vyučujúci:{% endif %} <strong>{{ contact_name }}</strong>
         </p>
 
-        <div style="background: var(--bg-surface); border: 2px dashed var(--brand-emerald); border-radius: var(--radius-md); padding: 1.25rem; max-width: 420px; margin: 0 auto 1.5rem;">
+        <div style="background: var(--bg-surface); border: 2px dashed var(--brand-emerald); border-radius: var(--radius-md); padding: 1.15rem; max-width: 420px; margin: 0 auto 1.5rem;">
             <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
                 {% if lang == 'en' %}Your School License Key{% else %}Váš licenčný kód do školy{% endif %}
             </div>
-            <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: var(--brand-emerald); letter-spacing: 0.06em; font-variant-numeric: tabular-nums;">
+            <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 800; color: var(--brand-emerald); letter-spacing: 0.06em; font-variant-numeric: tabular-nums; word-break: break-all;">
                 {{ generated_license.code }}
             </div>
             <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.35rem; font-variant-numeric: tabular-nums;">
@@ -55,13 +55,13 @@
             </div>
         </div>
 
-        <a href="{% url 'register' %}?role=teacher&key={{ generated_license.code }}" class="btn btn-primary" style="padding: 0.75rem 1.75rem; font-weight: 700;">
+        <a href="{% url 'register' %}?role=teacher&key={{ generated_license.code }}" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 700;">
             {% if lang == 'en' %}Proceed to Teacher Registration with this Key →{% else %}Pokračovať k registrácii učiteľa s týmto kľúčom →{% endif %}
         </a>
     </div>
     {% endif %}
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem;">
+    <div class="codoro-auth-grid" style="align-items: start; gap: 1.75rem;">
 
         <!-- ĽAVÝ STĹPEC: 4 HLAVNÉ PILIERE EDU PRE ŠKOLY -->
         <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -131,7 +131,7 @@
         </div>
 
         <!-- PRAVÝ STĹPEC: FORMULÁR ŽIADOSTI O ZAOBSTARANIE LICENCIE -->
-        <div class="card-surface" style="padding: 2rem;">
+        <div class="card-surface auth-form-card" style="padding: 2rem;">
             <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem 0;">
                 {% if lang == 'en' %}Request & Generate School License{% else %}Formulár zaobstarania školskej licencie{% endif %}
             </h2>
@@ -145,6 +145,10 @@
 
             <form method="post">
                 {% csrf_token %}
+                <div class="hp-trap-field" aria-hidden="true">
+                    <label for="license_website_url">Website</label>
+                    <input type="text" name="website_url" id="license_website_url" tabindex="-1" autocomplete="off">
+                </div>
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label">{% if lang == 'en' %}School / Educational Institution Name *{% else %}Názov školy / Inštitúcie *{% endif %}</label>
                     <input type="text" name="school_name" class="form-control" required placeholder="napr. Spojená škola Nižná">

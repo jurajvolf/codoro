@@ -6,8 +6,8 @@
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
 <!-- 1. TOP BREADCRUMB & MODULE NAV BAR -->
-<div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 0.65rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); flex-wrap: nowrap; overflow: hidden;">
-    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; overflow: hidden;">
+<div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 0.65rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm); flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 200px; flex-wrap: wrap;">
         <a href="{% url 'dashboard' %}" class="btn-subtle-full" style="width: auto; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.82rem; text-decoration: none; display:inline-flex; align-items:center; gap:0.35rem; flex-shrink:0;">
             {% include 'components/icon_svg.html' with name='arrow_left' size='13' %}
             <span>{% if lang == 'en' %}Curriculum Map{% else %}Mapa učiva{% endif %}</span>
@@ -399,7 +399,8 @@
                 if (!el.dataset.rendered) {
                     const raw = el.textContent.trim();
                     if (raw) {
-                        el.innerHTML = marked.parse(raw);
+                        var parsedHtml = marked.parse(raw);
+                        el.innerHTML = window.sanitizeCodoroHtml ? window.sanitizeCodoroHtml(parsedHtml) : parsedHtml;
                         el.dataset.rendered = 'true';
                     }
                 }
@@ -428,6 +429,18 @@
             }
         });
         window.codoroEditor.setSize("100%", "100%");
+        var cmDraftKey = "codoro_cm_draft_ex_{% if current_exercise %}{{ current_exercise.id }}{% else %}0{% endif %}";
+        try {
+            var navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
+            var isBackFwd = navEntries && navEntries.length > 0 && navEntries[0].type === 'back_forward';
+            var savedCode = sessionStorage.getItem(cmDraftKey);
+            if (isBackFwd && savedCode && savedCode.trim().length > 0) {
+                window.codoroEditor.setValue(savedCode);
+            }
+            window.codoroEditor.on('change', function(cm) {
+                try { sessionStorage.setItem(cmDraftKey, cm.getValue()); } catch(err) {}
+            });
+        } catch(err) {}
         setTimeout(function() {
             if (window.codoroEditor) window.codoroEditor.refresh();
         }, 80);
@@ -457,6 +470,7 @@
         var msg = "{% if lang == 'en' %}Reset editor to starter code?{% else %}Naozaj resetovať kód na pôvodný štartovací stav?{% endif %}";
         if (confirm(msg)) {
             window.codoroEditor.setValue(original);
+            try { sessionStorage.removeItem("codoro_cm_draft_ex_{% if current_exercise %}{{ current_exercise.id }}{% else %}0{% endif %}"); } catch(err) {}
         }
     };
 
