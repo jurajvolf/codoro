@@ -171,57 +171,96 @@ html[data-theme="dark"] .page-terrain-contours path {
     100% { opacity: 0.22; transform: translateY(-3px); }
 }
 
-.scenic-ambient-glow {
-    animation: auroraBreathe 7s ease-in-out infinite alternate !important;
+.generative-grid-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    background-image: radial-gradient(circle, rgba(16, 185, 129, 0.16) 1.2px, transparent 1.2px) !important;
+    background-size: 40px 40px !important;
+    opacity: 0.28 !important;
+    mask-image: radial-gradient(ellipse at 50% 25%, #000 35%, transparent 75%) !important;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 25%, #000 35%, transparent 75%) !important;
+    animation: gridPulse 8s ease-in-out infinite alternate !important;
+    z-index: 0 !important;
 }
-@keyframes auroraBreathe {
-    0% { opacity: 0.55; transform: translateX(-50%) scale(0.96); }
-    100% { opacity: 1; transform: translateX(-50%) scale(1.04); }
+@keyframes gridPulse {
+    0% { opacity: 0.16; transform: scale(0.995); }
+    100% { opacity: 0.38; transform: scale(1.005); }
 }
 
-/* 5. COMPACT CURRICULUM TRACKS & MODULE CARDS */
-.curriculum-track-segmented-bar {
+/* 5. EDITORIAL TRACK JOURNEY & MILESTONE ROADMAP (/design-taste-frontend) */
+.curriculum-track-nav-wrap {
     display: flex !important;
     justify-content: center !important;
-    gap: 0.5rem !important;
-    flex-wrap: wrap !important;
-    margin-bottom: 1.75rem !important;
+    margin: 0 auto 2rem !important;
+    width: 100% !important;
+    max-width: 1120px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 4px 6px !important;
+}
+.curriculum-track-nav-wrap::-webkit-scrollbar {
+    display: none !important;
+}
+.curriculum-track-segmented-bar {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    background: var(--bg-surface) !important;
+    padding: 0.35rem !important;
+    border-radius: 9999px !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: var(--shadow-xs) !important;
+    white-space: nowrap !important;
+}
+html[data-theme="dark"] .curriculum-track-segmented-bar {
+    background: #15201C !important;
+    border-color: #23332D !important;
 }
 .curriculum-track-tab {
-    padding: 0.55rem 1rem !important;
+    padding: 0.5rem 1rem !important;
     border-radius: 9999px !important;
-    font-size: 0.86rem !important;
+    font-size: 0.84rem !important;
     font-weight: 600 !important;
     cursor: pointer !important;
-    border: 1px solid var(--border-subtle) !important;
-    background: var(--bg-surface) !important;
+    border: none !important;
+    background: transparent !important;
     color: var(--text-secondary) !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    gap: 0.45rem !important;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 .curriculum-track-tab:hover {
-    border-color: var(--brand-emerald) !important;
-    color: var(--brand-emerald) !important;
-    transform: translateY(-1px) !important;
+    color: var(--text-primary) !important;
+    background: var(--bg-subtle) !important;
 }
 .curriculum-track-tab.active {
     background: var(--brand-emerald) !important;
-    border-color: var(--brand-emerald) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 4px 14px -2px rgba(0, 135, 103, 0.4) !important;
+    box-shadow: 0 4px 12px -2px rgba(0, 135, 103, 0.35) !important;
+}
+html[data-theme="dark"] .curriculum-track-tab:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #F3F7F5 !important;
 }
 html[data-theme="dark"] .curriculum-track-tab.active {
     background: #10B981 !important;
-    border-color: #10B981 !important;
     color: #0D1512 !important;
-    box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.5) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.45) !important;
+}
+.curriculum-track-tab .tab-num {
+    font-family: var(--font-mono) !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    opacity: 0.75 !important;
 }
 
 .track-panel-deck {
     width: 100% !important;
-    max-width: 1200px !important;
+    max-width: 1120px !important;
     margin: 0 auto !important;
 }
 .track-panel-deck.active {
@@ -232,76 +271,120 @@ html[data-theme="dark"] .curriculum-track-tab.active {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.landing-track-banner {
+/* TRACK STAGE HERO CARD */
+.track-stage-card {
     background: var(--bg-surface) !important;
     border: 1px solid var(--border-subtle) !important;
-    border-radius: 14px !important;
-    padding: 0.65rem 1.15rem !important;
-    margin-bottom: 0.85rem !important;
+    border-radius: 20px !important;
+    padding: 1.75rem 2rem !important;
+    box-shadow: var(--shadow-sm) !important;
+    margin-bottom: 1.25rem !important;
     display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 1rem !important;
-    flex-wrap: wrap !important;
-    box-shadow: var(--shadow-xs) !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
-html[data-theme="dark"] .landing-track-banner {
+html[data-theme="dark"] .track-stage-card {
     background: #15201C !important;
     border-color: #23332D !important;
 }
-
-.modules-matrix-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-    gap: 0.85rem !important;
+.track-stage-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 1.5rem !important;
+    flex-wrap: wrap !important;
+}
+.track-stage-tagline {
+    font-family: var(--font-mono) !important;
+    font-size: 0.74rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: var(--brand-emerald) !important;
+    margin-bottom: 0.35rem !important;
+}
+html[data-theme="dark"] .track-stage-tagline {
+    color: #34D399 !important;
+}
+.track-stage-title {
+    font-family: var(--font-display) !important;
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.025em !important;
+    margin: 0 0 0.45rem !important;
+    color: var(--text-primary) !important;
+}
+.track-stage-desc {
+    font-size: 0.94rem !important;
+    color: var(--text-secondary) !important;
+    line-height: 1.55 !important;
+    max-width: 68ch !important;
+    margin: 0 !important;
+}
+.track-stage-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
 }
 
-.landing-curriculum-card {
-    background: var(--bg-surface) !important;
+/* MILESTONE STEPPING-STONE TRACK */
+.track-milestones-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
+    gap: 0.95rem !important;
+}
+.milestone-step-card {
+    background: var(--bg-subtle) !important;
     border: 1px solid var(--border-subtle) !important;
     border-radius: 14px !important;
-    padding: 0.95rem 1.1rem !important;
-    min-height: 155px !important;
+    padding: 1.15rem 1.25rem !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    box-shadow: var(--shadow-xs) !important;
-    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 200ms ease,
-                box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.2s ease,
+                background-color 0.2s ease !important;
 }
-.landing-curriculum-card:hover {
+.milestone-step-card:hover {
     transform: translateY(-3px) !important;
     border-color: var(--brand-emerald) !important;
-    box-shadow: 0 10px 24px -10px rgba(0, 135, 103, 0.22) !important;
+    background: var(--bg-surface) !important;
 }
-html[data-theme="dark"] .landing-curriculum-card {
-    background: #15201C !important;
-    border-color: #23332D !important;
+html[data-theme="dark"] .milestone-step-card {
+    background: #111A17 !important;
+    border-color: #1F2E29 !important;
 }
-html[data-theme="dark"] .landing-curriculum-card:hover {
+html[data-theme="dark"] .milestone-step-card:hover {
+    background: #15221E !important;
     border-color: #10B981 !important;
-    box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(16, 185, 129, 0.25) !important;
 }
-
-.curriculum-mod-order {
+.milestone-top-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 0.65rem !important;
+}
+.milestone-pill-order {
     font-family: var(--font-mono) !important;
-    font-size: 0.76rem !important;
+    font-size: 0.74rem !important;
     font-weight: 800 !important;
-    padding: 0.18rem 0.5rem !important;
-    border-radius: 6px !important;
-    background: var(--bg-mint-soft) !important;
     color: var(--brand-emerald) !important;
+    background: var(--bg-mint-soft) !important;
+    padding: 0.15rem 0.45rem !important;
+    border-radius: 6px !important;
 }
-html[data-theme="dark"] .curriculum-mod-order {
+html[data-theme="dark"] .milestone-pill-order {
     background: rgba(16, 185, 129, 0.16) !important;
     color: #34D399 !important;
 }
-
 .badge-tier-free {
     font-size: 0.72rem !important;
     font-weight: 700 !important;
-    padding: 0.16rem 0.45rem !important;
+    padding: 0.15rem 0.45rem !important;
     border-radius: 6px !important;
     background: rgba(16, 185, 129, 0.12) !important;
     color: #047857 !important;
@@ -310,11 +393,10 @@ html[data-theme="dark"] .badge-tier-free {
     background: rgba(16, 185, 129, 0.2) !important;
     color: #34D399 !important;
 }
-
 .badge-tier-edu {
     font-size: 0.72rem !important;
     font-weight: 700 !important;
-    padding: 0.16rem 0.45rem !important;
+    padding: 0.15rem 0.45rem !important;
     border-radius: 6px !important;
     background: rgba(99, 102, 241, 0.12) !important;
     color: #4F46E5 !important;
@@ -323,50 +405,82 @@ html[data-theme="dark"] .badge-tier-edu {
     background: rgba(99, 102, 241, 0.22) !important;
     color: #A5B4FC !important;
 }
-
-.curriculum-mod-title {
+.milestone-step-name {
     font-family: var(--font-display) !important;
-    font-size: 0.98rem !important;
-    font-weight: 800 !important;
-    margin: 0 0 0.35rem !important;
+    font-size: 1.02rem !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
     color: var(--text-primary) !important;
-    line-height: 1.32 !important;
+    margin: 0 0 0.45rem !important;
 }
-.curriculum-mod-desc {
-    font-size: 0.8rem !important;
+.milestone-step-brief {
+    font-size: 0.82rem !important;
     color: var(--text-secondary) !important;
-    line-height: 1.42 !important;
-    margin: 0 0 0.75rem !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    line-height: 1.45 !important;
+    margin: 0 0 0.85rem !important;
 }
-.curriculum-mod-footer {
+.milestone-step-footer {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    border-top: 1px solid var(--border-subtle) !important;
-    padding-top: 0.65rem !important;
     font-size: 0.76rem !important;
     color: var(--text-muted) !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    padding-top: 0.6rem !important;
 }
-html[data-theme="dark"] .curriculum-mod-footer {
-    border-top-color: #23332D !important;
+html[data-theme="dark"] .milestone-step-footer {
+    border-top-color: #1F2E29 !important;
 }
-.curriculum-open-link {
+
+/* CAPSTONE PROJECT BANNER */
+.track-capstone-banner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1.25rem !important;
+    flex-wrap: wrap !important;
+    padding: 0.95rem 1.35rem !important;
+    border-radius: 12px !important;
+    background: var(--bg-mint-soft) !important;
+    border: 1px solid rgba(0, 135, 103, 0.22) !important;
+}
+html[data-theme="dark"] .track-capstone-banner {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border-color: rgba(16, 185, 129, 0.25) !important;
+}
+.capstone-info-title {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+}
+.capstone-info-sub {
+    font-size: 0.8rem !important;
+    color: var(--text-secondary) !important;
+    margin-left: 1.6rem !important;
+}
+.capstone-cta-btn {
+    padding: 0.45rem 1rem !important;
+    border-radius: 9999px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    background: var(--brand-emerald) !important;
+    color: #FFFFFF !important;
+    text-decoration: none !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 0.25rem !important;
-    color: var(--brand-emerald) !important;
-    font-weight: 700 !important;
+    gap: 0.35rem !important;
     transition: transform 0.15s ease !important;
+    white-space: nowrap !important;
 }
-.landing-curriculum-card:hover .curriculum-open-link {
-    transform: translateX(3px) !important;
+.capstone-cta-btn:hover {
+    transform: translateX(2px) !important;
 }
-html[data-theme="dark"] .curriculum-open-link {
-    color: #34D399 !important;
+html[data-theme="dark"] .capstone-cta-btn {
+    background: #10B981 !important;
+    color: #0D1512 !important;
 }
 
 /* 6. DARK MODE OVERRIDES FOR OTHER SECTIONS */
@@ -405,6 +519,7 @@ html[data-theme="dark"] .faq-search-input {
          1. SCENIC LANDSCAPE CANVAS DECORATIONS (LIFE IN THE BACKGROUND)
          ==================================================================== -->
     <div class="scenic-ambient-glow" aria-hidden="true"></div>
+    <div class="generative-grid-overlay" aria-hidden="true"></div>
     <div class="codoro-page-ambience" aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0;">
         <svg viewBox="0 0 1440 3600" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
             <g class="page-terrain-contours" fill="none" aria-hidden="true">
@@ -930,44 +1045,33 @@ html[data-theme="dark"] .faq-search-input {
             </h2>
             <p class="landing-section-subhead">
                 {% if lang == 'en' %}
-                Follow a guided learning map from absolute Python fundamentals to OOP, in-memory databases, and advanced boss projects.
+                An interconnected learning journey from absolute fundamentals to in-memory SQL, software architecture, and maturita certification.
                 {% else %}
-                Prejdite po vizuálnej mape od základov syntaxe a dátových štruktúr cez objektovo-orientované programovanie a SQL databázy až po komplexné softvérové projekty.
+                Ucelená vzdelávacia cesta od prvého riadku kódu cez prácu s dátami a databázami až po maturitnú skúšku a certifikáciu.
                 {% endif %}
             </p>
         </div>
 
-        <!-- Filter & Search Bar for Curriculum -->
-        <div style="max-width:520px; margin:0 auto 1.5rem; position:relative;">
+        <!-- Filter & Search Bar for Curriculum (Compact, Sleek) -->
+        <div style="max-width:480px; margin:0 auto 1.5rem; position:relative;">
             <input type="text" id="curriculumSearchInput" onkeyup="filterCurriculumModules()"
-                   placeholder="{% if lang == 'en' %}Search modules, e.g. OOP, SQL, Loops...{% else %}Hľadať v moduloch, napr. OOP, SQL, cykly...{% endif %}"
+                   placeholder="{% if lang == 'en' %}Search topics (e.g. OOP, SQL, Loops, Crypto)...{% else %}Hľadať témy (napr. OOP, SQL, cykly, šifry)...{% endif %}"
                    class="faq-search-input" style="padding-left:2.75rem;">
             <span class="faq-search-icon">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </span>
         </div>
 
-        <!-- Modern Responsive Track Segmented Bar -->
-        <div class="curriculum-track-segmented-bar" role="tablist" aria-label="Kariérne cesty">
-            {% for track in tracks_data %}
-            <button type="button" class="curriculum-track-tab {% if forloop.first %}active{% endif %}" data-track="{{ track.key }}" onclick="switchLandingTrack('{{ track.key }}', this)" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
-                <span class="tab-icon">
-                    {% if track.icon == 'zap' %}
-                        {% include 'components/icon_svg.html' with name='lightning' size='14' %}
-                    {% elif track.icon == 'layers' %}
-                        {% include 'components/icon_svg.html' with name='layers' size='14' %}
-                    {% elif track.icon == 'box' %}
-                        {% include 'components/icon_svg.html' with name='box' size='14' %}
-                    {% elif track.icon == 'cpu' %}
-                        {% include 'components/icon_svg.html' with name='database' size='14' %}
-                    {% else %}
-                        {% include 'components/icon_svg.html' with name='award' size='14' %}
-                    {% endif %}
-                </span>
-                <span>{% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}</span>
-                <span class="tab-count-pill">{{ track.modules|length }}</span>
-            </button>
-            {% endfor %}
+        <!-- Modern Single-Row Responsive Track Segmented Bar -->
+        <div class="curriculum-track-nav-wrap">
+            <div class="curriculum-track-segmented-bar" role="tablist" aria-label="Kariérne cesty">
+                {% for track in tracks_data %}
+                <button type="button" class="curriculum-track-tab {% if forloop.first %}active{% endif %}" data-track="{{ track.key }}" onclick="switchLandingTrack('{{ track.key }}', this)" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                    <span class="tab-num">0{{ forloop.counter }}</span>
+                    <span>{% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}</span>
+                </button>
+                {% endfor %}
+            </div>
         </div>
 
         <!-- Curriculum Empty State for Search -->
@@ -983,81 +1087,90 @@ html[data-theme="dark"] .faq-search-input {
 
         <div class="track-panels-wrapper">
             {% for track in tracks_data %}
-            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}" data-track="{{ track.key }}" style="{% if not forloop.first %}display:none;{% else %}display:flex;{% endif %} flex-direction:column;">
-                <!-- Track Overview Capsule Banner (Compact & Polished) -->
-                <div class="landing-track-banner">
-                    <div style="display:flex; align-items:center; gap:0.75rem;">
-                        <div class="track-banner-icon">
-                            {% if track.icon == 'zap' %}
-                                {% include 'components/icon_svg.html' with name='lightning' size='18' %}
-                            {% elif track.icon == 'layers' %}
-                                {% include 'components/icon_svg.html' with name='layers' size='18' %}
-                            {% elif track.icon == 'box' %}
-                                {% include 'components/icon_svg.html' with name='box' size='18' %}
-                            {% elif track.icon == 'cpu' %}
-                                {% include 'components/icon_svg.html' with name='database' size='18' %}
-                            {% else %}
-                                {% include 'components/icon_svg.html' with name='award' size='18' %}
-                            {% endif %}
-                        </div>
+            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}" data-track="{{ track.key }}" style="{% if not forloop.first %}display:none;{% else %}display:flex;{% endif %} flex-direction:column; gap:1.25rem;">
+                <!-- Track Stage Card (Identity, Mission, Stats) -->
+                <div class="track-stage-card">
+                    <div class="track-stage-header">
                         <div>
-                            <strong class="track-banner-title">
+                            <div class="track-stage-tagline">
+                                <span>{% if lang == 'en' %}STAGE{% else %}ETAPA{% endif %} 0{{ forloop.counter }} • {{ track.badge }}</span>
+                            </div>
+                            <h3 class="track-stage-title">
                                 {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
-                            </strong>
-                            <span class="track-banner-desc">
+                            </h3>
+                            <p class="track-stage-desc">
                                 {% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}
+                            </p>
+                        </div>
+                        <div class="track-stage-badges">
+                            <span class="badge-mini-pct" style="padding:0.4rem 0.85rem; border-radius:9999px; font-weight:700; font-size:0.8rem; background:var(--bg-mint-soft); color:var(--brand-emerald);">
+                                {% if lang == 'en' %}{{ track.modules|length }} Modules{% else %}{{ track.modules|length }} Modulov{% endif %}
                             </span>
                         </div>
                     </div>
-                    <span class="badge-mini-pct track-banner-badge">
-                        {{ track.badge }}
-                    </span>
-                </div>
 
-                <div class="modules-matrix-grid">
-                    {% for mod in track.modules %}
-                    <a href="{% url 'register' %}" class="landing-curriculum-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}" style="text-decoration:none; color:inherit;">
-                        <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                                <span class="curriculum-mod-order">
-                                    #{{ mod.order|stringformat:"02d" }}
-                                </span>
-                                <div style="display:flex; align-items:center; gap:0.35rem;">
-                                    <span class="badge-mini-pct" style="color:var(--text-secondary); font-weight:700; font-size:0.72rem;">
-                                        ⏱️ {{ mod.estimated_hours }}h
-                                    </span>
-                                    {% if mod.is_pro_only %}
-                                    <span class="badge-tier-edu">
-                                        EDU
-                                    </span>
-                                    {% else %}
-                                    <span class="badge-tier-free">
-                                        FREE
-                                    </span>
-                                    {% endif %}
+                    <!-- Milestone Journey Grid (Clean, Connected Progression) -->
+                    <div class="track-milestones-grid">
+                        {% for mod in track.modules %}
+                        <a href="{% url 'register' %}" class="milestone-step-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}">
+                            <div>
+                                <div class="milestone-top-row">
+                                    <span class="milestone-pill-order">#{{ mod.order|stringformat:"02d" }}</span>
+                                    <div style="display:flex; align-items:center; gap:0.35rem;">
+                                        <span style="font-size:0.72rem; font-weight:700; color:var(--text-secondary);">⏱️ {{ mod.estimated_hours }}h</span>
+                                        {% if mod.is_pro_only %}
+                                        <span class="badge-tier-edu">EDU</span>
+                                        {% else %}
+                                        <span class="badge-tier-free">FREE</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
+                                <h4 class="milestone-step-name">
+                                    {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
+                                </h4>
+                                <p class="milestone-step-brief">
+                                    {% if lang == 'en' %}{{ mod.description_en|truncatewords:11 }}{% else %}{{ mod.description_sk|truncatewords:11 }}{% endif %}
+                                </p>
                             </div>
+                            <div class="milestone-step-footer">
+                                <span>{{ mod.lessons.count }} {% if lang == 'en' %}Lessons{% else %}Lekcií{% endif %}</span>
+                                <span class="curriculum-open-link" style="font-size:0.78rem; font-weight:700; color:var(--brand-emerald);">
+                                    <span>{% if lang == 'en' %}Explore{% else %}Otvoriť{% endif %}</span>
+                                    <span>→</span>
+                                </span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
 
-                            <h4 class="curriculum-mod-title">
-                                {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
-                            </h4>
-                            <p class="curriculum-mod-desc">
-                                {% if lang == 'en' %}{{ mod.description_en|truncatewords:14 }}{% else %}{{ mod.description_sk|truncatewords:14 }}{% endif %}
-                            </p>
+                    <!-- Tangible Capstone Project Banner -->
+                    <div class="track-capstone-banner">
+                        <div>
+                            <div class="capstone-info-title">
+                                <span>🏆</span>
+                                <strong>
+                                    {% if forloop.counter == 1 %}
+                                        {% if lang == 'en' %}Milestone Project: Interactive Text Quest & Logic Game{% else %}Výsledný projekt etapy: Interaktívna textová adventúra & logická hra{% endif %}
+                                    {% elif forloop.counter == 2 %}
+                                        {% if lang == 'en' %}Milestone Project: Student Record System & Data Frequency Analyzer{% else %}Výsledný projekt etapy: Systém správy študentov & frekvenčná analýza dát{% endif %}
+                                    {% elif forloop.counter == 3 %}
+                                        {% if lang == 'en' %}Milestone Project: Object-Oriented RPG Character & Inventory Engine{% else %}Výsledný projekt etapy: Objektový RPG inventár a herný engine hrdinov{% endif %}
+                                    {% elif forloop.counter == 4 %}
+                                        {% if lang == 'en' %}Milestone Project: In-Memory SQLite Store & REST API Pipeline{% else %}Výsledný projekt etapy: Relačný databázový sklad v SQLite & REST API pipeline{% endif %}
+                                    {% else %}
+                                        {% if lang == 'en' %}Milestone Project: Cryptography Tool & Codoro Python Certification Exam{% else %}Výsledný projekt etapy: Kryptografický šifrovací nástroj & Certifikačná skúška{% endif %}
+                                    {% endif %}
+                                </strong>
+                            </div>
+                            <div class="capstone-info-sub">
+                                {% if lang == 'en' %}Hands-on programming practice without dry theory — built in the real Codoro Python sandbox.{% else %}Praktické programovanie bez zbytočného bifľovania teórie — vytvorené priamo v sandboxe Codoro.{% endif %}
+                            </div>
                         </div>
-
-                        <div class="curriculum-mod-footer">
-                            <span style="display:inline-flex; align-items:center; gap:0.3rem;">
-                                {% include 'components/icon_svg.html' with name='file' size='12' %}
-                                <span>{% if lang == 'en' %}{{ mod.lessons.count }} Lessons{% else %}{{ mod.lessons.count }} Lekcií{% endif %}</span>
-                            </span>
-                            <span class="curriculum-open-link">
-                                <span>{% if lang == 'en' %}Open Module{% else %}Otvoriť modul{% endif %}</span>
-                                <span>→</span>
-                            </span>
-                        </div>
-                    </a>
-                    {% endfor %}
+                        <a href="{% url 'register' %}" class="capstone-cta-btn">
+                            <span>{% if lang == 'en' %}Start This Track{% else %}Začať túto etapu{% endif %}</span>
+                            <span>→</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             {% endfor %}

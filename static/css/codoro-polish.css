@@ -1219,12 +1219,10 @@ body.page-emerald-landing .public-hero-canvas-root {
 }
 
 [data-theme="dark"] body.page-emerald-landing .public-hero-canvas-root {
+    background-color: #0D1512 !important;
     background-image:
-        radial-gradient(ellipse 68rem 42rem at 1% 8%, rgba(26, 125, 88, 0.21), transparent 74%),
-        radial-gradient(ellipse 66rem 46rem at 101% 28%, rgba(34, 125, 88, 0.2), transparent 74%),
-        radial-gradient(ellipse 74rem 48rem at 0% 67%, rgba(27, 106, 76, 0.19), transparent 72%),
-        radial-gradient(ellipse 72rem 48rem at 100% 91%, rgba(29, 122, 85, 0.18), transparent 73%),
-        linear-gradient(180deg, rgba(11, 30, 23, 0.68), rgba(12, 25, 20, 0.3) 24%, rgba(13, 31, 23, 0.42) 68%, rgba(10, 29, 21, 0.72));
+        radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.08), transparent 48rem),
+        radial-gradient(circle at 18% 11%, rgba(90, 196, 144, 0.07) 1px, transparent 1.7px) !important;
 }
 
 .public-hero-canvas-root > .codoro-page-ambience {
@@ -2559,26 +2557,16 @@ body.page-emerald-landing footer {
 }
 
 [data-theme="dark"] .public-hero-canvas-root {
+    background-color: #0D1512 !important;
     background-image:
-        radial-gradient(ellipse at 14% 9%, rgba(37, 148, 105, 0.16), transparent 26rem),
-        radial-gradient(ellipse at 88% 27%, rgba(30, 117, 85, 0.14), transparent 32rem),
-        radial-gradient(ellipse at 9% 63%, rgba(35, 111, 79, 0.14), transparent 31rem),
-        radial-gradient(ellipse at 92% 84%, rgba(37, 148, 105, 0.12), transparent 34rem),
-        repeating-radial-gradient(ellipse 510px 330px at 4% 25%, transparent 0 54px, rgba(90, 196, 144, 0.045) 55px 56px, transparent 57px 110px),
-        repeating-radial-gradient(ellipse 520px 350px at 96% 72%, transparent 0 58px, rgba(90, 196, 144, 0.04) 59px 60px, transparent 61px 118px),
-        radial-gradient(circle at 18% 11%, rgba(90, 196, 144, 0.14) 1px, transparent 1.7px);
+        radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.09), transparent 48rem),
+        radial-gradient(circle at 18% 11%, rgba(90, 196, 144, 0.08) 1px, transparent 1.7px) !important;
 }
 
-/* Keep the landscape edge-to-edge and blend each chapter into the next. */
-body.page-emerald-landing .landing-section-deck::before {
-    inset-block: -3.25rem;
-    inset-inline: auto;
-    left: 50%;
-    right: auto;
-    width: 111.111vw;
-    transform: translateX(-50%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%);
+/* Eliminate horizontal background seams between chapters */
+body.page-emerald-landing .landing-section-deck::before,
+[data-theme="dark"] body.page-emerald-landing .landing-section-deck::before {
+    display: none !important;
 }
 
 body.page-emerald-landing .scenic-hero-hills-backdrop {
@@ -2597,20 +2585,17 @@ body.page-emerald-landing .scenic-hills-workbench-backdrop {
     width: 111.111vw;
     transform: translateX(-50%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 34%, #000 68%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 34%, #000 68%, transparent 100%);
-}
-
-/* Keep movement on the small interactive scene; large SVG canvases stay still. */
+/* Enable fluid generative background animations (/transitions-ui-generation) */
 .page-terrain-contours path,
 .page-journey-trail,
 .page-journey-markers circle,
 .workbench-map-path,
 .hero-route-line {
-    animation: none !important;
+    /* Animations enabled and configured below */
 }
 
 .page-terrain-contours path {
-    opacity: 0.62;
+    opacity: 0.24;
 }
 
 :root {
