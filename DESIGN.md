@@ -1,111 +1,33 @@
-# Codoro Design System (DESIGN.md)
+# Codoro Interface System
 
-## 1. Visual World & Philosophy
-Codoro is a next-generation Python learning environment and classroom management OS.
-Its aesthetic sits at the intersection of **Linear**, **Raycast**, and **Cursor** — precision developer tooling built for deep focus, tactile delight, and effortless comprehension.
+Codoro keeps its recognizable world: mineral light surfaces, forest emerald accents, rolling green hills, the Codo mascot, and a hands-on Python studio. The visual direction is a careful refinement of this identity, with clearer hierarchy, steadier spacing, quieter borders, and touch-first navigation on phones.
 
-### Core Tenets
-1. **Developer Tool Precision:** 1px hairline borders, dark obsidian surfaces, subtle inset highlights, zero sloppy gradients.
-2. **Tactile Micro-interactions:** Every button and interactive tab reacts with `scale(0.96)` on press (`make-interfaces-feel-better`).
-3. **Information Density & Clean Hierarchy:** Progressive disclosure through crisp segmented navigation and accordions instead of vertical content walls.
-4. **Tabular Numerals Everywhere:** All XP, Doros, streak days, time limits, and counters use `font-variant-numeric: tabular-nums` in `JetBrains Mono`.
-5. **Strict Craft Floor:** Zero raw unicode emojis as icons, zero `transition: all`, zero kicker/eyebrow text, themed browser surfaces (`::selection`, `caret-color`, custom scrollbars).
+## Visual foundation
 
----
+- **Canvas:** pale mineral green (`#F3F7F5`) with white working surfaces.
+- **Brand:** Codoro emerald (`#008767`) and deeper hover/pressed states; use mint as a supporting surface, not as a competing accent.
+- **Ink:** forest charcoal (`#111C18`), readable secondary green-gray (`#4B5E57`), and restrained muted text (`#788B83`).
+- **Dark theme:** deep forest (`#0D1512`) with lifted evergreen surfaces, clear borders, and luminous emerald accents.
+- **Typography:** Plus Jakarta Sans for headings and Inter for interface text; JetBrains Mono for code and aligned numeric values.
+- **Radii:** 8px controls, 12px nested elements, 16–20px principal surfaces, and pills only for compact controls or status.
+- **Elevation:** subtle, short shadows for layered surfaces. Avoid stacked, oversized shadows and decorative gradients.
 
-## 2. Color Palette & Tokens
+## Product expression
 
-### Dark Mode (Primary Scene: Deep Obsidian `#080C14`)
-```css
---bg-canvas: #080C14;
---bg-surface: #0E1420;
---bg-subtle: #141C2E;
---bg-elevated: #1A2438;
---border-hairline: rgba(255, 255, 255, 0.08);
---border-strong: rgba(255, 255, 255, 0.16);
---border-glow: rgba(99, 102, 241, 0.4);
+- Keep the landscape, existing Codoro and Codo assets, and the familiar page structure.
+- Let the learning map, real Python editor, test feedback, Socratic Codo guidance, Doros, and classroom quests carry the product story.
+- Keep teaching controls and student progress information legible and calm. Use emerald for the next action and completed learning states.
+- Preserve existing Slovak and English content, routes, and workflows.
+- Give phones a compact top bar and a four-item student navigation dock. Reflow the learning map into a readable vertical itinerary instead of shrinking the desktop zigzag.
 
---text-primary: #F8FAFC;
---text-secondary: #CBD5E1;
---text-muted: #8492A6;
+## Interaction and accessibility
 
---ro-indigo: #6366F1;
---ro-indigo-hover: #4F46E5;
---ro-indigo-soft: rgba(99, 102, 241, 0.14);
---ro-indigo-border: rgba(99, 102, 241, 0.35);
+- Use 80ms feedback, 150ms control transitions, and 250–350ms panel transitions with an exponential ease-out curve. Name the properties being animated; never use `transition: all`.
+- Make controls at least 40px on desktop and 44px on touch screens. Keep keyboard focus visible and preserve the platform's browser, keyboard, and screen-reader behavior.
+- Maintain WCAG AA contrast for text and controls, balanced display wrapping, and a comfortable reading measure.
+- Respect `prefers-reduced-motion`; reserve movement for clear feedback and spatial continuity.
+- Keep numeric totals tabular and code in a consistent monospace face.
 
---visor-cyan: #38BDF8;
---visor-cyan-bg: rgba(56, 189, 248, 0.12);
+## Source of truth
 
---gold-text: #FBBF24;
---gold-bg: rgba(245, 158, 11, 0.14);
---gold-border: rgba(245, 158, 11, 0.32);
-
---flame-text: #FB7185;
---flame-bg: rgba(244, 63, 94, 0.14);
---flame-border: rgba(244, 63, 94, 0.32);
-
---emerald-text: #34D399;
---emerald-bg: rgba(16, 185, 129, 0.14);
---emerald-border: rgba(16, 185, 129, 0.32);
-```
-
-### Light Mode (Apple / Stripe Slate `#F8FAFC`)
-```css
---bg-canvas: #F8FAFC;
---bg-surface: #FFFFFF;
---bg-subtle: #F1F5F9;
---bg-elevated: #E2E8F0;
---border-hairline: #E2E8F0;
---border-strong: #CBD5E1;
---border-glow: rgba(70, 54, 245, 0.25);
-
---text-primary: #0F172A;
---text-secondary: #334155;
---text-muted: #64748B;
-
---ro-indigo: #4636F5;
---ro-indigo-hover: #3728E0;
---ro-indigo-soft: #EEF0FF;
---ro-indigo-border: #C7CEFF;
-
---visor-cyan: #0891B2;
---visor-cyan-bg: #ECFEFF;
-
---gold-text: #B45309;
---gold-bg: #FEF3C7;
---gold-border: #FDE68A;
-
---flame-text: #BE123C;
---flame-bg: #FFE4E6;
---flame-border: #FECDD3;
-
---emerald-text: #047857;
---emerald-bg: #D1FAE5;
---emerald-border: #A7F3D0;
-```
-
----
-
-## 3. Typography Stack
-- **Display Headings (`h1`, `h2`, `h3`):** `'Plus Jakarta Sans', sans-serif`, font weights `700, 800`, letter spacing `-0.025em`, `text-wrap: balance`.
-- **UI & Body:** `'Inter', sans-serif`, font weights `400, 500, 600`, line height `1.6`, `text-wrap: pretty`.
-- **Code & Numeric Data:** `'JetBrains Mono', monospace`, `font-variant-numeric: tabular-nums`.
-
----
-
-## 4. Concentric Radii & Elevation
-- Outer container: `var(--radius-lg)` = `16px`
-- Inner card / form: `var(--radius-md)` = `12px`
-- Interactive buttons / inputs: `var(--radius-sm)` = `8px`
-- Sub-controls / tags: `var(--radius-xs)` = `6px`
-- Pill badges: `9999px`
-
----
-
-## 5. Motion Tokens (transitions.dev & make-interfaces-feel-better)
-- `--duration-micro: 80ms;` (instant feedback on click)
-- `--duration-quick: 150ms;` (hover states, dropdowns)
-- `--duration-fast: 250ms;` (tab switches, panel expands)
-- `--ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);`
-- Strict ban on `transition: all`.
+`static/css/codoro.css` contains the existing component system. `static/css/codoro-polish.css` contains focused refinements and responsive presentation rules. Keep new styles in that layer unless a component needs structural markup or behavior changes.

@@ -1,0 +1,1460 @@
+/*
+ * Codoro polish layer
+ * Preserve the existing mineral-and-emerald visual language while refining
+ * rhythm, hierarchy, touch navigation, and the mobile learning-map layout.
+ */
+
+:root {
+    --motion-press: 80ms;
+    --motion-control: 150ms;
+    --motion-panel: 280ms;
+    --ease-codoro: cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-xs: 0 1px 2px rgba(14, 30, 24, 0.045);
+    --shadow-sm: 0 6px 18px -8px rgba(14, 30, 24, 0.12);
+    --shadow-md: 0 14px 34px -16px rgba(14, 30, 24, 0.2);
+    --focus-outline: 0 0 0 3px rgba(0, 135, 103, 0.24);
+}
+
+html {
+    scroll-padding-top: 5.5rem;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+.hero-big-title,
+.landing-section-title,
+.map-title,
+.widget-title,
+.module-card-title {
+    text-wrap: balance;
+}
+
+p,
+li,
+td,
+label {
+    text-wrap: pretty;
+}
+
+::selection {
+    background: rgba(0, 135, 103, 0.2);
+    color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text-muted) 34%, transparent);
+    border: 3px solid var(--bg-canvas);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--brand-emerald) 56%, var(--text-muted));
+}
+
+a {
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+    transition: color var(--motion-control) ease,
+                text-decoration-color var(--motion-control) ease;
+}
+
+button,
+input,
+select,
+textarea,
+[role="button"] {
+    font: inherit;
+}
+
+button:not(:disabled),
+[role="button"] {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--brand-emerald);
+    outline-offset: 3px;
+    box-shadow: var(--focus-outline);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]),
+select,
+textarea {
+    caret-color: var(--brand-emerald);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]),
+select,
+textarea {
+    border-color: var(--border-strong);
+    border-radius: 10px;
+    transition: border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease,
+                background-color var(--motion-control) ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):focus,
+select:focus,
+textarea:focus {
+    border-color: var(--brand-emerald);
+    box-shadow: var(--focus-outline);
+}
+
+input[type="number"],
+.pill-stat-badge,
+.progress-ring-pct,
+.progress-stat-labels span:last-child,
+.wallet-big-val {
+    font-variant-numeric: tabular-nums;
+}
+
+button:not(:disabled),
+.btn-pill-login,
+.btn-pill-emerald,
+.hero-cta-btn-emerald,
+.btn-emerald-solid,
+.btn-emerald-full,
+.btn-secondary,
+.track-switcher-pill,
+.curriculum-track-tab {
+    transition: color var(--motion-control) ease,
+                background-color var(--motion-control) ease,
+                border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease,
+                transform var(--motion-control) var(--ease-codoro);
+}
+
+button:not(:disabled):active,
+.btn-pill-login:active,
+.btn-pill-emerald:active,
+.hero-cta-btn-emerald:active,
+.btn-emerald-solid:active,
+.btn-emerald-full:active,
+.btn-secondary:active {
+    transform: scale(0.98);
+}
+
+.scroll-progress-bar {
+    height: 2px;
+    box-shadow: none;
+}
+
+/* Shared application chrome */
+.emerald-top-bar {
+    min-height: 64px;
+    border-bottom-color: var(--border-hairline);
+    background: var(--bg-surface);
+    box-shadow: 0 1px 0 rgba(14, 30, 24, 0.025);
+}
+
+.emerald-top-bar.header-scrolled {
+    background: var(--bg-surface);
+    box-shadow: 0 8px 24px -18px rgba(14, 30, 24, 0.32);
+}
+
+.emerald-brand-link:hover {
+    color: var(--brand-emerald);
+}
+
+.emerald-sidebar {
+    padding-top: 0.75rem;
+}
+
+.sidebar-nav-list {
+    gap: 0.2rem;
+}
+
+.sidebar-nav-item {
+    min-height: 44px;
+    border-radius: 10px;
+    transition: color var(--motion-control) ease,
+                background-color var(--motion-control) ease,
+                transform var(--motion-control) var(--ease-codoro);
+}
+
+.sidebar-nav-item.active {
+    box-shadow: inset 3px 0 0 var(--brand-emerald);
+}
+
+.mobile-student-nav {
+    display: none;
+}
+
+/* Public landing: keep the floating nav, hills, and Codo; tighten the craft. */
+.floating-pill-navbar {
+    width: min(1200px, calc(100% - 3rem));
+    height: 68px;
+    margin-top: 1rem;
+    padding-inline: 1.5rem;
+    border-color: color-mix(in srgb, var(--border-strong) 70%, transparent);
+    background: var(--bg-navbar);
+    box-shadow: 0 8px 24px -18px rgba(14, 30, 24, 0.34);
+}
+
+.floating-pill-navbar.header-scrolled {
+    width: min(1120px, calc(100% - 3rem));
+    height: 60px;
+    border-color: var(--border-subtle);
+    box-shadow: 0 10px 28px -18px rgba(14, 30, 24, 0.36);
+}
+
+.floating-pill-links {
+    gap: clamp(1.1rem, 2vw, 1.8rem);
+}
+
+.floating-pill-links a {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-underline-offset: 0.34em;
+}
+
+.floating-pill-links a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--brand-emerald-border);
+}
+
+.btn-pill-emerald {
+    min-height: 42px;
+    padding-inline: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 12px -8px rgba(0, 87, 66, 0.8);
+}
+
+.btn-pill-emerald:hover {
+    box-shadow: 0 8px 16px -10px rgba(0, 87, 66, 0.9);
+}
+
+.btn-pill-login {
+    min-height: 42px;
+}
+
+.hero-stage {
+    max-width: 1360px;
+    min-height: 500px;
+    margin-top: 1.25rem;
+    padding: 2.25rem 2rem 4rem;
+}
+
+.hero-rays-kicker {
+    display: none;
+}
+
+.hero-content-wrapper {
+    max-width: 820px;
+}
+
+.hero-big-title {
+    margin-bottom: 1.15rem;
+    font-size: clamp(3rem, 5.2vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    line-height: 1.03;
+}
+
+.hero-lead-text {
+    max-width: 68ch;
+    margin-bottom: 1.75rem;
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.68;
+}
+
+.hero-cta-btn-emerald {
+    min-height: 52px;
+    padding: 0.9rem 1.5rem;
+    border-radius: 14px;
+    box-shadow: 0 8px 18px -12px rgba(0, 87, 66, 0.9);
+}
+
+.hero-cta-btn-emerald:hover {
+    box-shadow: 0 12px 22px -14px rgba(0, 87, 66, 1);
+}
+
+.studio-workbench-container {
+    max-width: 1200px;
+    margin-top: 1.5rem;
+}
+
+.studio-workbench-window {
+    border-radius: 22px;
+    box-shadow: 0 24px 54px -38px rgba(14, 30, 24, 0.5),
+                0 1px 2px rgba(14, 30, 24, 0.06);
+}
+
+.workbench-mac-titlebar {
+    height: 50px;
+    padding-inline: 1.35rem;
+}
+
+.landing-section-deck {
+    gap: 2.4rem;
+}
+
+.landing-section-header {
+    max-width: 760px;
+}
+
+.landing-section-title {
+    font-size: clamp(2rem, 3.4vw, 2.9rem);
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+}
+
+.landing-section-subhead {
+    max-width: 66ch;
+    margin-inline: auto;
+    line-height: 1.7;
+}
+
+.comparison-table-wrapper {
+    border-radius: 18px;
+    box-shadow: 0 10px 28px -24px rgba(14, 30, 24, 0.48);
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 1.1rem 1.25rem;
+}
+
+.faq-card-item {
+    border-radius: 13px;
+    box-shadow: 0 1px 2px rgba(14, 30, 24, 0.035);
+    transition: border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease;
+}
+
+.faq-card-item.open {
+    border-color: var(--brand-emerald-border);
+    box-shadow: 0 8px 20px -18px rgba(0, 87, 66, 0.5);
+}
+
+.faq-card-header {
+    min-height: 58px;
+    padding: 1rem 1.2rem;
+}
+
+.faq-card-body {
+    line-height: 1.72;
+}
+
+/* Student dashboard: a calmer desktop rhythm and a purpose-built phone flow. */
+.emerald-app-shell {
+    max-width: 1560px;
+    gap: clamp(1.25rem, 2.4vw, 2.5rem);
+}
+
+.emerald-dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: clamp(1.25rem, 2.2vw, 2rem);
+}
+
+.learning-map-container {
+    gap: 1.5rem;
+}
+
+.map-kicker {
+    display: none;
+}
+
+.map-title {
+    font-size: clamp(2rem, 3.2vw, 2.65rem);
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+}
+
+.map-subhead {
+    max-width: 58ch;
+    line-height: 1.6;
+}
+
+.progress-ring-badge {
+    border-color: var(--border-hairline);
+    border-radius: 14px;
+    box-shadow: var(--shadow-xs);
+}
+
+.track-switcher-pill {
+    min-height: 42px;
+    padding: 0.48rem 0.8rem;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.track-switcher-pill:hover {
+    transform: translateY(-1px);
+}
+
+.track-switcher-pill.active {
+    box-shadow: none;
+}
+
+.winding-path-deck {
+    gap: 0.95rem;
+    padding: 1.1rem 0.75rem 1.4rem;
+    border: 0;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(227, 245, 238, 0.32), transparent 64%);
+}
+
+.module-path-row {
+    gap: 1rem;
+}
+
+.module-stone-card {
+    border: 1px solid var(--border-hairline);
+    border-radius: 16px;
+    box-shadow: 0 4px 14px -12px rgba(14, 30, 24, 0.4);
+    transition: border-color var(--motion-control) ease,
+                box-shadow var(--motion-control) ease,
+                transform var(--motion-control) var(--ease-codoro);
+}
+
+.module-stone-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 10px 22px -18px rgba(14, 30, 24, 0.55);
+}
+
+.module-stone-card.active {
+    border: 1px solid var(--brand-emerald-border);
+    box-shadow: 0 12px 26px -22px rgba(0, 87, 66, 0.72);
+}
+
+.module-card-header-btn {
+    min-height: 72px;
+    padding: 1.05rem 1.15rem;
+}
+
+.module-card-title {
+    font-size: 1.08rem;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+}
+
+.module-card-subhead {
+    line-height: 1.5;
+}
+
+.module-card-lessons-body {
+    gap: 0.45rem;
+    padding-inline: 1.15rem;
+}
+
+.lesson-row-item {
+    min-height: 48px;
+    border-radius: 9px;
+    transition: color var(--motion-control) ease,
+                background-color var(--motion-control) ease,
+                transform var(--motion-press) ease;
+}
+
+.widget-card {
+    padding: 1.3rem;
+    border-color: var(--border-hairline);
+    border-radius: 16px;
+    box-shadow: 0 5px 16px -14px rgba(14, 30, 24, 0.48);
+}
+
+.widget-title {
+    letter-spacing: -0.025em;
+}
+
+.back-to-top-btn {
+    transition: opacity var(--motion-control) ease,
+                transform var(--motion-control) var(--ease-codoro),
+                background-color var(--motion-control) ease;
+}
+
+/* Consent stays legible without covering the main mobile action. */
+.cookie-consent-inner {
+    border-radius: 16px;
+    border-color: var(--border-hairline);
+    background: var(--bg-surface);
+    box-shadow: 0 14px 36px -22px rgba(14, 30, 24, 0.48);
+}
+
+.cookie-pulse-icon {
+    animation: none;
+}
+
+.btn-cookie-accept {
+    min-height: 44px;
+    border-radius: 11px !important;
+    box-shadow: none !important;
+}
+
+@media (max-width: 960px) {
+    .emerald-top-bar {
+        min-height: 60px;
+        height: 60px;
+        margin-bottom: 0.65rem;
+        padding-inline: 1rem;
+    }
+
+    .emerald-top-bar.header-scrolled {
+        height: 56px;
+        padding-inline: 1rem;
+    }
+
+    .emerald-app-shell,
+    .emerald-app-shell.shell-2col {
+        max-width: 100%;
+        gap: 0;
+        padding: 0 1.15rem 2rem;
+    }
+
+    .emerald-main-content {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .emerald-dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    .hero-stage {
+        min-height: 470px;
+    }
+}
+
+@media (max-width: 760px) {
+    body.page-emerald-landing .public-inner-content {
+        padding-inline: 0.55rem !important;
+    }
+
+    .public-hero-canvas-root {
+        padding-inline: 0.5rem;
+    }
+
+    .studio-workbench-container {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 0.65rem;
+        padding-inline: 0;
+    }
+
+    .workbench-mac-titlebar {
+        display: flex;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 46px;
+        gap: 0.5rem;
+        padding: 0.5rem 0.65rem;
+    }
+
+    .mac-traffic-lights {
+        display: none;
+    }
+
+    .workbench-window-title {
+        max-width: none;
+        font-size: 0.76rem;
+    }
+
+    .workbench-header-tools {
+        width: 100%;
+        max-width: 100%;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+        overflow: visible;
+    }
+
+    .editor-file-tab-bar::-webkit-scrollbar,
+    .workbench-col-modes::-webkit-scrollbar {
+        display: none;
+    }
+
+    .workbench-tool-btn {
+        min-height: 40px;
+        flex: 0 0 auto;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .workbench-trio-body {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: 0;
+    }
+
+    .workbench-col-modes {
+        flex-direction: row;
+        gap: 0.35rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 0.5rem 0.6rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--border-subtle);
+        scrollbar-width: none;
+    }
+
+    .mode-tab-item {
+        min-height: 44px;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.65rem;
+        border-radius: 9px;
+        white-space: nowrap;
+    }
+
+    .mode-tab-icon {
+        display: none;
+    }
+
+    .mode-tab-num {
+        font-size: 0.61rem;
+    }
+
+    .mode-tab-title {
+        font-size: 0.74rem;
+        white-space: nowrap;
+    }
+
+    .workbench-col-editor {
+        min-width: 0;
+        border-right: 0;
+    }
+
+    .editor-file-tab-bar {
+        height: 44px;
+        flex: 0 0 44px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding-inline: 0.6rem;
+        scrollbar-width: none;
+    }
+
+    .editor-file-chip {
+        flex: 0 0 auto;
+    }
+
+    .editor-code-workspace {
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 0.85rem 0.65rem;
+        font-size: 0.76rem;
+    }
+
+    .code-row {
+        min-width: max-content;
+    }
+
+    .workbench-col-tests {
+        padding: 0.85rem;
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .test-row-pill {
+        min-height: 44px;
+        padding: 0.45rem 0.6rem;
+        border-radius: 8px;
+        font-size: 0.73rem;
+    }
+
+    .workbench-deck {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mobile-student-nav {
+        position: fixed;
+        z-index: 1100;
+        inset: auto 0 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.25rem;
+        padding: 0.4rem 0.55rem calc(0.45rem + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--border-hairline);
+        background: var(--bg-surface);
+        box-shadow: 0 -10px 28px -24px rgba(14, 30, 24, 0.5);
+    }
+
+    .mobile-student-nav-item {
+        min-width: 0;
+        min-height: 54px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        border-radius: 11px;
+        color: var(--text-muted);
+        font-size: 0.68rem;
+        font-weight: 650;
+        line-height: 1.1;
+        text-decoration: none;
+        transition: color var(--motion-control) ease,
+                    background-color var(--motion-control) ease,
+                    transform var(--motion-press) ease;
+    }
+
+    .mobile-student-nav-item:active {
+        transform: scale(0.96);
+    }
+
+    .mobile-student-nav-item.active {
+        color: var(--brand-emerald);
+        background: var(--brand-emerald-soft);
+    }
+
+    .mobile-student-nav-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+    }
+
+    .emerald-app-shell,
+    .emerald-app-shell.shell-2col {
+        padding: 0 1rem calc(6rem + env(safe-area-inset-bottom)) !important;
+    }
+
+    .back-to-top-btn {
+        bottom: calc(5.6rem + env(safe-area-inset-bottom)) !important;
+    }
+
+    .emerald-dashboard-grid {
+        gap: 1.25rem;
+    }
+
+    .learning-map-container {
+        gap: 1.1rem;
+    }
+
+    .learning-map-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .map-title {
+        font-size: clamp(1.8rem, 7vw, 2.25rem);
+    }
+
+    .map-subhead {
+        max-width: 38ch;
+        font-size: 0.9rem;
+    }
+
+    .progress-ring-badge {
+        gap: 0;
+        padding: 0.5rem 0.65rem;
+        border-radius: 11px;
+        background: var(--bg-subtle);
+        box-shadow: none;
+    }
+
+    .progress-ring-svg {
+        display: none;
+    }
+
+    .progress-ring-text {
+        align-items: flex-end;
+    }
+
+    .progress-ring-pct {
+        font-size: 1rem;
+    }
+
+    .progress-ring-label {
+        font-size: 0.65rem;
+    }
+
+    .track-switcher-pills {
+        width: calc(100% + 1rem);
+        margin-right: -1rem;
+        padding: 0.15rem 1rem 0.45rem 0;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        scroll-snap-type: x proximity;
+    }
+
+    .track-switcher-pills::-webkit-scrollbar {
+        display: none;
+    }
+
+    .track-switcher-pill {
+        flex: 0 0 auto;
+        min-height: 44px;
+        padding-inline: 0.7rem;
+        scroll-snap-align: start;
+    }
+
+    .winding-path-deck {
+        counter-reset: learning-step;
+        gap: 0.75rem;
+        margin-top: 0;
+        padding: 0.4rem 0 0.8rem;
+        background: none;
+    }
+
+    .map-hills-backdrop {
+        opacity: 0.22;
+    }
+
+    .module-path-row {
+        position: relative;
+        display: grid !important;
+        grid-template-columns: 30px minmax(0, 1fr) !important;
+        align-items: stretch;
+        gap: 0.65rem;
+        counter-increment: learning-step;
+    }
+
+    .module-path-row::before {
+        content: counter(learning-step, decimal-leading-zero);
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 1.25rem;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .module-path-row::after {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        top: 2.25rem;
+        bottom: -0.85rem;
+        left: 14px;
+        width: 1px;
+        background: var(--border-strong);
+    }
+
+    .module-path-row:last-child::after {
+        display: none;
+    }
+
+    .module-path-row:has(.module-stone-card.active)::before {
+        color: var(--brand-emerald);
+    }
+
+    .module-path-row:has(.module-stone-card.active)::after {
+        background: var(--brand-emerald-border);
+    }
+
+    .path-pedestal-anchor {
+        display: none !important;
+    }
+
+    .module-stone-card {
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+        border-radius: 13px;
+        background: var(--bg-surface);
+        box-shadow: 0 3px 10px -9px rgba(14, 30, 24, 0.6);
+    }
+
+    .module-stone-card.active {
+        border-color: var(--brand-emerald-border);
+        box-shadow: 0 8px 18px -16px rgba(0, 87, 66, 0.78);
+    }
+
+    .module-card-header-btn {
+        min-height: 68px;
+        padding: 0.85rem 0.9rem;
+        gap: 0.55rem;
+    }
+
+    .module-card-title-row {
+        align-items: flex-start;
+    }
+
+    .module-card-title {
+        font-size: 0.96rem;
+        line-height: 1.4;
+    }
+
+    .module-card-subhead {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        font-size: 0.79rem;
+        line-height: 1.45;
+    }
+
+    .module-card-status-badge {
+        align-self: center;
+    }
+
+    .module-circular-ring-badge {
+        width: auto !important;
+        height: auto !important;
+        min-width: 0;
+        padding: 0.32rem 0.5rem;
+        border-radius: 7px;
+        background: var(--bg-subtle);
+    }
+
+    .module-circular-ring-badge svg {
+        display: none;
+    }
+
+    .module-circular-ring-badge span {
+        position: static !important;
+        font-size: 0.66rem !important;
+    }
+
+    .module-card-lessons-body,
+    .module-stone-card.collapsed .module-card-lessons-body {
+        display: flex !important;
+        max-height: 32rem;
+        overflow: hidden;
+        padding: 0 0.9rem 0.85rem;
+        opacity: 1;
+        border-top-color: var(--border-subtle);
+        transition: max-height var(--motion-panel) var(--ease-codoro),
+                    padding var(--motion-panel) var(--ease-codoro),
+                    opacity var(--motion-control) ease,
+                    border-color var(--motion-control) ease;
+    }
+
+    .module-stone-card.collapsed .module-card-lessons-body {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        opacity: 0;
+        border-top-color: transparent;
+        pointer-events: none;
+    }
+
+    .lesson-row-item {
+        min-height: 48px;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.72rem 0.7rem !important;
+        font-size: 0.82rem;
+        line-height: 1.45;
+    }
+
+    .lesson-row-left {
+        min-width: 0;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .lesson-row-left > span:last-child {
+        min-width: 0;
+    }
+
+    .emerald-widgets-deck {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 0.75rem;
+    }
+
+    .emerald-widgets-deck .widget-card:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .widget-card {
+        min-width: 0;
+        padding: 1rem;
+        gap: 0.75rem;
+        border-radius: 13px;
+    }
+
+    .widget-title {
+        font-size: 0.97rem;
+    }
+
+    .learning-map-footer-mascot {
+        justify-content: flex-start;
+        gap: 0.75rem;
+    }
+
+    .learning-map-footer-mascot > div:first-child {
+        width: 88px !important;
+    }
+
+    .cookie-consent-bar {
+        bottom: calc(0.55rem + env(safe-area-inset-bottom));
+        width: calc(100% - 1rem);
+        max-width: none;
+    }
+
+    .cookie-consent-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+        padding: 0.7rem 0.8rem;
+        border-radius: 14px;
+    }
+
+    .cookie-consent-inner > div:first-child {
+        gap: 0.55rem !important;
+    }
+
+    .cookie-pulse-icon {
+        font-size: 1.05rem !important;
+    }
+
+    .cookie-consent-inner p {
+        font-size: 0.76rem !important;
+        line-height: 1.42 !important;
+    }
+
+    .btn-cookie-accept {
+        width: 100%;
+    }
+
+    body:has(#codoroCookieBanner[style*="display: block"]) .sticky-mobile-cta {
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .emerald-top-bar,
+    .emerald-top-bar.header-scrolled {
+        height: 56px;
+        min-height: 56px;
+        padding-inline: 0.7rem;
+    }
+
+    .emerald-top-bar > div:first-child {
+        gap: 0.35rem !important;
+    }
+
+    .emerald-top-actions {
+        gap: 0.28rem !important;
+    }
+
+    .emerald-top-actions > a[href*="logout"],
+    .emerald-top-actions > a[href*="#class-quest"] {
+        display: none !important;
+    }
+
+    .exec-mob-toggle,
+    .emerald-top-actions .btn-icon-circle,
+    .emerald-top-actions .user-avatar-pill {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .emerald-brand-icon {
+        width: 27px;
+        height: 27px;
+    }
+
+    .emerald-brand-text {
+        font-size: 1.12rem;
+    }
+
+    .pill-stat-badge.doros-badge {
+        min-height: 34px;
+        padding: 0.25rem 0.45rem !important;
+        border-radius: 9px;
+        font-size: 0.75rem !important;
+        box-shadow: none;
+    }
+
+    .pill-stat-badge.doros-badge svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .emerald-app-shell,
+    .emerald-app-shell.shell-2col {
+        padding: 0 0.75rem calc(6rem + env(safe-area-inset-bottom)) !important;
+    }
+
+    .emerald-widgets-deck {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .emerald-widgets-deck .widget-card:first-child {
+        grid-column: auto;
+    }
+
+    .hero-stage {
+        min-height: 0;
+        margin-top: -0.35rem;
+        padding: 0 1rem 2.6rem;
+    }
+
+    .hero-content-wrapper {
+        padding-inline: 0;
+    }
+
+    .hero-big-title {
+        max-width: none;
+        margin: 0 auto 0.9rem;
+        font-size: clamp(2.2rem, 8.8vw, 2.7rem);
+        letter-spacing: -0.052em;
+        line-height: 1.03;
+    }
+
+    .hero-big-title br {
+        display: none;
+    }
+
+    .hero-lead-text {
+        max-width: 42ch;
+        margin-bottom: 1.2rem;
+        font-size: 0.98rem;
+        line-height: 1.56;
+    }
+
+    .hero-content-wrapper > div[style*="justify-content:center"] {
+        gap: 0.55rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .hero-cta-btn-emerald {
+        min-height: 48px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .hero-content-wrapper .btn-secondary {
+        min-height: 46px;
+        padding: 0.7rem 0.9rem !important;
+        font-size: 0.88rem !important;
+    }
+
+    .studio-workbench-container {
+        margin-top: 0.6rem;
+        padding-inline: 0;
+    }
+
+    .studio-workbench-window {
+        border-radius: 15px;
+    }
+
+    .workbench-mac-titlebar {
+        min-height: 46px;
+        height: auto;
+        gap: 0.5rem;
+        padding: 0.5rem 0.65rem;
+    }
+
+    .workbench-window-title {
+        font-size: 0.72rem;
+    }
+
+    .workbench-tool-btn {
+        min-height: 44px;
+    }
+
+    .sticky-mobile-cta {
+        padding: 0.5rem 0.7rem calc(0.5rem + env(safe-area-inset-bottom)) !important;
+        gap: 0.45rem !important;
+        background: var(--bg-surface) !important;
+        box-shadow: 0 -8px 18px -16px rgba(14, 30, 24, 0.5) !important;
+    }
+
+    .sticky-mobile-cta > div:first-child {
+        gap: 0.35rem !important;
+    }
+
+    .sticky-mobile-cta img,
+    .sticky-mobile-cta > div:first-child span {
+        display: none;
+    }
+
+    .sticky-mobile-cta strong {
+        font-size: 0.75rem !important;
+    }
+
+    .sticky-mobile-cta a {
+        min-height: 40px;
+        padding: 0.45rem 0.65rem !important;
+        font-size: 0.76rem !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .floating-pill-navbar {
+        width: calc(100% - 1rem);
+        height: 56px;
+        margin-top: 0.5rem;
+        padding-inline: 0.65rem;
+        border-radius: 16px;
+    }
+
+    .floating-pill-navbar.header-scrolled {
+        width: calc(100% - 1rem);
+        height: 54px;
+        top: 6px;
+        padding-inline: 0.65rem;
+    }
+
+    .floating-pill-navbar .emerald-brand-link {
+        gap: 0.3rem;
+        margin-right: 0.2rem;
+    }
+
+    .floating-pill-navbar .emerald-brand-icon {
+        width: 27px;
+        height: 27px;
+    }
+
+    .floating-pill-navbar .emerald-brand-text {
+        font-size: 1.08rem;
+    }
+
+    .floating-pill-actions {
+        gap: 0.25rem;
+    }
+
+    .floating-pill-actions .lang-segmented {
+        gap: 0.05rem;
+        padding: 0.12rem;
+    }
+
+    .floating-pill-actions .lang-pill {
+        min-width: 26px;
+        min-height: 28px;
+        padding: 0.3rem 0.38rem;
+        font-size: 0.69rem;
+    }
+
+    .floating-pill-actions .btn-pill-login {
+        display: none;
+    }
+
+    .floating-pill-actions .btn-pill-emerald {
+        min-height: 38px;
+        padding-inline: 0.7rem;
+        border-radius: 10px;
+        font-size: 0.74rem;
+    }
+
+    .hero-stage {
+        padding-inline: 0.8rem;
+    }
+
+    .hero-big-title {
+        font-size: clamp(2.05rem, 8.8vw, 2.5rem);
+    }
+
+    .hero-content-wrapper .btn-secondary svg {
+        display: none;
+    }
+}
+
+/* Actual lesson editor: make the phone workflow read in a clear top-to-bottom order. */
+@media (max-width: 760px) {
+    .lesson-split-grid {
+        gap: 0.9rem !important;
+    }
+
+    .lesson-theory-panel {
+        padding: 1rem !important;
+        border-radius: 16px;
+        box-shadow: var(--shadow-xs);
+    }
+
+    .lesson-theory-panel > div[style*="background: var(--bg-subtle)"] {
+        min-width: 0;
+    }
+
+    .lesson-workbench-container {
+        min-width: 0;
+        padding: 0 !important;
+    }
+
+    .lesson-workbench-container .studio-workbench-window {
+        height: auto;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm) !important;
+    }
+
+    .lesson-workbench-container .workbench-mac-titlebar {
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        padding: 0.45rem 0.6rem;
+    }
+
+    .lesson-workbench-container .workbench-window-title {
+        min-width: 0;
+        flex: 1 1 auto;
+        font-size: 0.74rem;
+    }
+
+    .lesson-workbench-container .workbench-header-tools {
+        width: auto;
+        flex: 0 0 auto;
+        gap: 0.3rem;
+    }
+
+    .lesson-workbench-container .workbench-tool-btn {
+        min-height: 42px;
+        padding-inline: 0.6rem;
+    }
+
+    .lesson-exercise-bar {
+        align-items: flex-start !important;
+        padding: 0.65rem !important;
+    }
+
+    .lesson-exercise-bar > div:first-child {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .lesson-exercise-bar > div:first-child::-webkit-scrollbar {
+        display: none;
+    }
+
+    .lesson-exercise-bar > div:last-child {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    .lesson-editor-tests-split {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: 0;
+    }
+
+    .lesson-editor-tests-split > div:first-child {
+        min-height: 0 !important;
+        border-right: 0 !important;
+    }
+
+    .lesson-editor-tests-split .CodeMirror {
+        height: min(52vh, 360px) !important;
+        min-height: 260px;
+        font-size: 0.82rem !important;
+    }
+
+    .lesson-editor-tests-split .workbench-col-tests {
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0.85rem;
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .lesson-workbench-container .workbench-docked-ai-panel {
+        padding: 0.9rem;
+    }
+
+    .lesson-workbench-container .docked-ai-title-row {
+        min-width: 0;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .lesson-workbench-container .socratic-action-pills {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.45rem;
+    }
+
+    .lesson-workbench-container .socratic-action-pills .btn-socratic-pill {
+        min-height: 44px;
+        justify-content: flex-start;
+        text-align: left;
+    }
+}
+
+@media (max-width: 420px) {
+    .lesson-workbench-container .workbench-window-title {
+        font-size: 0.68rem;
+    }
+
+    .lesson-workbench-container .workbench-tool-btn {
+        min-height: 40px;
+        gap: 0.25rem;
+        padding-inline: 0.45rem;
+        font-size: 0.72rem;
+    }
+
+    .lesson-theory-panel > div[style*="padding: 3px"] {
+        gap: 0.2rem !important;
+    }
+
+    .lesson-theory-panel .btn-socratic-pill {
+        padding-inline: 0.45rem;
+        font-size: 0.72rem;
+    }
+}
+
+@media (min-width: 381px) and (max-width: 600px) {
+    .floating-pill-navbar {
+        width: calc(100% - 1.5rem);
+        height: 58px;
+        margin-top: 0.65rem;
+        padding-inline: 0.8rem;
+        border-radius: 17px;
+    }
+
+    .floating-pill-navbar .emerald-brand-link {
+        gap: 0.35rem;
+        margin-right: 0.25rem;
+    }
+
+    .floating-pill-navbar .emerald-brand-icon {
+        width: 29px;
+        height: 29px;
+    }
+
+    .floating-pill-actions {
+        gap: 0.32rem;
+    }
+
+    .floating-pill-actions .btn-pill-login {
+        display: none;
+    }
+
+    .floating-pill-actions .btn-pill-emerald {
+        min-height: 40px;
+        padding-inline: 0.8rem;
+        border-radius: 10px;
+        font-size: 0.78rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-student-nav-item,
+    .module-stone-card,
+    .module-card-lessons-body,
+    .faq-card-item,
+    .faq-chevron {
+        transition: none !important;
+    }
+}

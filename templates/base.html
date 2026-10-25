@@ -105,7 +105,8 @@
     {% endif %}
 
     <!-- Codoro Unified Mineral & Emerald Design System -->
-    <link rel="stylesheet" href="{% static 'css/codoro.css' %}?v=3.2.0">
+    <link rel="stylesheet" href="{% static 'css/codoro.css' %}?v=3.2.1">
+    <link rel="stylesheet" href="{% static 'css/codoro-polish.css' %}?v=1.0.3">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -322,6 +323,27 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+
+    {% if user.is_authenticated and not user.is_teacher and not user.is_admin and not is_public_landing %}
+    <nav class="mobile-student-nav" aria-label="{% if lang == 'en' %}Student navigation{% else %}Navigácia študenta{% endif %}">
+        <a href="{% url 'dashboard' %}" class="mobile-student-nav-item {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}active{% endif %}" {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'lesson_detail' %}aria-current="page"{% endif %}>
+            <span class="mobile-student-nav-icon">{% include 'components/icon_svg.html' with name='map' size='19' %}</span>
+            <span>{% if lang == 'en' %}Learn{% else %}Učenie{% endif %}</span>
+        </a>
+        <a href="{% url 'practice_arena' %}" class="mobile-student-nav-item {% if request.resolver_match.url_name == 'practice_arena' %}active{% endif %}" {% if request.resolver_match.url_name == 'practice_arena' %}aria-current="page"{% endif %}>
+            <span class="mobile-student-nav-icon">{% include 'components/icon_svg.html' with name='target' size='19' %}</span>
+            <span>{% if lang == 'en' %}Practice{% else %}Tréning{% endif %}</span>
+        </a>
+        <a href="{% url 'cheat_sheets' %}" class="mobile-student-nav-item {% if request.resolver_match.url_name == 'cheat_sheets' %}active{% endif %}" {% if request.resolver_match.url_name == 'cheat_sheets' %}aria-current="page"{% endif %}>
+            <span class="mobile-student-nav-icon">{% include 'components/icon_svg.html' with name='doc' size='19' %}</span>
+            <span>{% if lang == 'en' %}Reference{% else %}Ťaháky{% endif %}</span>
+        </a>
+        <a href="{% url 'shop' %}" class="mobile-student-nav-item {% if request.resolver_match.url_name == 'shop' %}active{% endif %}" {% if request.resolver_match.url_name == 'shop' %}aria-current="page"{% endif %}>
+            <span class="mobile-student-nav-icon">{% include 'components/icon_svg.html' with name='shop' size='19' %}</span>
+            <span>{% if lang == 'en' %}Rewards{% else %}Odmeny{% endif %}</span>
+        </a>
+    </nav>
+    {% endif %}
 
     <!-- BACK TO TOP FLOATING BUTTON -->
     <button type="button" id="backToTopBtn" class="back-to-top-btn" onclick="scrollToTop()" title="{% if lang == 'en' %}Back to top{% else %}Hore na začiatok{% endif %}" aria-label="Back to top">
@@ -834,10 +856,10 @@
                 <span class="cookie-pulse-icon" style="font-size:1.4rem; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">🍪</span>
                 <p style="margin:0; font-size:0.86rem; color:var(--text-primary); line-height:1.5;">
                     {% if lang == 'en' %}
-                    Codoro uses strictly essential cookies and local preferences (theme, language) to provide optimal learning. No advertising trackers.
+                    We use only essential cookies and local preferences. No advertising trackers.
                     <a href="{% url 'privacy_policy' %}" style="color:var(--brand-emerald); font-weight:600; text-decoration:underline;">Privacy Policy</a>.
                     {% else %}
-                    Codoro používa výhradne nevyhnutné súbory cookie a lokálne nastavenia (téma, jazyk) pre bezchybný chod platformy. Žiadne reklamné sledovače.
+                    Používame len nevyhnutné súbory cookie a lokálne nastavenia. Žiadne reklamné sledovanie.
                     <a href="{% url 'privacy_policy' %}" style="color:var(--brand-emerald); font-weight:600; text-decoration:underline;">Zásady ochrany súkromia</a>.
                     {% endif %}
                 </p>
