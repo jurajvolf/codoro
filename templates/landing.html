@@ -1067,7 +1067,6 @@ html[data-theme="dark"] .faq-search-input {
             <div class="curriculum-track-segmented-bar" role="tablist" aria-label="Kariérne cesty">
                 {% for track in tracks_data %}
                 <button type="button" class="curriculum-track-tab {% if forloop.first %}active{% endif %}" data-track="{{ track.key }}" onclick="switchLandingTrack('{{ track.key }}', this)" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
-                    <span class="tab-num">0{{ forloop.counter }}</span>
                     <span>{% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}</span>
                 </button>
                 {% endfor %}
