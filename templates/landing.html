@@ -171,16 +171,26 @@
         </div>
 
         <div class="hero-code-note hero-code-note--left" aria-hidden="true">
-            <span class="hero-code-note-dot"></span>
-            <code>print("hello")</code>
-            <span class="hero-code-note-caption">first line, first win</span>
+            <div class="hero-code-note-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+            </div>
+            <div class="hero-code-note-text">
+                <code>print("hello")</code>
+                <span class="hero-code-note-caption">first line, first win</span>
+            </div>
         </div>
         <div class="hero-code-note hero-code-note--right" aria-hidden="true">
-            <img class="hero-code-note-coin" src="{% static 'img/asset_doros_coin_3d.webp' %}" width="34" height="34" style="width:34px; height:34px; max-width:34px;" alt="" decoding="async">
-            <span><strong>20 XP</strong><small>lesson complete</small></span>
+            <div class="hero-code-note-icon">
+                <img class="hero-code-note-coin" src="{% static 'img/asset_doros_coin_3d.webp' %}" width="22" height="22" alt="" decoding="async">
+            </div>
+            <div class="hero-code-note-text">
+                <strong>20 XP</strong>
+                <span class="hero-code-note-caption">lesson complete</span>
+            </div>
         </div>
-
-        <img class="hero-world-checkpoint" src="{% static 'img/asset_checkpoint_flag_3d.webp' %}" width="68" height="68" style="width:68px; max-width:68px;" alt="" decoding="async" aria-hidden="true">
 
         <div class="hero-content-wrapper t-stagger" id="heroIntro" style="position:relative; z-index:3;">
             <!-- Radiating Emerald Rays Category Header (Exact matching reference photo) -->
@@ -246,14 +256,14 @@
                 <div class="codo-ground-base" aria-hidden="true">
                     <svg viewBox="0 0 240 50" width="100%" height="auto" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <ellipse cx="120" cy="38" rx="90" ry="10" fill="rgba(0, 135, 103, 0.12)"/>
-                        <ellipse cx="44" cy="32" rx="26" ry="13" fill="#94A3B8"/>
-                        <ellipse cx="43" cy="29" rx="24" ry="11" fill="#CBD5E1"/>
-                        <ellipse cx="41" cy="27" rx="21" ry="9" fill="#E2E8F0"/>
+                        <ellipse class="hero-companion-pebble" cx="44" cy="32" rx="26" ry="13" fill="#94A3B8"/>
+                        <ellipse class="hero-companion-pebble" cx="43" cy="29" rx="24" ry="11" fill="#CBD5E1"/>
+                        <ellipse class="hero-companion-pebble" cx="41" cy="27" rx="21" ry="9" fill="#E2E8F0"/>
                         <path d="M30 26 C 24 10, 20 2, 30 0 C 40 -2, 40 14, 34 26 Z" fill="#16A34A"/>
                         <path d="M38 25 C 44 12, 54 6, 60 14 C 64 22, 52 26, 42 26 Z" fill="#22C55E"/>
-                        <ellipse cx="196" cy="34" rx="24" ry="12" fill="#94A3B8"/>
-                        <ellipse cx="195" cy="31" rx="22" ry="10" fill="#CBD5E1"/>
-                        <ellipse cx="193" cy="29" rx="19" ry="8" fill="#E2E8F0"/>
+                        <ellipse class="hero-companion-pebble" cx="196" cy="34" rx="24" ry="12" fill="#94A3B8"/>
+                        <ellipse class="hero-companion-pebble" cx="195" cy="31" rx="22" ry="10" fill="#CBD5E1"/>
+                        <ellipse class="hero-companion-pebble" cx="193" cy="29" rx="19" ry="8" fill="#E2E8F0"/>
                         <path d="M204 28 C 210 16, 220 10, 224 18 C 228 26, 218 30, 208 30 Z" fill="#22C55E"/>
                     </svg>
                 </div>
@@ -592,33 +602,33 @@
 
         <div class="track-panels-wrapper">
             {% for track in tracks_data %}
-            <div class="track-panel-deck active" id="track-panel-{{ track.key }}" data-track="{{ track.key }}" style="margin-bottom:2.25rem;">
-                <!-- Track Overview Capsule Banner -->
+            <div class="track-panel-deck active" id="track-panel-{{ track.key }}" data-track="{{ track.key }}">
+                <!-- Track Overview Capsule Banner (Compact & Polished) -->
                 <div class="landing-track-banner">
-                    <div style="display:flex; align-items:center; gap:0.85rem;">
-                        <div style="width:40px; height:40px; border-radius:12px; background:var(--bg-mint-soft); color:var(--brand-emerald); display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <div class="track-banner-icon">
                             {% if track.icon == 'zap' %}
-                                {% include 'components/icon_svg.html' with name='lightning' size='20' %}
+                                {% include 'components/icon_svg.html' with name='lightning' size='18' %}
                             {% elif track.icon == 'layers' %}
-                                {% include 'components/icon_svg.html' with name='layers' size='20' %}
+                                {% include 'components/icon_svg.html' with name='layers' size='18' %}
                             {% elif track.icon == 'box' %}
-                                {% include 'components/icon_svg.html' with name='box' size='20' %}
+                                {% include 'components/icon_svg.html' with name='box' size='18' %}
                             {% elif track.icon == 'cpu' %}
-                                {% include 'components/icon_svg.html' with name='database' size='20' %}
+                                {% include 'components/icon_svg.html' with name='database' size='18' %}
                             {% else %}
-                                {% include 'components/icon_svg.html' with name='award' size='20' %}
+                                {% include 'components/icon_svg.html' with name='award' size='18' %}
                             {% endif %}
                         </div>
                         <div>
-                            <strong style="font-family:var(--font-display); font-size:1.12rem; color:var(--text-primary); display:block; line-height:1.35;">
+                            <strong class="track-banner-title">
                                 {% if lang == 'en' %}{{ track.label_en }}{% else %}{{ track.label_sk }}{% endif %}
                             </strong>
-                            <span style="font-size:0.84rem; color:var(--text-secondary);">
+                            <span class="track-banner-desc">
                                 {% if lang == 'en' %}{{ track.desc_en }}{% else %}{{ track.desc_sk }}{% endif %}
                             </span>
                         </div>
                     </div>
-                    <span class="badge-mini-pct" style="background:var(--bg-mint-soft); color:var(--brand-emerald); font-weight:700; padding:0.35rem 0.8rem; border-radius:9999px;">
+                    <span class="badge-mini-pct track-banner-badge">
                         {{ track.badge }}
                     </span>
                 </div>
@@ -627,40 +637,40 @@
                     {% for mod in track.modules %}
                     <div class="landing-curriculum-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}">
                         <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-                                <span class="badge-mini-pct" style="font-family:var(--font-mono); font-weight:800; background:var(--bg-mint-soft); color:var(--brand-emerald);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                                <span class="curriculum-mod-order">
                                     #{{ mod.order|stringformat:"02d" }}
                                 </span>
-                                <div style="display:flex; align-items:center; gap:0.4rem;">
-                                    <span class="badge-mini-pct" style="color:var(--text-secondary); font-weight:700;">
+                                <div style="display:flex; align-items:center; gap:0.35rem;">
+                                    <span class="badge-mini-pct" style="color:var(--text-secondary); font-weight:700; font-size:0.72rem;">
                                         ⏱️ {{ mod.estimated_hours }}h
                                     </span>
                                     {% if mod.is_pro_only %}
-                                    <span class="badge-mini-pct" style="background:rgba(99, 102, 241, 0.12); color:#4F46E5; font-weight:700;">
+                                    <span class="badge-tier-edu">
                                         EDU
                                     </span>
                                     {% else %}
-                                    <span class="badge-mini-pct" style="background:rgba(16, 185, 129, 0.12); color:#047857; font-weight:700;">
+                                    <span class="badge-tier-free">
                                         FREE
                                     </span>
                                     {% endif %}
                                 </div>
                             </div>
 
-                            <h4 style="font-family:var(--font-display); font-size:1.08rem; font-weight:800; margin:0 0 0.5rem; color:var(--text-primary); line-height:1.35;">
+                            <h4 class="curriculum-mod-title">
                                 {% if lang == 'en' %}{{ mod.title_en }}{% else %}{{ mod.title_sk }}{% endif %}
                             </h4>
-                            <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.55; margin:0 0 1.25rem;">
-                                {% if lang == 'en' %}{{ mod.description_en|truncatewords:20 }}{% else %}{{ mod.description_sk|truncatewords:20 }}{% endif %}
+                            <p class="curriculum-mod-desc">
+                                {% if lang == 'en' %}{{ mod.description_en|truncatewords:14 }}{% else %}{{ mod.description_sk|truncatewords:14 }}{% endif %}
                             </p>
                         </div>
 
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:0.85rem; font-size:0.8rem; color:var(--text-muted); font-weight:600;">
-                            <span style="display:inline-flex; align-items:center; gap:0.35rem;">
-                                {% include 'components/icon_svg.html' with name='file' size='13' %}
+                        <div class="curriculum-mod-footer">
+                            <span style="display:inline-flex; align-items:center; gap:0.3rem;">
+                                {% include 'components/icon_svg.html' with name='file' size='12' %}
                                 <span>{% if lang == 'en' %}{{ mod.lessons.count }} Lessons{% else %}{{ mod.lessons.count }} Lekcií{% endif %}</span>
                             </span>
-                            <a href="{% url 'register' %}" style="display:inline-flex; align-items:center; gap:0.3rem; color:var(--brand-emerald); text-decoration:none; font-weight:700;">
+                            <a href="{% url 'register' %}" class="curriculum-open-link">
                                 <span>{% if lang == 'en' %}Open Module{% else %}Otvoriť modul{% endif %}</span>
                                 <span>→</span>
                             </a>
