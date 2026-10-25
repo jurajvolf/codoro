@@ -1280,40 +1280,7 @@ body.page-emerald-landing .landing-section-deck {
 }
 
 body.page-emerald-landing .landing-section-deck::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -3.25rem calc(50% - 50vw);
-    pointer-events: none;
-    background: radial-gradient(ellipse 75% 82% at 50% 50%, rgba(107, 190, 145, 0.105), transparent 78%);
-}
-
-body.page-emerald-landing #comparison::before {
-    background:
-        radial-gradient(ellipse 48% 82% at 5% 40%, rgba(67, 174, 129, 0.15), transparent 100%),
-        radial-gradient(ellipse 44% 80% at 98% 60%, rgba(127, 199, 159, 0.16), transparent 100%),
-        linear-gradient(180deg, transparent 0%, rgba(231, 246, 237, 0.46) 36%, rgba(231, 246, 237, 0.18) 66%, transparent 100%);
-}
-
-body.page-emerald-landing #curriculum::before {
-    background:
-        radial-gradient(ellipse 42% 70% at 1% 22%, rgba(62, 167, 123, 0.16), transparent 100%),
-        radial-gradient(ellipse 46% 72% at 100% 68%, rgba(107, 188, 144, 0.16), transparent 100%),
-        radial-gradient(ellipse 80% 35% at 52% 54%, rgba(220, 241, 228, 0.46), transparent 100%);
-}
-
-body.page-emerald-landing #schools::before {
-    background:
-        radial-gradient(ellipse 43% 100% at 0% 48%, rgba(220, 180, 91, 0.12), transparent 100%),
-        radial-gradient(ellipse 46% 100% at 100% 52%, rgba(66, 169, 124, 0.15), transparent 100%),
-        linear-gradient(90deg, rgba(250, 244, 226, 0.22), transparent 50%, rgba(225, 244, 233, 0.38));
-}
-
-body.page-emerald-landing #faq::before {
-    background:
-        radial-gradient(ellipse 54% 86% at 8% 50%, rgba(81, 175, 132, 0.14), transparent 100%),
-        radial-gradient(ellipse 55% 86% at 96% 45%, rgba(113, 192, 151, 0.13), transparent 100%),
-        linear-gradient(180deg, transparent 0%, rgba(233, 246, 238, 0.5) 50%, transparent 100%);
+    display: none !important;
 }
 
 /* Keep the learning controls comfortably readable on wide displays. */
@@ -1334,35 +1301,7 @@ body.page-emerald-landing footer {
 }
 
 [data-theme="dark"] body.page-emerald-landing .landing-section-deck::before {
-    background: radial-gradient(ellipse 76% 82% at 50% 50%, rgba(26, 123, 87, 0.2), transparent 78%);
-}
-
-[data-theme="dark"] body.page-emerald-landing #comparison::before {
-    background:
-        radial-gradient(ellipse 48% 82% at 5% 40%, rgba(27, 122, 86, 0.21), transparent 100%),
-        radial-gradient(ellipse 44% 80% at 98% 60%, rgba(39, 127, 91, 0.2), transparent 100%),
-        linear-gradient(180deg, transparent 0%, rgba(14, 44, 32, 0.42) 36%, rgba(14, 44, 32, 0.18) 66%, transparent 100%);
-}
-
-[data-theme="dark"] body.page-emerald-landing #curriculum::before {
-    background:
-        radial-gradient(ellipse 42% 70% at 1% 22%, rgba(25, 112, 79, 0.22), transparent 100%),
-        radial-gradient(ellipse 46% 72% at 100% 68%, rgba(30, 117, 82, 0.22), transparent 100%),
-        radial-gradient(ellipse 80% 35% at 52% 54%, rgba(12, 47, 33, 0.38), transparent 100%);
-}
-
-[data-theme="dark"] body.page-emerald-landing #schools::before {
-    background:
-        radial-gradient(ellipse 43% 100% at 0% 48%, rgba(143, 112, 46, 0.13), transparent 100%),
-        radial-gradient(ellipse 46% 100% at 100% 52%, rgba(27, 118, 82, 0.2), transparent 100%),
-        linear-gradient(90deg, rgba(58, 47, 24, 0.17), transparent 50%, rgba(14, 46, 33, 0.3));
-}
-
-[data-theme="dark"] body.page-emerald-landing #faq::before {
-    background:
-        radial-gradient(ellipse 54% 86% at 8% 50%, rgba(28, 117, 83, 0.2), transparent 100%),
-        radial-gradient(ellipse 55% 86% at 96% 45%, rgba(31, 113, 81, 0.18), transparent 100%),
-        linear-gradient(180deg, transparent 0%, rgba(13, 43, 31, 0.46) 50%, transparent 100%);
+    display: none !important;
 }
 
 @media (max-width: 700px) {

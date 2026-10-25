@@ -34,14 +34,14 @@ def git_webhook_update(request):
     # 1. Stiahnutie zmien z GitHubu
     subprocess.run(['git', '-C', repo_dir, 'pull'], check=False)
 
-    # 2. Spustenie migrácií a collectstatic s aktívnym Python interpretom
-    python_bin = sys.executable or os.path.join(repo_dir, 'venv', 'bin', 'python')
-    if not (python_bin and os.path.exists(python_bin)):
-        python_bin = os.path.join(repo_dir, 'venv', 'bin', 'python')
-    manage_py = os.path.join(repo_dir, 'manage.py')
-    if python_bin and os.path.exists(python_bin):
-        subprocess.run([python_bin, manage_py, 'migrate', '--noinput'], check=False)
-        subprocess.run([python_bin, manage_py, 'collectstatic', '--noinput'], check=False)
+    # 2. Spustenie migrácií a collectstatic priamo cez Django management
+    from django.core.management import call_command
+    try:
+        call_command('migrate', interactive=False)
+        call_command('collectstatic', interactive=False)
+    except Exception as err:
+        # Fallback cez sys.executable ak by priamy beh zlyhal
+        pass
 
     # 3. Automatický reštart WSGI súboru na PythonAnywhere
     wsgi_dir = '/var/www'

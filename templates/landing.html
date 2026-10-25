@@ -11,6 +11,394 @@
 {% block content %}
 {% firstof user.preferred_language ui_lang 'sk' as lang %}
 
+<style>
+/* ==========================================================================
+   CODORO WELCOME PAGE POLISH (SEAMLESS DARK MODE, SYMMETRY, ANTI-SLOP ROADMAP)
+   ========================================================================== */
+
+/* 1. SEAMLESS BACKGROUND - NO HORIZONTAL CUTOFFS OR STRIPES */
+body.page-emerald-landing .landing-section-deck::before {
+    display: none !important;
+}
+body.page-emerald-landing {
+    background: var(--bg-canvas) !important;
+}
+html[data-theme="dark"] body.page-emerald-landing,
+html[data-theme="dark"] .public-hero-canvas-root {
+    background: #0D1512 !important;
+}
+
+/* 2. SYMMETRICAL HERO CODE NOTES (ZERO YELLOW SQUARE) */
+.hero-code-note {
+    position: absolute !important;
+    z-index: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.65rem !important;
+    min-width: 160px !important;
+    padding: 0.65rem 0.95rem !important;
+    border-radius: 14px !important;
+    top: 31% !important;
+    pointer-events: none !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+.hero-code-note--left {
+    left: clamp(1.25rem, 5vw, 5.5rem) !important;
+}
+.hero-code-note--right {
+    right: clamp(1.25rem, 5vw, 5.5rem) !important;
+    animation-delay: -3.25s !important;
+}
+
+/* LIGHT MODE NOTES */
+html[data-theme="light"] .hero-code-note {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #A7E0CF !important;
+    box-shadow: 0 12px 26px -21px rgba(0, 135, 103, 0.35), 0 2px 4px rgba(14, 30, 24, 0.04) !important;
+}
+html[data-theme="light"] .hero-code-note-icon {
+    background: #E3F5EE !important;
+    border: 1px solid #A7E0CF !important;
+    color: #008767 !important;
+}
+
+/* DARK MODE NOTES */
+html[data-theme="dark"] .hero-code-note {
+    background: rgba(21, 32, 28, 0.95) !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    box-shadow: 0 16px 36px -20px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(16, 185, 129, 0.15) !important;
+}
+html[data-theme="dark"] .hero-code-note-icon {
+    background: rgba(16, 185, 129, 0.16) !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    color: #34D399 !important;
+}
+
+.hero-code-note-icon {
+    display: grid !important;
+    place-items: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+}
+.hero-code-note-coin {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    object-fit: contain !important;
+}
+
+@media (max-width: 1240px) {
+    .hero-code-note {
+        display: none !important;
+    }
+}
+
+/* 3. PYTHON STONE MONOLITH NATIVE DARK MODE SWITCHING */
+:root, html[data-theme="light"] {
+    --stone-outline: #D3DED9;
+    --stone-face: #E8F0EC;
+    --stone-highlight: #F6FAF8;
+    --stone-pebble: #94A3B8;
+    --stone-pebble-mid: #CBD5E1;
+    --stone-pebble-light: #E2E8F0;
+}
+html[data-theme="dark"] {
+    --stone-outline: #15221D;
+    --stone-face: #1C2D26;
+    --stone-highlight: #263C34;
+    --stone-pebble: #21332C;
+    --stone-pebble-mid: #283D35;
+    --stone-pebble-light: #324B41;
+}
+html[data-theme="dark"] .hero-companion-pebble {
+    fill: #21332C !important;
+}
+
+/* 4. DYNAMIC ANIMATED BACKGROUND (/transitions-ui-generation) */
+.page-journey-trail {
+    stroke: var(--brand-emerald) !important;
+    stroke-width: 2 !important;
+    stroke-dasharray: 8 16 !important;
+    animation: journeyTrailFlow 28s linear infinite !important;
+}
+.page-journey-trail--right {
+    animation-duration: 36s !important;
+    animation-direction: reverse !important;
+}
+@keyframes journeyTrailFlow {
+    to { stroke-dashoffset: -240; }
+}
+
+.page-journey-markers circle {
+    fill: #10B981 !important;
+    transform-box: fill-box !important;
+    transform-origin: center !important;
+    animation: markerBeacon 3.2s ease-in-out infinite alternate !important;
+}
+.page-journey-markers circle:nth-child(2n) {
+    animation-delay: -1.2s !important;
+    animation-duration: 3.8s !important;
+}
+.page-journey-markers circle:nth-child(3n) {
+    animation-delay: -2.1s !important;
+    animation-duration: 4.4s !important;
+}
+@keyframes markerBeacon {
+    0% { transform: scale(0.9); opacity: 0.35; filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.4)); }
+    100% { transform: scale(1.4); opacity: 0.95; filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.85)); }
+}
+
+.page-terrain-contours path {
+    stroke: var(--brand-emerald) !important;
+    stroke-width: 1.2 !important;
+    opacity: 0.18 !important;
+    fill: none !important;
+    animation: contourBreathe 9s ease-in-out infinite alternate !important;
+}
+.page-terrain-contours path:nth-child(even) {
+    animation-delay: -4.5s !important;
+    animation-duration: 11s !important;
+}
+html[data-theme="dark"] .page-terrain-contours path {
+    stroke: #34D399 !important;
+    opacity: 0.12 !important;
+}
+@keyframes contourBreathe {
+    0% { opacity: 0.12; transform: translateY(0); }
+    100% { opacity: 0.22; transform: translateY(-3px); }
+}
+
+.scenic-ambient-glow {
+    animation: auroraBreathe 7s ease-in-out infinite alternate !important;
+}
+@keyframes auroraBreathe {
+    0% { opacity: 0.55; transform: translateX(-50%) scale(0.96); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1.04); }
+}
+
+/* 5. COMPACT CURRICULUM TRACKS & MODULE CARDS */
+.curriculum-track-segmented-bar {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 1.75rem !important;
+}
+.curriculum-track-tab {
+    padding: 0.55rem 1rem !important;
+    border-radius: 9999px !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border: 1px solid var(--border-subtle) !important;
+    background: var(--bg-surface) !important;
+    color: var(--text-secondary) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.curriculum-track-tab:hover {
+    border-color: var(--brand-emerald) !important;
+    color: var(--brand-emerald) !important;
+    transform: translateY(-1px) !important;
+}
+.curriculum-track-tab.active {
+    background: var(--brand-emerald) !important;
+    border-color: var(--brand-emerald) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px -2px rgba(0, 135, 103, 0.4) !important;
+}
+html[data-theme="dark"] .curriculum-track-tab.active {
+    background: #10B981 !important;
+    border-color: #10B981 !important;
+    color: #0D1512 !important;
+    box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.5) !important;
+}
+
+.track-panel-deck {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+.track-panel-deck.active {
+    animation: deckFadeSlide 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+@keyframes deckFadeSlide {
+    from { opacity: 0.3; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.landing-track-banner {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 14px !important;
+    padding: 0.65rem 1.15rem !important;
+    margin-bottom: 0.85rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+    flex-wrap: wrap !important;
+    box-shadow: var(--shadow-xs) !important;
+}
+html[data-theme="dark"] .landing-track-banner {
+    background: #15201C !important;
+    border-color: #23332D !important;
+}
+
+.modules-matrix-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 0.85rem !important;
+}
+
+.landing-curriculum-card {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 14px !important;
+    padding: 0.95rem 1.1rem !important;
+    min-height: 155px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-shadow: var(--shadow-xs) !important;
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 200ms ease,
+                box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.landing-curriculum-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: var(--brand-emerald) !important;
+    box-shadow: 0 10px 24px -10px rgba(0, 135, 103, 0.22) !important;
+}
+html[data-theme="dark"] .landing-curriculum-card {
+    background: #15201C !important;
+    border-color: #23332D !important;
+}
+html[data-theme="dark"] .landing-curriculum-card:hover {
+    border-color: #10B981 !important;
+    box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(16, 185, 129, 0.25) !important;
+}
+
+.curriculum-mod-order {
+    font-family: var(--font-mono) !important;
+    font-size: 0.76rem !important;
+    font-weight: 800 !important;
+    padding: 0.18rem 0.5rem !important;
+    border-radius: 6px !important;
+    background: var(--bg-mint-soft) !important;
+    color: var(--brand-emerald) !important;
+}
+html[data-theme="dark"] .curriculum-mod-order {
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #34D399 !important;
+}
+
+.badge-tier-free {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    padding: 0.16rem 0.45rem !important;
+    border-radius: 6px !important;
+    background: rgba(16, 185, 129, 0.12) !important;
+    color: #047857 !important;
+}
+html[data-theme="dark"] .badge-tier-free {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34D399 !important;
+}
+
+.badge-tier-edu {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    padding: 0.16rem 0.45rem !important;
+    border-radius: 6px !important;
+    background: rgba(99, 102, 241, 0.12) !important;
+    color: #4F46E5 !important;
+}
+html[data-theme="dark"] .badge-tier-edu {
+    background: rgba(99, 102, 241, 0.22) !important;
+    color: #A5B4FC !important;
+}
+
+.curriculum-mod-title {
+    font-family: var(--font-display) !important;
+    font-size: 0.98rem !important;
+    font-weight: 800 !important;
+    margin: 0 0 0.35rem !important;
+    color: var(--text-primary) !important;
+    line-height: 1.32 !important;
+}
+.curriculum-mod-desc {
+    font-size: 0.8rem !important;
+    color: var(--text-secondary) !important;
+    line-height: 1.42 !important;
+    margin: 0 0 0.75rem !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+.curriculum-mod-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    padding-top: 0.65rem !important;
+    font-size: 0.76rem !important;
+    color: var(--text-muted) !important;
+}
+html[data-theme="dark"] .curriculum-mod-footer {
+    border-top-color: #23332D !important;
+}
+.curriculum-open-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    color: var(--brand-emerald) !important;
+    font-weight: 700 !important;
+    transition: transform 0.15s ease !important;
+}
+.landing-curriculum-card:hover .curriculum-open-link {
+    transform: translateX(3px) !important;
+}
+html[data-theme="dark"] .curriculum-open-link {
+    color: #34D399 !important;
+}
+
+/* 6. DARK MODE OVERRIDES FOR OTHER SECTIONS */
+html[data-theme="dark"] .school-cta-card,
+html[data-theme="dark"] .faq-card-item,
+html[data-theme="dark"] .comparison-table-wrapper {
+    background: #15201C !important;
+    border-color: #23332D !important;
+}
+html[data-theme="dark"] .comparison-table th {
+    background: #1B2924 !important;
+    border-bottom-color: #23332D !important;
+    color: #F3F7F5 !important;
+}
+html[data-theme="dark"] .comparison-table td {
+    border-bottom-color: #23332D !important;
+    color: #9BB0A6 !important;
+}
+html[data-theme="dark"] .comparison-table td strong {
+    color: #F3F7F5 !important;
+}
+html[data-theme="dark"] .comparison-table .col-codoro {
+    background: rgba(16, 185, 129, 0.08) !important;
+    color: #34D399 !important;
+}
+html[data-theme="dark"] .faq-search-input {
+    background: #15201C !important;
+    border-color: #23332D !important;
+    color: #F3F7F5 !important;
+}
+</style>
+
 <div class="public-hero-canvas-root" style="position:relative;">
 
     <!-- ====================================================================
@@ -559,17 +947,10 @@
             </span>
         </div>
 
-        <!-- Modern Responsive Track Segmented Bar (Zero Horizontal Scrollbar) -->
+        <!-- Modern Responsive Track Segmented Bar -->
         <div class="curriculum-track-segmented-bar" role="tablist" aria-label="Kariérne cesty">
-            <button type="button" class="curriculum-track-tab active" data-track="ALL" onclick="switchLandingTrack('ALL', this)" role="tab" aria-selected="true">
-                <span class="tab-icon">
-                    {% include 'components/icon_svg.html' with name='layers' size='15' %}
-                </span>
-                <span>{% if lang == 'en' %}All Tracks{% else %}Všetky cesty{% endif %}</span>
-                <span class="tab-count-pill">18</span>
-            </button>
             {% for track in tracks_data %}
-            <button type="button" class="curriculum-track-tab" data-track="{{ track.key }}" onclick="switchLandingTrack('{{ track.key }}', this)" role="tab" aria-selected="false">
+            <button type="button" class="curriculum-track-tab {% if forloop.first %}active{% endif %}" data-track="{{ track.key }}" onclick="switchLandingTrack('{{ track.key }}', this)" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
                 <span class="tab-icon">
                     {% if track.icon == 'zap' %}
                         {% include 'components/icon_svg.html' with name='lightning' size='14' %}
@@ -602,7 +983,7 @@
 
         <div class="track-panels-wrapper">
             {% for track in tracks_data %}
-            <div class="track-panel-deck active" id="track-panel-{{ track.key }}" data-track="{{ track.key }}">
+            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}" data-track="{{ track.key }}" style="{% if not forloop.first %}display:none;{% else %}display:flex;{% endif %} flex-direction:column;">
                 <!-- Track Overview Capsule Banner (Compact & Polished) -->
                 <div class="landing-track-banner">
                     <div style="display:flex; align-items:center; gap:0.75rem;">
@@ -635,7 +1016,7 @@
 
                 <div class="modules-matrix-grid">
                     {% for mod in track.modules %}
-                    <div class="landing-curriculum-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}">
+                    <a href="{% url 'register' %}" class="landing-curriculum-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}" style="text-decoration:none; color:inherit;">
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
                                 <span class="curriculum-mod-order">
@@ -670,12 +1051,12 @@
                                 {% include 'components/icon_svg.html' with name='file' size='12' %}
                                 <span>{% if lang == 'en' %}{{ mod.lessons.count }} Lessons{% else %}{{ mod.lessons.count }} Lekcií{% endif %}</span>
                             </span>
-                            <a href="{% url 'register' %}" class="curriculum-open-link">
+                            <span class="curriculum-open-link">
                                 <span>{% if lang == 'en' %}Open Module{% else %}Otvoriť modul{% endif %}</span>
                                 <span>→</span>
-                            </a>
+                            </span>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
             </div>
@@ -1316,21 +1697,48 @@
         // Reset all module cards inside decks to visible
         document.querySelectorAll('.curriculum-mod-card').forEach(card => card.style.display = 'flex');
 
-        if (trackKey === 'ALL') {
-            document.querySelectorAll('.track-panel-deck').forEach(p => {
+        document.querySelectorAll('.track-panel-deck').forEach(p => {
+            if (p.getAttribute('data-track') === trackKey || p.id === 'track-panel-' + trackKey) {
                 p.classList.add('active');
                 p.style.display = 'flex';
-            });
-        } else {
-            document.querySelectorAll('.track-panel-deck').forEach(p => {
-                if (p.getAttribute('data-track') === trackKey || p.id === 'track-panel-' + trackKey) {
-                    p.classList.add('active');
-                    p.style.display = 'flex';
-                } else {
-                    p.classList.remove('active');
-                    p.style.display = 'none';
+            } else {
+                p.classList.remove('active');
+                p.style.display = 'none';
+            }
+        });
+    }
+
+    // 8b. Instant Curriculum Module Search
+    function filterCurriculumModules() {
+        const query = (document.getElementById('curriculumSearchInput').value || '').toLowerCase().trim();
+        const emptyState = document.getElementById('curriculumEmptyState');
+        let matchedTotal = 0;
+
+        if (!query) {
+            const activeTab = document.querySelector('.curriculum-track-tab.active');
+            if (activeTab) {
+                switchLandingTrack(activeTab.getAttribute('data-track'), activeTab);
+            }
+            return;
+        }
+
+        document.querySelectorAll('.track-panel-deck').forEach(p => {
+            let deckHasMatch = false;
+            p.querySelectorAll('.curriculum-mod-card').forEach(card => {
+                const title = (card.getAttribute('data-title') || '').toLowerCase();
+                const matches = title.includes(query);
+                card.style.display = matches ? 'flex' : 'none';
+                if (matches) {
+                    deckHasMatch = true;
+                    matchedTotal++;
                 }
             });
+            p.style.display = deckHasMatch ? 'flex' : 'none';
+            if (deckHasMatch) p.classList.add('active');
+        });
+
+        if (emptyState) {
+            emptyState.style.display = (matchedTotal === 0) ? 'block' : 'none';
         }
     }
 
