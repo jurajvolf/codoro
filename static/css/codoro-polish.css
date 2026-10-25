@@ -2131,6 +2131,14 @@ body.page-emerald-landing footer {
     background: radial-gradient(circle, rgba(156, 217, 184, 0.2), rgba(156, 217, 184, 0) 68%);
 }
 
+[data-theme="dark"] .hero-stage::before,
+[data-theme="dark"] .hero-stage::after,
+[data-theme="dark"] .scenic-ambient-glow {
+    display: none !important;
+    background: transparent !important;
+    opacity: 0 !important;
+}
+
 .hero-learning-route {
     position: absolute;
     z-index: 2;

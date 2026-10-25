@@ -28,6 +28,15 @@ html[data-theme="dark"] .public-hero-canvas-root {
     background: #0D1512 !important;
 }
 
+/* ELIMINATE WHITE GLOW AT TOP IN DARK MODE */
+html[data-theme="dark"] .hero-stage::before,
+html[data-theme="dark"] .hero-stage::after,
+html[data-theme="dark"] .scenic-ambient-glow {
+    display: none !important;
+    background: transparent !important;
+    opacity: 0 !important;
+}
+
 /* 2. SYMMETRICAL HERO CODE NOTES (ZERO YELLOW SQUARE) */
 .hero-code-note {
     position: absolute !important;
@@ -117,38 +126,67 @@ html[data-theme="dark"] .hero-companion-pebble {
     fill: #21332C !important;
 }
 
-/* 4. DYNAMIC ANIMATED BACKGROUND (/transitions-ui-generation) */
+/* 4. GENERATIVE PATH TRACING & BACKGROUND LIFE (/transitions-ui-generation) */
 .page-journey-trail {
     stroke: var(--brand-emerald) !important;
-    stroke-width: 2 !important;
-    stroke-dasharray: 8 16 !important;
-    animation: journeyTrailFlow 28s linear infinite !important;
+    stroke-width: 2.2 !important;
+    stroke-dasharray: 6 14 !important;
+    stroke-dashoffset: 4000;
+    animation: journeyGenerativeBuild 2.8s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+               journeyTrailFlow 28s linear 2.8s infinite !important;
 }
 .page-journey-trail--right {
-    animation-duration: 36s !important;
-    animation-direction: reverse !important;
+    animation: journeyGenerativeBuild 3.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+               journeyTrailFlow 34s linear 3.2s infinite reverse !important;
+}
+@keyframes journeyGenerativeBuild {
+    0% { stroke-dashoffset: 4000; opacity: 0; filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.9)); }
+    12% { opacity: 0.95; }
+    100% { stroke-dashoffset: 0; opacity: 1; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.3)); }
 }
 @keyframes journeyTrailFlow {
-    to { stroke-dashoffset: -240; }
+    to { stroke-dashoffset: -320; }
+}
+
+.page-journey-halo {
+    stroke: rgba(16, 185, 129, 0.22) !important;
+    stroke-width: 8 !important;
+    stroke-dashoffset: 4000;
+    animation: haloGenerativeBuild 3.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+               haloPulse 6s ease-in-out 3.2s infinite alternate !important;
+}
+@keyframes haloGenerativeBuild {
+    0% { stroke-dashoffset: 4000; opacity: 0; }
+    100% { stroke-dashoffset: 0; opacity: 0.35; }
+}
+@keyframes haloPulse {
+    0% { opacity: 0.2; stroke-width: 6; }
+    100% { opacity: 0.45; stroke-width: 9; }
 }
 
 .page-journey-markers circle {
     fill: #10B981 !important;
     transform-box: fill-box !important;
     transform-origin: center !important;
-    animation: markerBeacon 3.2s ease-in-out infinite alternate !important;
+    animation: markerPopIn 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards,
+               markerBeacon 3.2s ease-in-out 1.6s infinite alternate !important;
 }
 .page-journey-markers circle:nth-child(2n) {
-    animation-delay: -1.2s !important;
-    animation-duration: 3.8s !important;
+    animation-delay: 0.3s, 1.9s !important;
+    animation-duration: 1.6s, 3.8s !important;
 }
 .page-journey-markers circle:nth-child(3n) {
-    animation-delay: -2.1s !important;
-    animation-duration: 4.4s !important;
+    animation-delay: 0.6s, 2.2s !important;
+    animation-duration: 1.6s, 4.4s !important;
+}
+@keyframes markerPopIn {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.6); opacity: 1; filter: drop-shadow(0 0 10px #34D399); }
+    100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 5px #10B981); }
 }
 @keyframes markerBeacon {
     0% { transform: scale(0.9); opacity: 0.35; filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.4)); }
-    100% { transform: scale(1.4); opacity: 0.95; filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.85)); }
+    100% { transform: scale(1.35); opacity: 0.95; filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.85)); }
 }
 
 .page-terrain-contours path {
@@ -176,16 +214,53 @@ html[data-theme="dark"] .page-terrain-contours path {
     inset: 0 !important;
     pointer-events: none !important;
     background-image: radial-gradient(circle, rgba(16, 185, 129, 0.16) 1.2px, transparent 1.2px) !important;
-    background-size: 40px 40px !important;
+    background-size: 38px 38px !important;
     opacity: 0.28 !important;
     mask-image: radial-gradient(ellipse at 50% 25%, #000 35%, transparent 75%) !important;
     -webkit-mask-image: radial-gradient(ellipse at 50% 25%, #000 35%, transparent 75%) !important;
     animation: gridPulse 8s ease-in-out infinite alternate !important;
     z-index: 0 !important;
 }
+.generative-grid-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    height: 220px;
+    background: linear-gradient(180deg, transparent 0%, rgba(16, 185, 129, 0.14) 50%, transparent 100%);
+    animation: scanLineProbe 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+}
+@keyframes scanLineProbe {
+    0% { transform: translateY(-220px); opacity: 0; }
+    10% { opacity: 0.85; }
+    90% { opacity: 0.85; }
+    100% { transform: translateY(3600px); opacity: 0; }
+}
 @keyframes gridPulse {
     0% { opacity: 0.16; transform: scale(0.995); }
     100% { opacity: 0.38; transform: scale(1.005); }
+}
+
+/* CURRICULUM SEARCH STABILITY & UNIFIED RESULTS GRID */
+#curriculum {
+    min-height: 640px;
+}
+.track-panels-wrapper {
+    min-height: 480px;
+}
+#curriculum.is-searching .curriculum-track-nav-wrap,
+#curriculum.is-searching .track-stage-card,
+#curriculum.is-searching .track-capstone-banner {
+    display: none !important;
+}
+#curriculum.is-searching .track-panels-wrapper {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+    gap: 1rem !important;
+}
+#curriculum.is-searching .track-panel-deck,
+#curriculum.is-searching .track-milestones-grid {
+    display: contents !important;
 }
 
 /* 5. EDITORIAL TRACK JOURNEY & MILESTONE ROADMAP (/design-taste-frontend) */
@@ -525,7 +600,7 @@ html[data-theme="dark"] .faq-search-input {
     <div class="scenic-ambient-glow" aria-hidden="true"></div>
     <div class="generative-grid-overlay" aria-hidden="true"></div>
     <div class="codoro-page-ambience" aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0;">
-        <svg viewBox="0 0 1440 3600" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 1440 3600" fill="none" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
             <g class="page-terrain-contours" fill="none" aria-hidden="true">
                 <path fill="none" d="M-80 330 C150 240 300 430 520 350 S900 245 1110 350 S1390 415 1520 300"/>
                 <path fill="none" d="M-80 390 C150 300 300 490 520 410 S900 305 1110 410 S1390 475 1520 360"/>
@@ -1011,28 +1086,28 @@ html[data-theme="dark"] .faq-search-input {
                 <tbody>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Classroom & Teacher Ecosystem{% else %}Školská trieda & Učiteľský CMS{% endif %}</strong></td>
-                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);">✕ {% if lang == 'en' %}Solo only. No teacher oversight or real class bonding.{% else %}Iba pre samoukov. Učiteľ nemá prehľad ani správu triedy.{% endif %}</td>
-                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Full SchoolClass linking, teacher live god-mode & class quests.{% else %}Reálne školské triedy, hromadné generovanie žiakov, spoločné triedne výzvy.{% endif %}</td>
+                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);"><span class="comparison-icon-cross" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(239,68,68,0.12); color:#EF4444; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>{% if lang == 'en' %}Solo only. No teacher oversight or real class bonding.{% else %}Iba pre samoukov. Učiteľ nemá prehľad ani správu triedy.{% endif %}</td>
+                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);"><span class="comparison-icon-check" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#10B981; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>{% if lang == 'en' %}Full SchoolClass linking, teacher live god-mode & class quests.{% else %}Reálne školské triedy, hromadné generovanie žiakov, spoločné triedne výzvy.{% endif %}</td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}AI Tutor Philosophy{% else %}Filozofia AI Tútora (Codo){% endif %}</strong></td>
-                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);">✕ {% if lang == 'en' %}Generates the full answer; students copy-paste without learning.{% else %}ChatGPT napíše hotový kód a žiak sa nič nenaučí.{% endif %}</td>
-                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Strict Socratic method: analyzes test failures and guides with questions.{% else %}Prísny Sokratovský prístup: nikdy neprezradí kód, navedie žiaka otázkou.{% endif %}</td>
+                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);"><span class="comparison-icon-cross" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(239,68,68,0.12); color:#EF4444; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>{% if lang == 'en' %}Generates the full answer; students copy-paste without learning.{% else %}ChatGPT napíše hotový kód a žiak sa nič nenaučí.{% endif %}</td>
+                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);"><span class="comparison-icon-check" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#10B981; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>{% if lang == 'en' %}Strict Socratic method: analyzes test failures and guides with questions.{% else %}Prísny Sokratovský prístup: nikdy neprezradí kód, navedie žiaka otázkou.{% endif %}</td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Real Economy with Inventory{% else %}Školská ekonomika a sklad zásob{% endif %}</strong></td>
-                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);">✕ {% if lang == 'en' %}Meaningless virtual points that buy cosmetics only.{% else %}Virtuálne body bez reálnej hodnoty.{% endif %}</td>
-                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Doros coins buy real school perks (homework pass) with weekly stock caps.{% else %}Doros mince kupujú reálne výhody (odpustenie DÚ) s riadeným týždenným skladom.{% endif %}</td>
+                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);"><span class="comparison-icon-cross" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(239,68,68,0.12); color:#EF4444; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>{% if lang == 'en' %}Meaningless virtual points that buy cosmetics only.{% else %}Virtuálne body bez reálnej hodnoty.{% endif %}</td>
+                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);"><span class="comparison-icon-check" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#10B981; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>{% if lang == 'en' %}Doros coins buy real school perks (homework pass) with weekly stock caps.{% else %}Doros mince kupujú reálne výhody (odpustenie DÚ) s riadeným týždenným skladom.{% endif %}</td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Language & Curriculum Quality{% else %}100 % Dvojjazyčnosť (SK / EN){% endif %}</strong></td>
-                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);">✕ {% if lang == 'en' %}English only or sloppy machine translation.{% else %}Iba angličtina alebo nekvalitný strojový preklad.{% endif %}</td>
-                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Native 100% Slovak and English across all 18 modules, IDE, and AI.{% else %}100 % slovenčina a angličtina od teórie a testov až po odpovede AI tútora.{% endif %}</td>
+                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);"><span class="comparison-icon-cross" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(239,68,68,0.12); color:#EF4444; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>{% if lang == 'en' %}English only or sloppy machine translation.{% else %}Iba angličtina alebo nekvalitný strojový preklad.{% endif %}</td>
+                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);"><span class="comparison-icon-check" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#10B981; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>{% if lang == 'en' %}Native 100% Slovak and English across all 18 modules, IDE, and AI.{% else %}100 % slovenčina a angličtina od teórie a testov až po odpovede AI tútora.{% endif %}</td>
                     </tr>
                     <tr>
                         <td><strong>{% if lang == 'en' %}Capstone Projects & Certification{% else %}Záverečné projekty & Certifikácia{% endif %}</strong></td>
-                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);">✕ {% if lang == 'en' %}Generic snippets without portfolio building.{% else %}Iba izolované fragmenty kódu bez tvorby skutočného portfólia.{% endif %}</td>
-                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);">✓ {% if lang == 'en' %}Capstone Special: in-memory SQLite, Big-O, cryptography, and real software projects.{% else %}Záverečný špeciál: SQL v pamäti, Big-O, kryptografia a komplexné softvérové projekty.{% endif %}</td>
+                        <td data-label="{% if lang == 'en' %}Other platforms{% else %}Bežné platformy{% endif %}" style="color:var(--text-muted);"><span class="comparison-icon-cross" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(239,68,68,0.12); color:#EF4444; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>{% if lang == 'en' %}Generic snippets without portfolio building.{% else %}Iba izolované fragmenty kódu bez tvorby skutočného portfólia.{% endif %}</td>
+                        <td data-label="Codoro" class="col-codoro" style="color:var(--brand-emerald);"><span class="comparison-icon-check" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#10B981; margin-right:6px; flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>{% if lang == 'en' %}Capstone Special: in-memory SQLite, Big-O, cryptography, and real software projects.{% else %}Záverečný špeciál: SQL v pamäti, Big-O, kryptografia a komplexné softvérové projekty.{% endif %}</td>
                     </tr>
                 </tbody>
             </table>
@@ -1057,13 +1132,28 @@ html[data-theme="dark"] .faq-search-input {
         </div>
 
         <!-- Filter & Search Bar for Curriculum (Compact, Sleek) -->
-        <div style="max-width:480px; margin:0 auto 1.5rem; position:relative;">
+        <div style="max-width:480px; margin:0 auto 1.25rem; position:relative;">
             <input type="text" id="curriculumSearchInput" onkeyup="filterCurriculumModules()"
                    placeholder="{% if lang == 'en' %}Search topics (e.g. OOP, SQL, Loops, Crypto)...{% else %}Hľadať témy (napr. OOP, SQL, cykly, šifry)...{% endif %}"
-                   class="faq-search-input" style="padding-left:2.75rem;">
+                   class="faq-search-input" style="padding-left:2.75rem; padding-right:2.4rem;">
             <span class="faq-search-icon">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </span>
+            <button type="button" id="curriculumSearchClearBtn" onclick="clearCurriculumSearch()" style="display:none; position:absolute; right:0.85rem; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0.25rem;" aria-label="Clear">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- Curriculum Active Search Status Bar -->
+        <div id="curriculumSearchStatus" style="display:none; align-items:center; justify-content:space-between; max-width:1120px; margin:0 auto 1.25rem; padding:0.65rem 1.25rem; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; font-size:0.86rem; color:var(--text-secondary);">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--brand-emerald);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <strong id="curriculumSearchCount" style="color:var(--text-primary); font-weight:700;"></strong>
+            </div>
+            <button type="button" onclick="clearCurriculumSearch()" class="btn-subtle-full" style="width:auto; padding:0.25rem 0.75rem; font-size:0.78rem; border-radius:9999px; display:inline-flex; align-items:center; gap:0.35rem;">
+                <span>{% if lang == 'en' %}Reset Search{% else %}Zrušiť hľadanie{% endif %}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
 
         <!-- Modern Single-Row Responsive Track Segmented Bar -->
@@ -1077,15 +1167,20 @@ html[data-theme="dark"] .faq-search-input {
             </div>
         </div>
 
-        <!-- Curriculum Empty State for Search -->
+        <!-- Curriculum Empty State for Search (No Emojis) -->
         <div id="curriculumEmptyState" style="display:none; text-align:center; padding:3rem 1.5rem; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:20px; max-width:540px; margin:0 auto 2rem;">
-            <div style="font-size:2rem; margin-bottom:0.5rem;">🔍</div>
+            <div style="width:52px; height:52px; border-radius:14px; background:var(--bg-mint-soft); color:var(--brand-emerald); display:inline-flex; align-items:center; justify-content:center; margin:0 auto 0.85rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
             <strong style="font-family:var(--font-display); font-size:1.15rem; color:var(--text-primary); display:block; margin-bottom:0.35rem;">
                 {% if lang == 'en' %}No modules matched your search{% else %}Žiadne moduly nezodpovedajú vyhľadávaniu{% endif %}
             </strong>
-            <p style="font-size:0.88rem; color:var(--text-secondary); margin:0;">
+            <p style="font-size:0.88rem; color:var(--text-secondary); margin:0 0 1rem;">
                 {% if lang == 'en' %}Try searching for OOP, SQL, functions, loops, or lists.{% else %}Skús hľadať napr. OOP, SQL, funkcie, cykly alebo zoznamy.{% endif %}
             </p>
+            <button type="button" onclick="clearCurriculumSearch()" class="btn-subtle-full" style="width:auto; padding:0.4rem 1rem; font-size:0.82rem; border-radius:9999px;">
+                {% if lang == 'en' %}Clear search{% else %}Vymazať vyhľadávanie{% endif %}
+            </button>
         </div>
 
         <div class="track-panels-wrapper">
@@ -1120,7 +1215,10 @@ html[data-theme="dark"] .faq-search-input {
                                 <div class="milestone-top-row">
                                     <span class="milestone-pill-order">#{{ mod.order|stringformat:"02d" }}</span>
                                     <div style="display:flex; align-items:center; gap:0.35rem;">
-                                        <span style="font-size:0.72rem; font-weight:700; color:var(--text-secondary);">⏱️ {{ mod.estimated_hours }}h</span>
+                                        <span style="font-size:0.72rem; font-weight:700; color:var(--text-secondary); display:inline-flex; align-items:center; gap:0.25rem;">
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                            <span>{{ mod.estimated_hours }}h</span>
+                                        </span>
                                         {% if mod.is_pro_only %}
                                         <span class="badge-tier-edu">EDU</span>
                                         {% else %}
@@ -1149,8 +1247,10 @@ html[data-theme="dark"] .faq-search-input {
                     <!-- Tangible Capstone Project Banner -->
                     <div class="track-capstone-banner">
                         <div>
-                            <div class="capstone-info-title">
-                                <span>🏆</span>
+                            <div class="capstone-info-title" style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="capstone-trophy-icon" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px; background:rgba(0,135,103,0.12); color:var(--brand-emerald); flex-shrink:0;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                                </span>
                                 <strong>
                                     {% if forloop.counter == 1 %}
                                         {% if lang == 'en' %}Milestone Project: Interactive Text Quest & Logic Game{% else %}Výsledný projekt etapy: Interaktívna textová adventúra & logická hra{% endif %}
@@ -1243,7 +1343,7 @@ html[data-theme="dark"] .faq-search-input {
             <div class="faq-card-item open">
                 <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
                     <span>{% if lang == 'en' %}What is Codoro and how does it work in schools?{% else %}Čo je Codoro a ako funguje na stredných školách?{% endif %}</span>
-                    <span class="faq-chevron">▼</span>
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-card-body">
                     {% if lang == 'en' %}
@@ -1258,7 +1358,7 @@ html[data-theme="dark"] .faq-search-input {
             <div class="faq-card-item">
                 <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
                     <span>{% if lang == 'en' %}How does the Socratic AI Tutor Codo differ from ChatGPT?{% else %}Ako sa Sokratovský AI Tútor Codo líši od bežného ChatGPT?{% endif %}</span>
-                    <span class="faq-chevron">▼</span>
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-card-body">
                     {% if lang == 'en' %}
@@ -1273,7 +1373,7 @@ html[data-theme="dark"] .faq-search-input {
             <div class="faq-card-item">
                 <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
                     <span>{% if lang == 'en' %}What are Doros coins and how do weekly stock limits work?{% else %}Čo sú Doros mince a ako funguje riadený sklad odmien?{% endif %}</span>
-                    <span class="faq-chevron">▼</span>
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-card-body">
                     {% if lang == 'en' %}
@@ -1288,7 +1388,7 @@ html[data-theme="dark"] .faq-search-input {
             <div class="faq-card-item">
                 <button type="button" class="faq-card-header" onclick="toggleFaqCard(this)">
                     <span>{% if lang == 'en' %}Is Codoro fully bilingual in Slovak and English?{% else %}Je Codoro naozaj 100 % dvojjazyčné v slovenčine aj angličtine?{% endif %}</span>
-                    <span class="faq-chevron">▼</span>
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-card-body">
                     {% if lang == 'en' %}
@@ -1322,14 +1422,17 @@ html[data-theme="dark"] .faq-search-input {
 
         <!-- Kontaktná adresa a podpora -->
         <div style="display:inline-flex; align-items:center; gap:1.25rem; flex-wrap:wrap; justify-content:center; background:var(--bg-surface); padding:0.75rem 1.4rem; border-radius:9999px; border:1px solid var(--border-subtle); font-size:0.84rem; color:var(--text-secondary);">
-            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
-                📍 Hattalova 471, 027 43 Nižná, Slovenská republika
+            <span style="display:inline-flex; align-items:center; gap:0.45rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-emerald);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Hattalova 471, 027 43 Nižná, Slovenská republika</span>
             </span>
-            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
-                ✉️ <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald); text-decoration:none; font-weight:600;">podpora@codoro.sk</a>
+            <span style="display:inline-flex; align-items:center; gap:0.45rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-emerald);"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <a href="mailto:podpora@codoro.sk" style="color:var(--brand-emerald); text-decoration:none; font-weight:600;">podpora@codoro.sk</a>
             </span>
-            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
-                📞 +421 948 123 456
+            <span style="display:inline-flex; align-items:center; gap:0.45rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-emerald);"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span>+421 948 123 456</span>
             </span>
         </div>
 
@@ -1606,8 +1709,9 @@ html[data-theme="dark"] .faq-search-input {
         modal.innerHTML = `
             <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:20px; max-width:440px; width:100%; padding:1.75rem; box-shadow:var(--shadow-xl); position:relative;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <strong style="font-family:var(--font-display); font-size:1.15rem; color:var(--text-primary);">
-                        ${(currentLang === 'en') ? '⌨️ Codoro Studio Shortcuts' : '⌨️ Klávesové skratky štúdia'}
+                    <strong style="font-family:var(--font-display); font-size:1.15rem; color:var(--text-primary); display:inline-flex; align-items:center; gap:0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-emerald);"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.01"/><path d="M10 8h.01"/><path d="M14 8h.01"/><path d="M18 8h.01"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M7 16h10"/></svg>
+                        <span>${(currentLang === 'en') ? 'Codoro Studio Shortcuts' : 'Klávesové skratky štúdia'}</span>
                     </strong>
                     <button type="button" onclick="document.getElementById('shortcutsModalOverlay').style.display='none'" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);">&times;</button>
                 </div>
@@ -1810,6 +1914,15 @@ html[data-theme="dark"] .faq-search-input {
         const emptyState = document.getElementById('curriculumEmptyState');
         if (emptyState) emptyState.style.display = 'none';
 
+        const section = document.getElementById('curriculum');
+        if (section) section.classList.remove('is-searching');
+
+        const searchStatus = document.getElementById('curriculumSearchStatus');
+        if (searchStatus) searchStatus.style.display = 'none';
+
+        const clearBtn = document.getElementById('curriculumSearchClearBtn');
+        if (clearBtn) clearBtn.style.display = 'none';
+
         // Reset all module cards inside decks to visible
         document.querySelectorAll('.curriculum-mod-card').forEach(card => card.style.display = 'flex');
 
@@ -1822,38 +1935,89 @@ html[data-theme="dark"] .faq-search-input {
         });
     }
 
-    // 8b. Instant Curriculum Module Search
+    // 8b. Unified Instant Curriculum Module Search (No layout jitter or stretching)
     function filterCurriculumModules() {
-        const query = (document.getElementById('curriculumSearchInput').value || '').toLowerCase().trim();
+        const input = document.getElementById('curriculumSearchInput');
+        const query = (input ? input.value : '').toLowerCase().trim();
+        const section = document.getElementById('curriculum');
+        const clearBtn = document.getElementById('curriculumSearchClearBtn');
         const emptyState = document.getElementById('curriculumEmptyState');
+        const statusEl = document.getElementById('curriculumSearchStatus');
+        const countEl = document.getElementById('curriculumSearchCount');
         let matchedTotal = 0;
 
+        if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
         if (!query) {
-            const activeTab = document.querySelector('.curriculum-track-tab.active');
-            if (activeTab) {
-                switchLandingTrack(activeTab.getAttribute('data-track'), activeTab);
-            }
+            clearCurriculumSearch();
             return;
         }
 
-        document.querySelectorAll('.track-panel-deck').forEach(p => {
-            let deckHasMatch = false;
-            p.querySelectorAll('.curriculum-mod-card').forEach(card => {
-                const title = (card.getAttribute('data-title') || '').toLowerCase();
-                const matches = title.includes(query);
-                card.style.display = matches ? 'flex' : 'none';
-                if (matches) {
-                    deckHasMatch = true;
-                    matchedTotal++;
-                }
-            });
-            p.classList.toggle('active', deckHasMatch);
+        if (section) section.classList.add('is-searching');
+
+        document.querySelectorAll('.curriculum-mod-card').forEach(card => {
+            const title = (card.getAttribute('data-title') || '').toLowerCase();
+            const matches = title.includes(query);
+            card.style.display = matches ? 'flex' : 'none';
+            if (matches) matchedTotal++;
         });
+
+        if (statusEl) {
+            statusEl.style.display = 'flex';
+            if (countEl) {
+                const isEn = (document.documentElement.getAttribute('lang') === 'en');
+                countEl.textContent = isEn
+                    ? `Found ${matchedTotal} module${matchedTotal === 1 ? '' : 's'} for "${query}"`
+                    : `Nájdených ${matchedTotal} modulov pre "${query}"`;
+            }
+        }
 
         if (emptyState) {
             emptyState.style.display = (matchedTotal === 0) ? 'block' : 'none';
         }
     }
+
+    function clearCurriculumSearch() {
+        const input = document.getElementById('curriculumSearchInput');
+        if (input) input.value = '';
+        const clearBtn = document.getElementById('curriculumSearchClearBtn');
+        if (clearBtn) clearBtn.style.display = 'none';
+        const section = document.getElementById('curriculum');
+        if (section) section.classList.remove('is-searching');
+        const statusEl = document.getElementById('curriculumSearchStatus');
+        if (statusEl) statusEl.style.display = 'none';
+        const emptyState = document.getElementById('curriculumEmptyState');
+        if (emptyState) emptyState.style.display = 'none';
+
+        document.querySelectorAll('.curriculum-mod-card').forEach(card => card.style.display = 'flex');
+
+        const activeTab = document.querySelector('.curriculum-track-tab.active');
+        if (activeTab) {
+            switchLandingTrack(activeTab.getAttribute('data-track'), activeTab);
+        }
+    }
+
+    // 8c. Generative Path Flow on Scroll (/transitions-ui-generation)
+    (() => {
+        const trails = document.querySelectorAll('.page-journey-trail');
+        if (!trails.length) return;
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY || window.pageYOffset || 0;
+                    const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+                    const ratio = Math.min(1, Math.max(0, scrollY / scrollMax));
+                    trails.forEach((trail, idx) => {
+                        const factor = (idx % 2 === 0) ? 1 : -1;
+                        trail.style.strokeDashoffset = `${(factor * ratio * 520).toFixed(1)}px`;
+                    });
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    })();
 
     // 9. Instant FAQ Live Search
     function filterFaq() {
