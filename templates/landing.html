@@ -249,16 +249,20 @@ html[data-theme="dark"] .page-terrain-contours path {
     min-height: 480px;
 }
 #curriculum.is-searching .curriculum-track-nav-wrap,
-#curriculum.is-searching .track-stage-card,
+#curriculum.is-searching .track-stage-header,
 #curriculum.is-searching .track-capstone-banner {
     display: none !important;
 }
 #curriculum.is-searching .track-panels-wrapper {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
-    gap: 1rem !important;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
 }
 #curriculum.is-searching .track-panel-deck,
+#curriculum.is-searching .track-stage-card,
 #curriculum.is-searching .track-milestones-grid {
     display: contents !important;
 }
@@ -1955,9 +1959,13 @@ html[data-theme="dark"] .faq-search-input {
 
         if (section) section.classList.add('is-searching');
 
+        // Make all track decks active in DOM so their cards participate in the unified grid
+        document.querySelectorAll('.track-panel-deck').forEach(p => p.classList.add('active'));
+
         document.querySelectorAll('.curriculum-mod-card').forEach(card => {
             const title = (card.getAttribute('data-title') || '').toLowerCase();
-            const matches = title.includes(query);
+            const text = card.textContent.toLowerCase();
+            const matches = title.includes(query) || text.includes(query);
             card.style.display = matches ? 'flex' : 'none';
             if (matches) matchedTotal++;
         });
@@ -2041,50 +2049,6 @@ html[data-theme="dark"] .faq-search-input {
         }
     }
 
-    // 10. Instant Curriculum Module Search
-    function filterCurriculumModules() {
-        const input = document.getElementById('curriculumSearchInput');
-        const query = (input ? input.value : '').toLowerCase().trim();
-        const cards = document.querySelectorAll('.curriculum-mod-card');
-        const emptyState = document.getElementById('curriculumEmptyState');
-        let visibleCount = 0;
-
-        if (query) {
-            // When user types a search query, show across all decks
-            document.querySelectorAll('.track-panel-deck').forEach(p => {
-                p.classList.add('active');
-                p.style.display = 'flex';
-            });
-
-            cards.forEach(card => {
-                const title = (card.getAttribute('data-title') || '').toLowerCase();
-                if (title.includes(query)) {
-                    card.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Hide empty deck sections where no cards match
-            document.querySelectorAll('.track-panel-deck').forEach(deck => {
-                const visibleInDeck = deck.querySelectorAll('.curriculum-mod-card:not([style*="display: none"])').length;
-                deck.style.display = visibleInDeck > 0 ? 'flex' : 'none';
-            });
-
-            if (emptyState) {
-                emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
-        } else {
-            // Restore decks based on the currently selected tab
-            if (emptyState) emptyState.style.display = 'none';
-            cards.forEach(card => card.style.display = 'flex');
-
-            const activeTab = document.querySelector('.curriculum-track-tab.active');
-            const activeKey = activeTab ? activeTab.getAttribute('data-track') : 'ALL';
-            switchLandingTrack(activeKey, activeTab);
-        }
-    }
 
     // 11. Native Web Share or Link Copy
     function sharePlatform() {
