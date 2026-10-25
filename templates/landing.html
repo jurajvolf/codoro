@@ -259,11 +259,15 @@ html[data-theme="dark"] .curriculum-track-tab.active {
 }
 
 .track-panel-deck {
+    display: none;
     width: 100% !important;
     max-width: 1120px !important;
     margin: 0 auto !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
 }
 .track-panel-deck.active {
+    display: flex !important;
     animation: deckFadeSlide 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 @keyframes deckFadeSlide {
@@ -1086,7 +1090,7 @@ html[data-theme="dark"] .faq-search-input {
 
         <div class="track-panels-wrapper">
             {% for track in tracks_data %}
-            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}" data-track="{{ track.key }}" style="{% if not forloop.first %}display:none;{% else %}display:flex;{% endif %} flex-direction:column; gap:1.25rem;">
+            <div class="track-panel-deck {% if forloop.first %}active{% endif %}" id="track-panel-{{ track.key }}" data-track="{{ track.key }}">
                 <!-- Track Stage Card (Identity, Mission, Stats) -->
                 <div class="track-stage-card">
                     <div class="track-stage-header">
@@ -1812,10 +1816,8 @@ html[data-theme="dark"] .faq-search-input {
         document.querySelectorAll('.track-panel-deck').forEach(p => {
             if (p.getAttribute('data-track') === trackKey || p.id === 'track-panel-' + trackKey) {
                 p.classList.add('active');
-                p.style.display = 'flex';
             } else {
                 p.classList.remove('active');
-                p.style.display = 'none';
             }
         });
     }
@@ -1845,8 +1847,7 @@ html[data-theme="dark"] .faq-search-input {
                     matchedTotal++;
                 }
             });
-            p.style.display = deckHasMatch ? 'flex' : 'none';
-            if (deckHasMatch) p.classList.add('active');
+            p.classList.toggle('active', deckHasMatch);
         });
 
         if (emptyState) {
