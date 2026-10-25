@@ -155,7 +155,7 @@ html[data-theme="dark"] .hero-companion-pebble {
     stroke: #ffffff;
     stroke-width: 40;
     fill: none;
-    transition: stroke-dashoffset 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: stroke-dashoffset;
 }
 
 .page-journey-markers circle {
@@ -2024,7 +2024,7 @@ html[data-theme="dark"] .faq-search-input {
         }
     }
 
-    // 8c. Real-time Generative Path Drawing on Scroll (/transitions-ui-generation)
+    // 8c. Butter-Smooth Seamless Generative Path Drawing (Physics Lerp Loop)
     (() => {
         const maskLeft = document.getElementById('journeyMaskPathLeft');
         const maskRight = document.getElementById('journeyMaskPathRight');
@@ -2046,83 +2046,76 @@ html[data-theme="dark"] .faq-search-input {
         maskLeft.style.strokeDashoffset = `${lenLeft}`;
         maskRight.style.strokeDashoffset = `${lenRight}`;
 
-        let maxRatio = 0; // Tracks highest generative point reached ("a potom by zostali")
+        let currentRatio = 0;
+        // Initial hero reveal target on load
+        let targetRatio = Math.max(0.18, Math.min(0.32, (window.innerHeight * 1.1) / 3600));
 
         function applyGenerativeProgress(ratio) {
-            if (ratio < maxRatio) return; // Keep progress permanently forward!
-            maxRatio = ratio;
-
-            const offsetL = (lenLeft * (1 - ratio)).toFixed(1);
-            const offsetR = (lenRight * (1 - ratio)).toFixed(1);
+            const offsetL = (lenLeft * (1 - ratio)).toFixed(2);
+            const offsetR = (lenRight * (1 - ratio)).toFixed(2);
             maskLeft.style.strokeDashoffset = offsetL;
             maskRight.style.strokeDashoffset = offsetR;
 
-            // Update drawing spark positions at the leading head
-            if (sparkLeft && sparkRight && ratio > 0.01 && ratio < 0.99) {
-                try {
-                    const ptL = maskLeft.getPointAtLength(ratio * lenLeft);
-                    const ptR = maskRight.getPointAtLength(ratio * lenRight);
-                    sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
-                    sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
-                    sparkRight.setAttribute('cx', ptR.x.toFixed(1));
-                    sparkRight.setAttribute('cy', ptR.y.toFixed(1));
-                    sparkLeft.style.opacity = '1';
-                    sparkRight.style.opacity = '1';
-                } catch(e) {}
-            } else if (sparkLeft && sparkRight && ratio >= 0.99) {
-                sparkLeft.style.opacity = '0';
-                sparkRight.style.opacity = '0';
+            // Smoothly track drawing spark positions at the leading head
+            if (sparkLeft && sparkRight) {
+                if (ratio > 0.005 && ratio < 0.995) {
+                    try {
+                        const ptL = maskLeft.getPointAtLength(ratio * lenLeft);
+                        const ptR = maskRight.getPointAtLength(ratio * lenRight);
+                        sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
+                        sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
+                        sparkRight.setAttribute('cx', ptR.x.toFixed(1));
+                        sparkRight.setAttribute('cy', ptR.y.toFixed(1));
+                        sparkLeft.style.opacity = '1';
+                        sparkRight.style.opacity = '1';
+                    } catch(e) {}
+                } else {
+                    sparkLeft.style.opacity = '0';
+                    sparkRight.style.opacity = '0';
+                }
             }
 
-            // Pop in waypoint markers when generative path reaches them
+            // Pop in waypoint markers as path arrives at them
             const currentY = ratio * 3600;
             markers.forEach(marker => {
                 const targetY = parseFloat(marker.getAttribute('data-target-y') || marker.getAttribute('cy') || '0');
-                if (currentY >= targetY - 40 && !marker.classList.contains('is-generated')) {
+                if (currentY >= targetY - 30 && !marker.classList.contains('is-generated')) {
                     marker.classList.add('is-generated');
                 }
             });
         }
 
-        // 1. Initial Page Load Animation: smoothly generates the path through the hero area
-        const initialTarget = Math.max(0.18, Math.min(0.35, window.innerHeight / 3600 * 1.15));
-        const startTime = performance.now();
-        const duration = 1800; // 1.8s fluid reveal
-
-        function initialBuildStep(now) {
-            const elapsed = now - startTime;
-            const t = Math.min(1, elapsed / duration);
-            // Smooth easeOutCubic
-            const ease = 1 - Math.pow(1 - t, 3);
-            const currentRatio = ease * initialTarget;
-            applyGenerativeProgress(currentRatio);
-
-            if (t < 1) {
-                requestAnimationFrame(initialBuildStep);
-            } else {
-                syncWithScroll();
+        // Seamless physical lerp loop at display refresh rate
+        let isLooping = true;
+        function renderPhysicsFrame() {
+            const diff = targetRatio - currentRatio;
+            if (diff > 0.0001) {
+                // Fluid spring damping factor: 0.065
+                currentRatio += diff * 0.065;
+                applyGenerativeProgress(currentRatio);
+            } else if (currentRatio < targetRatio) {
+                currentRatio = targetRatio;
+                applyGenerativeProgress(currentRatio);
+            }
+            if (isLooping) {
+                requestAnimationFrame(renderPhysicsFrame);
             }
         }
-        requestAnimationFrame(initialBuildStep);
+        requestAnimationFrame(renderPhysicsFrame);
 
-        // 2. Continuous Scroll-Driven Generation: draws paths further down as user scrolls
-        function syncWithScroll() {
+        // Update target ratio smoothly on scroll (monotonically increasing)
+        function updateScrollTarget() {
             const scrollY = window.scrollY || window.pageYOffset || 0;
             const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-            const visibleDepthRatio = Math.min(1, Math.max(0, (scrollY + window.innerHeight * 0.85) / document.documentElement.scrollHeight));
-            applyGenerativeProgress(visibleDepthRatio);
+            const scrollDepth = Math.min(1, Math.max(0, (scrollY + window.innerHeight * 0.85) / document.documentElement.scrollHeight));
+            if (scrollDepth > targetRatio) {
+                targetRatio = scrollDepth;
+            }
         }
 
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    syncWithScroll();
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }, { passive: true });
+        window.addEventListener('scroll', updateScrollTarget, { passive: true });
+        window.addEventListener('resize', updateScrollTarget, { passive: true });
+        updateScrollTarget();
     })();
 
     // 9. Instant FAQ Live Search

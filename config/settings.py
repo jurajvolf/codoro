@@ -26,17 +26,19 @@ def _load_dotenv(path):
 _load_dotenv(BASE_DIR / '.env')
 
 
+# Automatická detekcia produkčného prostredia (PythonAnywhere vs. Lokálny vývoj)
+IS_PRODUCTION = bool(
+    os.environ.get('PYTHONANYWHERE_DOMAIN')
+    or os.path.exists('/var/www')
+    or os.environ.get('DJANGO_PRODUCTION', '') == '1'
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '1').lower() in ('1', 'true', 'yes')
+_default_debug = '0' if IS_PRODUCTION else '1'
+DEBUG = os.environ.get('DJANGO_DEBUG', _default_debug).lower() in ('1', 'true', 'yes')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
-if not SECRET_KEY:
-    if DEBUG:
-        SECRET_KEY = 'django-insecure-dev-only-local-key-do-not-use-in-prod-2027'
-    else:
-        from django.core.exceptions import ImproperlyConfigured
-        raise ImproperlyConfigured('DJANGO_SECRET_KEY environment variable must be set when DEBUG is False.')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '') or 'codoro-production-secret-key-ms-2027-hattala-nizna-sk'
 
 _default_hosts = (
     '127.0.0.1,localhost,testserver,'
@@ -247,7 +249,7 @@ CORS_ALLOWED_ORIGINS = [
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', '1') == '1'
+    SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', '0') == '1'
     SECURE_HSTS_SECONDS = 31536000  # 1 rok
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True

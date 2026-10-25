@@ -1,6 +1,6 @@
 from django.contrib import admin
-from django.urls import path, include
-import sys
+from django.urls import path, include, re_path
+from django.views.static import serve
 import hashlib
 import hmac
 import subprocess
@@ -152,6 +152,8 @@ urlpatterns = [
     path('teacher/classquest/<int:class_quest_id>/edit/', teacher_views.cms_classquest_edit, name='cms_classquest_edit'),
     path('teacher/classquest/<int:class_quest_id>/delete/', teacher_views.cms_classquest_delete, name='cms_classquest_delete'),
     path('teacher/classquest/<int:class_quest_id>/distribute/', teacher_views.cms_classquest_distribute, name='cms_classquest_distribute'),
+    path('404/', acc_views.custom_404, name='preview_404'),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': str(settings.STATIC_ROOT if (settings.STATIC_ROOT and settings.STATIC_ROOT.exists()) else (settings.BASE_DIR / 'static'))}),
 ]
 
 handler400 = 'accounts.views.custom_400'
