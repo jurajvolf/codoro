@@ -126,63 +126,58 @@ html[data-theme="dark"] .hero-companion-pebble {
     fill: #21332C !important;
 }
 
-/* 4. GENERATIVE PATH TRACING & BACKGROUND LIFE (/transitions-ui-generation) */
+/* 4. DYNAMIC GENERATIVE JOURNEY TRAILS (/transitions-ui-generation) */
 .page-journey-trail {
     stroke: var(--brand-emerald) !important;
-    stroke-width: 2.2 !important;
-    stroke-dasharray: 6 14 !important;
-    stroke-dashoffset: 4000;
-    animation: journeyGenerativeBuild 2.8s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-               journeyTrailFlow 28s linear 2.8s infinite !important;
+    stroke-width: 2 !important;
+    stroke-dasharray: 8 16 !important;
+    animation: journeyTrailFlow 28s linear infinite !important;
 }
 .page-journey-trail--right {
-    animation: journeyGenerativeBuild 3.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-               journeyTrailFlow 34s linear 3.2s infinite reverse !important;
-}
-@keyframes journeyGenerativeBuild {
-    0% { stroke-dashoffset: 4000; opacity: 0; filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.9)); }
-    12% { opacity: 0.95; }
-    100% { stroke-dashoffset: 0; opacity: 1; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.3)); }
+    animation-duration: 36s !important;
+    animation-direction: reverse !important;
 }
 @keyframes journeyTrailFlow {
-    to { stroke-dashoffset: -320; }
+    to { stroke-dashoffset: -240; }
 }
 
 .page-journey-halo {
     stroke: rgba(16, 185, 129, 0.22) !important;
     stroke-width: 8 !important;
-    stroke-dashoffset: 4000;
-    animation: haloGenerativeBuild 3.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-               haloPulse 6s ease-in-out 3.2s infinite alternate !important;
-}
-@keyframes haloGenerativeBuild {
-    0% { stroke-dashoffset: 4000; opacity: 0; }
-    100% { stroke-dashoffset: 0; opacity: 0.35; }
+    animation: haloPulse 6s ease-in-out infinite alternate !important;
 }
 @keyframes haloPulse {
-    0% { opacity: 0.2; stroke-width: 6; }
-    100% { opacity: 0.45; stroke-width: 9; }
+    0% { opacity: 0.16; stroke-width: 6; }
+    100% { opacity: 0.40; stroke-width: 9; }
+}
+
+.journey-mask-path {
+    stroke: #ffffff;
+    stroke-width: 40;
+    fill: none;
+    transition: stroke-dashoffset 0.12s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .page-journey-markers circle {
     fill: #10B981 !important;
     transform-box: fill-box !important;
     transform-origin: center !important;
-    animation: markerPopIn 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards,
-               markerBeacon 3.2s ease-in-out 1.6s infinite alternate !important;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.45s ease-out, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.page-journey-markers circle:nth-child(2n) {
-    animation-delay: 0.3s, 1.9s !important;
-    animation-duration: 1.6s, 3.8s !important;
+.page-journey-markers circle.is-generated {
+    opacity: 0.9;
+    transform: scale(1);
+    animation: markerBeacon 3.2s ease-in-out infinite alternate !important;
 }
-.page-journey-markers circle:nth-child(3n) {
-    animation-delay: 0.6s, 2.2s !important;
-    animation-duration: 1.6s, 4.4s !important;
+.page-journey-markers circle:nth-child(2n).is-generated {
+    animation-delay: -1.2s !important;
+    animation-duration: 3.8s !important;
 }
-@keyframes markerPopIn {
-    0% { transform: scale(0); opacity: 0; }
-    70% { transform: scale(1.6); opacity: 1; filter: drop-shadow(0 0 10px #34D399); }
-    100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 5px #10B981); }
+.page-journey-markers circle:nth-child(3n).is-generated {
+    animation-delay: -2.1s !important;
+    animation-duration: 4.4s !important;
 }
 @keyframes markerBeacon {
     0% { transform: scale(0.9); opacity: 0.35; filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.4)); }
@@ -225,15 +220,15 @@ html[data-theme="dark"] .page-terrain-contours path {
     content: "";
     position: absolute;
     inset: 0;
-    height: 220px;
-    background: linear-gradient(180deg, transparent 0%, rgba(16, 185, 129, 0.14) 50%, transparent 100%);
-    animation: scanLineProbe 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    height: 140px;
+    background: linear-gradient(180deg, transparent 0%, rgba(16, 185, 129, 0.04) 50%, transparent 100%);
+    animation: scanLineProbe 22s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     pointer-events: none;
 }
 @keyframes scanLineProbe {
-    0% { transform: translateY(-220px); opacity: 0; }
-    10% { opacity: 0.85; }
-    90% { opacity: 0.85; }
+    0% { transform: translateY(-140px); opacity: 0; }
+    15% { opacity: 0.22; }
+    85% { opacity: 0.22; }
     100% { transform: translateY(3600px); opacity: 0; }
 }
 @keyframes gridPulse {
@@ -619,17 +614,41 @@ html[data-theme="dark"] .faq-search-input {
                 <path fill="none" d="M-80 3340 C160 3230 345 3445 585 3350 S960 3240 1185 3355 S1395 3420 1520 3310"/>
                 <path fill="none" d="M-80 3400 C160 3290 345 3505 585 3410 S960 3300 1185 3415 S1395 3480 1520 3370"/>
             </g>
-            <path class="page-journey-halo" fill="none" d="M26 0 C188 176 212 356 92 540 C-12 702 22 858 148 1040 C286 1238 218 1412 64 1602 C-50 1744 28 1910 170 2084 C302 2246 232 2430 76 2628 C-28 2762 36 2920 170 3094 C290 3250 220 3420 82 3600"/>
-            <path class="page-journey-halo page-journey-halo--right" fill="none" d="M1410 0 C1262 168 1244 360 1352 540 C1444 690 1410 862 1280 1040 C1142 1228 1204 1414 1360 1602 C1476 1740 1400 1910 1264 2084 C1130 2250 1200 2436 1350 2628 C1454 2760 1388 2920 1258 3094 C1138 3252 1200 3420 1348 3600"/>
-            <path class="page-journey-trail" fill="none" d="M26 0 C188 176 212 356 92 540 C-12 702 22 858 148 1040 C286 1238 218 1412 64 1602 C-50 1744 28 1910 170 2084 C302 2246 232 2430 76 2628 C-28 2762 36 2920 170 3094 C290 3250 220 3420 82 3600"/>
-            <path class="page-journey-trail page-journey-trail--right" fill="none" d="M1410 0 C1262 168 1244 360 1352 540 C1444 690 1410 862 1280 1040 C1142 1228 1204 1414 1360 1602 C1476 1740 1400 1910 1264 2084 C1130 2250 1200 2436 1350 2628 C1454 2760 1388 2920 1258 3094 C1138 3252 1200 3420 1348 3600"/>
+            <defs>
+                <mask id="journeyTrailMaskLeft" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1840" height="4000">
+                    <path class="journey-mask-path" id="journeyMaskPathLeft" fill="none" stroke="#ffffff" stroke-width="40" stroke-linecap="round" d="M26 0 C188 176 212 356 92 540 C-12 702 22 858 148 1040 C286 1238 218 1412 64 1602 C-50 1744 28 1910 170 2084 C302 2246 232 2430 76 2628 C-28 2762 36 2920 170 3094 C290 3250 220 3420 82 3600"/>
+                </mask>
+                <mask id="journeyTrailMaskRight" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1840" height="4000">
+                    <path class="journey-mask-path" id="journeyMaskPathRight" fill="none" stroke="#ffffff" stroke-width="40" stroke-linecap="round" d="M1410 0 C1262 168 1244 360 1352 540 C1444 690 1410 862 1280 1040 C1142 1228 1204 1414 1360 1602 C1476 1740 1400 1910 1264 2084 C1130 2250 1200 2436 1350 2628 C1454 2760 1388 2920 1258 3094 C1138 3252 1200 3420 1348 3600"/>
+                </mask>
+                <filter id="sparkGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+                    <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <g mask="url(#journeyTrailMaskLeft)">
+                <path class="page-journey-halo" fill="none" d="M26 0 C188 176 212 356 92 540 C-12 702 22 858 148 1040 C286 1238 218 1412 64 1602 C-50 1744 28 1910 170 2084 C302 2246 232 2430 76 2628 C-28 2762 36 2920 170 3094 C290 3250 220 3420 82 3600"/>
+                <path class="page-journey-trail" fill="none" d="M26 0 C188 176 212 356 92 540 C-12 702 22 858 148 1040 C286 1238 218 1412 64 1602 C-50 1744 28 1910 170 2084 C302 2246 232 2430 76 2628 C-28 2762 36 2920 170 3094 C290 3250 220 3420 82 3600"/>
+            </g>
+            <g mask="url(#journeyTrailMaskRight)">
+                <path class="page-journey-halo page-journey-halo--right" fill="none" d="M1410 0 C1262 168 1244 360 1352 540 C1444 690 1410 862 1280 1040 C1142 1228 1204 1414 1360 1602 C1476 1740 1400 1910 1264 2084 C1130 2250 1200 2436 1350 2628 C1454 2760 1388 2920 1258 3094 C1138 3252 1200 3420 1348 3600"/>
+                <path class="page-journey-trail page-journey-trail--right" fill="none" d="M1410 0 C1262 168 1244 360 1352 540 C1444 690 1410 862 1280 1040 C1142 1228 1204 1414 1360 1602 C1476 1740 1400 1910 1264 2084 C1130 2250 1200 2436 1350 2628 C1454 2760 1388 2920 1258 3094 C1138 3252 1200 3420 1348 3600"/>
+            </g>
             <g class="page-journey-markers">
-                <circle cx="112" cy="574" r="6"/><circle cx="138" cy="1054" r="4"/>
-                <circle cx="91" cy="1640" r="6"/><circle cx="143" cy="2116" r="4"/>
-                <circle cx="104" cy="2662" r="6"/><circle cx="151" cy="3117" r="4"/>
-                <circle cx="1321" cy="574" r="6"/><circle cx="1292" cy="1054" r="4"/>
-                <circle cx="1340" cy="1640" r="6"/><circle cx="1292" cy="2116" r="4"/>
-                <circle cx="1325" cy="2662" r="6"/><circle cx="1278" cy="3117" r="4"/>
+                <circle cx="112" cy="574" r="6" data-target-y="574"/><circle cx="138" cy="1054" r="4" data-target-y="1054"/>
+                <circle cx="91" cy="1640" r="6" data-target-y="1640"/><circle cx="143" cy="2116" r="4" data-target-y="2116"/>
+                <circle cx="104" cy="2662" r="6" data-target-y="2662"/><circle cx="151" cy="3117" r="4" data-target-y="3117"/>
+                <circle cx="1321" cy="574" r="6" data-target-y="574"/><circle cx="1292" cy="1054" r="4" data-target-y="1054"/>
+                <circle cx="1340" cy="1640" r="6" data-target-y="1640"/><circle cx="1292" cy="2116" r="4" data-target-y="2116"/>
+                <circle cx="1325" cy="2662" r="6" data-target-y="2662"/><circle cx="1278" cy="3117" r="4" data-target-y="3117"/>
+            </g>
+            <!-- Real-time generative drawing spark / head -->
+            <g class="journey-generative-sparks" pointer-events="none">
+                <circle id="journeySparkLeft" r="5" fill="#5CE1E6" filter="url(#sparkGlow)" opacity="0" cx="26" cy="0"/>
+                <circle id="journeySparkRight" r="5" fill="#5CE1E6" filter="url(#sparkGlow)" opacity="0" cx="1410" cy="0"/>
             </g>
         </svg>
     </div>
@@ -2005,21 +2024,100 @@ html[data-theme="dark"] .faq-search-input {
         }
     }
 
-    // 8c. Generative Path Flow on Scroll (/transitions-ui-generation)
+    // 8c. Real-time Generative Path Drawing on Scroll (/transitions-ui-generation)
     (() => {
-        const trails = document.querySelectorAll('.page-journey-trail');
-        if (!trails.length) return;
+        const maskLeft = document.getElementById('journeyMaskPathLeft');
+        const maskRight = document.getElementById('journeyMaskPathRight');
+        const sparkLeft = document.getElementById('journeySparkLeft');
+        const sparkRight = document.getElementById('journeySparkRight');
+        const markers = document.querySelectorAll('.page-journey-markers circle');
+
+        if (!maskLeft || !maskRight) return;
+
+        let lenLeft = 3950;
+        let lenRight = 3950;
+        try {
+            lenLeft = maskLeft.getTotalLength() || 3950;
+            lenRight = maskRight.getTotalLength() || 3950;
+        } catch (e) {}
+
+        maskLeft.style.strokeDasharray = `${lenLeft}`;
+        maskRight.style.strokeDasharray = `${lenRight}`;
+        maskLeft.style.strokeDashoffset = `${lenLeft}`;
+        maskRight.style.strokeDashoffset = `${lenRight}`;
+
+        let maxRatio = 0; // Tracks highest generative point reached ("a potom by zostali")
+
+        function applyGenerativeProgress(ratio) {
+            if (ratio < maxRatio) return; // Keep progress permanently forward!
+            maxRatio = ratio;
+
+            const offsetL = (lenLeft * (1 - ratio)).toFixed(1);
+            const offsetR = (lenRight * (1 - ratio)).toFixed(1);
+            maskLeft.style.strokeDashoffset = offsetL;
+            maskRight.style.strokeDashoffset = offsetR;
+
+            // Update drawing spark positions at the leading head
+            if (sparkLeft && sparkRight && ratio > 0.01 && ratio < 0.99) {
+                try {
+                    const ptL = maskLeft.getPointAtLength(ratio * lenLeft);
+                    const ptR = maskRight.getPointAtLength(ratio * lenRight);
+                    sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
+                    sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
+                    sparkRight.setAttribute('cx', ptR.x.toFixed(1));
+                    sparkRight.setAttribute('cy', ptR.y.toFixed(1));
+                    sparkLeft.style.opacity = '1';
+                    sparkRight.style.opacity = '1';
+                } catch(e) {}
+            } else if (sparkLeft && sparkRight && ratio >= 0.99) {
+                sparkLeft.style.opacity = '0';
+                sparkRight.style.opacity = '0';
+            }
+
+            // Pop in waypoint markers when generative path reaches them
+            const currentY = ratio * 3600;
+            markers.forEach(marker => {
+                const targetY = parseFloat(marker.getAttribute('data-target-y') || marker.getAttribute('cy') || '0');
+                if (currentY >= targetY - 40 && !marker.classList.contains('is-generated')) {
+                    marker.classList.add('is-generated');
+                }
+            });
+        }
+
+        // 1. Initial Page Load Animation: smoothly generates the path through the hero area
+        const initialTarget = Math.max(0.18, Math.min(0.35, window.innerHeight / 3600 * 1.15));
+        const startTime = performance.now();
+        const duration = 1800; // 1.8s fluid reveal
+
+        function initialBuildStep(now) {
+            const elapsed = now - startTime;
+            const t = Math.min(1, elapsed / duration);
+            // Smooth easeOutCubic
+            const ease = 1 - Math.pow(1 - t, 3);
+            const currentRatio = ease * initialTarget;
+            applyGenerativeProgress(currentRatio);
+
+            if (t < 1) {
+                requestAnimationFrame(initialBuildStep);
+            } else {
+                syncWithScroll();
+            }
+        }
+        requestAnimationFrame(initialBuildStep);
+
+        // 2. Continuous Scroll-Driven Generation: draws paths further down as user scrolls
+        function syncWithScroll() {
+            const scrollY = window.scrollY || window.pageYOffset || 0;
+            const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+            const visibleDepthRatio = Math.min(1, Math.max(0, (scrollY + window.innerHeight * 0.85) / document.documentElement.scrollHeight));
+            applyGenerativeProgress(visibleDepthRatio);
+        }
+
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const scrollY = window.scrollY || window.pageYOffset || 0;
-                    const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-                    const ratio = Math.min(1, Math.max(0, scrollY / scrollMax));
-                    trails.forEach((trail, idx) => {
-                        const factor = (idx % 2 === 0) ? 1 : -1;
-                        trail.style.strokeDashoffset = `${(factor * ratio * 520).toFixed(1)}px`;
-                    });
+                requestAnimationFrame(() => {
+                    syncWithScroll();
                     ticking = false;
                 });
                 ticking = true;
