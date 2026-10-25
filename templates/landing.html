@@ -261,6 +261,10 @@ html[data-theme="dark"] .page-terrain-contours path {
 #curriculum.is-searching .track-milestones-grid {
     display: contents !important;
 }
+#curriculum.is-searching .curriculum-mod-card.is-search-hidden,
+.curriculum-mod-card.is-search-hidden {
+    display: none !important;
+}
 
 /* 5. EDITORIAL TRACK JOURNEY & MILESTONE ROADMAP (/design-taste-frontend) */
 .curriculum-track-nav-wrap {
@@ -418,7 +422,7 @@ html[data-theme="dark"] .track-stage-tagline {
     border: 1px solid var(--border-subtle) !important;
     border-radius: 14px !important;
     padding: 1.15rem 1.25rem !important;
-    display: flex !important;
+    display: flex;
     flex-direction: column !important;
     justify-content: space-between !important;
     text-decoration: none !important;
@@ -1156,7 +1160,7 @@ html[data-theme="dark"] .faq-search-input {
 
         <!-- Filter & Search Bar for Curriculum (Compact, Sleek) -->
         <div style="max-width:480px; margin:0 auto 1.25rem; position:relative;">
-            <input type="text" id="curriculumSearchInput" onkeyup="filterCurriculumModules()"
+            <input type="text" id="curriculumSearchInput" onkeyup="filterCurriculumModules()" oninput="filterCurriculumModules()"
                    placeholder="{% if lang == 'en' %}Search topics (e.g. OOP, SQL, Loops, Crypto)...{% else %}Hľadať témy (napr. OOP, SQL, cykly, šifry)...{% endif %}"
                    class="faq-search-input" style="padding-left:2.75rem; padding-right:2.4rem;">
             <span class="faq-search-icon">
@@ -1233,7 +1237,7 @@ html[data-theme="dark"] .faq-search-input {
                     <!-- Milestone Journey Grid (Clean, Connected Progression) -->
                     <div class="track-milestones-grid">
                         {% for mod in track.modules %}
-                        <a href="{% url 'register' %}" class="milestone-step-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }}">
+                        <a href="{% url 'register' %}" class="milestone-step-card curriculum-mod-card" data-title="{{ mod.title_sk }} {{ mod.title_en }} {{ mod.description_sk }} {{ mod.description_en }} {{ track.label_sk }} {{ track.label_en }}">
                             <div>
                                 <div class="milestone-top-row">
                                     <span class="milestone-pill-order">#{{ mod.order|stringformat:"02d" }}</span>
@@ -1947,7 +1951,10 @@ html[data-theme="dark"] .faq-search-input {
         if (clearBtn) clearBtn.style.display = 'none';
 
         // Reset all module cards inside decks to visible
-        document.querySelectorAll('.curriculum-mod-card').forEach(card => card.style.display = 'flex');
+        document.querySelectorAll('.curriculum-mod-card').forEach(card => {
+            card.classList.remove('is-search-hidden');
+            card.style.removeProperty('display');
+        });
 
         document.querySelectorAll('.track-panel-deck').forEach(p => {
             if (p.getAttribute('data-track') === trackKey || p.id === 'track-panel-' + trackKey) {
@@ -1961,7 +1968,7 @@ html[data-theme="dark"] .faq-search-input {
     // 8b. Unified Instant Curriculum Module Search (No layout jitter or stretching)
     function filterCurriculumModules() {
         const input = document.getElementById('curriculumSearchInput');
-        const query = (input ? input.value : '').toLowerCase().trim();
+        const query = (input ? input.value : '').trim();
         const section = document.getElementById('curriculum');
         const clearBtn = document.getElementById('curriculumSearchClearBtn');
         const emptyState = document.getElementById('curriculumEmptyState');
@@ -1981,12 +1988,34 @@ html[data-theme="dark"] .faq-search-input {
         // Make all track decks active in DOM so their cards participate in the unified grid
         document.querySelectorAll('.track-panel-deck').forEach(p => p.classList.add('active'));
 
+        const lowerQuery = query.toLowerCase();
+        const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // For short queries (<=3 chars, e.g. "OOP", "SQL", "TDD"), ensure word-boundary start
+        // so that "oop" won't falsely match "loops" or "cooperate".
+        const boundaryRegex = (lowerQuery.length <= 3)
+            ? new RegExp('(?:^|[^\\p{L}\\p{N}])' + escaped, 'iu')
+            : null;
+
         document.querySelectorAll('.curriculum-mod-card').forEach(card => {
-            const title = (card.getAttribute('data-title') || '').toLowerCase();
-            const text = card.textContent.toLowerCase();
-            const matches = title.includes(query) || text.includes(query);
-            card.style.display = matches ? 'flex' : 'none';
-            if (matches) matchedTotal++;
+            const title = card.getAttribute('data-title') || '';
+            const text = card.textContent || '';
+            const fullCorpus = title + ' ' + text;
+
+            let matches = false;
+            if (boundaryRegex) {
+                matches = boundaryRegex.test(fullCorpus);
+            } else {
+                matches = fullCorpus.toLowerCase().includes(lowerQuery);
+            }
+
+            if (matches) {
+                card.classList.remove('is-search-hidden');
+                card.style.setProperty('display', 'flex', 'important');
+                matchedTotal++;
+            } else {
+                card.classList.add('is-search-hidden');
+                card.style.setProperty('display', 'none', 'important');
+            }
         });
 
         if (statusEl) {
@@ -2016,7 +2045,10 @@ html[data-theme="dark"] .faq-search-input {
         const emptyState = document.getElementById('curriculumEmptyState');
         if (emptyState) emptyState.style.display = 'none';
 
-        document.querySelectorAll('.curriculum-mod-card').forEach(card => card.style.display = 'flex');
+        document.querySelectorAll('.curriculum-mod-card').forEach(card => {
+            card.classList.remove('is-search-hidden');
+            card.style.removeProperty('display');
+        });
 
         const activeTab = document.querySelector('.curriculum-track-tab.active');
         if (activeTab) {
