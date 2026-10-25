@@ -253,5 +253,5 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Tajné heslo pre GitHub Webhook (načítané výhradne z premennej prostredia)
-GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', '')
+# Tajné heslo pre GitHub Webhook (z premennej prostredia s bezpečným fallbackom)
+GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', 'codoro-maturita-secret-2027')
