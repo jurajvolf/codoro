@@ -370,7 +370,7 @@
 
                 <!-- Password History Security Note -->
                 <div style="margin-bottom: 1.5rem; padding: 0.75rem 0.95rem; border-radius: 12px; background: var(--bg-mint-soft); border: 1px solid var(--brand-emerald-border); display: flex; align-items: flex-start; gap: 0.65rem;">
-                    <span style="color: var(--brand-emerald); font-size: 1.05rem; line-height: 1.2;">🔒</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-emerald); flex-shrink: 0; margin-top: 2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
                         {% if lang == 'en' %}
                         <strong>Security Policy:</strong> Your new password cannot be the same as your current password or any of your last 3 previous passwords.
@@ -451,7 +451,7 @@
                             b1.style.backgroundColor = '#008767';
                             b2.style.backgroundColor = '#008767';
                             b3.style.backgroundColor = '#008767';
-                            lbl.textContent = isEn ? '✓ Level 3 / 3: Strong password' : '✓ Úroveň 3 / 3: Silné heslo';
+                            lbl.textContent = isEn ? 'Level 3 / 3: Strong password' : 'Úroveň 3 / 3: Silné heslo';
                             lbl.style.color = '#008767';
                             isStrong = true;
                         } else if (hasLen || comp >= 2) {

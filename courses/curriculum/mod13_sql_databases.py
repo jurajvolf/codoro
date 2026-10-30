@@ -57,7 +57,7 @@ cursor.execute('''
 conn.commit()
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Zabudnutie zavolať `conn.commit()` po modifikácii dát (INSERT, UPDATE, DELETE). Bez commitu sa zmeny neuložia a po ukončení spojenia sa zahodia! (Pri DDL príkazoch ako CREATE TABLE SQLite robí commit automaticky, ale pri manipulácii s dátami je commit nevyhnutný).
 """,
             'content_en': """### 13.1 SQLite In-Memory Database in Python
@@ -247,12 +247,12 @@ Learn `sqlite3.connect(":memory:")`, cursors, DDL `CREATE TABLE` and commits.
 Najväčšou bezpečnostnou chybou pri práci s databázami je skladanie SQL dotazov pomocou obyčajného spájania reťazcov alebo f-stringov:
 
 ```python
-# ❌ KRITICKÁ ZRANITEĽNOSŤ (SQL INJECTION):
+# KRITICKÁ ZRANITEĽNOSŤ (SQL INJECTION):
 # Ak používateľ zadá meno: "'; DROP TABLE studenti; --"
 cursor.execute(f"INSERT INTO studenti (meno) VALUES ('{user_input}')")
 ```
 
-#### ✅ Riešenie: Parametrizované dotazy s `?`
+#### Riešenie: Parametrizované dotazy s `?`
 Databázový engine automaticky ošetrí a sanitizuje parametre oddelene od SQL príkazu:
 ```python
 cursor.execute("INSERT INTO studenti (meno, vek) VALUES (?, ?)", (meno, vek))

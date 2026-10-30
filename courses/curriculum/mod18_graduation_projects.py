@@ -56,7 +56,7 @@ class ZiackaKnizka:
         return True
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Delenie nulou pri výpočte priemeru, ak študent nemá zapísanú žiadnu známku. Pred volaním `sum(znamky) / len(znamky)` vždy skontroluj, či `len(znamky) > 0`!
 
 #### 3. Zhrnutie kľúčových konceptov
@@ -190,7 +190,7 @@ def aplikuj_zlavu(medzisucet: float, percento: float) -> float:
     return round(max(0.0, konecna_cena), 2)
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Zaokrúhľovanie peňažných súm príliš skoro v medzivýpočtoch. To spôsobuje halierové nezrovnalosti. Zaokrúhľuj pomocou `round(..., 2)` až výslednú hodnotu!
 
 #### 3. Zhrnutie
@@ -326,7 +326,7 @@ def detekuj_utocnikov(logy: list[dict], threshold: int = 3) -> list[str]:
     return [ip for ip, cnt in neúspešné.items() if cnt >= threshold]
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Zlyhanie pri rozdeľovaní reťazca IP:port, ak port nie je celé číslo. Vždy over `port.isdigit()` alebo preveď cez `int()` s ošetrením `ValueError`!
 
 #### 3. Zhrnutie
@@ -468,7 +468,7 @@ class BankovyLedger:
         return self.zostatok
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Dovolanie záporného zostatku (overdraft) bez explicitného povolenia debetu. Pri výbere vždy skontroluj `if self.zostatok < suma: raise ValueError("Nedostatočný zostatok")`!
 
 #### 3. Zhrnutie
@@ -592,7 +592,7 @@ Gratulujeme k dosiahnutiu záverečnej lekcie vzdelávacej platformy Codoro! Abs
 #### Prehľad záverečných kritérií
 Po úspešnom vyriešení záverečnej skúšky sa v tvojom študentskom profile sprístupní oficiálny certifikát **Codoro Certified Python Developer** pripravený k tlači a overeniu!
 
-> ⚠️ **Častá chyba v praxi a na technických pohovoroch:**
+> **Častá chyba v praxi a na technických pohovoroch:**
 > Podcenenie hraničných prípadov (Edge Cases): prázdny vstupný zoznam, nesprávne dátové typy, delenie nulou. Skutočný softvérový inžinier navrhuje kód defenzívne a odolný voči chybám používateľa!
 
 #### Zhrnutie

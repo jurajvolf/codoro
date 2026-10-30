@@ -44,7 +44,7 @@ def caesar_znak(ch, posun):
     return ch
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Zabudnutie na modulo `% 26` pri prechode cez koniec abecedy. Ak písmeno `'Z'` posunieme o 1 bez modula, dostaneme znak `'['` namiesto `'A'`!
 """,
             'content_en': """### 16.1 Caesar Cipher in Python

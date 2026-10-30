@@ -124,7 +124,7 @@
                                     {{ card.module.order }}. {% if lang == 'en' %}{{ card.module.title_en }}{% else %}{{ card.module.title_sk }}{% endif %}
                                 </h3>
                                 <span class="chevron-arrow" id="chevron-{{ card.module.id }}" style="font-size:0.95rem; color:var(--text-muted); transition:transform 0.2s ease;">
-                                    {% if card.module.id == default_open_module_id %}⌃{% else %}⌵{% endif %}
+                                    {% if card.module.id == default_open_module_id %}&#9652;{% else %}&#9662;{% endif %}
                                 </span>
                             </div>
                             <p class="module-card-subhead">
@@ -423,7 +423,7 @@
                 <!-- Action Footer -->
                 <div class="codo-dojo-footer">
                     <button type="button" class="btn-dojo-cycle" onclick="cycleDojoRiddle(1)">
-                        <span>🔄</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
                         <span>{% if lang == 'en' %}Next Riddle{% else %}Ďalší rébus{% endif %}</span>
                     </button>
                     <span id="dojoStreakStatus" style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">
@@ -435,10 +435,10 @@
                 <div class="codo-dojo-tip-section">
                     <button type="button" class="codo-dojo-tip-toggle" onclick="toggleDojoTip()">
                         <span style="display:flex; align-items:center; gap:0.35rem;">
-                            <span>💡</span>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand-emerald);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                             <span style="font-weight:700; color:var(--brand-emerald);">{% if lang == 'en' %}Pro-Tip of the Day{% else %}Kódový trik dňa{% endif %}</span>
                         </span>
-                        <span id="dojoTipChevron" style="font-size:0.75rem;">⌵</span>
+                        <span id="dojoTipChevron" style="font-size:0.75rem;">&#9662;</span>
                     </button>
                     <div class="codo-dojo-tip-body" id="dojoTipBody">
                         <div id="dojoTipTitle" style="font-weight:700; color:var(--text-primary); margin-bottom:0.3rem;">...</div>
@@ -530,13 +530,13 @@
             card.classList.add('collapsed');
         });
         document.querySelectorAll('.chevron-arrow').forEach(ch => {
-            ch.textContent = '⌵';
+            ch.innerHTML = '&#9662;';
         });
 
         if (!isCurrentlyActive) {
             targetCard.classList.add('active');
             targetCard.classList.remove('collapsed');
-            if (targetChevron) targetChevron.textContent = '⌃';
+            if (targetChevron) targetChevron.innerHTML = '&#9652;';
         }
     }
 
@@ -627,8 +627,8 @@
                 { text: "[1, 2, 1, 2]", correct: true },
                 { text: "TypeError", correct: false }
             ],
-            hint_sk: "💡 Presne tak! Operátor * na zoznamoch v Pythone prvky nenásobí číselne, ale zreťazuje (opakuje) celý zoznam.",
-            hint_en: "💡 Exactly! The * operator on lists concatenates (repeats) the elements rather than multiplying numerically.",
+            hint_sk: "Presne tak! Operátor * na zoznamoch v Pythone prvky nenásobí číselne, ale zreťazuje (opakuje) celý zoznam.",
+            hint_en: "Exactly! The * operator on lists concatenates (repeats) the elements rather than multiplying numerically.",
             wrong_sk: "Pozor na chyták! Operátor * na zoznamoch nekalkuluje matematicky každý prvok. Skús to znova!",
             wrong_en: "Watch out! The * operator on lists does not multiply element-wise like in math. Try again!"
         },
@@ -642,8 +642,8 @@
                 { text: "False, True", correct: true },
                 { text: "True, True", correct: false }
             ],
-            hint_sk: "💡 Správne! Prázdny zoznam [] je vždy Falsy, ale zoznam [0] obsahuje číslo 0, takže je neprázdny a Truthy!",
-            hint_en: "💡 Correct! Empty list [] is Falsy, but [0] has an item (zero), so it is non-empty and Truthy!",
+            hint_sk: "Správne! Prázdny zoznam [] je vždy Falsy, ale zoznam [0] obsahuje číslo 0, takže je neprázdny a Truthy!",
+            hint_en: "Correct! Empty list [] is Falsy, but [0] has an item (zero), so it is non-empty and Truthy!",
             wrong_sk: "Chyták: Skontroluj, či je zoznam [0] prázdny alebo obsahuje prvok!",
             wrong_en: "Catch: Check if [0] is empty or actually contains an element!"
         },
@@ -657,8 +657,8 @@
                 { text: "False", correct: false },
                 { text: "TypeError", correct: false }
             ],
-            hint_sk: "💡 Výborne! Operátor 'in' elegantne overuje prítomnosť podreťazca priamo v O(N) čase.",
-            hint_en: "💡 Great job! The 'in' operator checks substring membership cleanly and concisely.",
+            hint_sk: "Výborne! Operátor 'in' elegantne overuje prítomnosť podreťazca priamo v O(N) čase.",
+            hint_en: "Great job! The 'in' operator checks substring membership cleanly and concisely.",
             wrong_sk: "Pozri sa na začiatok slova 'python' — začína písmenami 'py'!",
             wrong_en: "Take a look at the start of 'python' — it starts with 'py'!"
         },
@@ -672,8 +672,8 @@
                 { text: "TypeError: 'tuple' object...", correct: true },
                 { text: "(1, 2)", correct: false }
             ],
-            hint_sk: "💡 Skvelé! N-tice (tuple) sú nemenné (immutable). Po vytvorení nie je možné prepísať ich prvky.",
-            hint_en: "💡 Spot on! Tuples are immutable. Elements cannot be reassigned after initialization.",
+            hint_sk: "Skvelé! N-tice (tuple) sú nemenné (immutable). Po vytvorení nie je možné prepísať ich prvky.",
+            hint_en: "Spot on! Tuples are immutable. Elements cannot be reassigned after initialization.",
             wrong_sk: "Tuples sú immutable (nemenné)! Vyvolá sa výnimka TypeError.",
             wrong_en: "Tuples are immutable! Reassignment raises a TypeError."
         },
@@ -687,8 +687,8 @@
                 { text: "None", correct: false },
                 { text: "42", correct: true }
             ],
-            hint_sk: "💡 Presne! Metóda .get(kľúč, default) vráti zadanú predvolenú hodnotu namiesto výnimky KeyError.",
-            hint_en: "💡 Exactly! Method .get(key, default) returns the fallback argument instead of KeyError.",
+            hint_sk: "Presne! Metóda .get(kľúč, default) vráti zadanú predvolenú hodnotu namiesto výnimky KeyError.",
+            hint_en: "Exactly! Method .get(key, default) returns the fallback argument instead of KeyError.",
             wrong_sk: "Metóda .get() nevyhadzuje KeyError, ak zadáš druhý parameter ako fallback!",
             wrong_en: ".get() does not raise KeyError when a default value parameter is given!"
         },
@@ -702,8 +702,8 @@
                 { text: "'codo'", correct: false },
                 { text: "IndexError", correct: false }
             ],
-            hint_sk: "💡 Geniálne! Krok -1 v rozšírenom slicingu [start:stop:step] číta sekvenciu v opačnom smere.",
-            hint_en: "💡 Brilliant! Step -1 in slice [start:stop:step] reverses sequence iteration.",
+            hint_sk: "Geniálne! Krok -1 v rozšírenom slicingu [start:stop:step] číta sekvenciu v opačnom smere.",
+            hint_en: "Brilliant! Step -1 in slice [start:stop:step] reverses sequence iteration.",
             wrong_sk: "Záporný krok (step = -1) prechádza reťazec odzadu!",
             wrong_en: "Negative step (-1) traverses the string backwards!"
         }
@@ -765,7 +765,7 @@
 
         const isSolved = localStorage.getItem(`codoro_dojo_riddle_${r.id}`) === 'solved';
         if (isSolved && badgeEl) {
-            badgeEl.innerHTML = `✓ ${currentLang === 'en' ? 'Solved' : 'Vyriešené'}`;
+            badgeEl.innerHTML = currentLang === 'en' ? 'Solved' : 'Vyriešené';
             badgeEl.style.background = 'var(--pass-green-bg)';
             badgeEl.style.color = 'var(--pass-green)';
             badgeEl.style.borderColor = 'var(--pass-green-border)';
@@ -799,7 +799,7 @@
 
         if (isCorrect) {
             btnElement.classList.add('correct');
-            btnElement.querySelector('.opt-status-icon').innerHTML = '✓';
+            btnElement.querySelector('.opt-status-icon').innerHTML = '';
             feedbackBox.className = 'codo-dojo-feedback correct';
             feedbackBox.textContent = (currentLang === 'en' ? r.hint_en : r.hint_sk);
             feedbackBox.style.display = 'block';
@@ -809,7 +809,7 @@
                 localStorage.setItem(`codoro_dojo_riddle_${r.id}`, 'solved');
                 // Celebrate & Award Doros visually in the top bar
                 if (badgeEl) {
-                    badgeEl.innerHTML = `✓ ${currentLang === 'en' ? '+5 Doros Claimed!' : '+5 Doros Získaných!'}`;
+                    badgeEl.innerHTML = currentLang === 'en' ? '+5 Doros Claimed!' : '+5 Doros Získaných!';
                     badgeEl.style.background = 'var(--pass-green-bg)';
                     badgeEl.style.color = 'var(--pass-green)';
                 }
@@ -822,13 +822,13 @@
                     setTimeout(() => { topBarDoros.style.transform = 'scale(1)'; }, 350);
                 }
                 if (statusEl) {
-                    statusEl.textContent = currentLang === 'en' ? '🎉 Great job! +5 Doros' : '🎉 Výborne! +5 Doros';
+                    statusEl.textContent = currentLang === 'en' ? 'Great job! +5 Doros' : 'Výborne! +5 Doros';
                     statusEl.style.color = 'var(--pass-green)';
                 }
             }
         } else {
             btnElement.classList.add('wrong');
-            btnElement.querySelector('.opt-status-icon').innerHTML = '✕';
+            btnElement.querySelector('.opt-status-icon').innerHTML = '';
             feedbackBox.className = 'codo-dojo-feedback wrong';
             feedbackBox.textContent = (currentLang === 'en' ? r.wrong_en : r.wrong_sk);
             feedbackBox.style.display = 'block';
@@ -850,10 +850,10 @@
         const isOpen = body.classList.contains('open');
         if (isOpen) {
             body.classList.remove('open');
-            if (chevron) chevron.textContent = '⌵';
+            if (chevron) chevron.innerHTML = '&#9662;';
         } else {
             body.classList.add('open');
-            if (chevron) chevron.textContent = '⌃';
+            if (chevron) chevron.innerHTML = '&#9652;';
             renderDojoTip();
         }
     }

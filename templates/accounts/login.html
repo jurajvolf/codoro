@@ -124,7 +124,7 @@
         <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle);">
             <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.65rem; text-align: center; display:flex; align-items:center; justify-content:center; gap:0.35rem;">
                 {% include 'components/icon_svg.html' with name='lightning' size='13' %}
-                <span>{% if lang == 'en' %}1-Click Simulated Demo Sandbox (Isolated):{% else %}Simulovaná databáza pre obhajobu (1-klik):{% endif %}</span>
+                <span>{% if lang == 'en' %}1-Click Interactive Demo (Sandbox):{% else %}Rýchly prístup do interaktívneho dema (1-klik):{% endif %}</span>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
                 <a href="{% url 'demo_quick_login' role='student' %}" class="btn-demo-quick" style="display:inline-flex; align-items:center; justify-content:center; gap:0.35rem; text-decoration:none;">
@@ -138,9 +138,9 @@
             </div>
             <div style="font-size: 0.74rem; color: var(--text-muted); text-align: center; margin-top: 0.55rem;">
                 {% if lang == 'en' %}
-                🛡️ 100% isolated sandbox. Real production database is protected.
+                Isolated sandbox environment. Production database is protected.
                 {% else %}
-                🛡️ 100% odizolovaný sandbox. Ostrá produkčná databáza je v bezpečí.
+                Izolované sandbox prostredie. Produkčná databáza je plne chránená.
                 {% endif %}
             </div>
         </div>

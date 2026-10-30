@@ -60,7 +60,7 @@ obj = json.loads(json_text)
 print(obj["meno"])  # 'Juraj'
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Pozor na `ensure_ascii=False`. Ak v Pythone serializujete slovenské znaky (napr. `"Bratislava"` alebo `"Košice"`), bez tohto parametra ich Python prevedie na unicode escape kódy typu `\\u0161`. Pre čistý UTF-8 výstup vždy nastavte `ensure_ascii=False`.
 """,
             'content_en': """### 14.1 JSON Module in Python

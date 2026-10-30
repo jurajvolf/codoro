@@ -21,11 +21,11 @@ from courses.curriculum import ALL_CURRICULUM_MODULES
 
 
 def run_seed():
-    print("🚀 Spúšťam napĺňanie databázy Codoro...")
+    print("Spúšťam napĺňanie databázy Codoro...")
 
     # 1. Odznaky (Achievements)
     ensure_badges_exist()
-    print("🎖️ Štandardné odznaky vytvorené.")
+    print("Štandardné odznaky vytvorené.")
 
     # 2. Vytvorenie administrátora, učiteľa a študentov
     admin_user, admin_created = User.objects.get_or_create(
@@ -140,7 +140,7 @@ def run_seed():
     # ==================================================================
     # 4. KOMPLETNÝCH 18 MODULOV KURIKULA CODORO (220+ HODÍN, 83 LEKCIÍ, 249 CVIČENÍ)
     # ==============================================================================
-    print("📚 Napĺňam 18 modulov vzdelávacieho kurikula Codoro...")
+    print("Napĺňam 18 modulov vzdelávacieho kurikula Codoro...")
     total_modules = 0
     total_lessons = 0
     total_quizzes = 0
@@ -254,7 +254,7 @@ def run_seed():
                     )
                     total_test_cases += 1
 
-    print(f"📖 Načítaných {total_modules} modulov, {total_lessons} lekcií, {total_quizzes} kvízov, {total_exercises} cvičení a {total_test_cases} testovacích prípadov!")
+    print(f"Načítaných {total_modules} modulov, {total_lessons} lekcií, {total_quizzes} kvízov, {total_exercises} cvičení a {total_test_cases} testovacích prípadov!")
 
     # ==================================================================
     # 5. UČITEĽSKÝ OBCHOD S ODMENAMI A SKLADOVÝM HOSPODÁRSTVOM
@@ -388,9 +388,9 @@ def run_seed():
             reason_en='Starter bonus and activity rewards'
         )
 
-    print("✅ Databáza Codoro bola úspešne naplnená všetkými 18 modulmi, odznakmi a odmenami!")
-    print("👉 Prihlásenie UČITEĽ:  meno: ucitel  | heslo: heslo123")
-    print("👉 Prihlásenie ŠTUDENT: meno: student | heslo: heslo123")
+    print("Databáza Codoro bola úspešne naplnená všetkými 18 modulmi, odznakmi a odmenami!")
+    print("Prihlásenie UČITEĽ:  meno: ucitel  | heslo: heslo123")
+    print("Prihlásenie ŠTUDENT: meno: student | heslo: heslo123")
 
 
 if __name__ == '__main__':

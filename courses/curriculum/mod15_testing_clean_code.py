@@ -44,7 +44,7 @@ def vypocitaj_dph(cena, sadzba=20):
     return round(cena * (sadzba / 100), 2)
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Písanie zátvoriek okolo assert výrazu: `assert(cena >= 0, "Chyba")`. V Pythone nie je assert funkcia, ale príkaz! Dvojica v zátvorkách vytvorí neprázdnu n-ticu `tuple`, ktorá sa v booleovskom kontexte **vždy vyhodnotí ako True**, takže test nikdy nezlyhá! Správne: `assert podmienka, sprava` (bez vonkajších zátvoriek).
 """,
             'content_en': """### 15.1 The assert Statement
@@ -367,9 +367,9 @@ Learn TestCase, `assertEqual`, `assertTrue`, and testing exceptions with `assert
 TDD obracia tradičný vývoj naruby: **Najprv napíšeme test, až potom produkčný kód**.
 
 #### Cyklus TDD (Red - Green - Refactor):
-1. 🔴 **Red**: Napíšeme zlyhávajúci test pre funkciu, ktorá ešte neexistuje.
-2. 🟢 **Green**: Napíšeme minimálny kód nutný na to, aby test prešiel.
-3. 🔵 **Refactor**: Vylepšíme a vyčistíme kód bez zmeny jeho vonkajšieho správania.
+1. **Red**: Napíšeme zlyhávajúci test pre funkciu, ktorá ešte neexistuje.
+2. **Green**: Napíšeme minimálny kód nutný na to, aby test prešiel.
+3. **Refactor**: Vylepšíme a vyčistíme kód bez zmeny jeho vonkajšieho správania.
 """,
             'content_en': """### 15.3 TDD Lifecycle
 

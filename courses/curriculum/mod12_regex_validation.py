@@ -64,7 +64,7 @@ if match:
     print("Meno:", match.group(1))  # 'Juraj'
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Záména `re.match()` a `re.search()`. Funkcia `re.match()` testuje vzor **iba od úplného začiatku reťazca** (od indexu 0). Ak vzor leží v strede vety, `match()` vráti `None`, zatiaľ čo `search()` ho nájde kdekoľvek!
 """,
             'content_en': """### 12.1 Regular Expressions in Python
@@ -191,7 +191,7 @@ mena = re.findall(r"\\b[A-ZÁČĎÉÍĽŇÓŠŤÚÝŽ][a-záčďéíľňóšťú
 print(mena)  # ['Bratislava', 'Slovenska']
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Pozor na "chamtivosť" (greedy) kvantifikátorov `*` a `+`. Štandardne zaberú najdlhší možný úsek textu. Ak chceme negreedy (lazy) režim, pridáme za kvantifikátor otáznik: `.*?`.
 """,
             'content_en': """### 12.2 Character Classes & Quantifiers
@@ -319,7 +319,7 @@ Slovenský IBAN má 24 znakov, začína kódom `SK` nasledovaným 22 číslicami
 IBAN_REGEX = r"^SK\\d{22}$"
 ```
 
-> ⚠️ **Častá chyba na maturite:**
+> **Častá chyba v praxi:**
 > Zabudnutie na znak `^` (začiatok) a `$` (koniec) pri použití `re.search()`. Ak vzor neukotvíte, reťazec `"neplatny_email@domena.sk_a_dalsi_odpad"` by cez `search` prešiel ako platný! Preto na validáciu formulárov vždy používajte `re.fullmatch()`.
 """,
             'content_en': """### 12.3 Real-World Form Validation

@@ -76,7 +76,7 @@ def landing_page(request):
             'icon': 'award',
             'badge': '3 Moduly • 42h',
             'desc_sk': 'Kryptografia, praktické algoritmické zadania a záverečné certifikačné projekty.',
-            'desc_en': 'Applied cryptography, practical software tasks, and graduation boss projects.',
+            'desc_en': 'Applied cryptography, practical software tasks, and capstone certification projects.',
         },
     }
 

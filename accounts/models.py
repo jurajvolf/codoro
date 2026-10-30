@@ -42,20 +42,20 @@ class User(AbstractUser):
 
     # Prednastavené avatary (podpora ilustrovaných portrétov aj retro emoji)
     AVATAR_CHOICES = [
-        ('student_alex', '👦 Alex (Programátor)'),
-        ('student_mia', '👧 Mia (Data Scientist)'),
-        ('student_sam', '🧑 Sam (Full-stack)'),
-        ('cyber_ninja', '🥷 Cyber Coder'),
-        ('codo', '🤖 Codo (AI Maskot)'),
-        ('snake', '🐍 Pythonista'),
-        ('fox', '🦊 Lišiak'),
-        ('owl', '🦉 Sova'),
-        ('panda', '🐼 Panda'),
-        ('cat', '🐱 Hacker Cat'),
-        ('rocket', '🚀 Inovátor'),
-        ('ninja', '🥷 Ninja'),
-        ('wizard', '🧙 Kód Magik'),
-        ('alien', '👾 Cyber Alien'),
+        ('student_alex', 'Alex (Programátor)'),
+        ('student_mia', 'Mia (Data Scientist)'),
+        ('student_sam', 'Sam (Full-stack)'),
+        ('cyber_ninja', 'Cyber Coder'),
+        ('codo', 'Codo (AI Maskot)'),
+        ('snake', 'Pythonista'),
+        ('fox', 'Lišiak'),
+        ('owl', 'Sova'),
+        ('panda', 'Panda'),
+        ('cat', 'Hacker Cat'),
+        ('rocket', 'Inovátor'),
+        ('ninja', 'Ninja'),
+        ('wizard', 'Kód Magik'),
+        ('alien', 'Cyber Alien'),
     ]
     AVATAR_COLORS = [
         ('indigo', '#4636F5'),
@@ -239,9 +239,7 @@ class User(AbstractUser):
         return True
 
     def avatar_emoji(self):
-        choice = dict(self.AVATAR_CHOICES).get(self.avatar, '👦')
-        # Ak je to string v tvare "👦 Alex", extrahujeme prvý symbol
-        return choice.split()[0] if choice else '👦'
+        return self.username[:1].upper() if self.username else 'U'
 
     def get_avatar_url(self):
         """Vráti URL adresu obrázka avatara používateľa."""
