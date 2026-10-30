@@ -75,6 +75,10 @@ urlpatterns = [
     path('profile/', acc_views.profile_view, name='profile'),
     path('certificate/', acc_views.certificate_view, name='certificate'),
 
+    # Simulovaná demo databáza (Sandbox pre obhajobu a prezentáciu)
+    path('demo/reset/', acc_views.demo_reset_view, name='demo_reset'),
+    path('demo/login/<str:role>/', acc_views.demo_quick_login_view, name='demo_quick_login'),
+
     # Právne dokumenty, SEO a potvrdenia
     path('privacy/', acc_views.privacy_policy_view, name='privacy_policy'),
     path('terms/', acc_views.terms_of_service_view, name='terms_of_service'),

@@ -3734,3 +3734,87 @@ button:active,
         0 18px 40px -12px rgba(0, 0, 0, 0.5),
         inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
 }
+
+
+/* ==============================================================================
+   SIMULATED DEMO SANDBOX BANNER (APPLE LIQUID GLASS)
+   ============================================================================== */
+.demo-sandbox-banner {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background: rgba(14, 30, 24, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: #F3F7F5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 0.45rem 1.25rem;
+    font-size: 0.82rem;
+}
+
+[data-theme="dark"] .demo-sandbox-banner {
+    background: rgba(9, 15, 13, 0.94);
+    border-bottom-color: rgba(0, 135, 103, 0.35);
+}
+
+.demo-sandbox-banner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.demo-sandbox-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0, 135, 103, 0.35);
+    border: 1px solid rgba(92, 225, 230, 0.45);
+    color: #5CE1E6;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.demo-sandbox-desc {
+    flex: 1;
+    color: rgba(243, 247, 245, 0.92);
+    font-weight: 500;
+    font-size: 0.82rem;
+}
+
+.demo-sandbox-reset-form {
+    margin: 0;
+}
+
+.btn-demo-sandbox-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #FFFFFF;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 120ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.btn-demo-sandbox-reset:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-demo-sandbox-reset:active {
+    transform: scale(0.96);
+}

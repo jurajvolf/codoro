@@ -626,3 +626,68 @@ class SecurityAndMobileUXTests(TestCase):
         done_resp = self.client.get(reverse('password_reset_done'))
         self.assertNotIn('dev_reset_url', done_resp.context or {})
         self.assertNotIn('password-reset-confirm', done_resp.content.decode('utf-8'))
+
+
+class DemoDatabaseIsolationTests(TestCase):
+    """Testy pre simulovanú demo databázu a dynamické smerovanie (Phase 36)."""
+
+    databases = {'default', 'demo'}
+
+    def setUp(self):
+        from config.db_routers import set_active_db, reset_active_db
+
+        # Vytvorenie reálneho študenta v 'default'
+        self.real_user = User.objects.create_user(
+            username='real_juraj',
+            password='Password123!',
+            email='juraj@example.com',
+            xp=500
+        )
+
+        # Vytvorenie demo používateľov v 'demo'
+        token = set_active_db('demo')
+        try:
+            self.demo_student = User.objects.create_user(
+                username='student',
+                password='heslo123',
+                email='student@codoro.sk',
+                xp=240
+            )
+            self.demo_teacher = User.objects.create_user(
+                username='ucitel',
+                password='heslo123',
+                email='ucitel@codoro.sk',
+                role=User.Role.TEACHER
+            )
+        finally:
+            reset_active_db(token)
+
+    def test_demo_router_switches_context(self):
+        """Router korektne prepína medzi 'default' a 'demo' podľa kontextu."""
+        from config.db_routers import set_active_db, reset_active_db, get_active_db
+
+        self.assertEqual(get_active_db(), 'default')
+        token = set_active_db('demo')
+        try:
+            self.assertEqual(get_active_db(), 'demo')
+            self.assertTrue(User.objects.filter(username='student').exists())
+            self.assertFalse(User.objects.filter(username='real_juraj').exists())
+        finally:
+            reset_active_db(token)
+
+        self.assertEqual(get_active_db(), 'default')
+        self.assertTrue(User.objects.filter(username='real_juraj').exists())
+
+    def test_demo_quick_login_redirects_and_sets_session(self):
+        """Rýchle 1-klik prihlásenie prepne reláciu do demo režimu."""
+        resp = self.client.get(reverse('demo_quick_login', kwargs={'role': 'student'}))
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(self.client.session.get('is_demo_mode'))
+
+    def test_demo_reset_endpoint_requires_post(self):
+        """Endpoint na reset simulovanej databázy vyžaduje POST požiadavku."""
+        resp_get = self.client.get(reverse('demo_reset'))
+        self.assertEqual(resp_get.status_code, 405)
+
+        resp_post = self.client.post(reverse('demo_reset'))
+        self.assertEqual(resp_post.status_code, 302)

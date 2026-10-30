@@ -125,6 +125,8 @@ def login_view(request):
             if 'ui_lang' in request.session:
                 user.preferred_language = request.session['ui_lang']
                 user.save(update_fields=['preferred_language'])
+            from config.db_routers import DEMO_USERNAMES
+            request.session['is_demo_mode'] = (user.username.lower() in DEMO_USERNAMES)
             login(request, user)
             return redirect('dashboard')
 
@@ -939,3 +941,44 @@ def password_reset_complete_view(request):
     """Potvrdenie o úspešnej zmene hesla s tlačidlom na prihlásenie."""
     lang = get_active_lang(request)
     return render(request, 'accounts/password_reset_complete.html', {'ui_lang': lang})
+
+
+@require_POST
+def demo_reset_view(request):
+    """Resetuje simulovanú demo databázu do počiatočného stavu."""
+    lang = get_active_lang(request)
+    from config.db_routers import reset_demo_database
+    reset_demo_database()
+    msg = (
+        "Simulated demo database has been reset to its pristine initial state."
+        if lang == 'en'
+        else "Simulovaná demo databáza bola úspešne resetovaná do čistého počiatočného stavu."
+    )
+    messages.success(request, msg)
+    referer = request.META.get('HTTP_REFERER')
+    if referer and '/demo/reset' not in referer:
+        return redirect(referer)
+    return redirect('dashboard')
+
+
+def demo_quick_login_view(request, role='student'):
+    """Rýchle prihlásenie do simulovanej databázy pre prezentáciu na obhajobe."""
+    from config.db_routers import ensure_demo_database, set_active_db, reset_active_db
+    from django.contrib.auth import login
+
+    target_username = 'ucitel' if role in ('teacher', 'ucitel') else 'student'
+
+    ensure_demo_database()
+    token = set_active_db('demo')
+    try:
+        user = User.objects.filter(username=target_username).first()
+        if user:
+            request.session['is_demo_mode'] = True
+            login(request, user)
+            if role in ('teacher', 'ucitel'):
+                return redirect('teacher_dashboard')
+            return redirect('dashboard')
+    finally:
+        reset_active_db(token)
+
+    return redirect('login')

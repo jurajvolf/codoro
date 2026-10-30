@@ -3,6 +3,45 @@ from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from accounts.security import validate_uploaded_file
+from config.db_routers import set_active_db, reset_active_db, ensure_demo_database, DEMO_USERNAMES
+
+
+class DemoRoutingMiddleware:
+    """
+    Smeruje požiadavky demo relácií (student, ucitel, martin_k) do izolovanej simulovanej databázy 'demo'.
+    Zabezpečuje, že žiadny demo používateľ nemôže modifikovať ani čítať ostré produkčné dáta.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        is_demo = False
+        session = getattr(request, 'session', None)
+
+        # 1. Už existujúca demo session
+        if session and session.get('is_demo_mode', False):
+            is_demo = True
+        # 2. Prihlasovací POST pokus s demo používateľským menom
+        elif request.method == 'POST' and request.path.endswith('/login/') and request.POST.get('username', '').strip().lower() in DEMO_USERNAMES:
+            is_demo = True
+        # 3. Explicitné demo URL cesty
+        elif request.path.startswith('/demo/'):
+            is_demo = True
+
+        request.is_demo = is_demo
+        token = None
+
+        if is_demo and 'demo' in getattr(settings, 'DATABASES', {}):
+            ensure_demo_database()
+            token = set_active_db('demo')
+
+        try:
+            response = self.get_response(request)
+            return response
+        finally:
+            if token is not None:
+                reset_active_db(token)
 
 
 class SecurityHeadersMiddleware:

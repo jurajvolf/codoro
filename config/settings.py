@@ -119,6 +119,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'accounts.middleware.SecurityHeadersMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'accounts.middleware.DemoRoutingMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -156,8 +157,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    'demo': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db_demo.sqlite3',
+    },
 }
+
+DATABASE_ROUTERS = ['config.db_routers.DemoDatabaseRouter']
 
 
 # Password validation

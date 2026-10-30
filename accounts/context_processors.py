@@ -31,7 +31,12 @@ def language_context(request):
         lang = request.COOKIES.get('codoro_lang')
         request.session['ui_lang'] = lang
 
+    is_demo = getattr(request, 'is_demo', False)
+    if not is_demo and hasattr(request, 'session'):
+        is_demo = request.session.get('is_demo_mode', False)
+
     return {
         'lang': lang,
         'ui_lang': lang,
+        'is_demo_mode': is_demo,
     }

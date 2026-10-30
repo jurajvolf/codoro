@@ -107,6 +107,40 @@
     <div id="scrollProgressBar" class="scroll-progress-bar"></div>
     <div id="sidebarBackdrop" class="exec-drawer-backdrop" onclick="closeSidebarDrawer()"></div>
 
+    {% if is_demo_mode %}
+    <!-- Simulated Demo Database Banner (Apple Liquid Glass) -->
+    <div class="demo-sandbox-banner" role="status">
+        <div class="demo-sandbox-banner-inner">
+            <div class="demo-sandbox-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 2v7.31"></path>
+                    <path d="M14 9.3V2"></path>
+                    <path d="M8.5 2h7"></path>
+                    <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                    <path d="M5.52 16h12.96"></path>
+                </svg>
+                <span>{% if lang == 'en' %}SIMULATED DEMO SANDBOX{% else %}SIMULOVANÁ DEMO DATABÁZA{% endif %}</span>
+            </div>
+            <span class="demo-sandbox-desc">
+                {% if lang == 'en' %}
+                Operating in an isolated demo database. Real production data is 100% protected.
+                {% else %}
+                Pracuješ v izolovanej simulovanej databáze. Ostré produkčné dáta sú 100% chránené.
+                {% endif %}
+            </span>
+            <form method="POST" action="{% url 'demo_reset' %}" class="demo-sandbox-reset-form">
+                {% csrf_token %}
+                <button type="submit" class="btn-demo-sandbox-reset" title="{% if lang == 'en' %}Reset demo data to initial state{% else %}Resetovať demo dáta do čistého stavu{% endif %}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <span>{% if lang == 'en' %}Reset Demo Data{% else %}Resetovať demo dáta{% endif %}</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     {% if user.is_authenticated and not is_public_landing %}
     <!-- ====================================================================
          TOP APP BAR (MINERAL & EMERALD DESIGN)
@@ -407,14 +441,14 @@
                 </button>
             </div>
 
-            <!-- Quick Demo Credentials Bar -->
+            <!-- Quick Demo Credentials Bar (Simulated Sandbox) -->
             <div class="demo-login-quickbar">
-                <button type="button" class="btn-demo-quick" onclick="fillDemoCredentials('student', 'heslo123')">
+                <a href="{% url 'demo_quick_login' role='student' %}" class="btn-demo-quick" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
                     {% if lang == 'en' %}Demo Student{% else %}Demo Študent{% endif %}
-                </button>
-                <button type="button" class="btn-demo-quick" onclick="fillDemoCredentials('ucitel', 'heslo123')">
+                </a>
+                <a href="{% url 'demo_quick_login' role='teacher' %}" class="btn-demo-quick" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
                     {% if lang == 'en' %}Demo Teacher{% else %}Demo Učiteľ{% endif %}
-                </button>
+                </a>
             </div>
 
             <form action="{% url 'login' %}" method="POST" style="display:flex; flex-direction:column; gap:1rem;">
