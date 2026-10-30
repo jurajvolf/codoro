@@ -1,5 +1,5 @@
 import json
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
@@ -259,3 +259,59 @@ class SuperAdminPanelTests(TestCase):
         req.refresh_from_db()
         self.assertEqual(req.status, SchoolLicenseRequest.Status.REJECTED)
 
+
+
+class GitWebhookSecurityTests(TestCase):
+    """Bezpečnostné testy pre auto-deploy Webhook (HMAC-SHA256 ochrana)."""
+
+    def setUp(self):
+        self.url = reverse('git_webhook_update')
+
+    def test_git_webhook_get_rejected(self):
+        """GET požiadavky na webhook sú striktne zakázané (403)."""
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(GITHUB_WEBHOOK_SECRET='')
+    def test_git_webhook_unconfigured_secret_rejected(self):
+        """Ak nie je nastavený GITHUB_WEBHOOK_SECRET, webhook musí bezpečne vrátiť 403."""
+        response = self.client.post(self.url, data=b'{}', content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('Webhook nie je nakonfigurovaný', response.content.decode('utf-8'))
+
+    @override_settings(GITHUB_WEBHOOK_SECRET='super-secret-key-123')
+    def test_git_webhook_invalid_signature_rejected(self):
+        """Požiadavka s neplatným HMAC podpisom je zamietnutá (403)."""
+        response = self.client.post(
+            self.url,
+            data=b'{"ref": "refs/heads/main"}',
+            content_type='application/json',
+            HTTP_X_HUB_SIGNATURE_256='sha256=invalidhash999'
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('Neplatný bezpečnostný podpis', response.content.decode('utf-8'))
+
+    @override_settings(GITHUB_WEBHOOK_SECRET='test-webhook-secret-456')
+    def test_git_webhook_valid_signature_executes_deploy(self):
+        """Požiadavka s platným HMAC-SHA256 podpisom úspešne prebehne (200)."""
+        import hmac
+        import hashlib
+        from unittest.mock import patch
+
+        payload = b'{"ref": "refs/heads/main"}'
+        secret = b'test-webhook-secret-456'
+        signature = 'sha256=' + hmac.new(secret, payload, hashlib.sha256).hexdigest()
+
+        with patch('subprocess.run') as mock_subproc, \
+             patch('django.core.management.call_command') as mock_cmd, \
+             patch('os.path.exists', return_value=False):
+            response = self.client.post(
+                self.url,
+                data=payload,
+                content_type='application/json',
+                HTTP_X_HUB_SIGNATURE_256=signature
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('úspešne aktualizovaný', response.content.decode('utf-8'))
+            mock_subproc.assert_called_once()
+            self.assertEqual(mock_cmd.call_count, 2)

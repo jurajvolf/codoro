@@ -38,11 +38,54 @@ IS_PRODUCTION = bool(
 _default_debug = '0' if IS_PRODUCTION else '1'
 DEBUG = os.environ.get('DJANGO_DEBUG', _default_debug).lower() in ('1', 'true', 'yes')
 
+def _get_or_create_secret_key():
+    """Získa alebo bezpečne vygeneruje kryptografický tajný kľúč bez hardcodovania v Gite."""
+    key = os.environ.get('DJANGO_SECRET_KEY', '').strip()
+    if key:
+        return key
+
+    # Testovacia suita používa deterministický kľúč pre rýchlosť a izoláciu
+    if 'test' in sys.argv or os.environ.get('DJANGO_TESTING') == '1':
+        return 'django-insecure-test-suite-key-do-not-use-in-prod-2027'
+
+    # Lokálny vývoj (DEBUG = True)
+    if DEBUG:
+        return 'django-insecure-dev-only-local-key-do-not-use-in-prod-2027'
+
+    # Produkčné prostredie (DEBUG = False):
+    # Kľúč nesmie byť hardcodovaný v repozitári. Ak chýba v prostredí, vygenerujeme
+    # jedinečný kryptografický kľúč (64 bajtov) a bezpečne ho uložíme do necommitovaného .env
+    import secrets
+    env_path = BASE_DIR / '.env'
+    new_key = secrets.token_urlsafe(64)
+    try:
+        if env_path.exists():
+            c = env_path.read_text(encoding='utf-8')
+            for line in c.splitlines():
+                if line.strip().startswith('DJANGO_SECRET_KEY='):
+                    val = line.split('=', 1)[1].strip().strip('"').strip("'")
+                    if val:
+                        os.environ['DJANGO_SECRET_KEY'] = val
+                        return val
+            with env_path.open('a', encoding='utf-8') as f:
+                f.write(f"\nDJANGO_SECRET_KEY={new_key}\n")
+        else:
+            env_path.write_text(
+                f"# Codoro produkčný kľúč (vygenerovaný automaticky, necommitovať!)\nDJANGO_SECRET_KEY={new_key}\n",
+                encoding='utf-8',
+            )
+        os.environ['DJANGO_SECRET_KEY'] = new_key
+        return new_key
+    except Exception as err:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            'DJANGO_SECRET_KEY nie je nastavený a nie je možné ho zapísať do .env súboru. '
+            'Vytvorte súbor .env v koreňovom priečinku projektu podľa .env.example.'
+        ) from err
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    os.environ.get('DJANGO_SECRET_KEY', '')
-    or 'codoro-production-secret-key-ms-2027-hattala-nizna-sk'
-)
+SECRET_KEY = _get_or_create_secret_key()
 
 _default_hosts = (
     '127.0.0.1,localhost,testserver,'
@@ -265,8 +308,5 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Tajné heslo pre GitHub Webhook (z premennej prostredia s bezpečným produkčným fallbackom)
-GITHUB_WEBHOOK_SECRET = (
-    os.environ.get('GITHUB_WEBHOOK_SECRET', '')
-    or 'codoro-maturita-secret-2027'
-)
+# Tajné heslo pre GitHub Webhook (načítané výhradne z .env alebo premennej prostredia)
+GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', '').strip()
