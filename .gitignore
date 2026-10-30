@@ -61,8 +61,30 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+# AI Agent instructions, logs, tools and artifacts
 GEMINI.md
 AGENTS.md
+DESIGN.md
+PRODUCT.md
+CLAUDE.md
+GLOSSARY.md
+GLOSSARY-MAP.md
+.agents/
+.claude/
+.claude-plugin/
+.cursor/
+.windsurf/
+.gemini/
+.antigravity/
+.codex/
+.cline/
+.roo/
+.prompts/
+.scratch/
+.taste-skill/
+skills-lock.json
+docs/adr/
+docs/agents/
 
 # Flask stuff:
 instance/

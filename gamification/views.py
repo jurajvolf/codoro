@@ -13,6 +13,10 @@ from .models import (
 )
 
 
+def _msg(user, sk, en):
+    return en if getattr(user, 'preferred_language', 'sk') == 'en' else sk
+
+
 @login_required
 def shop_view(request):
     rewards = RewardItem.objects.filter(is_active=True)
@@ -33,19 +37,24 @@ def shop_view(request):
 @require_POST
 @transaction.atomic
 def buy_reward(request, reward_id):
-    if request.method != 'POST':
-        return redirect('shop')
-
     user = request.user
     reward = get_object_or_404(RewardItem.objects.select_for_update(), id=reward_id, is_active=True)
     reward.check_and_restock()
 
     if reward.current_stock <= 0:
-        messages.error(request, "Táto odmena je momentálne vypredaná! Počkaj na ďalšie automatické obnovenie skladu.")
+        messages.error(
+            request,
+            _msg(user, 'Táto odmena je momentálne vypredaná! Počkaj na ďalšie automatické obnovenie skladu.',
+                 'This reward is currently out of stock! Please wait for the next restock.')
+        )
         return redirect('shop')
 
     if user.doros < reward.cost_doros:
-        messages.error(request, "Nemáš dostatok mincí Doros na zakúpenie tejto odmeny.")
+        messages.error(
+            request,
+            _msg(user, 'Nemáš dostatok mincí Doros na zakúpenie tejto odmeny.',
+                 'You do not have enough Doros to purchase this reward.')
+        )
         return redirect('shop')
 
     # Kontrola osobného limitu na žiaka v aktuálnom období obnovy
@@ -56,7 +65,12 @@ def buy_reward(request, reward_id):
     ).exclude(status=RewardPurchase.Status.REFUNDED).count()
 
     if recent_purchases >= reward.limit_per_student_per_period:
-        messages.warning(request, f"Dosiahol si maximálny limit ({reward.limit_per_student_per_period} ks) pre túto odmenu v aktuálnom období.")
+        messages.warning(
+            request,
+            _msg(user,
+                 f'Dosiahol si maximálny limit ({reward.limit_per_student_per_period} ks) pre túto odmenu v aktuálnom období.',
+                 f'You have reached the maximum limit ({reward.limit_per_student_per_period} pcs) for this reward in the current period.')
+        )
         return redirect('shop')
 
     # Odpočítanie skladu a mincí
@@ -66,7 +80,7 @@ def buy_reward(request, reward_id):
     user.doros -= reward.cost_doros
     user.save()
 
-    coupon_code = f"CDR-{uuid.uuid4().hex[:6].upper()}"
+    coupon_code = f'CDR-{uuid.uuid4().hex[:6].upper()}'
     RewardPurchase.objects.create(
         student=user,
         reward=reward,
@@ -77,11 +91,16 @@ def buy_reward(request, reward_id):
     DorosTransaction.objects.create(
         student=user,
         amount=-reward.cost_doros,
-        reason_sk=f"Nákup odmeny: {reward.title_sk} (Kupón {coupon_code})",
-        reason_en=f"Purchased reward: {reward.title_en} (Coupon {coupon_code})"
+        reason_sk=f'Nákup odmeny: {reward.title_sk} (Kupón {coupon_code})',
+        reason_en=f'Purchased reward: {reward.title_en} (Coupon {coupon_code})'
     )
 
-    messages.success(request, f"Odmena zakúpená! Tvoj kód kupónu pre učiteľa je: {coupon_code}")
+    messages.success(
+        request,
+        _msg(user,
+             f'Odmena zakúpená! Tvoj kód kupónu pre učiteľa je: {coupon_code}',
+             f'Reward purchased! Your coupon code for the teacher is: {coupon_code}')
+    )
     return redirect('shop')
 
 
@@ -89,27 +108,31 @@ def buy_reward(request, reward_id):
 @require_POST
 @transaction.atomic
 def claim_quest_reward(request, progress_id):
-    if request.method == 'POST':
-        prog = get_object_or_404(
-            StudentQuestProgress.objects.select_for_update(),
-            id=progress_id, student=request.user
+    prog = get_object_or_404(
+        StudentQuestProgress.objects.select_for_update(),
+        id=progress_id, student=request.user
+    )
+    if prog.is_completed and not prog.is_claimed:
+        prog.is_claimed = True
+        prog.save()
+
+        user = request.user
+        user.doros += prog.quest.reward_doros
+        user.add_xp_and_check_level_up(prog.quest.reward_xp)
+        user.save()
+
+        DorosTransaction.objects.create(
+            student=user,
+            amount=prog.quest.reward_doros,
+            reason_sk=f'Splnený Quest: {prog.quest.title_sk}',
+            reason_en=f'Completed Quest: {prog.quest.title_en}'
         )
-        if prog.is_completed and not prog.is_claimed:
-            prog.is_claimed = True
-            prog.save()
-
-            user = request.user
-            user.doros += prog.quest.reward_doros
-            user.add_xp_and_check_level_up(prog.quest.reward_xp)
-            user.save()
-
-            DorosTransaction.objects.create(
-                student=user,
-                amount=prog.quest.reward_doros,
-                reason_sk=f"Splnený Quest: {prog.quest.title_sk}",
-                reason_en=f"Completed Quest: {prog.quest.title_en}"
-            )
-            messages.success(request, f"Odmena za Quest pripísaná: +{prog.quest.reward_doros} Doros a +{prog.quest.reward_xp} XP!")
+        messages.success(
+            request,
+            _msg(user,
+                 f'Odmena za Quest pripísaná: +{prog.quest.reward_doros} Doros a +{prog.quest.reward_xp} XP!',
+                 f'Quest reward claimed: +{prog.quest.reward_doros} Doros and +{prog.quest.reward_xp} XP!')
+        )
     return redirect('dashboard')
 
 
@@ -117,34 +140,48 @@ def claim_quest_reward(request, progress_id):
 @require_POST
 @transaction.atomic
 def claim_coin_drop(request, drop_id):
-    if request.method == 'POST':
-        drop = get_object_or_404(CoinDrop.objects.select_for_update(), id=drop_id)
-        user = request.user
+    drop = get_object_or_404(CoinDrop.objects.select_for_update(), id=drop_id)
+    user = request.user
 
-        if CoinDropClaim.objects.filter(coin_drop=drop, student=user).exists():
-            messages.warning(request, "Tento Coin Drop si si už vyzdvihol!")
-            return redirect('dashboard')
-
-        if drop.school_class and getattr(user, 'school_class_id', None) != drop.school_class_id:
-            msg = "This Coin Drop is not designated for your class." if getattr(user, 'preferred_language', 'sk') == 'en' else "Tento Coin Drop nie je určený pre tvoju triedu."
-            messages.error(request, msg)
-            return redirect('dashboard')
-
-        if not drop.is_currently_active():
-            messages.error(request, "Neskorý klik! Tento Coin Drop už vypršal alebo ho vyzbierali spolužiaci.")
-            return redirect('dashboard')
-
-        won_amount = random.randint(drop.min_doros, drop.max_doros)
-        CoinDropClaim.objects.create(coin_drop=drop, student=user, amount_won=won_amount)
-
-        user.doros += won_amount
-        user.save()
-
-        DorosTransaction.objects.create(
-            student=user,
-            amount=won_amount,
-            reason_sk=f"Chytený Coin Drop: {drop.title_sk}",
-            reason_en=f"Claimed Coin Drop: {drop.title_en}"
+    if CoinDropClaim.objects.filter(coin_drop=drop, student=user).exists():
+        messages.warning(
+            request,
+            _msg(user, 'Tento Coin Drop si si už vyzdvihol!', 'You have already claimed this Coin Drop!')
         )
-        messages.success(request, f"Blesková reakcia! Z Coin Dropu ti padlo +{won_amount} Doros!")
+        return redirect('dashboard')
+
+    if drop.school_class and getattr(user, 'school_class_id', None) != drop.school_class_id:
+        messages.error(
+            request,
+            _msg(user, 'Tento Coin Drop nie je určený pre tvoju triedu.',
+                 'This Coin Drop is not designated for your class.')
+        )
+        return redirect('dashboard')
+
+    if not drop.is_currently_active():
+        messages.error(
+            request,
+            _msg(user, 'Neskorý klik! Tento Coin Drop už vypršal alebo ho vyzbierali spolužiaci.',
+                 'Too late! This Coin Drop has expired or was already claimed by classmates.')
+        )
+        return redirect('dashboard')
+
+    won_amount = random.randint(drop.min_doros, drop.max_doros)
+    CoinDropClaim.objects.create(coin_drop=drop, student=user, amount_won=won_amount)
+
+    user.doros += won_amount
+    user.save()
+
+    DorosTransaction.objects.create(
+        student=user,
+        amount=won_amount,
+        reason_sk=f'Chytený Coin Drop: {drop.title_sk}',
+        reason_en=f'Claimed Coin Drop: {drop.title_en}'
+    )
+    messages.success(
+        request,
+        _msg(user,
+             f'Blesková reakcia! Z Coin Dropu ti padlo +{won_amount} Doros!',
+             f'Lightning reaction! You won +{won_amount} Doros from the Coin Drop!')
+    )
     return redirect('dashboard')

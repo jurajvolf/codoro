@@ -30,9 +30,9 @@ def landing_page(request):
     """Verejná landing page Codoro pre návštevníkov a prezentáciu školy."""
     modules = list(Module.objects.prefetch_related('lessons__exercises').all())
     total_modules = len(modules)
-    total_lessons = sum(m.lessons.count() for m in modules)
+    total_lessons = sum(len(m.lessons.all()) for m in modules)
     total_exercises = sum(
-        sum(l.exercises.count() for l in m.lessons.all())
+        sum(len(l.exercises.all()) for l in m.lessons.all())
         for m in modules
     )
     total_hours = sum(m.estimated_hours for m in modules)
