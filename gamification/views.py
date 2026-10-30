@@ -2,6 +2,7 @@ import random
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db import transaction
 from django.utils import timezone
@@ -29,6 +30,7 @@ def shop_view(request):
 
 
 @login_required
+@require_POST
 @transaction.atomic
 def buy_reward(request, reward_id):
     if request.method != 'POST':
@@ -84,6 +86,7 @@ def buy_reward(request, reward_id):
 
 
 @login_required
+@require_POST
 @transaction.atomic
 def claim_quest_reward(request, progress_id):
     if request.method == 'POST':
@@ -111,6 +114,7 @@ def claim_quest_reward(request, progress_id):
 
 
 @login_required
+@require_POST
 @transaction.atomic
 def claim_coin_drop(request, drop_id):
     if request.method == 'POST':
@@ -119,6 +123,11 @@ def claim_coin_drop(request, drop_id):
 
         if CoinDropClaim.objects.filter(coin_drop=drop, student=user).exists():
             messages.warning(request, "Tento Coin Drop si si už vyzdvihol!")
+            return redirect('dashboard')
+
+        if drop.school_class and getattr(user, 'school_class_id', None) != drop.school_class_id:
+            msg = "This Coin Drop is not designated for your class." if getattr(user, 'preferred_language', 'sk') == 'en' else "Tento Coin Drop nie je určený pre tvoju triedu."
+            messages.error(request, msg)
             return redirect('dashboard')
 
         if not drop.is_currently_active():

@@ -205,14 +205,20 @@
                 <!-- Tlačidlá stavu, akcií a šípka rozbalenia -->
                 <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;" onclick="event.stopPropagation();">
                     <!-- FREE / PRO toggle -->
-                    <a href="{% url 'cms_module_toggle_pro' module.id %}" class="btn btn-sm mod-pro-btn {% if module.is_pro_only %}is-pro{% else %}is-free{% endif %}" style="font-size: 0.74rem; font-weight: 700;">
-                        {% if module.is_pro_only %}<span style="display:inline-flex; align-items:center; gap:0.25rem;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> PRO / EDU</span>{% else %}FREE{% endif %}
-                    </a>
+                    <form method="post" action="{% url 'cms_module_toggle_pro' module.id %}" style="display:inline; margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm mod-pro-btn {% if module.is_pro_only %}is-pro{% else %}is-free{% endif %}" style="font-size: 0.74rem; font-weight: 700; cursor:pointer;">
+                            {% if module.is_pro_only %}<span style="display:inline-flex; align-items:center; gap:0.25rem;"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> PRO / EDU</span>{% else %}FREE{% endif %}
+                        </button>
+                    </form>
 
                     <!-- Publikované toggle -->
-                    <a href="{% url 'cms_module_toggle_publish' module.id %}" class="btn btn-sm mod-pub-btn {% if module.is_published %}is-published{% else %}is-draft{% endif %}" style="font-size: 0.74rem; font-weight: 700;">
-                        <span style="display:inline-flex; align-items:center; gap:0.3rem;"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> {% if module.is_published %}{% if lang == 'en' %}Pub{% else %}Publikovaný{% endif %}{% else %}{% if lang == 'en' %}Hidden{% else %}Skrytý{% endif %}{% endif %}</span>
-                    </a>
+                    <form method="post" action="{% url 'cms_module_toggle_publish' module.id %}" style="display:inline; margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm mod-pub-btn {% if module.is_published %}is-published{% else %}is-draft{% endif %}" style="font-size: 0.74rem; font-weight: 700; cursor:pointer;">
+                            <span style="display:inline-flex; align-items:center; gap:0.3rem;"><svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> {% if module.is_published %}{% if lang == 'en' %}Pub{% else %}Publikovaný{% endif %}{% else %}{% if lang == 'en' %}Hidden{% else %}Skrytý{% endif %}{% endif %}</span>
+                        </button>
+                    </form>
 
                     <!-- Upraviť modul modal button -->
                     <button type="button" class="btn btn-secondary btn-sm"

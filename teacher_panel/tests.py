@@ -135,11 +135,15 @@ class TeacherCMSStudioTests(TestCase):
         self.assertFalse(module.is_pro_only)
 
         # 2. Toggle PRO
+        get_resp = self.client.get(reverse('cms_module_toggle_pro', args=[module.id]))
+        self.assertEqual(get_resp.status_code, 405)
         self.client.post(reverse('cms_module_toggle_pro', args=[module.id]))
         module.refresh_from_db()
         self.assertTrue(module.is_pro_only)
 
         # 3. Toggle Publish
+        get_pub = self.client.get(reverse('cms_module_toggle_publish', args=[module.id]))
+        self.assertEqual(get_pub.status_code, 405)
         self.client.post(reverse('cms_module_toggle_publish', args=[module.id]))
         module.refresh_from_db()
         self.assertFalse(module.is_published)

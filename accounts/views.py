@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Q
@@ -229,7 +230,7 @@ def register_view(request):
                 password=password,
                 role=User.Role.TEACHER,
                 subscription_tier=User.SubscriptionTier.EDU,
-                is_staff=True,
+                is_staff=False,
                 preferred_language=pref_lang,
                 doros=1000,
                 avatar='wizard',
@@ -431,6 +432,7 @@ def switch_language(request, lang_code):
     return response
 
 
+@require_POST
 @login_required
 @transaction.atomic
 def repair_streak(request):
@@ -865,12 +867,7 @@ def password_reset_request_view(request):
             except Exception:
                 pass
 
-            # Pre vývoj a ukážku na obhajobe (aby nebolo nutné čakať na reálnu schránku):
-            if settings.DEBUG:
-                request.session['dev_reset_url'] = reset_url
-                request.session['dev_reset_user'] = user.username
-                request.session['dev_reset_email'] = user.email
-
+            # Pre vývoj: e-mail je vytlačený v konzole (ConsoleEmailBackend)
         # Bezpečnostná ochrana (ochrana proti User Enumeration): vždy redirect na done
         return redirect('password_reset_done')
 
@@ -880,14 +877,8 @@ def password_reset_request_view(request):
 def password_reset_done_view(request):
     """Informačná stránka o odoslaní odkazu na obnovenie hesla."""
     lang = get_active_lang(request)
-    dev_reset_url = request.session.pop('dev_reset_url', None) if settings.DEBUG else None
-    dev_reset_user = request.session.pop('dev_reset_user', None) if settings.DEBUG else None
-    dev_reset_email = request.session.pop('dev_reset_email', None) if settings.DEBUG else None
     return render(request, 'accounts/password_reset_done.html', {
         'ui_lang': lang,
-        'dev_reset_url': dev_reset_url,
-        'dev_reset_user': dev_reset_user,
-        'dev_reset_email': dev_reset_email,
     })
 
 

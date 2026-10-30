@@ -38,7 +38,13 @@ _default_debug = '0' if IS_PRODUCTION else '1'
 DEBUG = os.environ.get('DJANGO_DEBUG', _default_debug).lower() in ('1', 'true', 'yes')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '') or 'codoro-production-secret-key-ms-2027-hattala-nizna-sk'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-only-local-key-do-not-use-in-prod-2027'
+    else:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY environment variable must be set when DEBUG is False.')
 
 _default_hosts = (
     '127.0.0.1,localhost,testserver,'
@@ -255,5 +261,5 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Tajné heslo pre GitHub Webhook (z premennej prostredia s bezpečným fallbackom)
-GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', 'codoro-maturita-secret-2027')
+# Tajné heslo pre GitHub Webhook (načítané výhradne z premennej prostredia)
+GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', '')

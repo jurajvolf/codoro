@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.urls import reverse
 from accounts.models import User
 from courses.models import Module, Lesson, Exercise, TestCase as ExTestCase, Submission
 from courses.services import check_code_safety, evaluate_python_code, get_codo_ai_feedback
@@ -34,6 +35,9 @@ class SandboxSecurityTests(TestCase):
             "exec('x = 5')",
             "mod = __import__('os')",
             "c = ().__class__.__bases__[0].__subclasses__()",
+            "(x for x in ()).gi_frame.f_builtins['open']('hacked.txt', 'w')",
+            "def g(): yield 1\ng().gi_frame.f_builtins['eval']('1+1')",
+            "getattr(x, 'f_globals')",
         ]
         for snippet in dangerous_snippets:
             is_safe, error_msg = check_code_safety(snippet, lang='sk')
@@ -140,6 +144,21 @@ class EvaluationEngineTests(TestCase):
         self.assertTrue(len(feedback) > 10)
         self.assertNotIn("def sucet(a, b):\n    return a + b", feedback, "AI nesmie vygenerovať hotové riešenie!")
 
+    def test_evaluate_python_code_blocks_unsafe_custom_test_cases(self):
+        # Ak custom test case obsahuje nepovolené atribúty/volania, evaluate_python_code ho odmietne
+        unsafe_custom_tests = [
+            {'input_data': 'sucet(1, 1)', 'expected_output': '2', 'test_code': "assert (x for x in ()).gi_frame.f_builtins['open']"}
+        ]
+        passed, status, output_log = evaluate_python_code(
+            self.exercise,
+            "def sucet(a, b):\n    return a + b",
+            custom_test_cases=unsafe_custom_tests,
+            lang='sk'
+        )
+        self.assertFalse(passed)
+        self.assertEqual(status, 'ERROR')
+        self.assertIn("Bezpečnostná ochrana Codoro", output_log)
+
 
 class PracticeArenaAndLessonDetailTests(TestCase):
     """Testy pre Tréningovú Arénu a prepínanie úloh v lekcii."""
@@ -229,6 +248,28 @@ class PracticeArenaAndLessonDetailTests(TestCase):
         self.module.track = Module.Track.OOP
         self.module.save()
         self.assertEqual(Module.objects.get(id=self.module.id).track, Module.Track.OOP)
+
+    def test_unpublished_lesson_redirects_student(self):
+        self.lesson.is_published = False
+        self.lesson.save()
+        self.client.login(username='student_arena', password='password123')
+        res = self.client.get(f'/lesson/{self.lesson.id}/', follow=True)
+        self.assertRedirects(res, reverse('dashboard'))
+        messages = list(res.context['messages'])
+        self.assertTrue(any("nie je publikovaná" in str(m) or "not published" in str(m) for m in messages))
+
+    def test_unlock_hint_requires_post_and_published_lesson(self):
+        self.client.login(username='student_arena', password='password123')
+        # GET request must fail with 405 Method Not Allowed
+        res_get = self.client.get(reverse('unlock_hint', args=[self.ex1.id]))
+        self.assertEqual(res_get.status_code, 405)
+
+        # POST on unpublished lesson must return 403 Forbidden
+        self.lesson.is_published = False
+        self.lesson.save()
+        res_post = self.client.post(reverse('unlock_hint', args=[self.ex1.id]))
+        self.assertEqual(res_post.status_code, 302)
+        self.assertRedirects(res_post, reverse('dashboard'))
 
 
 class LandingPageTests(TestCase):

@@ -177,7 +177,8 @@ class TeacherRegistrationAndLicenseTests(TestCase):
         teacher = User.objects.get(username='novy_ucitel')
         self.assertEqual(teacher.role, User.Role.TEACHER)
         self.assertEqual(teacher.subscription_tier, User.SubscriptionTier.EDU)
-        self.assertTrue(teacher.is_staff)
+        self.assertFalse(teacher.is_staff)
+        self.assertFalse(teacher.is_admin())
 
         # Overenie vytvorenia triedy
         created_class = SchoolClass.objects.filter(teacher=teacher, name='III.B').first()
@@ -584,3 +585,44 @@ class SecurityAndMobileUXTests(TestCase):
         valid_png = SimpleUploadedFile('avatar.png', b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR', content_type='image/png')
         ok_valid, _ = validate_uploaded_file(valid_png)
         self.assertTrue(ok_valid)
+
+    def test_teacher_cannot_access_superadmin_panel(self):
+        teacher = User.objects.create_user(
+            username='teacher_audit_test',
+            password='Password123!',
+            role=User.Role.TEACHER,
+            subscription_tier=User.SubscriptionTier.EDU,
+            is_staff=False
+        )
+        self.assertFalse(teacher.is_admin())
+        self.client.login(username='teacher_audit_test', password='Password123!')
+        resp = self.client.get('/admin-panel/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertRedirects(resp, reverse('dashboard'))
+
+    def test_repair_streak_requires_post(self):
+        self.client.login(username='sec_student', password='Password123!')
+        self.student.lost_streak_value = 5
+        self.student.doros = 500
+        self.student.save()
+
+        get_resp = self.client.get(reverse('repair_streak'))
+        self.assertEqual(get_resp.status_code, 405)
+
+        post_resp = self.client.post(reverse('repair_streak'))
+        self.assertEqual(post_resp.status_code, 302)
+        self.student.refresh_from_db()
+        self.assertEqual(self.student.doros, 300)
+        self.assertEqual(self.student.current_streak, 5)
+
+    def test_password_reset_does_not_leak_token_in_session(self):
+        resp = self.client.post(reverse('password_reset'), {
+            'identity': 'sec_student',
+            'website_url': ''
+        })
+        self.assertEqual(resp.status_code, 302)
+        self.assertIsNone(self.client.session.get('dev_reset_url'))
+
+        done_resp = self.client.get(reverse('password_reset_done'))
+        self.assertNotIn('dev_reset_url', done_resp.context or {})
+        self.assertNotIn('password-reset-confirm', done_resp.content.decode('utf-8'))

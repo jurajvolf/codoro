@@ -382,6 +382,10 @@ def lesson_detail(request, lesson_id):
     lang = user.preferred_language
     lesson = get_object_or_404(Lesson.objects.select_related('module'), id=lesson_id)
 
+    if not user.is_teacher() and (not lesson.is_published or not lesson.module.is_published):
+        messages.error(request, tr(lang, "Táto lekcia momentálne nie je publikovaná.", "This lesson is currently not published."))
+        return redirect('dashboard')
+
     if lesson.module.is_pro_only and not user.has_pro_access():
         messages.warning(request, tr(lang,
                                      "Tento pokročilý modul vyžaduje účet Codoro PRO alebo školskú EDU licenciu.",
@@ -556,7 +560,13 @@ def lesson_detail(request, lesson_id):
 def unlock_hint(request, exercise_id):
     """Odomkne nápovedu k cvičeniu za Doros. Platí sa iba raz, operácia je atomická."""
     lang = request.user.preferred_language
-    exercise = get_object_or_404(Exercise.objects.select_related('lesson'), id=exercise_id)
+    exercise = get_object_or_404(Exercise.objects.select_related('lesson', 'lesson__module'), id=exercise_id)
+    if not exercise.lesson.is_published or not exercise.lesson.module.is_published:
+        messages.error(request, tr(lang, "Tento obsah nie je publikovaný.", "This content is not published."))
+        return redirect('dashboard')
+    if exercise.lesson.module.is_pro_only and not request.user.has_pro_access():
+        messages.warning(request, tr(lang, "Tento pokročilý modul vyžaduje Codoro PRO.", "This advanced module requires Codoro PRO."))
+        return redirect('shop')
     target = f"/lesson/{exercise.lesson_id}/?exercise={exercise.id}#workbench"
 
     with transaction.atomic():

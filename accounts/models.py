@@ -266,7 +266,7 @@ class User(AbstractUser):
         return self.role in [self.Role.TEACHER, self.Role.ADMIN] or self.is_superuser or self.is_staff
 
     def is_admin(self):
-        return self.role == self.Role.ADMIN or self.is_superuser or self.is_staff
+        return self.role == self.Role.ADMIN or self.is_superuser
 
     def has_pro_access(self):
         return self.subscription_tier in [self.SubscriptionTier.PRO, self.SubscriptionTier.EDU] or self.is_teacher() or self.is_admin()

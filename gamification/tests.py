@@ -131,3 +131,59 @@ class CollectiveClassQuestTests(TestCase):
 
         self.assertEqual(contrib.amount_contributed, 3)
         self.assertTrue(contrib.amount_contributed >= self.class_quest.min_contribution_required)
+
+
+class CoinDropSecurityTests(TestCase):
+    """Testy oprávnení a obmedzení pre Coin Dropy."""
+
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            username='ucitel_drop', password='password123', role='TEACHER'
+        )
+        self.class_a = SchoolClass.objects.create(
+            name='IV.A', join_code='IVA-2027', teacher=self.teacher
+        )
+        self.class_b = SchoolClass.objects.create(
+            name='IV.B', join_code='IVB-2027', teacher=self.teacher
+        )
+        self.student_a = User.objects.create_user(
+            username='student_a', password='password123', role='STUDENT',
+            school_class=self.class_a, doros=50
+        )
+        self.student_b = User.objects.create_user(
+            username='student_b', password='password123', role='STUDENT',
+            school_class=self.class_b, doros=50
+        )
+        now = timezone.now()
+        self.drop = CoinDrop.objects.create(
+            school_class=self.class_a,
+            created_by=self.teacher,
+            title_sk='Drop pre IV.A',
+            title_en='Drop for IV.A',
+            min_doros=100,
+            max_doros=100,
+            max_claims=5,
+            available_from=now - timedelta(minutes=5),
+            available_until=now + timedelta(hours=2)
+        )
+
+    def test_claim_coin_drop_requires_post(self):
+        self.client.login(username='student_a', password='password123')
+        res = self.client.get(reverse('claim_coin_drop', args=[self.drop.id]))
+        self.assertEqual(res.status_code, 405)
+
+    def test_student_from_different_class_cannot_claim_drop(self):
+        self.client.login(username='student_b', password='password123')
+        res = self.client.post(reverse('claim_coin_drop', args=[self.drop.id]), follow=True)
+        self.student_b.refresh_from_db()
+        self.assertEqual(self.student_b.doros, 50)
+        self.assertEqual(CoinDropClaim.objects.filter(coin_drop=self.drop, student=self.student_b).count(), 0)
+        self.assertEqual(self.drop.claims.count(), 0)
+
+    def test_student_from_matching_class_claims_successfully(self):
+        self.client.login(username='student_a', password='password123')
+        res = self.client.post(reverse('claim_coin_drop', args=[self.drop.id]), follow=True)
+        self.student_a.refresh_from_db()
+        self.assertEqual(self.student_a.doros, 150)
+        self.assertEqual(CoinDropClaim.objects.filter(coin_drop=self.drop, student=self.student_a).count(), 1)
+        self.assertEqual(self.drop.claims.count(), 1)

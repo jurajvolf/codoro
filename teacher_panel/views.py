@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Q
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_POST
 from django.utils import timezone
 
 from accounts.models import User, SchoolClass, SubscriptionLicense
@@ -194,6 +195,7 @@ def cms_module_reorder(request, module_id, direction):
 
 
 @teacher_required
+@require_POST
 def cms_module_toggle_pro(request, module_id):
     """Jedným klikom prepne modul medzi FREE a PRO/EDU."""
     module = get_object_or_404(Module, id=module_id)
@@ -205,6 +207,7 @@ def cms_module_toggle_pro(request, module_id):
 
 
 @teacher_required
+@require_POST
 def cms_module_toggle_publish(request, module_id):
     """Prepnutie stavu publikovania (Publikovaný <-> Skrytý)."""
     module = get_object_or_404(Module, id=module_id)

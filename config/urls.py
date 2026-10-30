@@ -20,8 +20,10 @@ def git_webhook_update(request):
     if request.method != 'POST':
         return HttpResponseForbidden("Iba POST požiadavky sú povolené.")
 
-    # Overenie podpisu z GitHubu (z prostredia alebo predvolený kľúč)
-    secret_str = (getattr(settings, 'GITHUB_WEBHOOK_SECRET', '') or 'codoro-maturita-secret-2027').strip()
+    # Overenie podpisu z GitHubu (vyžaduje nakonfigurovaný GITHUB_WEBHOOK_SECRET v prostredí)
+    secret_str = (getattr(settings, 'GITHUB_WEBHOOK_SECRET', '') or '').strip()
+    if not secret_str:
+        return HttpResponseForbidden("Webhook nie je nakonfigurovaný (chýba GITHUB_WEBHOOK_SECRET).")
 
     signature = request.headers.get('X-Hub-Signature-256', '')
     secret = secret_str.encode('utf-8')

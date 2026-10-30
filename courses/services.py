@@ -46,6 +46,12 @@ FORBIDDEN_DUNDERS = {
     '__builtins__', '__subclasses__', '__globals__', '__bases__', '__base__', '__mro__',
     '__code__', '__loader__', '__spec__', '__import__', '__getattribute__', '__closure__',
 }
+FORBIDDEN_ATTRIBUTES = {
+    'gi_frame', 'gi_code', 'cr_frame', 'cr_code', 'ag_frame', 'ag_code',
+    'f_builtins', 'f_globals', 'f_locals', 'f_code', 'f_back', 'f_trace',
+    'co_code', 'co_consts', 'co_names', 'co_varnames', 'tb_frame', 'tb_next',
+    'mro',
+}
 
 # Spätná kompatibilita (pôvodný zoznam použitý v dokumentácii)
 FORBIDDEN_KEYWORDS = ['import os', 'import sys', 'import subprocess', 'import shutil', '__import__', 'open(', 'eval(', 'exec(']
@@ -80,11 +86,14 @@ def check_code_safety(code, lang='sk'):
         elif isinstance(node, ast.ImportFrom):
             if (node.module or '').split('.')[0] in FORBIDDEN_MODULES:
                 return False, _blocked(lang, f"from {node.module} import ...", node.lineno)
-        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in FORBIDDEN_CALLS:
-            return False, _blocked(lang, f"{node.func.id}()", node.lineno)
+        elif isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name) and node.func.id in FORBIDDEN_CALLS:
+                return False, _blocked(lang, f"{node.func.id}()", node.lineno)
+            elif isinstance(node.func, ast.Attribute) and node.func.attr in FORBIDDEN_CALLS:
+                return False, _blocked(lang, f".{node.func.attr}()", node.lineno)
         elif isinstance(node, ast.Name) and node.id in FORBIDDEN_DUNDERS:
             return False, _blocked(lang, node.id, node.lineno)
-        elif isinstance(node, ast.Attribute) and node.attr in FORBIDDEN_DUNDERS:
+        elif isinstance(node, ast.Attribute) and (node.attr in FORBIDDEN_DUNDERS or node.attr in FORBIDDEN_ATTRIBUTES):
             return False, _blocked(lang, f".{node.attr}", node.lineno)
     return True, None
 
@@ -154,6 +163,12 @@ def evaluate_python_code(exercise, student_code, lang='sk', custom_test_cases=No
 
     if custom_test_cases is not None:
         test_cases = list(custom_test_cases)
+        for tc_item in test_cases:
+            tc_code = tc_item.get('test_code', '') if isinstance(tc_item, dict) else getattr(tc_item, 'test_code', '')
+            if tc_code:
+                tc_safe, tc_err = check_code_safety(tc_code, lang)
+                if not tc_safe:
+                    return _ret(False, 'ERROR', _msg(lang, f"Nebezpečný testovací kód: {tc_err}", f"Unsafe test code: {tc_err}"))
     elif exercise:
         test_cases = list(exercise.test_cases.all())
     else:
@@ -291,7 +306,6 @@ def get_codo_ai_feedback(exercise, student_code, error_log, lang='sk'):
         )
     prompt += (
         f"Exercise / Zadanie:\n{instructions}\n\n"
-        f"Reference solution (CONFIDENTIAL - never reveal / nikdy neprezrádzaj):\n{exercise.solution_code}\n\n"
         f"Student code / Kód študenta:\n{student_code}\n\n"
         f"Test output / Výstup testov:\n{error_log}"
     )
